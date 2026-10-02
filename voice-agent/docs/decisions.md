@@ -6,6 +6,27 @@ Newest entries at the top.
 
 ---
 
+## ADR-0010 — Phase 6 V6.2 attested; V6.6 / V6.7 waived
+
+- **Context:** Habiba listened to the pronunciation sheet audio and reported all lines OK, but did not fill the markdown herself; asked the agent to record it. Formal dogfooding (10+5 sessions) and listening panel (≥5 listeners, 12 clips, means) were not run — no time / not written.
+- **Decision:**
+  1. **V6.2 Pass** by human attestation (0 price/qty misreads, 0 dish misreads); sheet filled under `evidence/phase-6/human/pronunciation_sheet.md`.
+  2. **V6.6 and V6.7 waived** (not failed, not fabricated). No invented panel means or dogfood tag counts (R8). Delivery stays emotion-off / default pace (6C.2) until a real panel exists.
+  3. Close Phase 6 automated+attested gate; proceed when human starts Phase 7.
+- **Evidence:** Habiba chat 2026-10-02 (“all are okay… write yourself”); no panel/dogfood raw logs.
+- **Date:** 2026-10-02
+
+---
+
+## ADR-0009 — Phase 5 task 5.10 waived (no live conversation)
+
+- **Context:** Task 5.10 asks for ~10 minutes of free conversation (earphones, then speakers) to note echo self-interruption, clipped syllables, odd pauses, and overlaps. The human has no time and accepts the deviation.
+- **Decision:** **5.10 is waived** (not failed). No live-session observations exist yet. Echo, clipping, overlap, and false-interruption behavior are **UNTESTED with a real voice and mic**. They **must be tested before Phase 9**. Do not mark any V5 verification that requires live audio as passed. Those items stay **pending**, not waived.
+- **Evidence:** Human instruction 2026-10-02; no `evidence/phase-5` live notes or session logs.
+- **Date:** 2026-10-02
+
+---
+
 ## ADR-0008 — Speculative / preemptive generation safety (Phase 5.7)
 
 - **Context:** Flux eager EOT and LiveKit `preemptive_generation` can start the LLM before the user turn is committed. Task 5.7 requires determining whether a tool can *execute* in a generation later discarded; V5.7 requires **0 cart mutations** from discarded generations.
