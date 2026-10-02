@@ -1,6 +1,5 @@
 /**
- * Minimal LiveKit talk client (Phase 5.0).
- * Loads livekit-client from CDN — no build step.
+ * FoodEase inspector harness (Phase 7.7) — extends Phase 5 talk client.
  */
 import {
   Room,
@@ -11,23 +10,37 @@ import {
 
 const stateEl = document.getElementById("state");
 const captionsEl = document.getElementById("captions");
+const eventsEl = document.getElementById("events");
 const startBtn = document.getElementById("start");
 const muteBtn = document.getElementById("mute");
 const leaveBtn = document.getElementById("leave");
 const typedInput = document.getElementById("typed");
 const sendBtn = document.getElementById("send");
+const navBtn = document.getElementById("navBtn");
+const navPage = document.getElementById("navPage");
+const faultDrop = document.getElementById("faultDrop");
 
 let room = null;
 let micPublication = null;
 let muted = false;
+let dropOn = false;
+const finals = new Map(); // turn_id -> line index for replace semantics
 
 function setState(s) {
   stateEl.textContent = s;
 }
 
-function appendCaption(line) {
-  captionsEl.textContent += line + "\n";
+function appendCaption(line, { interrupted = false } = {}) {
+  const span = document.createElement("div");
+  if (interrupted) span.className = "interrupted";
+  span.textContent = line;
+  captionsEl.appendChild(span);
   captionsEl.scrollTop = captionsEl.scrollHeight;
+}
+
+function logEvent(obj) {
+  eventsEl.textContent += JSON.stringify(obj) + "\n";
+  eventsEl.scrollTop = eventsEl.scrollHeight;
 }
 
 startBtn.addEventListener("click", async () => {
@@ -42,26 +55,33 @@ startBtn.addEventListener("click", async () => {
   }
   const { url, token } = await res.json();
   room = new Room();
-  room.on(RoomEvent.DataReceived, (payload, participant) => {
+  room.on(RoomEvent.DataReceived, (payload) => {
     try {
       const msg = new TextDecoder().decode(payload);
       const data = JSON.parse(msg);
+      logEvent({ type: data.type || "data", keys: Object.keys(data) });
       if (data.type === "agent.status" && data.payload?.state) {
         setState(data.payload.state);
       }
-      if (data.type?.startsWith("transcript.")) {
-        const who = data.type.includes("user") ? "You" : "Agent";
-        const text = data.payload?.text || data.payload?.content || msg;
-        appendCaption(`${who}: ${text}`);
+      if (data.type === "transcript.user.partial") {
+        appendCaption(`You (…): ${data.payload?.text || ""}`);
+      }
+      if (data.type === "transcript.user.final") {
+        // Replace: clear last partial-looking line is soft; append final once
+        appendCaption(`You: ${data.payload?.text || ""}`);
+      }
+      if (data.type === "transcript.assistant") {
+        const phase = data.payload?.phase || "";
+        const interrupted = phase === "interrupted";
+        appendCaption(`Agent: ${data.payload?.text || ""}`, { interrupted });
       }
     } catch {
-      /* ignore non-JSON */
+      logEvent({ raw: "non-json data" });
     }
   });
   room.on(RoomEvent.TrackSubscribed, (track) => {
     if (track.kind === Track.Kind.Audio) {
-      const el = track.attach();
-      document.body.appendChild(el);
+      document.body.appendChild(track.attach());
     }
   });
   await room.connect(url, token);
@@ -74,11 +94,11 @@ startBtn.addEventListener("click", async () => {
   leaveBtn.disabled = false;
   typedInput.disabled = false;
   sendBtn.disabled = false;
-  appendCaption("[joined — wait for agent greeting]");
+  appendCaption("[joined]");
 });
 
 muteBtn.addEventListener("click", async () => {
-  if (!micPublication) return;
+  if (!room) return;
   muted = !muted;
   await room.localParticipant.setMicrophoneEnabled(!muted);
   muteBtn.textContent = muted ? "Unmute mic" : "Mute mic";
@@ -102,12 +122,41 @@ sendBtn.addEventListener("click", async () => {
   const text = typedInput.value.trim();
   if (!text || !room) return;
   const envelope = {
-    type: "app.text_input",
     schema_version: "1.0",
+    type: "app.text_input",
     payload: { text },
   };
-  const bytes = new TextEncoder().encode(JSON.stringify(envelope));
-  await room.localParticipant.publishData(bytes, { reliable: true });
+  await room.localParticipant.publishData(
+    new TextEncoder().encode(JSON.stringify(envelope)),
+    { reliable: true },
+  );
   appendCaption(`You (typed): ${text}`);
   typedInput.value = "";
+});
+
+navBtn.addEventListener("click", async () => {
+  try {
+    const r = await fetch("http://127.0.0.1:8765/navigate", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ page: navPage.value }),
+    });
+    logEvent({ mock_navigate: navPage.value, ok: r.ok });
+  } catch (e) {
+    logEvent({ mock_navigate_error: String(e) });
+  }
+});
+
+faultDrop.addEventListener("click", async () => {
+  dropOn = !dropOn;
+  try {
+    const r = await fetch("http://127.0.0.1:8765/faults", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ drop_connection: dropOn }),
+    });
+    logEvent({ drop_connection: dropOn, ok: r.ok });
+  } catch (e) {
+    logEvent({ fault_error: String(e) });
+  }
 });

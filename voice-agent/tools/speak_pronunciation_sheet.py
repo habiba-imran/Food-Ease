@@ -52,7 +52,7 @@ def main() -> None:
     # Jacqueline (ADR-0006) if .env still has a placeholder
     default_voice = "9626c31c-bec5-4cca-baa8-f8ba9e84c8bc"
     if len(voice) != 36 or voice.count("-") != 4:
-        print(f"TTS_VOICE_ID missing/invalid in .env — using primary Jacqueline id")
+        print("TTS_VOICE_ID missing/invalid in .env — using primary Jacqueline id")
         voice = default_voice
     if not api_key:
         raise SystemExit("CARTESIA_API_KEY required in .env")
