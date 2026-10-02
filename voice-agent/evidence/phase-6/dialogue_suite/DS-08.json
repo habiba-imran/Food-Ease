@@ -1,0 +1,12 @@
+{
+  "id": "DS-08",
+  "ok": true,
+  "notes": "weather redirect",
+  "turns": [
+    {
+      "user": "How's the weather?",
+      "assistant": "I\u2019m here for the menu \u2014 want a category, or something under a budget?",
+      "tools": []
+    }
+  ]
+}

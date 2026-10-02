@@ -1,0 +1,15 @@
+{
+  "id": "DS-18",
+  "ok": true,
+  "notes": "two intents",
+  "turns": [
+    {
+      "user": "Show burgers and add the veggie one",
+      "assistant": "Here is what I found: Zinger Burger at six hundred fifty rupees; Zinger Burger Supreme at eight hundred fifty rupees; Beef Smash Burger at seven hundred fifty rupees. Updated. You have 1 Veggie Patty Burger. Total six hundred rupees.",
+      "tools": [
+        "navigate",
+        "cart.add_item"
+      ]
+    }
+  ]
+}

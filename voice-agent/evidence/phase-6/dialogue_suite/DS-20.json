@@ -1,0 +1,12 @@
+{
+  "id": "DS-20",
+  "ok": true,
+  "notes": "abuse calm",
+  "turns": [
+    {
+      "user": "You idiot, this is stupid",
+      "assistant": "I\u2019ll stay with the order. Say stop if you want me quiet, or name a dish.",
+      "tools": []
+    }
+  ]
+}

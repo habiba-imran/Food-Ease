@@ -1,0 +1,19 @@
+{
+  "id": "DS-17",
+  "ok": true,
+  "notes": "blocked submit",
+  "turns": [
+    {
+      "user": "checkout",
+      "assistant": "I could not get a checkout summary yet.",
+      "tools": [
+        "checkout.submit_demo_order"
+      ]
+    },
+    {
+      "user": "wait, change the quantity",
+      "assistant": "Okay \u2014 I won\u2019t place the order yet. Tell me the new quantity, or which item to change.",
+      "tools": []
+    }
+  ]
+}

@@ -22,12 +22,14 @@ from foodease_agent.turn_commit import TurnCommitGate
 
 logger = logging.getLogger(__name__)
 
-_POLICY_PATH = Path(__file__).resolve().parents[2] / "prompts" / "agent_policy.v1.md"
+_POLICY_PATH = Path(__file__).resolve().parents[2] / "prompts" / "agent_policy.v2.md"
+_POLICY_FALLBACK = Path(__file__).resolve().parents[2] / "prompts" / "agent_policy.v1.md"
 
 
 def _load_policy() -> str:
-    if _POLICY_PATH.is_file():
-        return _POLICY_PATH.read_text(encoding="utf-8")
+    for path in (_POLICY_PATH, _POLICY_FALLBACK):
+        if path.is_file():
+            return path.read_text(encoding="utf-8")
     return (
         "You are a FoodEase shopping assistant, not a person. "
         "Use tools for facts. Keep replies to 1–3 short sentences."

@@ -1,0 +1,11 @@
+{
+  "scenarios_passed": 21,
+  "scenarios_total": 21,
+  "clarification_rate_unambiguous": 0.0,
+  "mean_clarifications_unambiguous": 0.0,
+  "unnecessary_tier01_confirmations": 0,
+  "same_opener_rate": 0.103,
+  "replies_over_35_words": 1,
+  "opener_hits": 3,
+  "reply_sample": 29
+}

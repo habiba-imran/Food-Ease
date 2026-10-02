@@ -38,7 +38,7 @@ package = true
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-pythonpath = ["src"]
+pythonpath = ["src", "."]
 asyncio_mode = "auto"
 asyncio_default_fixture_loop_scope = "function"
 
@@ -60,9 +60,13 @@ select = ["E", "F", "I", "UP", "B"]
 "tests/test_phase4_engine.py" = ["E501"]
 "tests/test_phase4_acceptance.py" = ["E501"]
 "tests/test_phase5_voice.py" = ["E501"]
+"tests/test_phase6_speech.py" = ["E501"]
+"tests/test_phase6_dialogue.py" = ["E501"]
 "src/foodease_agent/agent.py" = ["E501"]
 "src/foodease_agent/session.py" = ["E501"]
 "src/foodease_agent/worker.py" = ["E501"]
+"src/foodease_agent/dialogue_planner.py" = ["E501"]
+"tools/run_dialogue_suite.py" = ["E501"]
 "harness/token_server.py" = ["E501"]
 
 [tool.pyright]

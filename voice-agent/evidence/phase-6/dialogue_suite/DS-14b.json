@@ -1,0 +1,14 @@
+{
+  "id": "DS-14b",
+  "ok": true,
+  "notes": "no guess",
+  "turns": [
+    {
+      "user": "What's in the Chef Special Sweet?",
+      "assistant": "I don't have ingredient information for Chef Special Sweet.",
+      "tools": [
+        "get_item_details"
+      ]
+    }
+  ]
+}

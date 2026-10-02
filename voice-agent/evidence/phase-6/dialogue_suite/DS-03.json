@@ -1,0 +1,12 @@
+{
+  "id": "DS-03",
+  "ok": true,
+  "notes": "recommend",
+  "turns": [
+    {
+      "user": "What do you recommend?",
+      "assistant": "From what\u2019s on screen: Zinger Burger at six hundred fifty rupees; Zinger Burger Supreme at eight hundred fifty rupees; Beef Smash Burger at seven hundred fifty rupees. Want one of these?",
+      "tools": []
+    }
+  ]
+}

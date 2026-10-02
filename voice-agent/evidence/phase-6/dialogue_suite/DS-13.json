@@ -1,0 +1,21 @@
+{
+  "id": "DS-13",
+  "ok": true,
+  "notes": "budget filter",
+  "turns": [
+    {
+      "user": "Vegetarian under 800",
+      "assistant": "Here is what I found: Veggie Patty Burger at five hundred fifty rupees; Veggie Wrap at five hundred rupees; Puh-neer Roll at four hundred twenty rupees.",
+      "tools": [
+        "filter_menu"
+      ]
+    },
+    {
+      "user": "actually under 600",
+      "assistant": "Here is what I found: Veggie Patty Burger at five hundred fifty rupees; Chicken Wrap at six hundred rupees; Veggie Wrap at five hundred rupees.",
+      "tools": [
+        "filter_menu"
+      ]
+    }
+  ]
+}

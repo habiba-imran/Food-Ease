@@ -1,0 +1,14 @@
+{
+  "id": "DS-02",
+  "ok": true,
+  "notes": "light request",
+  "turns": [
+    {
+      "user": "Something light",
+      "assistant": "Here is what I found: Veggie Patty Burger at five hundred fifty rupees; Veggie Wrap at five hundred rupees; Puh-neer Roll at four hundred twenty rupees.",
+      "tools": [
+        "filter_menu"
+      ]
+    }
+  ]
+}

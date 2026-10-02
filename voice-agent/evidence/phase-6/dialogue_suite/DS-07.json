@@ -1,0 +1,26 @@
+{
+  "id": "DS-07",
+  "ok": true,
+  "notes": "cart path exercised",
+  "turns": [
+    {
+      "user": "add 1 Cola Can",
+      "assistant": "Updated. You have 1 Cola Can. Total one hundred fifty rupees.",
+      "tools": [
+        "cart.add_item"
+      ]
+    },
+    {
+      "user": "remove cola can",
+      "assistant": "Remove Cola Can from the cart?",
+      "tools": [
+        "cart.remove_item"
+      ]
+    },
+    {
+      "user": "yes",
+      "assistant": "Your cart is empty.",
+      "tools": []
+    }
+  ]
+}

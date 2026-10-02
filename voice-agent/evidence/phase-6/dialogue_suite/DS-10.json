@@ -1,0 +1,19 @@
+{
+  "id": "DS-10",
+  "ok": true,
+  "notes": "repeat control",
+  "turns": [
+    {
+      "user": "show burgers",
+      "assistant": "Here is what I found: Zinger Burger at six hundred fifty rupees; Zinger Burger Supreme at eight hundred fifty rupees; Beef Smash Burger at seven hundred fifty rupees.",
+      "tools": [
+        "navigate"
+      ]
+    },
+    {
+      "user": "repeat",
+      "assistant": "Here is what I found: Zinger Burger at six hundred fifty rupees; Zinger Burger Supreme at eight hundred fifty rupees; Beef Smash Burger at seven hundred fifty rupees.",
+      "tools": []
+    }
+  ]
+}

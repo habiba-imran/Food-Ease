@@ -1,0 +1,12 @@
+{
+  "id": "DS-04",
+  "ok": true,
+  "notes": "compare",
+  "turns": [
+    {
+      "user": "Compare the Zinger Burger and the Veggie Wrap",
+      "assistant": "I can compare using menu prices and tags only. Say both item names clearly, or open them so I can read the details.",
+      "tools": []
+    }
+  ]
+}

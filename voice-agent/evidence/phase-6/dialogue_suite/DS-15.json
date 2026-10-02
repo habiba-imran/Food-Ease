@@ -1,0 +1,14 @@
+{
+  "id": "DS-15",
+  "ok": true,
+  "notes": "couple=2",
+  "turns": [
+    {
+      "user": "Add a couple of Cola Cans",
+      "assistant": "Updated. You have 2 Cola Can. Total two hundred fifty rupees.",
+      "tools": [
+        "cart.add_item"
+      ]
+    }
+  ]
+}

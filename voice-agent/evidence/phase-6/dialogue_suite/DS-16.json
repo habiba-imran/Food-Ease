@@ -1,0 +1,17 @@
+{
+  "id": "DS-16",
+  "ok": true,
+  "notes": "resume",
+  "turns": [
+    {
+      "user": "I'll browse myself",
+      "assistant": "Okay. I will stay quiet unless you ask for help. Your cart stays as it is.",
+      "tools": []
+    },
+    {
+      "user": "talk to me again",
+      "assistant": "Welcome back. Ready when you are \u2014 ask for the menu or your cart.",
+      "tools": []
+    }
+  ]
+}

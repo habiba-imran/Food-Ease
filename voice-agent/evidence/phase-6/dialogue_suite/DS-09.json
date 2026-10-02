@@ -1,0 +1,12 @@
+{
+  "id": "DS-09",
+  "ok": true,
+  "notes": "frustration",
+  "turns": [
+    {
+      "user": "This is useless, nothing works",
+      "assistant": "Sorry this has been frustrating. You can browse yourself, or tell me a dish name and I\u2019ll try again.",
+      "tools": []
+    }
+  ]
+}

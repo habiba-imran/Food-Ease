@@ -1,0 +1,14 @@
+{
+  "id": "DS-14a",
+  "ok": true,
+  "notes": "ingredients present",
+  "turns": [
+    {
+      "user": "What's in the Masala Fries?",
+      "assistant": "Ma-saa-la Fries includes potato, spice mix, oil.",
+      "tools": [
+        "get_item_details"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "id": "DS-19",
+  "ok": true,
+  "notes": "wrap-up",
+  "turns": [
+    {
+      "user": "Thanks, that's all",
+      "assistant": "Glad to help. Goodbye \u2014 say the word if you need the cart again.",
+      "tools": []
+    }
+  ]
+}

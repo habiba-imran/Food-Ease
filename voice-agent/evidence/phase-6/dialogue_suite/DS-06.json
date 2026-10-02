@@ -1,0 +1,21 @@
+{
+  "id": "DS-06",
+  "ok": true,
+  "notes": "repair wrap",
+  "turns": [
+    {
+      "user": "show wraps",
+      "assistant": "Here is what I found: Chicken Wrap at six hundred rupees; Veggie Wrap at five hundred rupees; Hot Chicken Wrap at eight hundred fifty rupees.",
+      "tools": [
+        "navigate"
+      ]
+    },
+    {
+      "user": "no, I meant the wrap",
+      "assistant": "Here is what I found: Chicken Wrap at six hundred rupees; Veggie Wrap at five hundred rupees; Hot Chicken Wrap at eight hundred fifty rupees.",
+      "tools": [
+        "search_menu"
+      ]
+    }
+  ]
+}

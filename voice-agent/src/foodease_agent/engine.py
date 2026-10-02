@@ -14,7 +14,8 @@ from foodease_agent.contract.models import ActionResultPayload, ContextSnapshot
 from foodease_agent.controls import ControlIntent, match_control
 from foodease_agent.preferences import SessionPreferences
 from foodease_agent.reference import PresentedItem, ReferenceResolver
-from foodease_agent.speech_text.sanitizer import count_sentences, sanitize_assistant_text
+from foodease_agent.speech_text.sanitizer import count_sentences
+from foodease_agent.speech_text.shaping import shape_assistant_reply
 from foodease_agent.tiers import RiskTier, tier_for
 
 
@@ -297,7 +298,24 @@ class ConversationEngine:
                 else:
                     lines.append("I did not find matching items.")
             elif outcome.result.status == ActionResultStatus.SUCCESS:
-                lines.append(self._friendly_success(call.operation, outcome.result))
+                if call.operation == Operation.NAVIGATE:
+                    # Populate reference list from new snapshot visibles
+                    presented = [
+                        PresentedItem(
+                            item_id=v.item_id,
+                            name=v.name,
+                            price=float(v.price),
+                        )
+                        for v in snapshot.visible_items[:5]
+                    ]
+                    if presented:
+                        self.references.set_list(presented, revision=snapshot.revision)
+                        bits = [f"{p.name} at {int(p.price)} rupees" for p in presented[:3]]
+                        lines.append("Here is what I found: " + "; ".join(bits) + ".")
+                    else:
+                        lines.append(self._friendly_success(call.operation, outcome.result))
+                else:
+                    lines.append(self._friendly_success(call.operation, outcome.result))
             elif outcome.result.status == ActionResultStatus.TIMEOUT_UNKNOWN:
                 lines.append("I am not sure that finished. Let me check the cart before trying again.")
             else:
@@ -343,6 +361,15 @@ class ConversationEngine:
         if operation == Operation.GET_CART:
             total = state.get("total")
             return f"Your cart total is {total} rupees."
+        if operation == Operation.GET_ITEM_DETAILS:
+            name = state.get("name", "that item")
+            if state.get("ingredients_available") is False or state.get("ingredients") is None:
+                return f"I don't have ingredient information for {name}."
+            ingredients = state.get("ingredients") or []
+            if ingredients:
+                joined = ", ".join(str(x) for x in ingredients)
+                return f"{name} includes {joined}."
+            return f"I don't have that information for {name}."
         if operation == Operation.CHECKOUT_SUBMIT_DEMO_ORDER:
             return "Demo order placed. No real payment was taken."
         return "Done."
@@ -357,7 +384,8 @@ class ConversationEngine:
         control: ControlIntent | None = None,
         ended: bool = False,
     ) -> TurnResult:
-        clean = sanitize_assistant_text(text, known_item_ids=self.known_item_ids)
+        forms = shape_assistant_reply(text, known_item_ids=self.known_item_ids)
+        clean = forms.spoken_text
         if self.prefs.detail_level == "brief" and count_sentences(clean) > 2:
             # Keep first two sentences
             parts = re.split(r"(?<=[.!?])\s+", clean)

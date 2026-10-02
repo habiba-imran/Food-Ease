@@ -1,9 +1,9 @@
 # STATUS
 
 **Last updated:** 2026-10-02 by agent  
-**Current phase:** 5 (agent tasks done; waiting on human 5.10)  
-**Current branch:** `phase-5-voice-pipeline`  
-**Next action:** Habiba runs 5.10 (~10 min talk), then gate close / tag `phase-5-done`.
+**Current phase:** 6 (6A–6C done; 6D/6E + V6.2/6.6/6.7 pending)  
+**Current branch:** `phase-6-conversation-design`  
+**Next action:** Wait for Habiba before Phase 7. Human pronunciation / dogfood / panel when ready.
 
 ## Phase tracker
 
@@ -14,9 +14,10 @@
 | 2 | Contract v1.0 | gate passed | `phase-2-done` |
 | 3 | Adapter + mock | gate passed | `phase-3-done` |
 | 4 | Conversation engine (text) | gate passed | `phase-4-done` |
-| 5 | Real-time voice pipeline | agent done; **[HUMAN] 5.10 pending** | — |
-| 6–11 | | not started | |
+| 5 | Real-time voice pipeline | partial (ADR-0009) | — |
+| 6 | Conversation design | **6A–6C done**; 6D/6E pending | — |
+| 7–11 | | not started | |
 
 ## Last session summary
 
-Phase 5 voice pipeline: harness v0, session A/B, worker+prewarm, greeting/idle, barge-in reconcile, ADR-0008 speculative safety (`PREEMPTIVE_GENERATION=false` + TurnCommitGate). 114 tests green. Stopped at 5.10 for your listen session.
+Phase 6A–6C: persona/acts/suite docs, policy v2, verbalizer+shaping, dialogue suite metrics. V6.1/3/4/5/8 pass. V6.2/6/7 pending human.

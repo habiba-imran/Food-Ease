@@ -1,0 +1,12 @@
+{
+  "id": "DS-01",
+  "ok": true,
+  "notes": "vague hunger handled",
+  "turns": [
+    {
+      "user": "I'm hungry",
+      "assistant": "I can suggest a few options. Prefer something light, spicy, or under a budget?",
+      "tools": []
+    }
+  ]
+}

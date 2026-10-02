@@ -41,7 +41,22 @@ class RulePlanner:
             return [ToolCall(Operation.FILTER_MENU, args)]
 
         if text.startswith("show ") or text.startswith("search "):
-            q = text.split(" ", 1)[1]
+            q = text.split(" ", 1)[1].strip()
+            categories = {
+                "burgers",
+                "wraps",
+                "rolls",
+                "karahi",
+                "biryani",
+                "drinks",
+                "desserts",
+                "sides",
+                "platters",
+                "home",
+                "cart",
+            }
+            if q in categories:
+                return [ToolCall(Operation.NAVIGATE, {"target": q})]
             return [ToolCall(Operation.SEARCH_MENU, {"query": q})]
 
         if "spicy" in text:
@@ -110,6 +125,9 @@ class RulePlanner:
             "sweet lassi": "drink-lassi-small",
             "zinger burger": "zinger-classic",
             "cola": "drink-cola",
+            "cola can": "drink-cola",
+            "cola cans": "drink-cola",
             "masala fries": "side-fries",
+            "chef special sweet": "dessert-mystery",
         }
         return aliases.get(name)
