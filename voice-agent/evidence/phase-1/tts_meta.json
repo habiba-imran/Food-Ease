@@ -1,0 +1,40 @@
+{
+  "model": "sonic-3.6",
+  "voices": [
+    {
+      "label": "jacqueline",
+      "id": "9626c31c-bec5-4cca-baa8-f8ba9e84c8bc",
+      "note": "confident young American adult female"
+    },
+    {
+      "label": "blake",
+      "id": "a167e0f3-df7e-4d52-a9c3-f949145efdab",
+      "note": "energetic American adult male"
+    },
+    {
+      "label": "robyn",
+      "id": "f31cc6a7-c1e8-4764-980c-60a361443dd1",
+      "note": "neutral mature Australian female"
+    },
+    {
+      "label": "katie",
+      "id": "f786b574-daa5-4673-aa0c-cbe3e8534c02",
+      "note": "Cartesia plugin default English female"
+    }
+  ],
+  "audition_dir": "evidence\\phase-1\\audio\\audition",
+  "number_sheet": [
+    "Rs. 850",
+    "PKR 1,500",
+    "150",
+    "800 to 1,000",
+    "two items, total 1,700"
+  ],
+  "timing_phrase": "Timing.",
+  "timing_note": "Ran 10x per voice. After human picks primary+backup, run +20 on those two to reach 30x (ask before exceeding credit cap).",
+  "credits": {
+    "used": 2524,
+    "cap": 8000
+  },
+  "plugin_note": "Direct Cartesia /tts/bytes with model_id=sonic-3.6. LiveKit plugin docs list cartesia/sonic-3.6 via Inference; plugin default model string remains sonic-3 family \u2014 sonic-3.6 accepted by Cartesia API in this spike."
+}

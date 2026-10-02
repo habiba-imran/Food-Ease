@@ -1,0 +1,776 @@
+{
+  "cap": 8000,
+  "used": 2524,
+  "entries": [
+    {
+      "ts": "2026-10-02T11:49:29.577305+00:00",
+      "purpose": "healthcheck",
+      "chars": 2,
+      "voice_id": "health",
+      "text_preview": "ok"
+    },
+    {
+      "ts": "2026-10-02T11:49:43.209094+00:00",
+      "purpose": "audition:jacqueline__greeting",
+      "chars": 64,
+      "voice_id": "9626c31c-bec5-4cca-baa8-f8ba9e84c8bc",
+      "text_preview": "Welcome. I can help you explore the menu and place a demo order."
+    },
+    {
+      "ts": "2026-10-02T11:49:44.707266+00:00",
+      "purpose": "audition:jacqueline__listing",
+      "chars": 54,
+      "voice_id": "9626c31c-bec5-4cca-baa8-f8ba9e84c8bc",
+      "text_preview": "I found three spicy options under one thousand rupees."
+    },
+    {
+      "ts": "2026-10-02T11:49:45.423638+00:00",
+      "purpose": "audition:jacqueline__apology",
+      "chars": 43,
+      "voice_id": "9626c31c-bec5-4cca-baa8-f8ba9e84c8bc",
+      "text_preview": "Sorry, that item is out of stock right now."
+    },
+    {
+      "ts": "2026-10-02T11:49:45.902774+00:00",
+      "purpose": "audition:jacqueline__checkout",
+      "chars": 71,
+      "voice_id": "9626c31c-bec5-4cca-baa8-f8ba9e84c8bc",
+      "text_preview": "Your demo total is one thousand seven hundred rupees. Shall I place it?"
+    },
+    {
+      "ts": "2026-10-02T11:49:46.612797+00:00",
+      "purpose": "audition:jacqueline__correction",
+      "chars": 37,
+      "voice_id": "9626c31c-bec5-4cca-baa8-f8ba9e84c8bc",
+      "text_preview": "Okay, making that one instead of two."
+    },
+    {
+      "ts": "2026-10-02T11:49:47.136394+00:00",
+      "purpose": "audition:jacqueline__long_desc",
+      "chars": 65,
+      "voice_id": "9626c31c-bec5-4cca-baa8-f8ba9e84c8bc",
+      "text_preview": "Chicken biryani with basmati rice, raita, and a mild spice level."
+    },
+    {
+      "ts": "2026-10-02T11:49:47.859812+00:00",
+      "purpose": "audition:jacqueline__error",
+      "chars": 47,
+      "voice_id": "9626c31c-bec5-4cca-baa8-f8ba9e84c8bc",
+      "text_preview": "I could not update the cart. Want to try again?"
+    },
+    {
+      "ts": "2026-10-02T11:49:48.409474+00:00",
+      "purpose": "audition:jacqueline__goodbye",
+      "chars": 36,
+      "voice_id": "9626c31c-bec5-4cca-baa8-f8ba9e84c8bc",
+      "text_preview": "Thanks for trying the demo. Goodbye."
+    },
+    {
+      "ts": "2026-10-02T11:49:48.942890+00:00",
+      "purpose": "audition:blake__greeting",
+      "chars": 64,
+      "voice_id": "a167e0f3-df7e-4d52-a9c3-f949145efdab",
+      "text_preview": "Welcome. I can help you explore the menu and place a demo order."
+    },
+    {
+      "ts": "2026-10-02T11:49:49.602515+00:00",
+      "purpose": "audition:blake__listing",
+      "chars": 54,
+      "voice_id": "a167e0f3-df7e-4d52-a9c3-f949145efdab",
+      "text_preview": "I found three spicy options under one thousand rupees."
+    },
+    {
+      "ts": "2026-10-02T11:49:50.151592+00:00",
+      "purpose": "audition:blake__apology",
+      "chars": 43,
+      "voice_id": "a167e0f3-df7e-4d52-a9c3-f949145efdab",
+      "text_preview": "Sorry, that item is out of stock right now."
+    },
+    {
+      "ts": "2026-10-02T11:49:50.655229+00:00",
+      "purpose": "audition:blake__checkout",
+      "chars": 71,
+      "voice_id": "a167e0f3-df7e-4d52-a9c3-f949145efdab",
+      "text_preview": "Your demo total is one thousand seven hundred rupees. Shall I place it?"
+    },
+    {
+      "ts": "2026-10-02T11:49:51.303972+00:00",
+      "purpose": "audition:blake__correction",
+      "chars": 37,
+      "voice_id": "a167e0f3-df7e-4d52-a9c3-f949145efdab",
+      "text_preview": "Okay, making that one instead of two."
+    },
+    {
+      "ts": "2026-10-02T11:49:51.796836+00:00",
+      "purpose": "audition:blake__long_desc",
+      "chars": 65,
+      "voice_id": "a167e0f3-df7e-4d52-a9c3-f949145efdab",
+      "text_preview": "Chicken biryani with basmati rice, raita, and a mild spice level."
+    },
+    {
+      "ts": "2026-10-02T11:49:52.417153+00:00",
+      "purpose": "audition:blake__error",
+      "chars": 47,
+      "voice_id": "a167e0f3-df7e-4d52-a9c3-f949145efdab",
+      "text_preview": "I could not update the cart. Want to try again?"
+    },
+    {
+      "ts": "2026-10-02T11:49:52.969794+00:00",
+      "purpose": "audition:blake__goodbye",
+      "chars": 36,
+      "voice_id": "a167e0f3-df7e-4d52-a9c3-f949145efdab",
+      "text_preview": "Thanks for trying the demo. Goodbye."
+    },
+    {
+      "ts": "2026-10-02T11:49:53.373942+00:00",
+      "purpose": "audition:robyn__greeting",
+      "chars": 64,
+      "voice_id": "f31cc6a7-c1e8-4764-980c-60a361443dd1",
+      "text_preview": "Welcome. I can help you explore the menu and place a demo order."
+    },
+    {
+      "ts": "2026-10-02T11:49:53.957100+00:00",
+      "purpose": "audition:robyn__listing",
+      "chars": 54,
+      "voice_id": "f31cc6a7-c1e8-4764-980c-60a361443dd1",
+      "text_preview": "I found three spicy options under one thousand rupees."
+    },
+    {
+      "ts": "2026-10-02T11:49:54.553691+00:00",
+      "purpose": "audition:robyn__apology",
+      "chars": 43,
+      "voice_id": "f31cc6a7-c1e8-4764-980c-60a361443dd1",
+      "text_preview": "Sorry, that item is out of stock right now."
+    },
+    {
+      "ts": "2026-10-02T11:49:55.104418+00:00",
+      "purpose": "audition:robyn__checkout",
+      "chars": 71,
+      "voice_id": "f31cc6a7-c1e8-4764-980c-60a361443dd1",
+      "text_preview": "Your demo total is one thousand seven hundred rupees. Shall I place it?"
+    },
+    {
+      "ts": "2026-10-02T11:49:55.807958+00:00",
+      "purpose": "audition:robyn__correction",
+      "chars": 37,
+      "voice_id": "f31cc6a7-c1e8-4764-980c-60a361443dd1",
+      "text_preview": "Okay, making that one instead of two."
+    },
+    {
+      "ts": "2026-10-02T11:49:56.395377+00:00",
+      "purpose": "audition:robyn__long_desc",
+      "chars": 65,
+      "voice_id": "f31cc6a7-c1e8-4764-980c-60a361443dd1",
+      "text_preview": "Chicken biryani with basmati rice, raita, and a mild spice level."
+    },
+    {
+      "ts": "2026-10-02T11:49:57.121254+00:00",
+      "purpose": "audition:robyn__error",
+      "chars": 47,
+      "voice_id": "f31cc6a7-c1e8-4764-980c-60a361443dd1",
+      "text_preview": "I could not update the cart. Want to try again?"
+    },
+    {
+      "ts": "2026-10-02T11:49:57.609664+00:00",
+      "purpose": "audition:robyn__goodbye",
+      "chars": 36,
+      "voice_id": "f31cc6a7-c1e8-4764-980c-60a361443dd1",
+      "text_preview": "Thanks for trying the demo. Goodbye."
+    },
+    {
+      "ts": "2026-10-02T11:49:58.029477+00:00",
+      "purpose": "audition:katie__greeting",
+      "chars": 64,
+      "voice_id": "f786b574-daa5-4673-aa0c-cbe3e8534c02",
+      "text_preview": "Welcome. I can help you explore the menu and place a demo order."
+    },
+    {
+      "ts": "2026-10-02T11:49:58.575828+00:00",
+      "purpose": "audition:katie__listing",
+      "chars": 54,
+      "voice_id": "f786b574-daa5-4673-aa0c-cbe3e8534c02",
+      "text_preview": "I found three spicy options under one thousand rupees."
+    },
+    {
+      "ts": "2026-10-02T11:49:59.220230+00:00",
+      "purpose": "audition:katie__apology",
+      "chars": 43,
+      "voice_id": "f786b574-daa5-4673-aa0c-cbe3e8534c02",
+      "text_preview": "Sorry, that item is out of stock right now."
+    },
+    {
+      "ts": "2026-10-02T11:49:59.795525+00:00",
+      "purpose": "audition:katie__checkout",
+      "chars": 71,
+      "voice_id": "f786b574-daa5-4673-aa0c-cbe3e8534c02",
+      "text_preview": "Your demo total is one thousand seven hundred rupees. Shall I place it?"
+    },
+    {
+      "ts": "2026-10-02T11:50:00.481825+00:00",
+      "purpose": "audition:katie__correction",
+      "chars": 37,
+      "voice_id": "f786b574-daa5-4673-aa0c-cbe3e8534c02",
+      "text_preview": "Okay, making that one instead of two."
+    },
+    {
+      "ts": "2026-10-02T11:50:00.892288+00:00",
+      "purpose": "audition:katie__long_desc",
+      "chars": 65,
+      "voice_id": "f786b574-daa5-4673-aa0c-cbe3e8534c02",
+      "text_preview": "Chicken biryani with basmati rice, raita, and a mild spice level."
+    },
+    {
+      "ts": "2026-10-02T11:50:01.526672+00:00",
+      "purpose": "audition:katie__error",
+      "chars": 47,
+      "voice_id": "f786b574-daa5-4673-aa0c-cbe3e8534c02",
+      "text_preview": "I could not update the cart. Want to try again?"
+    },
+    {
+      "ts": "2026-10-02T11:50:02.082968+00:00",
+      "purpose": "audition:katie__goodbye",
+      "chars": 36,
+      "voice_id": "f786b574-daa5-4673-aa0c-cbe3e8534c02",
+      "text_preview": "Thanks for trying the demo. Goodbye."
+    },
+    {
+      "ts": "2026-10-02T11:50:02.515413+00:00",
+      "purpose": "numbers:jacqueline__rs_850",
+      "chars": 7,
+      "voice_id": "9626c31c-bec5-4cca-baa8-f8ba9e84c8bc",
+      "text_preview": "Rs. 850"
+    },
+    {
+      "ts": "2026-10-02T11:50:02.991804+00:00",
+      "purpose": "numbers:jacqueline__pkr_1500",
+      "chars": 9,
+      "voice_id": "9626c31c-bec5-4cca-baa8-f8ba9e84c8bc",
+      "text_preview": "PKR 1,500"
+    },
+    {
+      "ts": "2026-10-02T11:50:03.481174+00:00",
+      "purpose": "numbers:jacqueline__plain_150",
+      "chars": 3,
+      "voice_id": "9626c31c-bec5-4cca-baa8-f8ba9e84c8bc",
+      "text_preview": "150"
+    },
+    {
+      "ts": "2026-10-02T11:50:03.851680+00:00",
+      "purpose": "numbers:jacqueline__range_800_1000",
+      "chars": 12,
+      "voice_id": "9626c31c-bec5-4cca-baa8-f8ba9e84c8bc",
+      "text_preview": "800 to 1,000"
+    },
+    {
+      "ts": "2026-10-02T11:50:04.370328+00:00",
+      "purpose": "numbers:jacqueline__two_items_1700",
+      "chars": 22,
+      "voice_id": "9626c31c-bec5-4cca-baa8-f8ba9e84c8bc",
+      "text_preview": "two items, total 1,700"
+    },
+    {
+      "ts": "2026-10-02T11:50:04.911068+00:00",
+      "purpose": "numbers:blake__rs_850",
+      "chars": 7,
+      "voice_id": "a167e0f3-df7e-4d52-a9c3-f949145efdab",
+      "text_preview": "Rs. 850"
+    },
+    {
+      "ts": "2026-10-02T11:50:05.418201+00:00",
+      "purpose": "numbers:blake__pkr_1500",
+      "chars": 9,
+      "voice_id": "a167e0f3-df7e-4d52-a9c3-f949145efdab",
+      "text_preview": "PKR 1,500"
+    },
+    {
+      "ts": "2026-10-02T11:50:05.842293+00:00",
+      "purpose": "numbers:blake__plain_150",
+      "chars": 3,
+      "voice_id": "a167e0f3-df7e-4d52-a9c3-f949145efdab",
+      "text_preview": "150"
+    },
+    {
+      "ts": "2026-10-02T11:50:06.157205+00:00",
+      "purpose": "numbers:blake__range_800_1000",
+      "chars": 12,
+      "voice_id": "a167e0f3-df7e-4d52-a9c3-f949145efdab",
+      "text_preview": "800 to 1,000"
+    },
+    {
+      "ts": "2026-10-02T11:50:06.585598+00:00",
+      "purpose": "numbers:blake__two_items_1700",
+      "chars": 22,
+      "voice_id": "a167e0f3-df7e-4d52-a9c3-f949145efdab",
+      "text_preview": "two items, total 1,700"
+    },
+    {
+      "ts": "2026-10-02T11:50:07.172346+00:00",
+      "purpose": "numbers:robyn__rs_850",
+      "chars": 7,
+      "voice_id": "f31cc6a7-c1e8-4764-980c-60a361443dd1",
+      "text_preview": "Rs. 850"
+    },
+    {
+      "ts": "2026-10-02T11:50:07.624478+00:00",
+      "purpose": "numbers:robyn__pkr_1500",
+      "chars": 9,
+      "voice_id": "f31cc6a7-c1e8-4764-980c-60a361443dd1",
+      "text_preview": "PKR 1,500"
+    },
+    {
+      "ts": "2026-10-02T11:50:08.172781+00:00",
+      "purpose": "numbers:robyn__plain_150",
+      "chars": 3,
+      "voice_id": "f31cc6a7-c1e8-4764-980c-60a361443dd1",
+      "text_preview": "150"
+    },
+    {
+      "ts": "2026-10-02T11:50:08.508987+00:00",
+      "purpose": "numbers:robyn__range_800_1000",
+      "chars": 12,
+      "voice_id": "f31cc6a7-c1e8-4764-980c-60a361443dd1",
+      "text_preview": "800 to 1,000"
+    },
+    {
+      "ts": "2026-10-02T11:50:08.919839+00:00",
+      "purpose": "numbers:robyn__two_items_1700",
+      "chars": 22,
+      "voice_id": "f31cc6a7-c1e8-4764-980c-60a361443dd1",
+      "text_preview": "two items, total 1,700"
+    },
+    {
+      "ts": "2026-10-02T11:50:09.523817+00:00",
+      "purpose": "numbers:katie__rs_850",
+      "chars": 7,
+      "voice_id": "f786b574-daa5-4673-aa0c-cbe3e8534c02",
+      "text_preview": "Rs. 850"
+    },
+    {
+      "ts": "2026-10-02T11:50:09.959464+00:00",
+      "purpose": "numbers:katie__pkr_1500",
+      "chars": 9,
+      "voice_id": "f786b574-daa5-4673-aa0c-cbe3e8534c02",
+      "text_preview": "PKR 1,500"
+    },
+    {
+      "ts": "2026-10-02T11:50:10.467957+00:00",
+      "purpose": "numbers:katie__plain_150",
+      "chars": 3,
+      "voice_id": "f786b574-daa5-4673-aa0c-cbe3e8534c02",
+      "text_preview": "150"
+    },
+    {
+      "ts": "2026-10-02T11:50:10.808840+00:00",
+      "purpose": "numbers:katie__range_800_1000",
+      "chars": 12,
+      "voice_id": "f786b574-daa5-4673-aa0c-cbe3e8534c02",
+      "text_preview": "800 to 1,000"
+    },
+    {
+      "ts": "2026-10-02T11:50:11.266890+00:00",
+      "purpose": "numbers:katie__two_items_1700",
+      "chars": 22,
+      "voice_id": "f786b574-daa5-4673-aa0c-cbe3e8534c02",
+      "text_preview": "two items, total 1,700"
+    },
+    {
+      "ts": "2026-10-02T11:50:11.826973+00:00",
+      "purpose": "speedvol:jacqueline__speed_slow",
+      "chars": 23,
+      "voice_id": "9626c31c-bec5-4cca-baa8-f8ba9e84c8bc",
+      "text_preview": "Speed and volume check."
+    },
+    {
+      "ts": "2026-10-02T11:50:12.209532+00:00",
+      "purpose": "speedvol:jacqueline__speed_fast",
+      "chars": 23,
+      "voice_id": "9626c31c-bec5-4cca-baa8-f8ba9e84c8bc",
+      "text_preview": "Speed and volume check."
+    },
+    {
+      "ts": "2026-10-02T11:50:12.559862+00:00",
+      "purpose": "speedvol:jacqueline__volume_high",
+      "chars": 23,
+      "voice_id": "9626c31c-bec5-4cca-baa8-f8ba9e84c8bc",
+      "text_preview": "Speed and volume check."
+    },
+    {
+      "ts": "2026-10-02T11:50:12.909365+00:00",
+      "purpose": "speedvol:blake__speed_slow",
+      "chars": 23,
+      "voice_id": "a167e0f3-df7e-4d52-a9c3-f949145efdab",
+      "text_preview": "Speed and volume check."
+    },
+    {
+      "ts": "2026-10-02T11:50:13.249740+00:00",
+      "purpose": "speedvol:blake__speed_fast",
+      "chars": 23,
+      "voice_id": "a167e0f3-df7e-4d52-a9c3-f949145efdab",
+      "text_preview": "Speed and volume check."
+    },
+    {
+      "ts": "2026-10-02T11:50:13.561853+00:00",
+      "purpose": "speedvol:blake__volume_high",
+      "chars": 23,
+      "voice_id": "a167e0f3-df7e-4d52-a9c3-f949145efdab",
+      "text_preview": "Speed and volume check."
+    },
+    {
+      "ts": "2026-10-02T11:50:13.942294+00:00",
+      "purpose": "speedvol:robyn__speed_slow",
+      "chars": 23,
+      "voice_id": "f31cc6a7-c1e8-4764-980c-60a361443dd1",
+      "text_preview": "Speed and volume check."
+    },
+    {
+      "ts": "2026-10-02T11:50:14.336074+00:00",
+      "purpose": "speedvol:robyn__speed_fast",
+      "chars": 23,
+      "voice_id": "f31cc6a7-c1e8-4764-980c-60a361443dd1",
+      "text_preview": "Speed and volume check."
+    },
+    {
+      "ts": "2026-10-02T11:50:14.673592+00:00",
+      "purpose": "speedvol:robyn__volume_high",
+      "chars": 23,
+      "voice_id": "f31cc6a7-c1e8-4764-980c-60a361443dd1",
+      "text_preview": "Speed and volume check."
+    },
+    {
+      "ts": "2026-10-02T11:50:15.024497+00:00",
+      "purpose": "speedvol:katie__speed_slow",
+      "chars": 23,
+      "voice_id": "f786b574-daa5-4673-aa0c-cbe3e8534c02",
+      "text_preview": "Speed and volume check."
+    },
+    {
+      "ts": "2026-10-02T11:50:15.370289+00:00",
+      "purpose": "speedvol:katie__speed_fast",
+      "chars": 23,
+      "voice_id": "f786b574-daa5-4673-aa0c-cbe3e8534c02",
+      "text_preview": "Speed and volume check."
+    },
+    {
+      "ts": "2026-10-02T11:50:15.787635+00:00",
+      "purpose": "speedvol:katie__volume_high",
+      "chars": 23,
+      "voice_id": "f786b574-daa5-4673-aa0c-cbe3e8534c02",
+      "text_preview": "Speed and volume check."
+    },
+    {
+      "ts": "2026-10-02T11:50:16.117148+00:00",
+      "purpose": "emotion:jacqueline__calm",
+      "chars": 15,
+      "voice_id": "9626c31c-bec5-4cca-baa8-f8ba9e84c8bc",
+      "text_preview": "That went well."
+    },
+    {
+      "ts": "2026-10-02T11:50:16.451216+00:00",
+      "purpose": "emotion:blake__calm",
+      "chars": 15,
+      "voice_id": "a167e0f3-df7e-4d52-a9c3-f949145efdab",
+      "text_preview": "That went well."
+    },
+    {
+      "ts": "2026-10-02T11:50:16.801066+00:00",
+      "purpose": "emotion:robyn__calm",
+      "chars": 15,
+      "voice_id": "f31cc6a7-c1e8-4764-980c-60a361443dd1",
+      "text_preview": "That went well."
+    },
+    {
+      "ts": "2026-10-02T11:50:17.107812+00:00",
+      "purpose": "emotion:katie__calm",
+      "chars": 15,
+      "voice_id": "f786b574-daa5-4673-aa0c-cbe3e8534c02",
+      "text_preview": "That went well."
+    },
+    {
+      "ts": "2026-10-02T11:50:17.468132+00:00",
+      "purpose": "emotion:laughter_tag",
+      "chars": 26,
+      "voice_id": "9626c31c-bec5-4cca-baa8-f8ba9e84c8bc",
+      "text_preview": "[laughter] That was funny."
+    },
+    {
+      "ts": "2026-10-02T11:50:17.858779+00:00",
+      "purpose": "timing:jacqueline:0",
+      "chars": 7,
+      "voice_id": "9626c31c-bec5-4cca-baa8-f8ba9e84c8bc",
+      "text_preview": "Timing."
+    },
+    {
+      "ts": "2026-10-02T11:50:18.114670+00:00",
+      "purpose": "timing:jacqueline:1",
+      "chars": 7,
+      "voice_id": "9626c31c-bec5-4cca-baa8-f8ba9e84c8bc",
+      "text_preview": "Timing."
+    },
+    {
+      "ts": "2026-10-02T11:50:18.455176+00:00",
+      "purpose": "timing:jacqueline:2",
+      "chars": 7,
+      "voice_id": "9626c31c-bec5-4cca-baa8-f8ba9e84c8bc",
+      "text_preview": "Timing."
+    },
+    {
+      "ts": "2026-10-02T11:50:18.794691+00:00",
+      "purpose": "timing:jacqueline:3",
+      "chars": 7,
+      "voice_id": "9626c31c-bec5-4cca-baa8-f8ba9e84c8bc",
+      "text_preview": "Timing."
+    },
+    {
+      "ts": "2026-10-02T11:50:19.113862+00:00",
+      "purpose": "timing:jacqueline:4",
+      "chars": 7,
+      "voice_id": "9626c31c-bec5-4cca-baa8-f8ba9e84c8bc",
+      "text_preview": "Timing."
+    },
+    {
+      "ts": "2026-10-02T11:50:19.503164+00:00",
+      "purpose": "timing:jacqueline:5",
+      "chars": 7,
+      "voice_id": "9626c31c-bec5-4cca-baa8-f8ba9e84c8bc",
+      "text_preview": "Timing."
+    },
+    {
+      "ts": "2026-10-02T11:50:19.777860+00:00",
+      "purpose": "timing:jacqueline:6",
+      "chars": 7,
+      "voice_id": "9626c31c-bec5-4cca-baa8-f8ba9e84c8bc",
+      "text_preview": "Timing."
+    },
+    {
+      "ts": "2026-10-02T11:50:20.064478+00:00",
+      "purpose": "timing:jacqueline:7",
+      "chars": 7,
+      "voice_id": "9626c31c-bec5-4cca-baa8-f8ba9e84c8bc",
+      "text_preview": "Timing."
+    },
+    {
+      "ts": "2026-10-02T11:50:20.337309+00:00",
+      "purpose": "timing:jacqueline:8",
+      "chars": 7,
+      "voice_id": "9626c31c-bec5-4cca-baa8-f8ba9e84c8bc",
+      "text_preview": "Timing."
+    },
+    {
+      "ts": "2026-10-02T11:50:20.598927+00:00",
+      "purpose": "timing:jacqueline:9",
+      "chars": 7,
+      "voice_id": "9626c31c-bec5-4cca-baa8-f8ba9e84c8bc",
+      "text_preview": "Timing."
+    },
+    {
+      "ts": "2026-10-02T11:50:20.856913+00:00",
+      "purpose": "timing:blake:0",
+      "chars": 7,
+      "voice_id": "a167e0f3-df7e-4d52-a9c3-f949145efdab",
+      "text_preview": "Timing."
+    },
+    {
+      "ts": "2026-10-02T11:50:21.102100+00:00",
+      "purpose": "timing:blake:1",
+      "chars": 7,
+      "voice_id": "a167e0f3-df7e-4d52-a9c3-f949145efdab",
+      "text_preview": "Timing."
+    },
+    {
+      "ts": "2026-10-02T11:50:21.394817+00:00",
+      "purpose": "timing:blake:2",
+      "chars": 7,
+      "voice_id": "a167e0f3-df7e-4d52-a9c3-f949145efdab",
+      "text_preview": "Timing."
+    },
+    {
+      "ts": "2026-10-02T11:50:21.643768+00:00",
+      "purpose": "timing:blake:3",
+      "chars": 7,
+      "voice_id": "a167e0f3-df7e-4d52-a9c3-f949145efdab",
+      "text_preview": "Timing."
+    },
+    {
+      "ts": "2026-10-02T11:50:21.910185+00:00",
+      "purpose": "timing:blake:4",
+      "chars": 7,
+      "voice_id": "a167e0f3-df7e-4d52-a9c3-f949145efdab",
+      "text_preview": "Timing."
+    },
+    {
+      "ts": "2026-10-02T11:50:22.235544+00:00",
+      "purpose": "timing:blake:5",
+      "chars": 7,
+      "voice_id": "a167e0f3-df7e-4d52-a9c3-f949145efdab",
+      "text_preview": "Timing."
+    },
+    {
+      "ts": "2026-10-02T11:50:22.481619+00:00",
+      "purpose": "timing:blake:6",
+      "chars": 7,
+      "voice_id": "a167e0f3-df7e-4d52-a9c3-f949145efdab",
+      "text_preview": "Timing."
+    },
+    {
+      "ts": "2026-10-02T11:50:22.811725+00:00",
+      "purpose": "timing:blake:7",
+      "chars": 7,
+      "voice_id": "a167e0f3-df7e-4d52-a9c3-f949145efdab",
+      "text_preview": "Timing."
+    },
+    {
+      "ts": "2026-10-02T11:50:23.034902+00:00",
+      "purpose": "timing:blake:8",
+      "chars": 7,
+      "voice_id": "a167e0f3-df7e-4d52-a9c3-f949145efdab",
+      "text_preview": "Timing."
+    },
+    {
+      "ts": "2026-10-02T11:50:23.361800+00:00",
+      "purpose": "timing:blake:9",
+      "chars": 7,
+      "voice_id": "a167e0f3-df7e-4d52-a9c3-f949145efdab",
+      "text_preview": "Timing."
+    },
+    {
+      "ts": "2026-10-02T11:50:23.598735+00:00",
+      "purpose": "timing:robyn:0",
+      "chars": 7,
+      "voice_id": "f31cc6a7-c1e8-4764-980c-60a361443dd1",
+      "text_preview": "Timing."
+    },
+    {
+      "ts": "2026-10-02T11:50:23.843861+00:00",
+      "purpose": "timing:robyn:1",
+      "chars": 7,
+      "voice_id": "f31cc6a7-c1e8-4764-980c-60a361443dd1",
+      "text_preview": "Timing."
+    },
+    {
+      "ts": "2026-10-02T11:50:24.079899+00:00",
+      "purpose": "timing:robyn:2",
+      "chars": 7,
+      "voice_id": "f31cc6a7-c1e8-4764-980c-60a361443dd1",
+      "text_preview": "Timing."
+    },
+    {
+      "ts": "2026-10-02T11:50:24.425994+00:00",
+      "purpose": "timing:robyn:3",
+      "chars": 7,
+      "voice_id": "f31cc6a7-c1e8-4764-980c-60a361443dd1",
+      "text_preview": "Timing."
+    },
+    {
+      "ts": "2026-10-02T11:50:24.681939+00:00",
+      "purpose": "timing:robyn:4",
+      "chars": 7,
+      "voice_id": "f31cc6a7-c1e8-4764-980c-60a361443dd1",
+      "text_preview": "Timing."
+    },
+    {
+      "ts": "2026-10-02T11:50:24.957545+00:00",
+      "purpose": "timing:robyn:5",
+      "chars": 7,
+      "voice_id": "f31cc6a7-c1e8-4764-980c-60a361443dd1",
+      "text_preview": "Timing."
+    },
+    {
+      "ts": "2026-10-02T11:50:25.195069+00:00",
+      "purpose": "timing:robyn:6",
+      "chars": 7,
+      "voice_id": "f31cc6a7-c1e8-4764-980c-60a361443dd1",
+      "text_preview": "Timing."
+    },
+    {
+      "ts": "2026-10-02T11:50:25.445981+00:00",
+      "purpose": "timing:robyn:7",
+      "chars": 7,
+      "voice_id": "f31cc6a7-c1e8-4764-980c-60a361443dd1",
+      "text_preview": "Timing."
+    },
+    {
+      "ts": "2026-10-02T11:50:25.699982+00:00",
+      "purpose": "timing:robyn:8",
+      "chars": 7,
+      "voice_id": "f31cc6a7-c1e8-4764-980c-60a361443dd1",
+      "text_preview": "Timing."
+    },
+    {
+      "ts": "2026-10-02T11:50:26.036773+00:00",
+      "purpose": "timing:robyn:9",
+      "chars": 7,
+      "voice_id": "f31cc6a7-c1e8-4764-980c-60a361443dd1",
+      "text_preview": "Timing."
+    },
+    {
+      "ts": "2026-10-02T11:50:26.391512+00:00",
+      "purpose": "timing:katie:0",
+      "chars": 7,
+      "voice_id": "f786b574-daa5-4673-aa0c-cbe3e8534c02",
+      "text_preview": "Timing."
+    },
+    {
+      "ts": "2026-10-02T11:50:26.636013+00:00",
+      "purpose": "timing:katie:1",
+      "chars": 7,
+      "voice_id": "f786b574-daa5-4673-aa0c-cbe3e8534c02",
+      "text_preview": "Timing."
+    },
+    {
+      "ts": "2026-10-02T11:50:26.962810+00:00",
+      "purpose": "timing:katie:2",
+      "chars": 7,
+      "voice_id": "f786b574-daa5-4673-aa0c-cbe3e8534c02",
+      "text_preview": "Timing."
+    },
+    {
+      "ts": "2026-10-02T11:50:27.235970+00:00",
+      "purpose": "timing:katie:3",
+      "chars": 7,
+      "voice_id": "f786b574-daa5-4673-aa0c-cbe3e8534c02",
+      "text_preview": "Timing."
+    },
+    {
+      "ts": "2026-10-02T11:50:27.490804+00:00",
+      "purpose": "timing:katie:4",
+      "chars": 7,
+      "voice_id": "f786b574-daa5-4673-aa0c-cbe3e8534c02",
+      "text_preview": "Timing."
+    },
+    {
+      "ts": "2026-10-02T11:50:27.723495+00:00",
+      "purpose": "timing:katie:5",
+      "chars": 7,
+      "voice_id": "f786b574-daa5-4673-aa0c-cbe3e8534c02",
+      "text_preview": "Timing."
+    },
+    {
+      "ts": "2026-10-02T11:50:27.985696+00:00",
+      "purpose": "timing:katie:6",
+      "chars": 7,
+      "voice_id": "f786b574-daa5-4673-aa0c-cbe3e8534c02",
+      "text_preview": "Timing."
+    },
+    {
+      "ts": "2026-10-02T11:50:28.239839+00:00",
+      "purpose": "timing:katie:7",
+      "chars": 7,
+      "voice_id": "f786b574-daa5-4673-aa0c-cbe3e8534c02",
+      "text_preview": "Timing."
+    },
+    {
+      "ts": "2026-10-02T11:50:28.498158+00:00",
+      "purpose": "timing:katie:8",
+      "chars": 7,
+      "voice_id": "f786b574-daa5-4673-aa0c-cbe3e8534c02",
+      "text_preview": "Timing."
+    },
+    {
+      "ts": "2026-10-02T11:50:28.740558+00:00",
+      "purpose": "timing:katie:9",
+      "chars": 7,
+      "voice_id": "f786b574-daa5-4673-aa0c-cbe3e8534c02",
+      "text_preview": "Timing."
+    }
+  ]
+}

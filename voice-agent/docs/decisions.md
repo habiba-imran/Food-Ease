@@ -6,6 +6,32 @@ Newest entries at the top.
 
 ---
 
+## ADR-0006 — Phase 1 closed early; provisional TTS/LLM choices
+
+- **Context:** Human asked to complete Phase 1 quickly and skip remaining spike work (not mandatory). Full audition scoring, LLM tool/sample campaign, and extra TTS timing were cut. Gemini free tier returned **429 RESOURCE_EXHAUSTED** during latency runs.
+- **Decision (provisional, refine in Phase 5/9 from live data):**
+  1. **TTS:** Cartesia **`sonic-3.6`**. Primary voice **Jacqueline** (`9626c31c-bec5-4cca-baa8-f8ba9e84c8bc`). Backup **Katie** (`f786b574-daa5-4673-aa0c-cbe3e8534c02`).
+  2. **LLM:** **`gemini-3.1-flash-lite`** with **`thinking_level=minimal`**. Fallback **`gemini-2.5-flash-lite`**.
+  3. **Speed/volume:** Treated as **available** on sonic-3.6 for now (API accepted `generation_config` in the TTS spike). If live demos disagree, prefer honest “not available” messaging (plan option b).
+  4. **Waived (not failed):** V1.3 ear review, V1.4 audition scorecard, V1.5 tool-accuracy ≥90%, remaining LLM/TTS spike volume. Partial evidence kept under `evidence/phase-1/` (TTS CSV + partial LLM CSV). No fabricated metrics.
+- **Evidence:** Health checks PASS; `tts.csv` / `tts_meta.json`; `llm.csv` (30+30 latency, 3 tools); human skip instruction 2026-10-02; Cartesia credits used 2524/8000.
+- **Date:** 2026-10-02
+
+---
+
+## ADR-0005 — STT fixtures skipped; provisional Flux + STT turn detection
+
+- **Context:** Phase 1 task 1.1 requires ~72 recorded STT fixtures + `fixtures/ground_truth.json`. The human has no time to record and accepts the deviation.
+- **Decision:**
+  1. **Do not run** the STT spike. A script may exist under `spikes/` but must not be executed without fixtures.
+  2. **Provisional STT choice:** Deepgram **Flux English** with **STT-based turn detection** (config A).
+  3. **Config B** (Nova-3 + Silero VAD + LiveKit turn detector) remains runnable per plan task 5.1; the **final** STT/turn choice is made from **live-session data in Phase 5/9**, not from fabricated WER numbers.
+  4. Verification **V1.1 / V1.2 are waived for the STT portion** (not failed). No invented STT accuracy, WER, or number/price accuracy metrics.
+- **Evidence:** Human instruction, Phase 1 session, 2026-10-02.
+- **Date:** 2026-10-02
+
+---
+
 ## ADR-0004 — Repo layout: Habiba voice agent in `voice-agent/`
 
 - **Context:** Habiba owns the voice agent; Zainab owns frontend/backend. They must not share one mixed tree.

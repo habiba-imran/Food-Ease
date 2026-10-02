@@ -1,0 +1,23 @@
+{
+  "primary_model": "gemini-3.1-flash-lite",
+  "fallback_model": "gemini-2.5-flash-lite",
+  "tool_accuracy_primary": {
+    "correct": 0,
+    "total": 0
+  },
+  "tool_accuracy_fallback": {
+    "correct": 0,
+    "total": 0
+  },
+  "samples_dir": "evidence\\phase-1\\llm_samples",
+  "observed_limits": {
+    "stopped_on_429": true,
+    "detail": {
+      "label": "gemini-3.1-flash-lite/minimal",
+      "attempts": 5,
+      "error_type": "ClientError",
+      "error": "429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. "
+    }
+  },
+  "note": "ttft_ms is non-streaming total latency (API does not expose true TTFT here)."
+}

@@ -6,6 +6,8 @@
 # Personal audio (R13): never commit voice fixtures or recordings
 fixtures/
 recordings/
+evidence/phase-1/audio/
+spikes/out/
 *.wav
 *.mp3
 *.m4a
