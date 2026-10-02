@@ -1,9 +1,9 @@
 # STATUS
 
 **Last updated:** 2026-10-02 by agent  
-**Current phase:** 4 (gate passed; V4.2 deferred ADR-0007) → ready for Phase 5  
-**Current branch:** `phase-4-conversation-engine`  
-**Next action:** Phase 5 prompt from `docs/PROMPTS.md` when ready.
+**Current phase:** 5 (agent tasks done; waiting on human 5.10)  
+**Current branch:** `phase-5-voice-pipeline`  
+**Next action:** Habiba runs 5.10 (~10 min talk), then gate close / tag `phase-5-done`.
 
 ## Phase tracker
 
@@ -14,8 +14,9 @@
 | 2 | Contract v1.0 | gate passed | `phase-2-done` |
 | 3 | Adapter + mock | gate passed | `phase-3-done` |
 | 4 | Conversation engine (text) | gate passed | `phase-4-done` |
-| 5–11 | | not started | |
+| 5 | Real-time voice pipeline | agent done; **[HUMAN] 5.10 pending** | — |
+| 6–11 | | not started | |
 
 ## Last session summary
 
-Phase 4 text engine done: broker, tiers, confirmation, controls, CLI, safety tests. V4.2 real-LLM deferred (ADR-0007). 93 tests green.
+Phase 5 voice pipeline: harness v0, session A/B, worker+prewarm, greeting/idle, barge-in reconcile, ADR-0008 speculative safety (`PREEMPTIVE_GENERATION=false` + TurnCommitGate). 114 tests green. Stopped at 5.10 for your listen session.

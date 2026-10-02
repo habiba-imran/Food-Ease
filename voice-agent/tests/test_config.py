@@ -26,10 +26,15 @@ def _complete_environ(**overrides: str) -> dict[str, str]:
         "LLM_THINKING_LEVEL": "minimal",
         "TTS_MODEL": "sonic-3.6",
         "TTS_VOICE_ID": "<voice-id>",
-        "IDLE_PROMPT_1_SECONDS": "8",
-        "IDLE_PROMPT_2_SECONDS": "20",
+        "IDLE_PROMPT_1_SECONDS": "12",
+        "IDLE_PROMPT_2_SECONDS": "30",
         "RECORD_AUDIO": "false",
         "DEV_MODE": "false",
+        "VOICE_PIPELINE_CONFIG": "A",
+        "SNAPSHOT_TIMEOUT_SECONDS": "2",
+        "PREEMPTIVE_GENERATION": "false",
+        "NOISE_CANCELLATION": "false",
+        "GREETING_CACHE": "true",
     }
     base.update(overrides)
     return base
@@ -41,7 +46,9 @@ def test_load_config_success() -> None:
     assert settings.stt_model == "flux-general-en"
     assert settings.record_audio is False
     assert settings.dev_mode is False
-    assert settings.idle_prompt_1_seconds == 8.0
+    assert settings.idle_prompt_1_seconds == 12.0
+    assert settings.voice_pipeline_config == "A"
+    assert settings.preemptive_generation is False
 
 
 @pytest.mark.parametrize("missing", list(REQUIRED_ENV_VARS))

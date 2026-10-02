@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>FoodEase talk client v0</title>
+  <style>
+    :root { font-family: "Segoe UI", system-ui, sans-serif; color: #1a1a1a; background: #f6f3ee; }
+    body { max-width: 40rem; margin: 2rem auto; padding: 0 1rem; }
+    h1 { font-size: 1.25rem; font-weight: 600; }
+    .row { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 0.75rem 0; }
+    button, input { font: inherit; padding: 0.45rem 0.75rem; }
+    #state { font-weight: 600; }
+    #captions { min-height: 6rem; border: 1px solid #ccc; padding: 0.75rem; background: #fff; white-space: pre-wrap; }
+    .hint { color: #555; font-size: 0.9rem; }
+  </style>
+</head>
+<body>
+  <h1>FoodEase talk client (v0)</h1>
+  <p class="hint">Start the worker, then press Start voice. Mic publishes only after you click.</p>
+  <p>Agent state: <span id="state">off/awaiting_consent</span></p>
+  <div class="row">
+    <button id="start" type="button">Start voice</button>
+    <button id="mute" type="button" disabled>Mute mic</button>
+    <button id="leave" type="button" disabled>Leave</button>
+  </div>
+  <div class="row">
+    <input id="typed" type="text" placeholder="Typed input…" style="flex:1" disabled />
+    <button id="send" type="button" disabled>Send</button>
+  </div>
+  <h2>Captions</h2>
+  <div id="captions" aria-live="polite"></div>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>

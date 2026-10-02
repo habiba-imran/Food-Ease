@@ -6,6 +6,19 @@ Newest entries at the top.
 
 ---
 
+## ADR-0008 — Speculative / preemptive generation safety (Phase 5.7)
+
+- **Context:** Flux eager EOT and LiveKit `preemptive_generation` can start the LLM before the user turn is committed. Task 5.7 requires determining whether a tool can *execute* in a generation later discarded; V5.7 requires **0 cart mutations** from discarded generations.
+- **Investigation (livekit-agents 1.8.4):** In `AgentActivity` pipeline reply, LLM may run early, but `perform_tool_executions` is started only **after** `speech_handle._wait_for_authorization()` / play authorization (`agent_activity.py` ~3642–3728: “start to execute tools (only after play())”). Maintainers also state tools run after generation is authorized (livekit/agents#3414). Function *call objects* can be created before authorization; execution is gated by the framework — but races and future SDK changes make this **not a hard product guarantee** for cart mutations.
+- **Decision:**
+  1. Default **`PREEMPTIVE_GENERATION=false`** (disable speculative LLM) for FoodEase until Phase 9 explicitly re-enables it after live V5.7 proof.
+  2. **Belt-and-suspenders:** `TurnCommitGate` refuses mutating / navigation ops until `on_user_turn_completed` marks the turn committed; discarded generations clear the gate.
+  3. Pure read tools (`get_cart`, `get_item_details`, `get_current_context`, `checkout.get_summary`) remain allowed without commit.
+- **Evidence:** Installed SDK source 1.8.4; unit tests `test_v57_zero_mutations_on_discarded_generation`, `test_agent_tool_blocked_until_committed`.
+- **Date:** 2026-10-02
+
+---
+
 ## ADR-0007 — Phase 4 V4.2 real-LLM campaign deferred
 
 - **Context:** V4.2 asks for ≥40 real-LLM utterances. Gemini free tier already returned 429 in Phase 1; Phase 4 logic is covered by a scripted fake LLM (V4.1) and RulePlanner acceptance traces.

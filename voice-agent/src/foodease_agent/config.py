@@ -28,6 +28,11 @@ NON_SECRET_ENV_VARS: tuple[str, ...] = (
     "IDLE_PROMPT_2_SECONDS",
     "RECORD_AUDIO",
     "DEV_MODE",
+    "VOICE_PIPELINE_CONFIG",
+    "SNAPSHOT_TIMEOUT_SECONDS",
+    "PREEMPTIVE_GENERATION",
+    "NOISE_CANCELLATION",
+    "GREETING_CACHE",
 )
 
 REQUIRED_ENV_VARS: tuple[str, ...] = SECRET_ENV_VARS + NON_SECRET_ENV_VARS
@@ -62,6 +67,13 @@ def _parse_float(name: str, raw: str) -> float:
         raise ConfigError(f"Invalid number for {name}={raw!r}") from exc
 
 
+def _parse_pipeline(name: str, raw: str) -> str:
+    normalized = raw.strip().upper()
+    if normalized in {"A", "B"}:
+        return normalized
+    raise ConfigError(f"Invalid {name}={raw!r}; expected A or B")
+
+
 @dataclass(frozen=True, slots=True)
 class Settings:
     livekit_url: str
@@ -79,6 +91,11 @@ class Settings:
     idle_prompt_2_seconds: float
     record_audio: bool
     dev_mode: bool
+    voice_pipeline_config: str  # "A" | "B"
+    snapshot_timeout_seconds: float
+    preemptive_generation: bool
+    noise_cancellation: bool
+    greeting_cache: bool
 
 
 def load_config(
@@ -126,4 +143,17 @@ def load_config(
         ),
         record_audio=_parse_bool("RECORD_AUDIO", _require(environ, "RECORD_AUDIO")),
         dev_mode=_parse_bool("DEV_MODE", _require(environ, "DEV_MODE")),
+        voice_pipeline_config=_parse_pipeline(
+            "VOICE_PIPELINE_CONFIG", _require(environ, "VOICE_PIPELINE_CONFIG")
+        ),
+        snapshot_timeout_seconds=_parse_float(
+            "SNAPSHOT_TIMEOUT_SECONDS", _require(environ, "SNAPSHOT_TIMEOUT_SECONDS")
+        ),
+        preemptive_generation=_parse_bool(
+            "PREEMPTIVE_GENERATION", _require(environ, "PREEMPTIVE_GENERATION")
+        ),
+        noise_cancellation=_parse_bool(
+            "NOISE_CANCELLATION", _require(environ, "NOISE_CANCELLATION")
+        ),
+        greeting_cache=_parse_bool("GREETING_CACHE", _require(environ, "GREETING_CACHE")),
     )
