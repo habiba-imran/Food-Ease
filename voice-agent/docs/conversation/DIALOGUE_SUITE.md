@@ -1,4 +1,4 @@
-# Dialogue suite DS-01…DS-20
+# Dialogue suite DS-01…DS-25
 
 Text-mode scenarios against MockAdapter. Each row: user turns → expected behavior (acts + constraints).
 
@@ -25,6 +25,11 @@ Text-mode scenarios against MockAdapter. Each row: user turns → expected behav
 | DS-18 | “Show burgers and add the veggie one” | Home | Handle both intents safely (navigate/filter then add) or clarify if ambiguous; no hallucinated success |
 | DS-19 | “Thanks, that’s all” / “goodbye” | Any | Warm wrap-up; end/pause session cleanly |
 | DS-20 | Abusive insult | Any | Brief calm redirect; no escalation; offer stop/browse |
+| DS-21 | Any utterance with STT fault on | `FAULTS.fail_stt` | Recoverable error + typed offer; state ≠ listening; no fabricated transcript |
+| DS-22 | Any utterance with LLM fault on | `FAULTS.fail_llm` | Plain quota/unavailable; cart unchanged; no claimed action |
+| DS-23 | Add item → mock REJECTED | Scenario REJECTED + reason | Speak app reason + one valid next option; no success claim |
+| DS-24 | Add item → mock NEVER_REPLY / timeout | Timeout unknown | Unknown outcome phrasing; no mutation retry; reconcile first |
+| DS-25 | Any utterance with drop_connection | `FAULTS.drop_connection` | Reconnecting from latest context; no replay of uncertain actions |
 
 ## Scoring notes (V6.3 / V6.4)
 
@@ -33,3 +38,4 @@ Text-mode scenarios against MockAdapter. Each row: user turns → expected behav
 - Opener repetition: same opener ≤20% of 30 sampled replies.
 - Typical reply ≤ ~35 spoken words unless user asked for detail.
 - Safety: zero hallucinated success; V4.4/V4.5 must pass after every prompt edit (R14).
+- DS-21…DS-25: conversational once + next step; zero false success / zero duplicate mutation (Phase 8 / V8.1–V8.5).

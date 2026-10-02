@@ -8,11 +8,15 @@ from typing import Any, Protocol
 
 from foodease_agent.adapters.base import AppAdapter
 from foodease_agent.broker import ActionBroker
+from foodease_agent.confidence import ConfidenceGate
 from foodease_agent.confirmation import ConfirmationMachine, ConfirmState
 from foodease_agent.contract.enums import ActionResultStatus, Operation, ProductState
 from foodease_agent.contract.models import ActionResultPayload, ContextSnapshot
 from foodease_agent.controls import ControlIntent, match_control
+from foodease_agent.faults import FAULTS
 from foodease_agent.preferences import SessionPreferences
+from foodease_agent.reconnect import ReconnectManager
+from foodease_agent.recovery import Va17Situation, recover
 from foodease_agent.reference import PresentedItem, ReferenceResolver
 from foodease_agent.speech_text.sanitizer import count_sentences
 from foodease_agent.speech_text.shaping import shape_assistant_reply
@@ -52,18 +56,47 @@ class ConversationEngine:
     state: ProductState = ProductState.READY_LISTENING
     pending_tier2: ToolCall | None = None
     known_item_ids: set[str] = field(default_factory=set)
+    confidence_gate: ConfidenceGate = field(default_factory=ConfidenceGate)
+    reconnect: ReconnectManager = field(default_factory=ReconnectManager)
 
     def __post_init__(self) -> None:
         if self.broker is None:
             self.broker = ActionBroker(self.adapter)
 
-    async def handle_text(self, utterance: str) -> TurnResult:
+    async def handle_text(
+        self,
+        utterance: str,
+        *,
+        stt_confidence: float | None = None,
+    ) -> TurnResult:
         if self.prefs.ended:
             return TurnResult(
                 assistant_text="This session has ended.",
                 state=ProductState.ENDED,
                 ended=True,
             )
+
+        # Provider / mic faults (VA-17) — never fake listening when STT is dead
+        if FAULTS.mic_denied:
+            r = recover(Va17Situation.MIC_DENIED)
+            return self._reply(r.assistant_text, r.state)
+        if FAULTS.fail_stt:
+            r = recover(Va17Situation.STT_DOWN)
+            self.state = ProductState.ERROR
+            return self._reply(r.assistant_text, ProductState.ERROR)
+        if FAULTS.fail_llm:
+            r = recover(Va17Situation.LLM_DOWN)
+            self.state = ProductState.ERROR
+            return self._reply(r.assistant_text, ProductState.ERROR)
+        if FAULTS.drop_connection:
+            r = recover(Va17Situation.CONNECTION_LOSS)
+            self.state = ProductState.RECONNECTING
+            return self._reply(r.assistant_text, ProductState.RECONNECTING)
+
+        conf = 0.2 if FAULTS.low_confidence else stt_confidence
+        if self.confidence_gate.needs_clarification(utterance, conf):
+            q = self.confidence_gate.clarify_line()
+            return self._reply(q, ProductState.READY_LISTENING, clarification=q)
 
         # Control fast-path — stop never reaches planner/LLM
         control = match_control(utterance)
@@ -136,6 +169,16 @@ class ConversationEngine:
 
     async def _handle_control(self, intent: ControlIntent) -> TurnResult:
         if intent == ControlIntent.STOP:
+            # VA-17: stop during checkout — do not infer consent
+            if self.confirmation.state.value in {"awaiting", "confirmed"}:
+                self.confirmation.invalidate()
+                r = recover(Va17Situation.STOP_DURING_CHECKOUT)
+                self.state = ProductState.READY_LISTENING
+                return TurnResult(
+                    assistant_text=r.assistant_text,
+                    state=self.state,
+                    control=intent,
+                )
             self.state = ProductState.READY_LISTENING
             return TurnResult(assistant_text="", state=self.state, control=intent)
         if intent == ControlIntent.REPEAT:
@@ -279,6 +322,8 @@ class ConversationEngine:
             results.append(outcome.result)
             snapshot = outcome.snapshot
             self.confirmation.on_cart_or_revision_change(snapshot.revision)
+            self.reconnect.register_mutation(outcome.result.action_id, call.operation)
+            self.reconnect.resolve(outcome.result)
 
             if call.operation in {Operation.SEARCH_MENU, Operation.FILTER_MENU}:
                 items = (outcome.result.verified_state or {}).get("items") or []
@@ -317,7 +362,13 @@ class ConversationEngine:
                 else:
                     lines.append(self._friendly_success(call.operation, outcome.result))
             elif outcome.result.status == ActionResultStatus.TIMEOUT_UNKNOWN:
-                lines.append("I am not sure that finished. Let me check the cart before trying again.")
+                lines.append(recover(Va17Situation.ACTION_TIMEOUT).assistant_text)
+            elif outcome.result.status in {
+                ActionResultStatus.REJECTED,
+                ActionResultStatus.FAILED,
+            }:
+                reason = outcome.result.error_message or "That request was rejected."
+                lines.append(recover(Va17Situation.ACTION_REJECTED, app_reason=reason).assistant_text)
             else:
                 lines.append(outcome.result.error_message or "That did not work.")
 
@@ -384,6 +435,11 @@ class ConversationEngine:
         control: ControlIntent | None = None,
         ended: bool = False,
     ) -> TurnResult:
+        # TTS down: keep text/status on screen; never pretend speech worked (VA-17)
+        if FAULTS.fail_tts and text.strip():
+            note = recover(Va17Situation.TTS_DOWN).assistant_text
+            if note and note not in text:
+                text = f"{note} {text}".strip()
         forms = shape_assistant_reply(text, known_item_ids=self.known_item_ids)
         clean = forms.spoken_text
         if self.prefs.detail_level == "brief" and count_sentences(clean) > 2:

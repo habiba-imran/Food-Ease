@@ -1,9 +1,9 @@
 # STATUS
 
 **Last updated:** 2026-10-02 by agent  
-**Current phase:** 7 (gate passed)  
-**Current branch:** `phase-7-interfaces-transport`  
-**Next action:** Phase 8 when Habiba pastes prompt / says go.
+**Current phase:** 8 (gate passed)  
+**Current branch:** `phase-8-failure-hardening`  
+**Next action:** Phase 9 when Habiba pastes prompt / says go.
 
 ## Phase tracker
 
@@ -16,9 +16,10 @@
 | 4 | Conversation engine (text) | gate passed | `phase-4-done` |
 | 5 | Real-time voice pipeline | partial (ADR-0009) | — |
 | 6 | Conversation design | gate closed (ADR-0010) | `phase-6-done` |
-| 7 | Interfaces / transport | gate passed | `phase-7-done` (pending tag) |
-| 8–11 | | not started | |
+| 7 | Interfaces / transport | gate passed | `phase-7-done` |
+| 8 | Failure / recovery | gate passed | `phase-8-done` (pending tag) |
+| 9–11 | | not started | |
 
 ## Last session summary
 
-Phase 7: EventBus, VA-07 state machine, LiveKitRpcAdapter ↔ MockApp, metrics, inspector harness, inject client, fault toggles. V7.1–V7.9 automated pass.
+Phase 8: VA-17 recovery matrix, reconnect discipline, confidence gate, provider fallback chain, DS-21…DS-25, compressed chaos harness. V8.1–V8.5 automated pass (207 tests).
