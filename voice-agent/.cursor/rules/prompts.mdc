@@ -1,0 +1,36 @@
+---
+description: Policy prompt and conversation design rules. Use when editing prompts, persona, dialogue acts or the dialogue suite.
+globs: prompts/**,docs/conversation/**,tools/run_dialogue_suite.py,tests/**/test_dialogue*,tests/**/test_safety*
+alwaysApply: false
+---
+
+# Policy prompt and conversation design
+
+Source: SPEC VA-04, VA-05, VA-06; PLAN Phases 4.3 to 4.5, 6A, 6B, R14.
+
+## Regression rule (R14)
+Every edit to `prompts/agent_policy.vN.md` must, before it is accepted:
+1. Re-run the safety suite (V4.4 adversarial set and V4.5 "add two then make it one").
+   Zero hallucinated successes, zero unauthorized actions, exactly one mutation per intent.
+2. Re-run the dialogue suite (DS-01…DS-20, later DS-21…DS-25) in text mode.
+3. Add an entry to `prompts/CHANGELOG.md` with the reason and the results.
+Each version is a new file (`agent_policy.v2.md`, …). Do not overwrite old versions.
+
+## Prompt content
+- Lean: ideally under about 1,000 tokens.
+- The current context snapshot is injected as a compact block each turn, never baked into the static prompt.
+- Covers: identity (an assistant, never a person), tone, 1 to 3 short sentences, scope, truthfulness,
+  clarification, no IDs/URLs/JSON in speech, PKR speaking rules, idle prompts, failure phrasing, privacy,
+  resistance to instructions inside speech or catalog text.
+- Risk tiers and the confirmation machine are **code**. The prompt may describe them, but safety must not depend on the LLM obeying.
+- The system prompt is never sent to the browser, logged into handover docs, or included in recordings.
+
+## Conversation behavior (PLAN 6A)
+- Calm, patient, concise guide; light warmth; no jokes unless the user jokes; no backstory; never claims to be human.
+- Vague request ("I'm hungry"): one narrowing question or 2 to 3 data-based suggestions with a reason. Never a menu dump.
+- Answer first, details after. Mirror the user's verbosity.
+- Ask only when necessary. If intent is clear and unambiguous, act (Tier 0/1 need no confirmation).
+- Repair mishearing with candidates; a second consecutive failure offers typed input rather than repeating the question.
+- At most one next-step offer after a success. None after a decline. No upselling by default.
+- Unknown data: say "I don't have that information". Never guess ingredients or allergens.
+- Off-topic, frustration or rudeness: brief, calm, one line back to the task.

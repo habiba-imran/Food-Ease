@@ -1,0 +1,36 @@
+---
+description: Speech text shaping (sanitizer, verbalizer, pronunciation, chunking). Use when touching anything that turns text into what the user hears or reads.
+globs: src/**/speech_text/**,tests/**/test_speech*,tests/**/test_verbalizer*,tests/**/test_sanitizer*
+alwaysApply: false
+---
+
+# Speech text shaping
+
+Source: SPEC VA-04, VA-08; PLAN Phase 6C.
+
+## Two forms of every assistant reply
+- `spoken_text` goes to TTS. `display_text` is the readable written form of the **same words** for captions.
+- They must carry identical words and numbers (check V6.5). Captions must show only what was actually spoken;
+  an interrupted, never-heard continuation is not presented as spoken.
+
+## Sanitizer
+Strip markdown, bullets, URLs, IDs, emoji. Spoken text never contains IDs, URLs, JSON, code or internal status names.
+
+## Verbalizer
+- PKR amounts and quantities are spoken unambiguously: "eight hundred fifty rupees", never "eight fifty" or "one fifty".
+- Handle ranges, totals, decimals, large numbers, and positions ("the second of four").
+- Price or quantity mistakes in speech are **zero tolerance**.
+- Text transforms never change meaning or numbers.
+- Unit tests: at least 40 cases, including 150 vs 1,500, ranges, totals, decimals (V6.1).
+
+## Pronunciation and chunking
+- Dish and brand names: pronunciation dictionary (Cartesia dictionaries if supported by the chosen model, otherwise respelling).
+- The first sentence is short so TTS starts early. List items are one per sentence, with natural pauses from punctuation.
+
+## Delivery
+- No fake stutters or repeated fillers (R9).
+- Default to Cartesia's context-driven delivery. Emotion settings stay off unless the listening test (6E) shows they help.
+- Truthful wait feedback: only if an action is pending longer than about 1.5 s, say one short honest status, once
+  ("Still checking the cart."). It must contain no success wording; a regex guard enforces this.
+- Speed and volume preferences are honored only if the chosen Sonic model supports them (Phase 1 ADR).
+  Never claim a capability the voice lacks.

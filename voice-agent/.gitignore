@@ -1,0 +1,30 @@
+# Secrets (R6): .env must be ignored before the first commit
+.env
+.env.*
+!.env.example
+
+# Personal audio (R13): never commit voice fixtures or recordings
+fixtures/
+recordings/
+*.wav
+*.mp3
+*.m4a
+*.ogg
+*.webm
+
+# Python / tooling
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.pyright/
+
+# Node (harness / mock app tooling, if used)
+node_modules/
+
+# graphify cache (graph.json and GRAPH_REPORT.md may be committed; your choice)
+graphify-out/cache/
+
+.DS_Store

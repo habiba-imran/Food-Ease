@@ -1,0 +1,51 @@
+---
+description: Contract, adapters, action broker and confirmation rules. Use when touching the integration contract, AppAdapter, LiveKitRpcAdapter, MockApp or action handling.
+globs: contract/**,src/**/adapters/**,src/**/broker.py,src/**/confirmation.py,src/**/events.py,mock_app/**,tests/adapter_conformance/**
+alwaysApply: false
+---
+
+# Contract, adapters and actions
+
+Source: SPEC §6 (VA-10…VA-14), PLAN Phases 2, 3, 4.1, 4.7, 7.4.
+
+## Contract v1.0
+- Pydantic models and JSON Schemas are one source of truth, with a CI drift check. Never edit one without the other.
+- Envelope on every event: `schema_version`, `session_id`, `event_id`, `turn_id`, `timestamp`, `context_revision`, `type`, `payload`.
+- Action requests also carry a unique `action_id` (idempotency key). Never reuse an `action_id` for a different request.
+- Where the spec is silent, choose a default and mark it `x-habiba-default` in the schema.
+- Everything not in the spec is **optional on the wire** (for example `confirmation_token`). Agent logic must work when optional fields are absent, and every optional field needs a golden example without it.
+- Versioning is semver: additive or optional = minor, breaking = major. The contract is tagged `contract-v1.0-frozen` after Phase 2.
+- Use the application's IDs (`item_id`), never label matching, in action arguments.
+
+## Allowed operations (R2)
+13 only: `navigate`, `search_menu`, `filter_menu`, `select_item`, `get_item_details`, `get_cart`,
+`cart.add_item`, `cart.set_quantity`, `cart.remove_item`, `checkout.get_summary`,
+`checkout.submit_demo_order`, `undo_last_reversible_action`, `get_current_context`.
+Reject anything else in code. Validate argument schemas; item IDs must exist in the current snapshot or cart,
+otherwise reject locally and clarify.
+
+## Result statuses
+`success`, `failed`, `rejected`, `stale_context`, `requires_confirmation`, `timeout_unknown`.
+Speech must reflect the real status. Only `success` with a matching `action_id` allows a success statement (R1).
+
+## Mutations
+- No automatic retry of mutating actions (R4). `timeout_unknown` means refresh context / `get_cart`, then ask the user.
+- Read-only actions may retry once.
+- Stale `context_revision`: ignore for decisions, log it, refresh before any consequential action.
+- Duplicate `action_id` must return the prior outcome with no second mutation.
+- Interrupting speech does not cancel or assume the outcome of an in-flight mutation (R5). Correlate by `action_id`.
+
+## Confirmation machine (code, not prompt)
+`none → awaiting(summary_hash, revision) → confirmed → submitted`.
+The summary must be fully spoken or shown before a "yes" counts. Silence never confirms. "Stop" never counts as consent.
+Any cart or revision change invalidates the confirmation and requests a revised summary.
+If the app issues a `confirmation_token`, carry it; if not, the agent-side binding still applies.
+
+## Adapter boundaries
+- Voice code imports only `AppAdapter` (`adapters/base.py`).
+- Wire format (RPC method names, topics, payload shapes) lives only in `adapters/livekit_rpc.py`.
+- Nothing outside `adapters/` imports `adapters/mock.py` (check V3.5).
+- Every adapter, including the future website's, must pass `tests/adapter_conformance/`
+  (idempotency, revision monotonicity, stale handling, result correlation, timeout behavior).
+- Mock data is fictional and deterministic; randomness only behind an explicit seed.
+- Dev control endpoints and fault toggles exist only when `DEV_MODE=true` and bind to localhost.

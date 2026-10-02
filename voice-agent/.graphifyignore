@@ -1,0 +1,17 @@
+# gitignore syntax. Exclude anything that is not source code or docs you want in the graph.
+.env*
+.venv/
+node_modules/
+
+# Voice recordings and raw evidence
+/fixtures/
+recordings/
+*.wav
+*.mp3
+*.m4a
+*.ogg
+*.webm
+evidence/
+
+# Per-phase plan files duplicate docs/PLAN.md; keep them out so the graph isn't full of duplicate nodes.
+docs/plan/

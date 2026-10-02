@@ -1,0 +1,23 @@
+# Keep secrets and personal audio away from Cursor's indexing and AI features.
+# Best effort only: a terminal command run by the agent can still read these files.
+# Keep terminal auto-run restricted (see START_HERE.md).
+.env
+.env.*
+!.env.example
+
+# Voice recordings (R13)
+fixtures/
+recordings/
+**/*.wav
+**/*.mp3
+**/*.m4a
+**/*.ogg
+**/*.webm
+
+# Noise
+.venv/
+node_modules/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+graphify-out/cache/
