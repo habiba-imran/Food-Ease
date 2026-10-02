@@ -1,0 +1,2 @@
+USER: yes
+ASSISTANT: Demo order placed. No real payment was taken.

@@ -1,38 +1,21 @@
 # STATUS
 
-The coding agent reads this at the start of every session and updates it at the end.
-The human updates the [HUMAN] checkboxes. Keep it short and current.
-
 **Last updated:** 2026-10-02 by agent  
-**Current phase:** 3 (gate passed) → ready for Phase 4  
-**Current branch:** `phase-3-adapters-mock`  
-**Next action:** Start Phase 4 (`phase-4-conversation-engine`) with the Phase 4 prompt from `docs/PROMPTS.md`.
-
----
+**Current phase:** 4 (gate passed; V4.2 deferred ADR-0007) → ready for Phase 5  
+**Current branch:** `phase-4-conversation-engine`  
+**Next action:** Phase 5 prompt from `docs/PROMPTS.md` when ready.
 
 ## Phase tracker
 
-| Phase | Name | Status | Gate items | Tag |
-|---|---|---|---|---|
-| 0 | Foundations | gate passed | V0.1–V0.5 | `phase-0-done` |
-| 1 | Provider spikes | gate passed | waived/partial ADR-0005/0006 | `phase-1-done` |
-| 2 | Contract v1.0 | gate passed | V2.1–V2.4 + `contract-v1.0-frozen` | `phase-2-done` |
-| 3 | Adapter + mock app | gate passed | V3.1–V3.5 | `phase-3-done` |
-| 4 | Conversation engine (text) | not started | V4.1–V4.8 | |
-| 5–11 | (see plan) | not started | | |
-
----
-
-## [HUMAN] checklist
-
-### Phase 2
-- [x] **2.5** `contract-v1.0-frozen`
-
-### Phase 3
-(none)
-
----
+| Phase | Name | Status | Tag |
+|---|---|---|---|
+| 0 | Foundations | gate passed | `phase-0-done` |
+| 1 | Provider spikes | gate passed | `phase-1-done` |
+| 2 | Contract v1.0 | gate passed | `phase-2-done` |
+| 3 | Adapter + mock | gate passed | `phase-3-done` |
+| 4 | Conversation engine (text) | gate passed | `phase-4-done` |
+| 5–11 | | not started | |
 
 ## Last session summary
 
-Phase 3 done: `AppAdapter` + `MockAdapter` (28 items, traps, scenarios, GUI sims), conformance suite, V3.1–V3.5 pass. Ready for Phase 4.
+Phase 4 text engine done: broker, tiers, confirmation, controls, CLI, safety tests. V4.2 real-LLM deferred (ADR-0007). 93 tests green.

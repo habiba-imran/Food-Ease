@@ -1,0 +1,2 @@
+USER: the second one
+ASSISTANT: Okay, selected.

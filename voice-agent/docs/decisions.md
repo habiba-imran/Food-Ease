@@ -6,6 +6,15 @@ Newest entries at the top.
 
 ---
 
+## ADR-0007 — Phase 4 V4.2 real-LLM campaign deferred
+
+- **Context:** V4.2 asks for ≥40 real-LLM utterances. Gemini free tier already returned 429 in Phase 1; Phase 4 logic is covered by a scripted fake LLM (V4.1) and RulePlanner acceptance traces.
+- **Decision:** Gate Phase 4 on V4.1 + V4.3–V4.8 with the fake/scripted planners. Treat V4.2 as **deferred** to Phase 5/6 when voice+LLM are exercised live (or when quota allows). No fabricated tool-accuracy %.
+- **Evidence:** Phase 1 429 logs; Phase 4 test suite 93 passed without live Gemini calls.
+- **Date:** 2026-10-02
+
+---
+
 ## ADR-0006 — Phase 1 closed early; provisional TTS/LLM choices
 
 - **Context:** Human asked to complete Phase 1 quickly and skip remaining spike work (not mandatory). Full audition scoring, LLM tool/sample campaign, and extra TTS timing were cut. Gemini free tier returned **429 RESOURCE_EXHAUSTED** during latency runs.
