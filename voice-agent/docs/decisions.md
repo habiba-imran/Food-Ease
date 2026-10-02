@@ -6,6 +6,19 @@ Newest entries at the top.
 
 ---
 
+## ADR-0012 — Phase 10 live audio / usability waived
+
+- **Context:** Phase 10.2 requires live audio runs (≥3 each) for T01–T04, T09, T10, T15, T17, T18, T20. Phase 10.3 is optional usability with fresh participants. Habiba asks to skip and start Phase 11.
+- **Decision:**
+  1. **10.2 and 10.3 waived** (not failed). No fabricated live or usability scores (R8).
+  2. Keep **10.1** automated acceptance record (`evidence/phase-10/acceptance.md`): 18 automated pass; T04/T18 remain `pending_human` / known-limitation under this ADR.
+  3. **10.4** deferred (no session breakdowns to fix). Dialogue/safety suites stay as last automated green run.
+  4. Close Phase 10 automated gate; proceed to Phase 11 handover. Live must-pass items in V10.2 that need audio stay **documented limitations**, not claimed passes.
+- **Evidence:** Habiba instruction 2026-10-02 (“SKIP AND START 11”); checklist empty of live runs.
+- **Date:** 2026-10-02
+
+---
+
 ## ADR-0011 — Phase 9 live Mode 1 / Mode 2 campaign waived
 
 - **Context:** Phase 9 requires Mode 1 injection (≥30 turns + ≥10 interruptions) and Mode 2 live sessions across multiple devices/conditions (built-in mic, earphones, household noise, venue network). Habiba cannot run that multi-device campaign now and asks to skip and proceed.
