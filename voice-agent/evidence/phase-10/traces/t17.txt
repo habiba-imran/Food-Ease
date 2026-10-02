@@ -1,0 +1,2 @@
+state=error
+ASSISTANT: Speech recognition is unavailable. Please type instead — I won’t invent what you said.

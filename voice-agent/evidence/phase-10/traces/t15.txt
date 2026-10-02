@@ -1,0 +1,2 @@
+state=muted/paused
+ASSISTANT: Microphone access is off. You can type your request or browse the menu yourself.

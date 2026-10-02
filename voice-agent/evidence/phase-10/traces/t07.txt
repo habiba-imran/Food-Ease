@@ -1,0 +1,2 @@
+qty=1
+ASSISTANT: Updated. You have 1 Cola Can. Total one hundred fifty rupees.
