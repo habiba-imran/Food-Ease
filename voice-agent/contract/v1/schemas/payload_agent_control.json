@@ -1,0 +1,39 @@
+{
+  "$defs": {
+    "AgentControlIntent": {
+      "enum": [
+        "mute",
+        "unmute",
+        "pause",
+        "resume",
+        "end",
+        "switch_mode"
+      ],
+      "title": "AgentControlIntent",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "intent": {
+      "$ref": "#/$defs/AgentControlIntent"
+    },
+    "mode": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Mode"
+    }
+  },
+  "required": [
+    "intent"
+  ],
+  "title": "AgentControlPayload",
+  "type": "object"
+}

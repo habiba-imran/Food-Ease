@@ -1,0 +1,17 @@
+{
+  "schema_version": "1.0",
+  "session_id": "demo-session-7",
+  "event_id": "event-add-1",
+  "turn_id": "turn-15",
+  "timestamp": "2026-10-02T12:00:00Z",
+  "context_revision": 8,
+  "type": "agent.action_request",
+  "payload": {
+    "action_id": "action-add-1",
+    "operation": "cart.add_item",
+    "arguments": {
+      "item_id": "wrap-hot-chicken",
+      "quantity": 2
+    }
+  }
+}

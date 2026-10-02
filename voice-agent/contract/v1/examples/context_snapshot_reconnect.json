@@ -1,0 +1,50 @@
+{
+  "schema_version": "1.0",
+  "session_id": "demo-session-7",
+  "event_id": "event-snap-reconnect",
+  "turn_id": null,
+  "timestamp": "2026-10-02T12:00:00Z",
+  "context_revision": 12,
+  "type": "app.context_snapshot",
+  "payload": {
+    "schema_version": "1.0",
+    "session_id": "demo-session-7",
+    "revision": 12,
+    "route": "menu",
+    "valid_actions": [
+      "search_menu",
+      "filter_menu",
+      "cart.add_item",
+      "navigate"
+    ],
+    "valid_navigation_targets": [
+      "home",
+      "back",
+      "cart",
+      "checkout"
+    ],
+    "filter_tags": [],
+    "visible_items": [
+      {
+        "item_id": "wrap-hot-chicken",
+        "name": "Hot Chicken Wrap",
+        "price": 850.0,
+        "currency": "PKR",
+        "descriptors": [
+          "spicy"
+        ],
+        "available": true
+      }
+    ],
+    "cart": {
+      "lines": [],
+      "currency": "PKR",
+      "subtotal": 0.0,
+      "fees": [],
+      "total": 0.0
+    },
+    "checkout_available": false,
+    "action_pending": false,
+    "language": "en"
+  }
+}

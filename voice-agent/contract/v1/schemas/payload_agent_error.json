@@ -1,0 +1,44 @@
+{
+  "$defs": {
+    "UserSafeErrorCode": {
+      "description": "User-safe codes only \u2014 never provider stack traces.",
+      "enum": [
+        "unknown_operation",
+        "invalid_arguments",
+        "missing_action_id",
+        "stale_context",
+        "not_available",
+        "out_of_stock",
+        "confirmation_required",
+        "confirmation_expired",
+        "timeout",
+        "rejected",
+        "internal",
+        "rate_limited"
+      ],
+      "title": "UserSafeErrorCode",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "code": {
+      "$ref": "#/$defs/UserSafeErrorCode"
+    },
+    "message": {
+      "title": "Message",
+      "type": "string"
+    },
+    "fatal": {
+      "default": false,
+      "title": "Fatal",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "code",
+    "message"
+  ],
+  "title": "AgentErrorPayload",
+  "type": "object"
+}

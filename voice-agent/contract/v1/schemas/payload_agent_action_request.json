@@ -1,0 +1,45 @@
+{
+  "$defs": {
+    "Operation": {
+      "enum": [
+        "navigate",
+        "search_menu",
+        "filter_menu",
+        "select_item",
+        "get_item_details",
+        "get_cart",
+        "cart.add_item",
+        "cart.set_quantity",
+        "cart.remove_item",
+        "checkout.get_summary",
+        "checkout.submit_demo_order",
+        "undo_last_reversible_action",
+        "get_current_context"
+      ],
+      "title": "Operation",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "action_id": {
+      "minLength": 1,
+      "title": "Action Id",
+      "type": "string"
+    },
+    "operation": {
+      "$ref": "#/$defs/Operation"
+    },
+    "arguments": {
+      "additionalProperties": true,
+      "title": "Arguments",
+      "type": "object"
+    }
+  },
+  "required": [
+    "action_id",
+    "operation"
+  ],
+  "title": "ActionRequestPayload",
+  "type": "object"
+}

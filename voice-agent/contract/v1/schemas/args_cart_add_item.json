@@ -1,0 +1,22 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "item_id": {
+      "pattern": "^[a-z][a-z0-9_\\-]{1,63}$",
+      "title": "Item Id",
+      "type": "string"
+    },
+    "quantity": {
+      "default": 1,
+      "maximum": 99,
+      "minimum": 1,
+      "title": "Quantity",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "item_id"
+  ],
+  "title": "CartAddItemArgs",
+  "type": "object"
+}

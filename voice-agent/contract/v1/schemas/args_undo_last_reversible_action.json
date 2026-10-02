@@ -1,0 +1,6 @@
+{
+  "additionalProperties": false,
+  "properties": {},
+  "title": "UndoLastReversibleActionArgs",
+  "type": "object"
+}

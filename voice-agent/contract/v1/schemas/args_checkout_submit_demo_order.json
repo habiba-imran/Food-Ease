@@ -1,0 +1,26 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "confirmed": {
+      "default": true,
+      "title": "Confirmed",
+      "type": "boolean"
+    },
+    "confirmation_token": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Optional app-issued token; agent works when absent.",
+      "title": "Confirmation Token",
+      "x-habiba-default": "optional; agent binds confirmation itself"
+    }
+  },
+  "title": "CheckoutSubmitDemoOrderArgs",
+  "type": "object"
+}

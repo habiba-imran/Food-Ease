@@ -9,8 +9,10 @@ dependencies = [
     "deepgram-sdk>=7.12.0",
     "google-genai>=2.27.0",
     "httpx>=0.28.1",
+    "jsonschema>=4.26.0",
     "livekit-agents[cartesia,deepgram,google]~=1.8",
     "livekit-api>=1.2.1",
+    "pydantic>=2.13.5",
     "python-dotenv>=1.0.1",
 ]
 

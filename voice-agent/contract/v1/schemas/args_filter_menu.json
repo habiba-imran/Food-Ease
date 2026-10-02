@@ -1,0 +1,28 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "tags": {
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 16,
+      "title": "Tags",
+      "type": "array"
+    },
+    "max_price_pkr": {
+      "anyOf": [
+        {
+          "minimum": 0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Max Price Pkr"
+    }
+  },
+  "title": "FilterMenuArgs",
+  "type": "object"
+}
