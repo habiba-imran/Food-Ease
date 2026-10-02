@@ -35,6 +35,15 @@ NON_SECRET_ENV_VARS: tuple[str, ...] = (
     "GREETING_CACHE",
 )
 
+# Optional Phase 9 tuning (defaults applied when unset).
+OPTIONAL_TUNING_ENV_VARS: tuple[str, ...] = (
+    "INTERRUPTION_MIN_DURATION",
+    "INTERRUPTION_MIN_WORDS",
+    "INTERRUPTION_FALSE_TIMEOUT",
+    "ENDPOINTING_MIN",
+    "ENDPOINTING_MAX",
+)
+
 REQUIRED_ENV_VARS: tuple[str, ...] = SECRET_ENV_VARS + NON_SECRET_ENV_VARS
 
 
@@ -67,6 +76,23 @@ def _parse_float(name: str, raw: str) -> float:
         raise ConfigError(f"Invalid number for {name}={raw!r}") from exc
 
 
+def _optional_float(environ: Mapping[str, str], name: str, default: float) -> float:
+    raw = environ.get(name)
+    if raw is None or not raw.strip():
+        return default
+    return _parse_float(name, raw)
+
+
+def _optional_int(environ: Mapping[str, str], name: str, default: int) -> int:
+    raw = environ.get(name)
+    if raw is None or not raw.strip():
+        return default
+    try:
+        return int(raw.strip())
+    except ValueError as exc:
+        raise ConfigError(f"Invalid integer for {name}={raw!r}") from exc
+
+
 def _parse_pipeline(name: str, raw: str) -> str:
     normalized = raw.strip().upper()
     if normalized in {"A", "B"}:
@@ -96,6 +122,11 @@ class Settings:
     preemptive_generation: bool
     noise_cancellation: bool
     greeting_cache: bool
+    interruption_min_duration: float
+    interruption_min_words: int
+    interruption_false_timeout: float
+    endpointing_min: float
+    endpointing_max: float
 
 
 def load_config(
@@ -156,4 +187,11 @@ def load_config(
             "NOISE_CANCELLATION", _require(environ, "NOISE_CANCELLATION")
         ),
         greeting_cache=_parse_bool("GREETING_CACHE", _require(environ, "GREETING_CACHE")),
+        interruption_min_duration=_optional_float(environ, "INTERRUPTION_MIN_DURATION", 0.5),
+        interruption_min_words=_optional_int(environ, "INTERRUPTION_MIN_WORDS", 0),
+        interruption_false_timeout=_optional_float(
+            environ, "INTERRUPTION_FALSE_TIMEOUT", 2.0
+        ),
+        endpointing_min=_optional_float(environ, "ENDPOINTING_MIN", 0.45),
+        endpointing_max=_optional_float(environ, "ENDPOINTING_MAX", 3.0),
     )

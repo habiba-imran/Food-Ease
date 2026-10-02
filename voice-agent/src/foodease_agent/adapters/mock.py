@@ -318,10 +318,12 @@ class MockAdapter:
             else []
         )
         nav = ["home", "back", "cart", "checkout", "burgers", "wraps", "drinks", "desserts"]
+        # Prefer semantic location for orientation ("where am I?") — category name over generic "category".
+        route = self._category if self._page == "category" and self._category else self._page
         return ContextSnapshot(
             session_id=self.session_id,
             revision=self._revision,
-            route=self._page,
+            route=route,
             focus_item_id=self._focus_item_id,
             valid_actions=[op.value for op in Operation],
             valid_navigation_targets=nav,

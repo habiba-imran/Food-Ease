@@ -1,0 +1,232 @@
+{
+  "mode_1": {
+    "scripted_turns": 30,
+    "barge_turns": 10,
+    "greeting_probes": 2,
+    "turns": [
+      {
+        "id": "L01",
+        "utterance": "show burgers",
+        "turn_kind": "response"
+      },
+      {
+        "id": "L02",
+        "utterance": "vegetarian under 800",
+        "turn_kind": "response"
+      },
+      {
+        "id": "L03",
+        "utterance": "add 1 Cola Can",
+        "turn_kind": "response"
+      },
+      {
+        "id": "L04",
+        "utterance": "what's in the cart",
+        "turn_kind": "response"
+      },
+      {
+        "id": "L05",
+        "utterance": "show wraps",
+        "turn_kind": "response"
+      },
+      {
+        "id": "L06",
+        "utterance": "add 1 Veggie Wrap",
+        "turn_kind": "response"
+      },
+      {
+        "id": "L07",
+        "utterance": "make it 2",
+        "turn_kind": "response"
+      },
+      {
+        "id": "L08",
+        "utterance": "make it 1",
+        "turn_kind": "response"
+      },
+      {
+        "id": "L09",
+        "utterance": "show drinks",
+        "turn_kind": "response"
+      },
+      {
+        "id": "L10",
+        "utterance": "add 1 Masala Fries",
+        "turn_kind": "response"
+      },
+      {
+        "id": "L11",
+        "utterance": "go back",
+        "turn_kind": "response"
+      },
+      {
+        "id": "L12",
+        "utterance": "show burgers",
+        "turn_kind": "response"
+      },
+      {
+        "id": "L13",
+        "utterance": "the second one",
+        "turn_kind": "response"
+      },
+      {
+        "id": "L14",
+        "utterance": "add two",
+        "turn_kind": "response"
+      },
+      {
+        "id": "L15",
+        "utterance": "remove cola can",
+        "turn_kind": "response"
+      },
+      {
+        "id": "L16",
+        "utterance": "yes",
+        "turn_kind": "response"
+      },
+      {
+        "id": "L17",
+        "utterance": "show desserts",
+        "turn_kind": "response"
+      },
+      {
+        "id": "L18",
+        "utterance": "what's in the Masala Fries?",
+        "turn_kind": "response"
+      },
+      {
+        "id": "L19",
+        "utterance": "I'm hungry",
+        "turn_kind": "response"
+      },
+      {
+        "id": "L20",
+        "utterance": "something light",
+        "turn_kind": "response"
+      },
+      {
+        "id": "L21",
+        "utterance": "what do you recommend?",
+        "turn_kind": "response"
+      },
+      {
+        "id": "L22",
+        "utterance": "repeat",
+        "turn_kind": "response"
+      },
+      {
+        "id": "L23",
+        "utterance": "help",
+        "turn_kind": "response"
+      },
+      {
+        "id": "L24",
+        "utterance": "show sides",
+        "turn_kind": "response"
+      },
+      {
+        "id": "L25",
+        "utterance": "add 1 Zinger Burger",
+        "turn_kind": "response"
+      },
+      {
+        "id": "L26",
+        "utterance": "checkout",
+        "turn_kind": "response"
+      },
+      {
+        "id": "L27",
+        "utterance": "stop",
+        "turn_kind": "response"
+      },
+      {
+        "id": "L28",
+        "utterance": "checkout",
+        "turn_kind": "response"
+      },
+      {
+        "id": "L29",
+        "utterance": "no",
+        "turn_kind": "response"
+      },
+      {
+        "id": "L30",
+        "utterance": "I'll browse myself",
+        "turn_kind": "response"
+      },
+      {
+        "id": "B01",
+        "utterance": "show burgers",
+        "turn_kind": "barge_in",
+        "interrupt_ms": 400
+      },
+      {
+        "id": "B02",
+        "utterance": "add 1 Cola Can",
+        "turn_kind": "barge_in",
+        "interrupt_ms": 500
+      },
+      {
+        "id": "B03",
+        "utterance": "vegetarian under 600",
+        "turn_kind": "barge_in",
+        "interrupt_ms": 600
+      },
+      {
+        "id": "B04",
+        "utterance": "what do you recommend?",
+        "turn_kind": "barge_in",
+        "interrupt_ms": 450
+      },
+      {
+        "id": "B05",
+        "utterance": "show wraps",
+        "turn_kind": "barge_in",
+        "interrupt_ms": 550
+      },
+      {
+        "id": "B06",
+        "utterance": "add 1 Veggie Wrap",
+        "turn_kind": "barge_in",
+        "interrupt_ms": 500
+      },
+      {
+        "id": "B07",
+        "utterance": "what's in the cart",
+        "turn_kind": "barge_in",
+        "interrupt_ms": 400
+      },
+      {
+        "id": "B08",
+        "utterance": "checkout",
+        "turn_kind": "barge_in",
+        "interrupt_ms": 700
+      },
+      {
+        "id": "B09",
+        "utterance": "show drinks",
+        "turn_kind": "barge_in",
+        "interrupt_ms": 450
+      },
+      {
+        "id": "B10",
+        "utterance": "help",
+        "turn_kind": "barge_in",
+        "interrupt_ms": 350
+      },
+      {
+        "id": "G-cold-1",
+        "utterance": "(join)",
+        "turn_kind": "greeting_cold",
+        "cold": true
+      },
+      {
+        "id": "G-warm-1",
+        "utterance": "(ready)",
+        "turn_kind": "greeting_warm",
+        "cold": false
+      }
+    ]
+  },
+  "note": "Run with --live after 9.1 setup; metrics append to --out JSONL."
+}

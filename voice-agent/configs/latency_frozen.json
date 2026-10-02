@@ -1,0 +1,21 @@
+{
+  "phase": 9,
+  "description": "Frozen latency tuning baseline — update config_hash after each lever (9.3).",
+  "pipeline": "A",
+  "preemptive_generation": false,
+  "greeting_cache": true,
+  "llm_thinking_level": "minimal",
+  "interruption_min_duration": 0.5,
+  "interruption_min_words": 0,
+  "interruption_false_timeout": 2.0,
+  "endpointing_min_flux": 0.0,
+  "endpointing_min_nova": 0.45,
+  "endpointing_max": 3.0,
+  "levers_order": [
+    "region_network_keepalive",
+    "llm_prompt_tools",
+    "turn_taking_config_ab",
+    "tts_chunking_greeting_cache",
+    "livekit_inference_vs_keys"
+  ]
+}

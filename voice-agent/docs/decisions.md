@@ -6,6 +6,18 @@ Newest entries at the top.
 
 ---
 
+## ADR-0011 — Phase 9 live Mode 1 / Mode 2 campaign waived
+
+- **Context:** Phase 9 requires Mode 1 injection (≥30 turns + ≥10 interruptions) and Mode 2 live sessions across multiple devices/conditions (built-in mic, earphones, household noise, venue network). Habiba cannot run that multi-device campaign now and asks to skip and proceed.
+- **Decision:**
+  1. **Live Mode 1 / Mode 2 measurement and V9.3–V9.4 live sample sizes are waived** (not failed). No fabricated §7 p50/p95 numbers (R8).
+  2. Keep Phase 9 **tooling** (campaign manifest, `inject_live`, report generator, interruption fixture sweep, tuning env knobs, V9.5 regression hook). Empty/placeholder latency tables stay labelled incomplete.
+  3. Close Phase 9 gate as **waived for live campaign**; proceed to Phase 10. Optional: run Mode 1/2 later before final handover demos if time allows.
+- **Evidence:** Habiba instruction 2026-10-02 (“skip… multiple devices… proceed to next”); no Mode 1/2 JSONL with measured timings.
+- **Date:** 2026-10-02
+
+---
+
 ## ADR-0010 — Phase 6 V6.2 attested; V6.6 / V6.7 waived
 
 - **Context:** Habiba listened to the pronunciation sheet audio and reported all lines OK, but did not fill the markdown herself; asked the agent to record it. Formal dogfooding (10+5 sessions) and listening panel (≥5 listeners, 12 clips, means) were not run — no time / not written.

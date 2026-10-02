@@ -39,6 +39,11 @@ def _settings(**overrides: object) -> Settings:
         preemptive_generation=False,
         noise_cancellation=False,
         greeting_cache=True,
+        interruption_min_duration=0.5,
+        interruption_min_words=0,
+        interruption_false_timeout=2.0,
+        endpointing_min=0.45,
+        endpointing_max=3.0,
     )
     base.update(overrides)
     return Settings(**base)  # type: ignore[arg-type]

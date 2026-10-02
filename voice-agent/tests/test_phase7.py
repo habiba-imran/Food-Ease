@@ -227,7 +227,7 @@ def test_v79_inject_metrics_jsonl(tmp_path: Path) -> None:
     import sys
 
     subprocess.check_call(
-        [sys.executable, str(ROOT / "tools" / "inject.py"), "--out", str(out)],
+        [sys.executable, str(ROOT / "tools" / "inject.py"), "--dry-run", "--out", str(out)],
         cwd=str(ROOT),
     )
     line = out.read_text(encoding="utf-8").strip().splitlines()[-1]

@@ -26,6 +26,9 @@ def turn_handling_options(
     endpointing_min: float = 0.45,
     endpointing_max: float = 3.0,
     preemptive_enabled: bool = False,
+    interruption_min_duration: float = 0.5,
+    interruption_min_words: int = 0,
+    interruption_false_timeout: float = 2.0,
 ) -> TurnHandlingOptions:
     """Starting turn-taking values (Phase 5.5); tune in Phase 9."""
     return TurnHandlingOptions(
@@ -37,9 +40,9 @@ def turn_handling_options(
         },
         interruption={
             "mode": "adaptive",
-            "min_duration": 0.5,
-            "min_words": 0,
-            "false_interruption_timeout": 2.0,
+            "min_duration": interruption_min_duration,
+            "min_words": interruption_min_words,
+            "false_interruption_timeout": interruption_false_timeout,
             "resume_false_interruption": True,
         },
         # ADR-0008: default off; mutating tools also gated by TurnCommitGate.
@@ -93,13 +96,21 @@ def build_session_kwargs(
     tts = build_tts(settings)
     llm = build_llm(settings)
 
+    ep_min = 0.0 if chosen == "A" else settings.endpointing_min
+    ep_max = settings.endpointing_max
+    intr = dict(
+        interruption_min_duration=settings.interruption_min_duration,
+        interruption_min_words=settings.interruption_min_words,
+        interruption_false_timeout=settings.interruption_false_timeout,
+    )
     if chosen == "A":
         # Flux owns EOT; endpointing min_delay 0 so STT endpointing dominates.
         turn = turn_handling_options(
             turn_detection="stt",
-            endpointing_min=0.0,
-            endpointing_max=3.0,
+            endpointing_min=ep_min,
+            endpointing_max=ep_max,
             preemptive_enabled=preemptive,
+            **intr,
         )
         vad = silero.VAD.load()  # still needed for interruptions
         kwargs: dict[str, Any] = {
@@ -114,9 +125,10 @@ def build_session_kwargs(
         vad = silero.VAD.load()
         turn = turn_handling_options(
             turn_detection=inference.TurnDetector(),
-            endpointing_min=0.45,
-            endpointing_max=3.0,
+            endpointing_min=ep_min,
+            endpointing_max=ep_max,
             preemptive_enabled=preemptive,
+            **intr,
         )
         kwargs = {
             "stt": stt,
