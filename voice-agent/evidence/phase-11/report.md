@@ -2,6 +2,7 @@
 
 **Branch:** `phase-11-handover`  
 **Date:** 2026-10-02  
+**Tag:** `voice-agent-v1.0-handover` (11.7)
 
 ## Built
 
@@ -13,6 +14,7 @@
 | 11.4 | `README.md` + `tools/smoke.py` |
 | 11.5 | `tools/secret_scan.py` |
 | Index | `docs/handover/DELIVERABLES.md`, `SAMPLE_DIALOGUE.md` |
+| 11.7 | Annotated git tag `voice-agent-v1.0-handover` |
 
 ## Verification
 
@@ -22,8 +24,8 @@
 | V11.2 | **Pass** | `uv run python tools/secret_scan.py` |
 | V11.3 | **Pass** | Conformance included in smoke + `tests/test_phase7.py` |
 | V11.4 | **Pass** | 10/10 paths in `DELIVERABLES.md` |
-| V11.5 | **Pending [HUMAN]** | Cold-read by a classmate |
-| Tag | **Pending [HUMAN]** | 11.7 `voice-agent-v1.0-handover` |
+| V11.5 | **Deferred to Zainab** | Cold-read = her first self-serve run next week (no classmate session logged) |
+| Tag | **Pass** | `voice-agent-v1.0-handover` on commit `42ddcd8` |
 
 ## Commands
 
@@ -32,11 +34,18 @@ uv sync
 uv run python tools/smoke.py
 uv run python tools/secret_scan.py
 uv run pytest -q
+git show voice-agent-v1.0-handover
 ```
 
-## [HUMAN]
+## Handover to Zainab (next week)
 
-1. **11.6** — Have someone else follow only `README.md` + `docs/handover/` to run smoke + harness; note confusion → fix docs.
-2. **11.7** — Tag `voice-agent-v1.0-handover` when satisfied.
+Give her the `voice-agent/` tree at tag `voice-agent-v1.0-handover` and point to:
+
+1. `README.md`
+2. `docs/handover/INTEGRATION_NOTE.md`
+3. `docs/handover/FRONTEND_QUICKSTART.md`
+4. `docs/handover/OPEN_DECISIONS.md`
+
+Joint adapter conformance is **11.8 [LATER]** when her frontend is ready.
 
 No provider API calls in this phase.

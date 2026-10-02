@@ -1,9 +1,10 @@
 # STATUS
 
 **Last updated:** 2026-10-02 by agent  
-**Current phase:** 11 (11.1–11.5 done; stopped for 11.6 / 11.7 [HUMAN])  
+**Current phase:** 11 (handover tagged)  
 **Current branch:** `phase-11-handover`  
-**Next action:** Habiba cold-read (11.6) then tag `voice-agent-v1.0-handover` (11.7).
+**Release tag:** `voice-agent-v1.0-handover`  
+**Next action:** Hand repo + `docs/handover/` to Zainab next week (11.8 [LATER] when her adapter is ready).
 
 ## Phase tracker
 
@@ -20,8 +21,8 @@
 | 8 | Failure / recovery | gate passed | `phase-8-done` |
 | 9 | Latency measurement | waived live (ADR-0011) | — |
 | 10 | Acceptance / usability | 10.1 done; 10.2–10.3 waived (ADR-0012) | — |
-| 11 | Handover package | 11.1–11.5 done; 11.6–11.7 pending | — |
+| 11 | Handover package | gate closed (11.7 tagged) | `voice-agent-v1.0-handover` |
 
 ## Last session summary
 
-Phase 10 live/usability waived. Phase 11 handover docs, README smoke path, secret scan, deliverables map. Stopped for cold-read + release tag.
+Tagged `voice-agent-v1.0-handover` at Habiba’s request. Zainab starts next week — point her at README + `docs/handover/`. Cold-read (11.6) can happen then as her first self-serve pass.
