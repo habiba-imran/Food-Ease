@@ -18,7 +18,7 @@ Tag the commit `phase-N-done`. Phases 6A to 6C may run alongside Phase 5 once Ph
 
 | Phase | Name | Status | Gate items | Tag |
 |---|---|---|---|---|
-| 0 | Foundations | gate passed | V0.1–V0.5 | `phase-0-done` (pending tag on merge/commit) |
+| 0 | Foundations | gate passed | V0.1–V0.5 | `phase-0-done` |
 | 1 | Provider spikes | not started | V1.1–V1.5 + decisions recorded (STT + turn mode, TTS + voice + backup, LLM + thinking level + fallback, speed/volume) | |
 | 2 | Contract v1.0 | not started | V2.1–V2.4 + tag `contract-v1.0-frozen` | |
 | 3 | Adapter + mock app | not started | V3.1–V3.5 | |
