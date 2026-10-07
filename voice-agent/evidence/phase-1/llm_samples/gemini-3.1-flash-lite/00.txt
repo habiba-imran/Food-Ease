@@ -1,0 +1,4 @@
+PROMPT: I want something spicy but not too expensive.
+LATENCY_MS: 1408.8
+---
+I can help with that. Are you looking for a specific type of cuisine, like Thai, Indian, or Mexican? Or should I show you highly-rated, spicy options nearby under $20?

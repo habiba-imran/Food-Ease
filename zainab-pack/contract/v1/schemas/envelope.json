@@ -1,0 +1,88 @@
+{
+  "$defs": {
+    "EventType": {
+      "enum": [
+        "agent.status",
+        "transcript.user.partial",
+        "transcript.user.final",
+        "transcript.assistant",
+        "agent.action_request",
+        "agent.clarification_required",
+        "agent.control",
+        "agent.error",
+        "app.context_snapshot",
+        "app.context_updated",
+        "app.action_result",
+        "app.control",
+        "app.text_input"
+      ],
+      "title": "EventType",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "session_id": {
+      "title": "Session Id",
+      "type": "string"
+    },
+    "event_id": {
+      "title": "Event Id",
+      "type": "string"
+    },
+    "turn_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Turn Id"
+    },
+    "timestamp": {
+      "format": "date-time",
+      "title": "Timestamp",
+      "type": "string"
+    },
+    "context_revision": {
+      "anyOf": [
+        {
+          "minimum": 0,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "App snapshot revision this event is based on, when applicable.",
+      "title": "Context Revision"
+    },
+    "type": {
+      "$ref": "#/$defs/EventType"
+    },
+    "payload": {
+      "additionalProperties": true,
+      "title": "Payload",
+      "type": "object"
+    }
+  },
+  "required": [
+    "session_id",
+    "event_id",
+    "timestamp",
+    "type",
+    "payload"
+  ],
+  "title": "Envelope",
+  "type": "object"
+}

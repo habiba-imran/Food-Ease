@@ -21,5 +21,8 @@ Each item has a **Habiba default**. Default applies unless changed at integratio
 | L15 | Post-handover conformance | Run suite against Zainab adapter when ready | Plan task 11.8; outside this handover tag |
 | L16 | Urdu / multilingual | English demo only | Stretch; not promised |
 | L17 | LiveKit Inference vs own keys | Own keys in `.env` for this project | Billing/limits: see `docs/provider-limits.md` |
+| L18 | Session / token mint | Habiba-owned `orchestration/` service (`POST /v1/session` + `/v1/assist/*`) | Browser never sees LiveKit API secrets; see `zainab-pack/handover/SESSION_API.md`. Transport L1–L6 unchanged. |
+| L19 | Room topology | Three seats: user + app (`foodease.role=app`) + agent in one room | Rehearse with MockApp `--livekit` + `FOODEASE_APP_TRANSPORT=livekit`; Zainab replaces only the app seat. |
+| L20 | Joint IR suite | IR-01…IR-05 (stale, dup action_id, checkout confirm, mic→manual, cart invalidates confirm) | Auto on MockApp; Live = Zainab adapter — `zainab-pack/handover/JOINT_ACCEPTANCE.md`. |
 
 **Phrase for PRs:** “default applies unless changed at integration.”

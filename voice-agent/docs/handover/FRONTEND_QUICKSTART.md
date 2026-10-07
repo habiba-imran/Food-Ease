@@ -2,20 +2,30 @@
 
 Goal: join the LiveKit room, register the same RPCs MockApp registers, push context, consume agent state/transcripts. Full schemas live in `contract/v1/`.
 
-## 1. Join the room
+## 1. Join the room (Start assistance)
 
-Mint a token (server-side) with room join; set participant attribute `foodease.role=app`.
-
-Harness pattern (browser user — not the app role):
+Mint tokens **and** dispatch the agent via Habiba’s session API. See `zainab-pack/handover/SESSION_API.md`.
 
 ```javascript
-const res = await fetch("/token?identity=harness-user&room=foodease-demo");
-const { url, token } = await res.json();
-const room = new Room();
-await room.connect(url, token);
-```
+const s = await fetch("http://127.0.0.1:8090/v1/assist/start", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ consent: true, include_app_token: true }),
+}).then((r) => r.json());
 
-Your website should use an **app** identity + attributes, not the human mic identity (unless one client does both — then set the app attribute on that participant).
+const room = new Room();
+await room.connect(s.livekit_url, s.user.token);
+
+await fetch("http://127.0.0.1:8090/v1/assist/end", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({
+    room: s.room,
+    dispatch_id: s.dispatch_id,
+    session_id: s.session_id,
+  }),
+});
+```
 
 ## 2. Register RPC: `foodease.action`
 

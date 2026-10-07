@@ -1,0 +1,48 @@
+[project]
+name = "foodease-session"
+version = "0.1.0"
+description = "FoodEase orchestration glue — session/token mint, assist dispatch, demo bring-up (not cart, not voice brain)"
+readme = "README.md"
+requires-python = ">=3.12,<3.15"
+dependencies = [
+    "fastapi>=0.115.0",
+    "livekit-api>=1.2.1",
+    "pydantic>=2.13.5",
+    "python-dotenv>=1.0.1",
+    "uvicorn[standard]>=0.32.0",
+    "httpx>=0.28.1",
+]
+
+[project.scripts]
+foodease-session = "foodease_session.main:main"
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3.0",
+    "ruff>=0.11.0",
+    "pyright>=1.1.400",
+]
+
+[build-system]
+requires = ["uv_build>=0.10.6,<0.11.0"]
+build-backend = "uv_build"
+
+[tool.uv]
+package = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+
+[tool.pyright]
+include = ["src", "tests"]
+pythonVersion = "3.12"
+typeCheckingMode = "basic"

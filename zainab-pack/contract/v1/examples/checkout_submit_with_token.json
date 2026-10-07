@@ -1,0 +1,17 @@
+{
+  "schema_version": "1.0",
+  "session_id": "demo-session-7",
+  "event_id": "event-submit-1",
+  "turn_id": "turn-15",
+  "timestamp": "2026-10-02T12:00:00Z",
+  "context_revision": 11,
+  "type": "agent.action_request",
+  "payload": {
+    "action_id": "action-submit-1",
+    "operation": "checkout.submit_demo_order",
+    "arguments": {
+      "confirmed": true,
+      "confirmation_token": "tok_demo_abc"
+    }
+  }
+}

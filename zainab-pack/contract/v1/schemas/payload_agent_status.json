@@ -1,0 +1,46 @@
+{
+  "$defs": {
+    "ProductState": {
+      "description": "VA-07 product-level UI meanings.",
+      "enum": [
+        "off/awaiting_consent",
+        "connecting",
+        "ready/listening",
+        "user_speaking",
+        "thinking",
+        "assistant_speaking",
+        "waiting_for_action_result",
+        "idle",
+        "muted/paused",
+        "reconnecting",
+        "error",
+        "ended"
+      ],
+      "title": "ProductState",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "state": {
+      "$ref": "#/$defs/ProductState"
+    },
+    "detail": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Detail"
+    }
+  },
+  "required": [
+    "state"
+  ],
+  "title": "AgentStatusPayload",
+  "type": "object"
+}

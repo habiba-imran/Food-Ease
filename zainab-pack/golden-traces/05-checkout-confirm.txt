@@ -1,0 +1,14 @@
+# Golden 05 — Explicit checkout confirmation → one demo order
+# Sources: voice-agent/evidence/phase-10/traces/t12.txt
+#          voice-agent/evidence/phase-4/traces/t12.txt
+
+USER: yes
+ASSISTANT: Demo order placed. No real payment was taken.
+
+# Expected website/domain behavior (preceding agent turns omitted in raw evidence file):
+# 1. checkout.get_summary returned current cart total + revision
+# 2. Agent asked for explicit confirmation of THAT summary
+# 3. User said yes (typed or spoken) while cart/revision unchanged
+# 4. checkout.submit_demo_order with confirmed=true
+# 5. Exactly one simulated order ID/outcome; no real payment language
+# 6. If cart changes between summary and yes → invalidate; require fresh summary (W14 / T13)

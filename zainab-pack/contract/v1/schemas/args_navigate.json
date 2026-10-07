@@ -1,0 +1,15 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "target": {
+      "description": "Semantic navigation target ID (e.g. home, back, cart, checkout).",
+      "title": "Target",
+      "type": "string"
+    }
+  },
+  "required": [
+    "target"
+  ],
+  "title": "NavigateArgs",
+  "type": "object"
+}

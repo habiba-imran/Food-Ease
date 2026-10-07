@@ -1,0 +1,4 @@
+PROMPT: How do I stop you talking?
+LATENCY_MS: 3305.5
+---
+You can simply say "stop," "cancel," or "end" to stop me at any time. How can I help you with your order?

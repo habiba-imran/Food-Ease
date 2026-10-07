@@ -10,7 +10,8 @@ from foodease_agent.adapters.base import (
     ControlCallback,
     TextInputCallback,
 )
-from foodease_agent.adapters.transport import InProcessRoom, PayloadTooLargeError
+from foodease_agent.adapters.room_protocol import RoomTransport
+from foodease_agent.adapters.transport import PayloadTooLargeError
 from foodease_agent.contract.enums import (
     ActionResultStatus,
     EventType,
@@ -40,7 +41,7 @@ class LiveKitRpcAdapter:
 
     def __init__(
         self,
-        room: InProcessRoom,
+        room: RoomTransport,
         *,
         default_timeout_s: float = 5.0,
     ) -> None:

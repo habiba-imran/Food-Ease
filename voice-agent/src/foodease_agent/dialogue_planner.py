@@ -1,4 +1,5 @@
-"""Deterministic planner covering DS-01…DS-20 expected behaviors (text suite)."""
+"""
+Deterministic planner covering DS-01…DS-20 expected behaviors (text suite)."""
 
 from __future__ import annotations
 

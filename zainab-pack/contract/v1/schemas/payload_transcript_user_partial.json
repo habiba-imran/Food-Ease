@@ -1,0 +1,19 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "text": {
+      "title": "Text",
+      "type": "string"
+    },
+    "is_final": {
+      "title": "Is Final",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "text",
+    "is_final"
+  ],
+  "title": "TranscriptUserPayload",
+  "type": "object"
+}

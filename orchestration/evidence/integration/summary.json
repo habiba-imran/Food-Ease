@@ -1,0 +1,42 @@
+{
+  "generated": "2026-10-07T15:57:55.133532+00:00",
+  "passed": 5,
+  "failed": 0,
+  "results": [
+    {
+      "id": "IR-01",
+      "title": "Stale context_revision rejects mutation",
+      "ok": true,
+      "detail": "status=stale_context lines=0",
+      "notes": []
+    },
+    {
+      "id": "IR-02",
+      "title": "Duplicate action_id is idempotent",
+      "ok": true,
+      "detail": "qty=1 same_payload=True",
+      "notes": []
+    },
+    {
+      "id": "IR-03",
+      "title": "Checkout requires explicit confirmation",
+      "ok": true,
+      "detail": "route_after_hmm=checkout assistant='Demo order placed. No real payment was taken.'",
+      "notes": []
+    },
+    {
+      "id": "IR-04",
+      "title": "Mic denied then manual/typed continue",
+      "ok": true,
+      "detail": "blocked_state=muted/paused continue_ok=True",
+      "notes": []
+    },
+    {
+      "id": "IR-05",
+      "title": "Cart change invalidates checkout confirmation",
+      "ok": true,
+      "detail": "awaiting=True invalidated=True state=none route=checkout not_auto_submit=True",
+      "notes": []
+    }
+  ]
+}

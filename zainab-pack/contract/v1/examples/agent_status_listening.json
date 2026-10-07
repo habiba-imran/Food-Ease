@@ -1,0 +1,13 @@
+{
+  "schema_version": "1.0",
+  "session_id": "demo-session-7",
+  "event_id": "event-status-1",
+  "turn_id": null,
+  "timestamp": "2026-10-02T12:00:00Z",
+  "context_revision": null,
+  "type": "agent.status",
+  "payload": {
+    "state": "ready/listening",
+    "detail": "ready"
+  }
+}

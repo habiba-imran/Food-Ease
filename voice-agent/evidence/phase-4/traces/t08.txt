@@ -1,2 +1,2 @@
 USER: add
-ASSISTANT: The application to complete that action.
+ASSISTANT: The application to complete that action. You can try another item or check the cart.

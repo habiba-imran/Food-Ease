@@ -1,0 +1,102 @@
+{
+  "$defs": {
+    "ActionResultStatus": {
+      "enum": [
+        "success",
+        "failed",
+        "rejected",
+        "stale_context",
+        "requires_confirmation",
+        "timeout_unknown"
+      ],
+      "title": "ActionResultStatus",
+      "type": "string"
+    },
+    "UserSafeErrorCode": {
+      "description": "User-safe codes only \u2014 never provider stack traces.",
+      "enum": [
+        "unknown_operation",
+        "invalid_arguments",
+        "missing_action_id",
+        "stale_context",
+        "not_available",
+        "out_of_stock",
+        "confirmation_required",
+        "confirmation_expired",
+        "timeout",
+        "rejected",
+        "internal",
+        "rate_limited"
+      ],
+      "title": "UserSafeErrorCode",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "action_id": {
+      "minLength": 1,
+      "title": "Action Id",
+      "type": "string"
+    },
+    "status": {
+      "$ref": "#/$defs/ActionResultStatus"
+    },
+    "verified_state": {
+      "anyOf": [
+        {
+          "additionalProperties": true,
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Verified State"
+    },
+    "error_code": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/UserSafeErrorCode"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "error_message": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Error Message"
+    },
+    "confirmation_token": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Optional; may appear on checkout.get_summary success.",
+      "title": "Confirmation Token",
+      "x-habiba-default": "optional on the wire"
+    }
+  },
+  "required": [
+    "action_id",
+    "status"
+  ],
+  "title": "ActionResultPayload",
+  "type": "object"
+}

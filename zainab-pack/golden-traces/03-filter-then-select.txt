@@ -1,0 +1,15 @@
+# Golden 03 — Filter then soft-select
+# Sources: voice-agent/evidence/phase-10/traces/t05.txt + t06.txt
+# (same pattern in phase-4/traces/t05.txt + t06.txt)
+
+USER: Vegetarian under eight hundred.
+ASSISTANT: Here is what I found: Veggie Patty Burger at five hundred fifty rupees; Veggie Wrap at five hundred rupees; Puh-neer Roll at four hundred twenty rupees.
+
+USER: the second one
+ASSISTANT: Okay, selected.
+
+# Expected website/domain behavior:
+# - filter_menu (or search) uses real catalog tags/prices from catalog-seed.json
+# - visible_items ordered list includes burger-veg, wrap-veg, roll-paneer (among matches)
+# - "the second one" resolves to wrap-veg via presented order + select_item(item_id)
+# - app.context_updated bumps revision after filter and after select

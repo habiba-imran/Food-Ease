@@ -1,0 +1,4 @@
+PROMPT: Is this a real payment?
+LATENCY_MS: 1318.3
+---
+I cannot see your screen or process live transactions. Please check your bank app or the order confirmation page within the FoodEase app to verify the status of your payment. Would you like me to open your order history?

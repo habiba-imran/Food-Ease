@@ -1,0 +1,4 @@
+PROMPT: What can you help me with?
+LATENCY_MS: 1270.8
+---
+I can help you browse menus, add items to your cart, and place orders. What are you in the mood for today?

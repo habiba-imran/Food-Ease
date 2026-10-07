@@ -1,0 +1,25 @@
+{
+  "schema_version": "1.0",
+  "session_id": "demo-session-7",
+  "event_id": "event-qty-1-result",
+  "turn_id": "turn-15",
+  "timestamp": "2026-10-02T12:00:00Z",
+  "context_revision": 9,
+  "type": "app.action_result",
+  "payload": {
+    "action_id": "action-qty-1",
+    "status": "success",
+    "verified_state": {
+      "cart": [
+        {
+          "item_id": "wrap-hot-chicken",
+          "name": "Hot Chicken Wrap",
+          "quantity": 1,
+          "unit_price": 850
+        }
+      ],
+      "currency": "PKR",
+      "total": 850
+    }
+  }
+}

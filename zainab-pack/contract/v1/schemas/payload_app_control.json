@@ -1,0 +1,40 @@
+{
+  "$defs": {
+    "AppControlIntent": {
+      "enum": [
+        "start",
+        "pause",
+        "mute",
+        "unmute",
+        "end",
+        "explain",
+        "switch_mode"
+      ],
+      "title": "AppControlIntent",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "intent": {
+      "$ref": "#/$defs/AppControlIntent"
+    },
+    "mode": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Mode"
+    }
+  },
+  "required": [
+    "intent"
+  ],
+  "title": "AppControlPayload",
+  "type": "object"
+}

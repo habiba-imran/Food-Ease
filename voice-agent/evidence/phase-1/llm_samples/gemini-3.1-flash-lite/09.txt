@@ -1,0 +1,4 @@
+PROMPT: Thanks, that's all for now.
+LATENCY_MS: 1394.3
+---
+You're welcome! Your order is confirmed. Have a great meal!

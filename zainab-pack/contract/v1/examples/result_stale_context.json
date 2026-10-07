@@ -1,0 +1,15 @@
+{
+  "schema_version": "1.0",
+  "session_id": "demo-session-7",
+  "event_id": "event-stale-1",
+  "turn_id": "turn-15",
+  "timestamp": "2026-10-02T12:00:00Z",
+  "context_revision": 10,
+  "type": "app.action_result",
+  "payload": {
+    "action_id": "action-stale-1",
+    "status": "stale_context",
+    "error_code": "stale_context",
+    "error_message": "Cart changed in the app. Please try again."
+  }
+}

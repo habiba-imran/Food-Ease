@@ -1,4 +1,4 @@
-# Root monorepo hygiene (Habiba package lives in voice-agent/)
+# Root monorepo hygiene (Habiba packages: voice-agent/, orchestration/)
 .pytest_cache/
 .ruff_cache/
 .mypy_cache/
@@ -6,3 +6,5 @@
 __pycache__/
 *.pyc
 .DS_Store
+.env
+.venv/

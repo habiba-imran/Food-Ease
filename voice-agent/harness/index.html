@@ -19,10 +19,15 @@
 </head>
 <body>
   <h1>FoodEase inspector (Phase 7)</h1>
-  <p class="hint">Mic starts only after Start voice. MockApp controls need DEV_MODE control server on :8765.</p>
+  <p class="hint">
+    Manual GUI works anytime (MockApp :8765). Voice starts only after
+    <strong>Start assistance</strong> (consent + agent dispatch via :8090).
+    <strong>End assistance</strong> stops prompts; cart is preserved.
+  </p>
   <p>Agent state: <span id="state">off/awaiting_consent</span></p>
   <div class="row">
-    <button id="start" type="button">Start voice</button>
+    <button id="start" type="button">Start assistance</button>
+    <button id="endAssist" type="button" disabled>End assistance</button>
     <button id="mute" type="button" disabled>Mute mic</button>
     <button id="leave" type="button" disabled>Leave</button>
   </div>

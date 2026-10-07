@@ -1,0 +1,15 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "item_id": {
+      "pattern": "^[a-z][a-z0-9_\\-]{1,63}$",
+      "title": "Item Id",
+      "type": "string"
+    }
+  },
+  "required": [
+    "item_id"
+  ],
+  "title": "SelectItemArgs",
+  "type": "object"
+}

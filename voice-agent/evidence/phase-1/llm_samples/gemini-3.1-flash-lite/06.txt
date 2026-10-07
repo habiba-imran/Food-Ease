@@ -1,0 +1,4 @@
+PROMPT: I changed my mind about the wrap.
+LATENCY_MS: 1525.0
+---
+Understood. I've removed the wrap from your order. What would you like to add instead, or are you ready to checkout?

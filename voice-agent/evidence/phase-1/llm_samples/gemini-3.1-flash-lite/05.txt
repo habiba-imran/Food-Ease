@@ -1,0 +1,4 @@
+PROMPT: Tell me what's on the screen.
+LATENCY_MS: 1828.6
+---
+I see the "Burger Town" menu. You have the Classic Cheeseburger for $8.99, a Spicy Chicken Sandwich for $9.49, and Loaded Fries for $5.99. Would you like to add one to your cart?

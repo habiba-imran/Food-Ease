@@ -1,0 +1,30 @@
+{
+  "$defs": {
+    "AssistantTranscriptPhase": {
+      "enum": [
+        "started",
+        "updated",
+        "completed",
+        "interrupted"
+      ],
+      "title": "AssistantTranscriptPhase",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "text": {
+      "title": "Text",
+      "type": "string"
+    },
+    "phase": {
+      "$ref": "#/$defs/AssistantTranscriptPhase"
+    }
+  },
+  "required": [
+    "text",
+    "phase"
+  ],
+  "title": "TranscriptAssistantPayload",
+  "type": "object"
+}

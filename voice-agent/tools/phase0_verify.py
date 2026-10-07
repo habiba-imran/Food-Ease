@@ -1,4 +1,7 @@
-"""Phase 0 verification helpers — no provider calls; does not read .env secrets for display."""
+"""
+Phase 0 verification helpers — no provider calls; 
+does not read .env secrets for display.
+"""
 
 from __future__ import annotations
 

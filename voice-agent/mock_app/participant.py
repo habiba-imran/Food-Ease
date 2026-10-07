@@ -13,6 +13,7 @@ from urllib.parse import urlparse
 
 from foodease_agent.adapters.livekit_rpc import ACTION_RPC, CONTEXT_TOPIC, TEXT_RPC
 from foodease_agent.adapters.mock import MockAdapter, ScenarioConfig, ScenarioMode
+from foodease_agent.adapters.room_protocol import RoomTransport
 from foodease_agent.adapters.transport import InProcessRoom
 from foodease_agent.contract.models import (
     ActionRequestPayload,
@@ -29,10 +30,12 @@ IDENTITY = "mock-app"
 class MockAppParticipant:
     """Joins a room as foodease.role=app; owns MockAdapter cart/pages."""
 
-    def __init__(self, room: InProcessRoom, *, session_id: str = "mock-session") -> None:
+    def __init__(self, room: RoomTransport, *, session_id: str = "mock-session") -> None:
         self.room = room
         self.adapter = MockAdapter(session_id=session_id)
-        self.room.register_participant(IDENTITY, role="app")
+        register = getattr(self.room, "register_participant", None)
+        if callable(register):
+            register(IDENTITY, role="app")
         self.room.register_rpc(ACTION_RPC, self._handle_action)
         self.room.register_rpc(TEXT_RPC, self._handle_text)
 

@@ -1,8 +1,10 @@
-"""LiveKit worker entrypoint — prewarm, consent-gated session start."""
+"""LiveKit worker entrypoint — prewarm; greet only after assist dispatch."""
 
 from __future__ import annotations
 
+import json
 import logging
+import os
 
 from livekit.agents import (
     AgentSession,
@@ -15,7 +17,11 @@ from livekit.agents import (
 )
 from livekit.plugins import silero
 
-from foodease_agent.adapters.dev_wiring import create_dev_adapter
+from foodease_agent.adapters.dev_wiring import (
+    app_transport_mode,
+    create_dev_adapter,
+    wait_for_livekit_app,
+)
 from foodease_agent.agent import FoodEaseAgent, apply_speech_speed
 from foodease_agent.config import load_config
 from foodease_agent.contract.enums import ProductState
@@ -30,23 +36,59 @@ def prewarm(proc: JobProcess) -> None:
     logger.info("prewarm: silero VAD loaded")
 
 
+def _job_assist_flag(ctx: JobContext) -> bool:
+    """True when dispatch metadata marks an assist session (or metadata absent)."""
+    raw = getattr(ctx.job, "metadata", None) or ""
+    if not str(raw).strip():
+        return True
+    try:
+        data = json.loads(raw)
+    except json.JSONDecodeError:
+        return True
+    if "foodease.assist" not in data:
+        return True
+    return bool(data.get("foodease.assist"))
+
+
 async def entrypoint(ctx: JobContext) -> None:
-    """Join only after the job is dispatched (harness Start button → room)."""
+    """Run after LiveKit dispatches a job (orchestration POST /v1/assist/start)."""
     settings = load_config()
     await ctx.connect(auto_subscribe=AutoSubscribe.AUDIO_ONLY)
 
-    agent = FoodEaseAgent(settings, adapter=create_dev_adapter())
+    transport = app_transport_mode()
+    adapter = create_dev_adapter(rtc_room=ctx.room if transport == "livekit" else None)
+    agent = FoodEaseAgent(settings, adapter=adapter)
     agent.product_state = ProductState.CONNECTING
 
+    async def _on_shutdown(_reason: str = "") -> None:
+        agent.idle.disable()
+        agent.product_state = ProductState.ENDED
+        logger.info("assist_shutdown reason=%s idle_disabled=true", _reason or "n/a")
+
+    ctx.add_shutdown_callback(_on_shutdown)
+
+    if not _job_assist_flag(ctx):
+        logger.warning("job without foodease.assist — skipping greeting/idle")
+        agent.product_state = ProductState.OFF_AWAITING_CONSENT
+        return
+
+    if transport == "livekit":
+        try:
+            await wait_for_livekit_app(adapter, timeout_s=15.0)
+        except TimeoutError:
+            logger.error(
+                "FOODEASE_APP_TRANSPORT=livekit but no foodease.role=app in room — "
+                "start MockApp with --livekit (or Zainab site) before assist"
+            )
+            agent.product_state = ProductState.ERROR
+            return
+
     bundle = build_session_kwargs(settings)
-    # Prefer prewarmed VAD when present.
     if "vad" in ctx.proc.userdata:
         bundle.session_kwargs["vad"] = ctx.proc.userdata["vad"]
 
     session = AgentSession(**bundle.session_kwargs)
 
-    # Noise cancellation (5.8): env toggle recorded; plugin wiring needs LiveKit NC
-    # module when the Cloud plan includes it. Default off — no silent fake enable.
     if settings.noise_cancellation:
         logger.warning(
             "NOISE_CANCELLATION=true but NC module not wired on this tier; "
@@ -64,16 +106,17 @@ async def entrypoint(ctx: JobContext) -> None:
     )
 
     agent.product_state = ProductState.READY_LISTENING
-    # Snapshot may arrive later via data/RPC; timeout path still greets (V5.10).
     await agent.proactive_greeting(session)
     await apply_speech_speed(session, agent._tts_speed)
 
 
 def main() -> None:
+    agent_name = (os.environ.get("FOODEASE_AGENT_NAME") or "foodease").strip() or "foodease"
     cli.run_app(
         WorkerOptions(
             entrypoint_fnc=entrypoint,
             prewarm_fnc=prewarm,
+            agent_name=agent_name,
         )
     )
 

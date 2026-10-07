@@ -1,0 +1,4 @@
+PROMPT: Any vegetarian wraps?
+LATENCY_MS: 1265.7
+---
+Yes, we have the **Garden Hummus Wrap** and the **Caprese Pesto Wrap**. Would you like to hear the ingredients for either?

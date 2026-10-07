@@ -65,3 +65,17 @@ tool,gemini-3.1-flash-lite,,2,5983.36,,,add two of item burger_01,cart.add_item,
 tool,gemini-3.1-flash-lite,,3,3203.08,,,make it one of item burger_01,cart.set_quantity,cart.add_item,"{""item_id"": ""burger_01"", ""quantity"": 1}",False
 tool,gemini-3.1-flash-lite,,4,1391.81,,,remove item wrap_01,cart.remove_item,navigate,"{""target"": ""cart""}",False
 tool,gemini-3.1-flash-lite,,5,1189.15,,,what's in my cart,get_cart,get_cart,{},True
+tool,gemini-3.1-flash-lite,,6,1147.69,,,go to checkout,navigate,navigate,"{""target"": ""checkout""}",True
+tool,gemini-3.1-flash-lite,,7,1268.32,,,go back,navigate,navigate,"{""target"": ""back""}",True
+tool,gemini-3.1-flash-lite,,8,1485.69,,,item details for wrap_02,get_item_details,get_item_details,"{""item_id"": ""wrap_02""}",True
+tool,gemini-3.1-flash-lite,,9,1924.28,,,select item zinger_01,select_item,select_item,"{""item_id"": ""zinger_01""}",True
+tool,gemini-3.1-flash-lite,,10,4591.26,,,checkout summary,checkout.get_summary,checkout.get_summary,{},True
+tool,gemini-3.1-flash-lite,,11,2135.49,,,"place the demo order, yes",checkout.submit_demo_order,checkout.submit_demo_order,"{""confirmed"": true}",True
+tool,gemini-3.1-flash-lite,,12,1731.49,,,undo that,undo_last_reversible_action,undo_last_reversible_action,{},True
+tool,gemini-3.1-flash-lite,,13,1626.03,,,where am I,get_current_context,get_current_context,{},True
+tool,gemini-3.1-flash-lite,,14,1301.47,,,filter spicy max 1000,filter_menu,filter_menu,"{""max_price_pkr"": 1000, ""tags"": [""spicy""]}",True
+tool,gemini-3.1-flash-lite,,15,1138.68,,,search karahi,search_menu,search_menu,"{""query"": ""karahi""}",True
+tool,gemini-3.1-flash-lite,,16,1200.17,,,add one dessert_01,cart.add_item,cart.add_item,"{""item_id"": ""dessert_01"", ""quantity"": 1}",True
+tool,gemini-3.1-flash-lite,,17,1102.38,,,set quantity of burger_01 to 3,cart.set_quantity,cart.set_quantity,"{""item_id"": ""burger_01"", ""quantity"": 3}",True
+tool,gemini-3.1-flash-lite,,18,2246.70,,,remove burger_01,cart.remove_item,cart.remove_item,"{""item_id"": ""burger_01""}",True
+tool,gemini-3.1-flash-lite,,19,2031.10,,,open home,navigate,navigate,"{""target"": ""home""}",True

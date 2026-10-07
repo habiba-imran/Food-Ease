@@ -1,0 +1,270 @@
+{
+  "$defs": {
+    "CartLine": {
+      "additionalProperties": false,
+      "properties": {
+        "item_id": {
+          "pattern": "^[a-z][a-z0-9_\\-]{1,63}$",
+          "title": "Item Id",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "quantity": {
+          "maximum": 99,
+          "minimum": 1,
+          "title": "Quantity",
+          "type": "integer"
+        },
+        "unit_price": {
+          "minimum": 0,
+          "title": "Unit Price",
+          "type": "number"
+        }
+      },
+      "required": [
+        "item_id",
+        "name",
+        "quantity",
+        "unit_price"
+      ],
+      "title": "CartLine",
+      "type": "object"
+    },
+    "CartSummary": {
+      "additionalProperties": false,
+      "properties": {
+        "lines": {
+          "items": {
+            "$ref": "#/$defs/CartLine"
+          },
+          "title": "Lines",
+          "type": "array"
+        },
+        "currency": {
+          "default": "PKR",
+          "title": "Currency",
+          "type": "string"
+        },
+        "subtotal": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Subtotal"
+        },
+        "fees": {
+          "items": {
+            "$ref": "#/$defs/FeeLine"
+          },
+          "title": "Fees",
+          "type": "array"
+        },
+        "total": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Total"
+        }
+      },
+      "title": "CartSummary",
+      "type": "object"
+    },
+    "FeeLine": {
+      "additionalProperties": false,
+      "properties": {
+        "code": {
+          "title": "Code",
+          "type": "string"
+        },
+        "label": {
+          "title": "Label",
+          "type": "string"
+        },
+        "amount": {
+          "title": "Amount",
+          "type": "number"
+        }
+      },
+      "required": [
+        "code",
+        "label",
+        "amount"
+      ],
+      "title": "FeeLine",
+      "type": "object"
+    },
+    "VisibleItem": {
+      "additionalProperties": false,
+      "properties": {
+        "item_id": {
+          "pattern": "^[a-z][a-z0-9_\\-]{1,63}$",
+          "title": "Item Id",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "price": {
+          "minimum": 0,
+          "title": "Price",
+          "type": "number"
+        },
+        "currency": {
+          "default": "PKR",
+          "title": "Currency",
+          "type": "string"
+        },
+        "descriptors": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Descriptors",
+          "type": "array"
+        },
+        "available": {
+          "default": true,
+          "title": "Available",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "item_id",
+        "name",
+        "price"
+      ],
+      "title": "VisibleItem",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "VA-09 application context. Bounded visible_items \u2014 not a full catalog dump.",
+  "properties": {
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "session_id": {
+      "title": "Session Id",
+      "type": "string"
+    },
+    "revision": {
+      "minimum": 0,
+      "title": "Revision",
+      "type": "integer"
+    },
+    "route": {
+      "title": "Route",
+      "type": "string"
+    },
+    "focus_item_id": {
+      "anyOf": [
+        {
+          "pattern": "^[a-z][a-z0-9_\\-]{1,63}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Focus Item Id"
+    },
+    "valid_actions": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Valid Actions",
+      "type": "array"
+    },
+    "valid_navigation_targets": {
+      "description": "Semantic IDs including back/home when available.",
+      "items": {
+        "type": "string"
+      },
+      "title": "Valid Navigation Targets",
+      "type": "array",
+      "x-habiba-default": "include back and home when the app supports them"
+    },
+    "filter_tags": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Filter Tags",
+      "type": "array"
+    },
+    "search_query": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Search Query"
+    },
+    "visible_items": {
+      "items": {
+        "$ref": "#/$defs/VisibleItem"
+      },
+      "maxItems": 25,
+      "title": "Visible Items",
+      "type": "array"
+    },
+    "cart": {
+      "$ref": "#/$defs/CartSummary"
+    },
+    "checkout_available": {
+      "default": false,
+      "title": "Checkout Available",
+      "type": "boolean"
+    },
+    "action_pending": {
+      "default": false,
+      "title": "Action Pending",
+      "type": "boolean"
+    },
+    "language": {
+      "default": "en",
+      "title": "Language",
+      "type": "string"
+    },
+    "spoken_feedback_preference": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Spoken Feedback Preference"
+    }
+  },
+  "required": [
+    "session_id",
+    "revision",
+    "route"
+  ],
+  "title": "ContextSnapshot",
+  "type": "object"
+}

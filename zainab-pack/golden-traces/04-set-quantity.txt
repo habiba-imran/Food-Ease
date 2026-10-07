@@ -1,0 +1,14 @@
+# Golden 04 — Absolute set_quantity (not incremental add)
+# Source: voice-agent/evidence/phase-10/traces/t07.txt
+# Related dialogue suite: DS-07 exercises cart.add_item then remove; set_quantity is the absolute-qty path.
+
+# Context: cart already had a Cola Can line; user corrects quantity to 1.
+qty=1
+ASSISTANT: Updated. You have 1 Cola Can. Total one hundred fifty rupees.
+
+# Expected website/domain behavior:
+# - operation: cart.set_quantity
+# - arguments: { "item_id": "drink-cola", "quantity": 1 }
+# - must SET absolute quantity, never treat as "add one more"
+# - verified cart line quantity === 1; return correlated app.action_result
+# - seed unit price drink-cola = 100 PKR; MockApp may add service_fee_pkr (50) → spoken total can be 150
