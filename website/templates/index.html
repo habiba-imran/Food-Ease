@@ -1,0 +1,550 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{{ app_name }} | Accessible Food Ordering</title>
+    <link rel="stylesheet" href="/static/css/app.css?v=phase15-no-horizontal-scroll" />
+    <script defer src="/static/js/app.js?v=phase15-no-horizontal-scroll"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to ordering preview</a>
+    <header class="site-header" aria-label="FoodEase header">
+      <div class="quick-pills" aria-label="Restaurant quick details">
+        <span class="utility-pill"><b>Delivery</b> Ali Abad</span>
+        <span class="utility-pill"><b>Call</b> 042 111 634 111</span>
+      </div>
+      <a class="brand-mark" href="/" aria-label="FoodEase home">
+        <span class="brand-icon" aria-hidden="true">FE</span>
+        <span>
+          <strong>{{ app_name }}</strong>
+          <small>Accessible food ordering</small>
+        </span>
+      </a>
+      <nav class="main-nav" aria-label="Primary navigation">
+        <a href="#popular">Menu</a>
+        <a href="#categories">Categories</a>
+        <a href="#ar-preview">AR</a>
+        <a href="#assistant">Guide</a>
+        <a href="#evidence">Evidence</a>
+      </nav>
+      <div class="header-actions">
+        <a class="cart-button" href="#cart-preview" aria-label="Open cart preview">
+          <span aria-hidden="true">Cart</span>
+          <strong data-cart-count>0</strong>
+        </a>
+        <button class="icon-button" type="button" data-header-theme aria-label="Switch to dark mode"></button>
+      </div>
+    </header>
+
+    <main id="main" class="shell">
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-copy">
+          <p class="eyebrow">The menu everyone can use</p>
+          <h1 id="hero-title">
+            <span>Food</span>
+            <span>Ease</span>
+            <em data-preview-style>Hot wrap</em>
+          </h1>
+          <p data-preview-copy>
+            Hot chicken wrap with mayo, built for touch ordering now and voice guidance next.
+          </p>
+          <div class="hero-actions" aria-label="Ordering actions">
+            <a class="button primary" href="#popular">Start ordering</a>
+            <button class="button ar" type="button" data-open-ar>View on table</button>
+            <a class="button ghost" href="#assistant">Try guided mode</a>
+          </div>
+          <dl class="trust-strip" aria-label="FoodEase readiness">
+            <div>
+              <dt>Menu items</dt>
+              <dd>{{ catalog_summary.item_count }}</dd>
+            </div>
+            <div>
+              <dt>Live categories</dt>
+              <dd>{{ catalog_summary.category_count }}</dd>
+            </div>
+            <div>
+              <dt>Demo checkout</dt>
+              <dd>No payment</dd>
+            </div>
+          </dl>
+        </div>
+
+        <div class="hero-showcase" data-immersive-stage data-preview-tone="wraps" aria-label="Interactive dish preview concept">
+          <button class="hero-arrow hero-arrow-left" type="button" data-hero-prev aria-label="Previous dish preview">&lsaquo;</button>
+          <button class="hero-arrow hero-arrow-right" type="button" data-hero-next aria-label="Next dish preview">&rsaquo;</button>
+          <p class="hero-note" data-preview-note>A wrap that does not hide from the camera. Clear, readable, order-ready.</p>
+          <div class="showcase-caption">
+            <span>3D menu preview</span>
+            <strong data-preview-title>Hot Chicken Wrap</strong>
+          </div>
+          <div class="plate-scene" aria-hidden="true">
+            <span class="leaf leaf-one"></span>
+            <span class="leaf leaf-two"></span>
+            <div class="plate">
+              <span class="food-piece piece-one"></span>
+              <span class="food-piece piece-two"></span>
+              <span class="food-piece piece-three"></span>
+              <span class="food-piece piece-four"></span>
+            </div>
+            <span
+              class="hero-food-photo item-wrap-hot-chicken"
+              style="background-image: url('/static/img/items/wrap-hot-chicken.png')"
+              data-preview-photo
+              role="img"
+              aria-label="Hot Chicken Wrap preview photo"
+            ></span>
+            <span class="chopstick stick-one"></span>
+            <span class="chopstick stick-two"></span>
+          </div>
+          <div class="hero-ticket">
+            <span>Selected preview</span>
+            <strong data-preview-price-label>850 PKR</strong>
+            <small>AR-safe: no camera starts yet</small>
+          </div>
+          <div class="hero-dots" aria-label="Dish preview carousel position">
+            <button class="is-active" type="button" data-preview-item="wrap-hot-chicken" data-preview-name="Hot Chicken Wrap" data-preview-price="850 PKR" data-preview-tone="wraps" data-preview-style="Hot wrap" data-preview-copy="Hot chicken wrap with mayo, built for touch ordering now and voice guidance next." data-preview-note="A wrap that does not hide from the camera. Clear, readable, order-ready." aria-label="Show Hot Chicken Wrap"></button>
+            <button type="button" data-preview-item="zinger-classic" data-preview-name="Zinger Burger" data-preview-price="650 PKR" data-preview-tone="burgers" data-preview-style="Zinger" data-preview-copy="Classic spicy chicken with a bold crunch and a clean one-tap path to cart." data-preview-note="Crisp chicken, big contrast, no blurry product crop." aria-label="Show Zinger Burger"></button>
+            <button type="button" data-preview-item="biryani-chicken" data-preview-name="Chicken Biryani" data-preview-price="550 PKR" data-preview-tone="biryani" data-preview-style="Biryani" data-preview-copy="Basmati chicken biryani previewed clearly before the order is placed." data-preview-note="A rice bowl preview that stays readable for manual and assisted browsing." aria-label="Show Chicken Biryani"></button>
+            <button type="button" data-preview-item="dessert-gulab" data-preview-name="Gulab Jamun" data-preview-price="250 PKR" data-preview-tone="desserts" data-preview-style="Sweet" data-preview-copy="Warm gulab jamun, previewed as a dessert moment instead of another plain card." data-preview-note="Dessert stays sharp, simple, and ready for AR later." aria-label="Show Gulab Jamun"></button>
+          </div>
+        </div>
+        <div class="hero-food-rail" aria-label="Dish preview carousel">
+          <button class="is-active" type="button" data-hero-slide data-preview-item="wrap-hot-chicken" data-preview-name="Hot Chicken Wrap" data-preview-price="850 PKR" data-preview-tone="wraps" data-preview-style="Hot wrap" data-preview-copy="Hot chicken wrap with mayo, built for touch ordering now and voice guidance next." data-preview-note="A wrap that does not hide from the camera. Clear, readable, order-ready.">
+            <img src="/static/img/items/wrap-hot-chicken.png" alt="" />
+            <span>Hot wrap</span>
+          </button>
+          <button type="button" data-hero-slide data-preview-item="zinger-classic" data-preview-name="Zinger Burger" data-preview-price="650 PKR" data-preview-tone="burgers" data-preview-style="Zinger" data-preview-copy="Classic spicy chicken with a bold crunch and a clean one-tap path to cart." data-preview-note="Crisp chicken, big contrast, no blurry product crop.">
+            <img src="/static/img/items/zinger-classic.png" alt="" />
+            <span>Zinger</span>
+          </button>
+          <button type="button" data-hero-slide data-preview-item="biryani-chicken" data-preview-name="Chicken Biryani" data-preview-price="550 PKR" data-preview-tone="biryani" data-preview-style="Biryani" data-preview-copy="Basmati chicken biryani previewed clearly before the order is placed." data-preview-note="A rice bowl preview that stays readable for manual and assisted browsing.">
+            <img src="/static/img/items/biryani-chicken.png" alt="" />
+            <span>Biryani</span>
+          </button>
+          <button type="button" data-hero-slide data-preview-item="dessert-gulab" data-preview-name="Gulab Jamun" data-preview-price="250 PKR" data-preview-tone="desserts" data-preview-style="Sweet" data-preview-copy="Warm gulab jamun, previewed as a dessert moment instead of another plain card." data-preview-note="Dessert stays sharp, simple, and ready for AR later.">
+            <img src="/static/img/items/dessert-gulab.png" alt="" />
+            <span>Sweet</span>
+          </button>
+        </div>
+      </section>
+
+      <section class="feature-band" aria-label="FoodEase interaction promises">
+        <article>
+          <span aria-hidden="true">01</span>
+          <h2>Manual first</h2>
+          <p>Every ordering path works with ordinary clicks, keyboard focus, and clear cart feedback.</p>
+        </article>
+        <article>
+          <span aria-hidden="true">02</span>
+          <h2>Voice ready</h2>
+          <p>The website keeps the agent contract stable so guided ordering can sit beside the UI.</p>
+        </article>
+        <article>
+          <span aria-hidden="true">03</span>
+          <h2>AR planned</h2>
+          <p>Dish previews are progressive enhancements, never the only way to understand the food.</p>
+        </article>
+      </section>
+
+      <section id="ar-preview" class="ar-runway" aria-labelledby="ar-title">
+        <div class="ar-copy">
+          <p class="eyebrow">Phase 12 AR enhancement</p>
+          <h2 id="ar-title">Bring the selected dish onto the table</h2>
+          <p>
+            FoodEase keeps AR optional: the selected dish can open as a tabletop preview,
+            while the normal menu, cart and checkout stay fully usable.
+          </p>
+          <div class="ar-action-row">
+            <button class="button primary" type="button" data-open-ar>Open AR preview</button>
+            <span data-ar-inline-status aria-live="polite">Fallback preview is ready.</span>
+          </div>
+        </div>
+        <div class="ar-stage-card" aria-hidden="true">
+          <span class="ar-floor"></span>
+          <span class="ar-scan-ring ring-one"></span>
+          <span class="ar-scan-ring ring-two"></span>
+          <img src="/static/img/items/wrap-hot-chicken.png" alt="" data-ar-mini-photo />
+          <span class="ar-pin">AR</span>
+        </div>
+      </section>
+
+      <section class="access-deck" aria-labelledby="access-title">
+        <div>
+          <p class="eyebrow">Interaction comfort</p>
+          <h2 id="access-title">Tune the ordering view</h2>
+          <p data-context-summary aria-live="polite">Showing all dishes. Cart is empty.</p>
+        </div>
+        <div class="access-actions" aria-label="Display preference controls">
+          <button type="button" data-access-toggle="large">Larger text</button>
+          <button type="button" data-access-toggle="contrast">High contrast</button>
+          <button type="button" data-access-toggle="motion">Calm motion</button>
+        </div>
+      </section>
+
+      <section id="categories" class="section-block" aria-labelledby="categories-title">
+        <div class="section-heading">
+          <p class="eyebrow">Explore quickly</p>
+          <h2 id="categories-title">A menu map built from the real FoodEase catalog</h2>
+        </div>
+        <div class="category-rail">
+          {% for category in category_cards %}
+          <button
+            class="category-card"
+            type="button"
+            data-category-trigger="{{ category.id }}"
+            aria-label="Filter menu by {{ category.label }}"
+          >
+            <span class="category-photo sprite-{{ category.id }}" aria-hidden="true"></span>
+            <span class="category-copy">
+              <strong>{{ category.label }}</strong>
+              <small>{{ category.available }} available - {{ category.sample }}</small>
+            </span>
+          </button>
+          {% endfor %}
+        </div>
+      </section>
+
+      <section id="popular" class="ordering-layout" aria-labelledby="popular-title">
+        <div class="menu-board">
+          <div class="section-heading compact">
+            <p class="eyebrow">Popular picks</p>
+            <h2 id="popular-title">Browse the menu like a premium ordering counter</h2>
+          </div>
+
+          <div class="menu-toolbar" aria-label="Menu controls">
+            <label class="search-field" for="menu-search">
+              <span>Search menu</span>
+              <input id="menu-search" type="search" placeholder="Try biryani, burger, chai..." />
+            </label>
+            <div class="filter-bar" role="group" aria-label="Preview filters">
+              <button class="is-active" type="button" data-filter="all">All</button>
+              <button type="button" data-filter="vegetarian">Vegetarian</button>
+              <button type="button" data-filter="spicy">Spicy</button>
+              <button type="button" data-filter="budget">Under 800</button>
+              <button type="button" data-filter="available">Available</button>
+            </div>
+          </div>
+
+          <p class="menu-count" aria-live="polite"><span data-visible-count>{{ menu_items|length }}</span> dishes showing</p>
+          <div class="empty-results" data-empty-results hidden>
+            <strong>No matching dishes found.</strong>
+            <p>Clear filters or search another dish name to continue ordering.</p>
+            <button type="button" data-clear-menu-state>Show all dishes</button>
+          </div>
+
+          <div class="menu-grid">
+            {% for item in menu_items %}
+            <article
+              class="menu-card {% if not item.available %}is-unavailable{% endif %}"
+              data-menu-item
+              data-id="{{ item.item_id }}"
+              data-name="{{ item.name }}"
+              data-price="{{ item.price|int }}"
+              data-category="{{ item.category_id }}"
+              data-tags="{{ item.tags|join(' ') }}"
+              data-available="{{ 'true' if item.available else 'false' }}"
+              data-description="{{ item.description }}"
+            >
+              <div class="menu-art tone-{{ item.category_id }}">
+                <img
+                  class="food-photo"
+                  src="/static/img/items/{{ item.item_id }}.png"
+                  alt="{{ item.name }} food photo"
+                  loading="lazy"
+                />
+              </div>
+              <div class="menu-card-body">
+                <div>
+                  <p class="menu-category">{{ item.category }}</p>
+                  <h3>{{ item.name }}</h3>
+                  <p>{{ item.description }}</p>
+                </div>
+                <div class="tag-row">
+                  {% if item.tags %}
+                    {% for tag in item.tags %}
+                    <span>{{ tag }}</span>
+                    {% endfor %}
+                  {% else %}
+                    <span>classic</span>
+                  {% endif %}
+                  {% if not item.available %}
+                  <span>sold out</span>
+                  {% endif %}
+                </div>
+                <div class="card-action-row">
+                  <strong>{{ item.price|int }} PKR</strong>
+                  <span>
+                    <button type="button" data-detail-item>Details</button>
+                    <button type="button" data-add-item {% if not item.available %}disabled{% endif %}>
+                      {{ "Sold out" if not item.available else "Add" }}
+                    </button>
+                  </span>
+                </div>
+              </div>
+            </article>
+            {% endfor %}
+          </div>
+        </div>
+
+        <aside id="cart-preview" class="cart-preview" aria-labelledby="cart-title">
+          <p class="eyebrow">Order summary</p>
+          <h2 id="cart-title">Cart preview</h2>
+          <div class="cart-lines" data-cart-lines aria-live="polite">
+            <p class="empty-cart">Your cart is empty. Add a dish to preview checkout.</p>
+          </div>
+          <p class="order-status" data-order-status aria-live="polite">Cart is synced with the FoodEase app state.</p>
+          <div class="fee-line">
+            <span>Subtotal</span>
+            <strong data-cart-subtotal>0 PKR</strong>
+          </div>
+          <div class="fee-line">
+            <span>Service fee</span>
+            <strong data-cart-fee data-service-fee="{{ catalog_summary.service_fee_pkr|int }}">0 PKR</strong>
+          </div>
+          <div class="total-line">
+            <span>Total</span>
+            <strong data-cart-total>0 PKR</strong>
+          </div>
+          <button class="button primary full" type="button" data-checkout-button disabled>
+            Demo checkout
+          </button>
+          <a class="api-link" href="/api/catalog/items">Inspect catalog API</a>
+        </aside>
+      </section>
+
+      <section id="assistant" class="assistant-section" aria-labelledby="assistant-title">
+        <div class="assistant-copy">
+          <p class="eyebrow">Consent-first guidance</p>
+          <h2 id="assistant-title">Mock agent harness for text, status, and semantic actions</h2>
+          <p>
+            This panel does not start a microphone or real voice service. It displays
+            product-facing agent states and injects contract-shaped demo actions into
+            the same cart and catalog used by manual ordering.
+          </p>
+        </div>
+        <div class="assistant-panel" aria-label="Mock assistant test harness">
+          <div class="assistant-status" data-agent-state="off/awaiting_consent">
+            <span data-agent-dot></span>
+            <strong data-agent-status>off/awaiting_consent</strong>
+          </div>
+          <div class="assistant-controls" aria-label="Assistance controls">
+            <button type="button" data-assist-start>Start typed guidance</button>
+            <button type="button" data-assist-pause>Pause</button>
+            <button type="button" data-assist-end>End</button>
+          </div>
+          <div class="scenario-grid" aria-label="Mock agent action scenarios">
+            <button type="button" data-scenario="filter-veg">Filter vegetarian under 800</button>
+            <button type="button" data-scenario="add-wrap">Add hot chicken wrap</button>
+            <button type="button" data-scenario="checkout-summary">Ask checkout summary</button>
+          </div>
+          <div class="message-list" data-agent-transcript aria-live="polite" aria-label="Mock conversation transcript">
+            <p class="assistant-message">Demo mode ready. Start typed guidance to inject mock contract events.</p>
+          </div>
+          <form class="assistant-form" data-assistant-form>
+            <label for="assistant-text">Type a request</label>
+            <div>
+              <input id="assistant-text" name="assistant-text" placeholder="Try: show burgers" data-assistant-input />
+              <button type="submit">Send</button>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <section class="contract-cockpit" aria-labelledby="contract-title">
+        <div class="contract-copy">
+          <p class="eyebrow">Agent readiness</p>
+          <h2 id="contract-title">Live app context and contract trace cockpit</h2>
+          <p>
+            This panel proves FoodEase exposes semantic state for the future voice agent:
+            revision, route, focused item, visible results, valid actions and verified cart totals.
+          </p>
+        </div>
+        <div class="context-grid" aria-label="Current app context">
+          <div>
+            <span>Revision</span>
+            <strong data-contract-revision>0</strong>
+          </div>
+          <div>
+            <span>Route</span>
+            <strong data-contract-route>home</strong>
+          </div>
+          <div>
+            <span>Focused item</span>
+            <strong data-contract-focus>none</strong>
+          </div>
+          <div>
+            <span>Visible items</span>
+            <strong data-contract-visible>0</strong>
+          </div>
+          <div>
+            <span>Valid actions</span>
+            <strong data-contract-actions>0</strong>
+          </div>
+          <div>
+            <span>Cart total</span>
+            <strong data-contract-total>0 PKR</strong>
+          </div>
+          <div>
+            <span>Cart lines</span>
+            <strong data-contract-cart-lines>0</strong>
+          </div>
+        </div>
+        <div class="trace-panel">
+          <div class="trace-actions" aria-label="Contract trace buttons">
+            <button type="button" data-contract-trace="out-of-stock">Reject sold-out item</button>
+            <button type="button" data-contract-trace="stale">Reject stale revision</button>
+            <button type="button" data-contract-trace="duplicate">Duplicate action ID</button>
+          </div>
+          <div class="trace-log" data-trace-log aria-live="polite">
+            <p>Trace results will appear here.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="evidence" class="evidence-section" aria-labelledby="evidence-title">
+        <div class="evidence-copy">
+          <p class="eyebrow">Phase 13 acceptance evidence</p>
+          <h2 id="evidence-title">A test runway for the final handover</h2>
+          <p>
+            The smoke runner injects contract-shaped app events, verifies shared
+            cart/context behavior, and prepares a downloadable evidence snapshot.
+          </p>
+        </div>
+        <div class="evidence-console" aria-label="Acceptance evidence console">
+          <div class="evidence-score">
+            <span data-acceptance-score>Not run yet</span>
+            <strong>W01-W22 acceptance record</strong>
+            <small data-acceptance-updated>Written report included in docs.</small>
+          </div>
+          <div class="evidence-actions">
+            <button type="button" data-run-acceptance>Run contract smoke</button>
+            <button type="button" data-export-acceptance>Download evidence JSON</button>
+            <button type="button" data-export-context>Download context</button>
+          </div>
+          <div class="acceptance-grid" data-acceptance-grid aria-live="polite">
+            <article data-check-id="W01"><strong>W01-W03</strong><span>Manual/keyboard base</span><em>Ready</em></article>
+            <article data-check-id="W04"><strong>W04-W08</strong><span>Menu, cart, checkout</span><em>Ready</em></article>
+            <article data-check-id="W09"><strong>W09-W15</strong><span>Mock agent contract</span><em>Ready</em></article>
+            <article data-check-id="W16"><strong>W16-W22</strong><span>Assistive states/fallback</span><em>Ready</em></article>
+          </div>
+          <div class="trace-log evidence-log" data-acceptance-log aria-live="polite">
+            <p>Acceptance smoke results will appear here.</p>
+          </div>
+        </div>
+      </section>
+
+      <dialog class="item-dialog" data-item-dialog aria-labelledby="item-dialog-title">
+        <div class="detail-shell">
+          <div class="detail-visual" aria-hidden="true">
+            <span class="detail-plate"></span>
+            <span
+              class="detail-food-photo item-wrap-hot-chicken"
+              style="background-image: url('/static/img/items/wrap-hot-chicken.png')"
+              data-detail-photo
+            ></span>
+            <span class="detail-chip chip-one"></span>
+            <span class="detail-chip chip-two"></span>
+            <span class="detail-chip chip-three"></span>
+          </div>
+          <div class="detail-copy">
+            <button class="dialog-close" type="button" data-detail-close aria-label="Close item details">Close</button>
+            <p class="eyebrow" data-detail-category>Menu item</p>
+            <h2 id="item-dialog-title" data-detail-name>Item details</h2>
+            <p data-detail-description>Select an item to inspect price, availability, ingredients, and quantity.</p>
+            <div class="detail-tags" data-detail-tags></div>
+            <dl class="detail-facts">
+              <div>
+                <dt>Price</dt>
+                <dd data-detail-price>0 PKR</dd>
+              </div>
+              <div>
+                <dt>Status</dt>
+                <dd data-detail-availability>Available</dd>
+              </div>
+              <div>
+                <dt>Ingredients</dt>
+                <dd data-detail-ingredients>No ingredient notes listed.</dd>
+              </div>
+            </dl>
+            <label class="quantity-stepper" for="detail-quantity">
+              <span>Quantity</span>
+              <input id="detail-quantity" data-detail-quantity type="number" min="1" max="12" value="1" />
+            </label>
+            <div class="detail-actions">
+              <button class="button primary" type="button" data-detail-add>Add selected quantity</button>
+              <button class="button ar" type="button" data-detail-ar>View on table</button>
+              <button class="button ghost" type="button" data-detail-close-secondary>Keep browsing</button>
+            </div>
+          </div>
+        </div>
+      </dialog>
+
+      <dialog class="ar-dialog" data-ar-dialog aria-labelledby="ar-dialog-title">
+        <div class="ar-dialog-shell">
+          <button class="dialog-close" type="button" data-ar-close aria-label="Close AR preview">Close</button>
+          <div class="ar-live-board">
+            <p class="eyebrow">Optional AR preview</p>
+            <h2 id="ar-dialog-title" data-ar-dish-name>Hot Chicken Wrap</h2>
+            <p data-ar-support-message aria-live="polite">Checking AR support...</p>
+            <div class="ar-facts" aria-label="Selected AR dish details">
+              <span data-ar-price>850 PKR</span>
+              <span data-ar-mode>Fallback tabletop</span>
+              <span>No camera started</span>
+            </div>
+          </div>
+          <div class="ar-tabletop" aria-label="Tabletop dish fallback preview">
+            <span class="ar-grid"></span>
+            <span class="ar-shadow"></span>
+            <img src="/static/img/items/wrap-hot-chicken.png" alt="Selected dish preview" data-ar-photo />
+            <span class="ar-depth-label">table scale preview</span>
+          </div>
+          <div class="ar-dialog-actions">
+            <button class="button ghost" type="button" data-ar-spin-left aria-label="Rotate dish left">Rotate left</button>
+            <button class="button ghost" type="button" data-ar-spin-right aria-label="Rotate dish right">Rotate right</button>
+            <a class="button primary" href="#popular" data-ar-close-link>Continue ordering</a>
+          </div>
+        </div>
+      </dialog>
+
+      <dialog class="checkout-dialog" data-checkout-dialog aria-labelledby="checkout-dialog-title">
+        <div class="checkout-shell">
+          <button class="dialog-close" type="button" data-checkout-close aria-label="Close checkout review">Close</button>
+          <section data-checkout-review>
+            <p class="eyebrow">Demo checkout review</p>
+            <h2 id="checkout-dialog-title">Confirm your FoodEase order</h2>
+            <p class="checkout-note">
+              No payment is collected. This simulated checkout is bound to the current cart summary,
+              so cart edits require a fresh review.
+            </p>
+            <div class="checkout-lines" data-checkout-lines></div>
+            <dl class="checkout-totals">
+              <div>
+                <dt>Subtotal</dt>
+                <dd data-checkout-subtotal>0 PKR</dd>
+              </div>
+              <div>
+                <dt>Service fee</dt>
+                <dd data-checkout-fee>0 PKR</dd>
+              </div>
+              <div>
+                <dt>Total</dt>
+                <dd data-checkout-total>0 PKR</dd>
+              </div>
+            </dl>
+            <div class="checkout-actions">
+              <button class="button primary" type="button" data-confirm-order>Confirm demo order</button>
+              <button class="button ghost" type="button" data-edit-cart>Edit cart first</button>
+            </div>
+          </section>
+          <section class="receipt-panel" data-receipt-panel hidden>
+            <p class="eyebrow">Demo order placed</p>
+            <h2 data-receipt-id>DEMO-0000</h2>
+            <p data-receipt-summary>Your simulated receipt is ready.</p>
+            <button class="button primary" type="button" data-receipt-close>Back to menu</button>
+          </section>
+        </div>
+      </dialog>
+    </main>
+  </body>
+</html>
