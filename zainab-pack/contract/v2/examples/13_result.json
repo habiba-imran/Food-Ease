@@ -1,0 +1,42 @@
+{
+  "schema_version": "2.0",
+  "session_id": "contract-demo",
+  "event_id": "result-contract-13",
+  "turn_id": "contract-turn",
+  "timestamp": "2026-10-17T12:00:00Z",
+  "context_revision": 11,
+  "type": "app.action_result",
+  "reply_to": "request-contract-13",
+  "payload": {
+    "action_id": "contract-13",
+    "status": "success",
+    "verified_state": {
+      "demo_order_id": "DEMO-0001",
+      "demo": true,
+      "order": {
+        "lines": [
+          {
+            "item_id": "wrap-hot-chicken",
+            "name": "Hot Chicken Wrap",
+            "quantity": 2,
+            "unit_price": 850.0,
+            "line_total": 1700.0
+          }
+        ],
+        "currency": "PKR",
+        "subtotal": 1700.0,
+        "fees": [
+          {
+            "code": "service",
+            "label": "Service fee",
+            "amount": 50.0
+          }
+        ],
+        "total": 1750.0
+      }
+    },
+    "error_code": null,
+    "error_message": null,
+    "operation": "checkout.submit_demo_order"
+  }
+}

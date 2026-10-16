@@ -1,0 +1,16 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "target": {
+      "maxLength": 64,
+      "minLength": 1,
+      "title": "Target",
+      "type": "string"
+    }
+  },
+  "required": [
+    "target"
+  ],
+  "title": "NavigateArgs",
+  "type": "object"
+}

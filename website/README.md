@@ -6,6 +6,16 @@ This folder is owned by Zainab's website work. It must not duplicate Habiba's
 voice brain or orchestration secrets. The website owns catalog display, cart
 state, checkout state, app context and the future app-seat integration boundary.
 
+Final orchestration Phase 2 adds owner-scoped shopping sessions, the shared 2.0
+validator, atomic/idempotent operation handling and receipt lookup. See the
+[authority API and limits](../orchestration/docs/PHASE_02_APPLICATION_AUTHORITY.md).
+Use one website process: state is bounded and in memory. Voice/LiveKit integration
+and the spoken mode chooser remain later work.
+
+Phase 3 adds the tested, injectable `assistance-controller.mjs` lifecycle module.
+The page does not import it yet; LiveKit SDK/page wiring remains Phase 5. See the
+[lifecycle and verification boundary](../orchestration/docs/PHASE_03_ASSISTANCE_LIFECYCLE.md).
+
 ## What This App Demonstrates
 
 - Complete manual food-ordering journey.
@@ -39,9 +49,10 @@ required for the standalone website demo.
 
 ```bash
 cd website
-.venv\Scripts\python.exe -m pytest tests\test_app.py tests\test_domain.py
+.venv\Scripts\python.exe -m pytest
 .venv\Scripts\python.exe -m ruff check src tests
 node --check static\js\app.js
+node --test tests\session_transport.test.cjs
 ```
 
 ## Important Docs

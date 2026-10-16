@@ -1,0 +1,24 @@
+{
+  "schema_version": "2.0",
+  "session_id": "contract-demo",
+  "event_id": "result-contract-8",
+  "turn_id": "contract-turn",
+  "timestamp": "2026-10-17T12:00:00Z",
+  "context_revision": 8,
+  "type": "app.action_result",
+  "reply_to": "request-contract-8",
+  "payload": {
+    "action_id": "contract-8",
+    "status": "success",
+    "verified_state": {
+      "lines": [],
+      "currency": "PKR",
+      "subtotal": 0.0,
+      "fees": [],
+      "total": 0.0
+    },
+    "error_code": null,
+    "error_message": null,
+    "operation": "cart.remove_item"
+  }
+}

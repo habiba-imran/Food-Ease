@@ -1,0 +1,18 @@
+{
+  "schema_version": "2.0",
+  "session_id": "contract-demo",
+  "event_id": "request-contract-13",
+  "turn_id": "contract-turn",
+  "timestamp": "2026-10-17T12:00:00Z",
+  "context_revision": 10,
+  "type": "agent.action_request",
+  "payload": {
+    "action_id": "contract-13",
+    "operation": "checkout.submit_demo_order",
+    "arguments": {
+      "confirmed": true,
+      "confirmation_token": "confirm_9_1",
+      "summary_revision": 9
+    }
+  }
+}

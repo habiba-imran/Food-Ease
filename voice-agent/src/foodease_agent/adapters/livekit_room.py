@@ -132,10 +132,6 @@ class LiveKitRoom:
             attrs = dict(p.attributes or {})
             if attrs.get("foodease.role") == "app":
                 return p.identity
-        for p in self._room.remote_participants.values():
-            ident = p.identity or ""
-            if not ident.startswith("agent") and "agent" not in ident.lower():
-                return ident
         return None
 
     async def wait_for_app(self, *, timeout_s: float = 15.0) -> str:

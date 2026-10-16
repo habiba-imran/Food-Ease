@@ -1,0 +1,14 @@
+{
+  "schema_version": "2.0",
+  "session_id": "contract-demo",
+  "event_id": "event-agent.error",
+  "turn_id": "contract-turn",
+  "timestamp": "2026-10-17T12:00:00Z",
+  "context_revision": 1,
+  "type": "agent.error",
+  "payload": {
+    "code": "not_available",
+    "message": "Assistance is unavailable.",
+    "fatal": false
+  }
+}

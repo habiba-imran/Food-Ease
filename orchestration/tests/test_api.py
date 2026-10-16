@@ -24,6 +24,7 @@ def _settings() -> Settings:
         rate_limit_window_seconds=60,
         livekit_agent_dispatch=False,
         foodease_agent_name="foodease",
+        enable_legacy_api=True,
     )
 
 

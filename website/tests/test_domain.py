@@ -107,18 +107,26 @@ def test_checkout_requires_current_confirmation_and_creates_one_demo_order() -> 
     submit = domain.execute_action(
         "submit-1",
         "checkout.submit_demo_order",
-        {"confirmed": True, "confirmation_token": summary["confirmation_token"]},
+        {
+            "confirmed": True,
+            "confirmation_token": summary["confirmation_token"],
+            "summary_revision": summary["verified_state"]["summary_revision"],
+        },
         context_revision=domain.revision,
     )
     duplicate = domain.execute_action(
         "submit-1",
         "checkout.submit_demo_order",
-        {"confirmed": True, "confirmation_token": summary["confirmation_token"]},
+        {
+            "confirmed": True,
+            "confirmation_token": summary["confirmation_token"],
+            "summary_revision": summary["verified_state"]["summary_revision"],
+        },
         context_revision=domain.revision,
     )
 
     assert submit["status"] == "success"
     assert submit == duplicate
-    assert submit["verified_state"]["demo_order_id"] == "DEMO-0001"
+    assert submit["verified_state"]["demo_order_id"].startswith("DEMO-")
     assert domain.demo_order_count == 1
     assert domain.cart == {}

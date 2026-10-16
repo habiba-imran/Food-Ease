@@ -1,0 +1,8 @@
+{
+  "include": ["src", "../contracts/src"],
+  "extraPaths": ["src", "../contracts/src"],
+  "pythonVersion": "3.11",
+  "typeCheckingMode": "basic",
+  "venvPath": ".",
+  "venv": ".venv"
+}

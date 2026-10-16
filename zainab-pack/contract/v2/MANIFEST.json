@@ -1,0 +1,30 @@
+{
+  "schema_version": "2.0",
+  "canonical_models": "foodease_agent.contract.v2.models",
+  "actual_website_operations": [
+    "cart.add_item",
+    "cart.remove_item",
+    "cart.set_quantity",
+    "checkout.get_summary",
+    "checkout.submit_demo_order",
+    "filter_menu",
+    "get_cart",
+    "get_current_context",
+    "get_item_details",
+    "navigate",
+    "search_menu",
+    "select_item",
+    "undo_last_reversible_action"
+  ],
+  "synthetic_status_examples": [
+    "status_failed",
+    "status_timeout_unknown"
+  ],
+  "actual_domain_status_examples": [
+    "rejected",
+    "stale_context",
+    "requires_confirmation"
+  ],
+  "non_action_event_examples": "Authored contract examples, not live session evidence",
+  "runtime_activated": false
+}

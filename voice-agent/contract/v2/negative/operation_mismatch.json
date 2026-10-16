@@ -1,0 +1,46 @@
+{
+  "kind": "pair",
+  "request": {
+    "schema_version": "2.0",
+    "session_id": "contract-demo",
+    "event_id": "request-contract-1",
+    "turn_id": "contract-turn",
+    "timestamp": "2026-10-17T12:00:00Z",
+    "context_revision": 1,
+    "type": "agent.action_request",
+    "payload": {
+      "action_id": "contract-1",
+      "operation": "navigate",
+      "arguments": {
+        "target": "menu"
+      }
+    }
+  },
+  "result": {
+    "schema_version": "2.0",
+    "session_id": "contract-demo",
+    "event_id": "result-contract-1",
+    "turn_id": "contract-turn",
+    "timestamp": "2026-10-17T12:00:00Z",
+    "context_revision": 2,
+    "type": "app.action_result",
+    "reply_to": "request-contract-1",
+    "payload": {
+      "action_id": "contract-1",
+      "status": "success",
+      "verified_state": {
+        "item_id": "wrap-veg",
+        "name": "Veggie Wrap",
+        "price": 500.0,
+        "currency": "PKR",
+        "descriptors": [
+          "vegetarian"
+        ],
+        "available": true
+      },
+      "error_code": null,
+      "error_message": null,
+      "operation": "select_item"
+    }
+  }
+}

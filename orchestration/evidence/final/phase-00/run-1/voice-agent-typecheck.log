@@ -1,0 +1,94 @@
+c:\HCI-PROJECT\voice-agent\src\foodease_agent\adapters\base.py
+  c:\HCI-PROJECT\voice-agent\src\foodease_agent\adapters\base.py:25:37 - error: Function with declared return type "ContextSnapshot" must return value on all code paths
+    "None" is not assignable to "ContextSnapshot" (reportReturnType)
+  c:\HCI-PROJECT\voice-agent\src\foodease_agent\adapters\base.py:33:10 - error: Function with declared return type "ActionResultPayload" must return value on all code paths
+    "None" is not assignable to "ActionResultPayload" (reportReturnType)
+c:\HCI-PROJECT\voice-agent\src\foodease_agent\adapters\livekit_room.py
+  c:\HCI-PROJECT\voice-agent\src\foodease_agent\adapters\livekit_room.py:77:13 - error: Result of async function call is not used; use "await" or assign result to variable (reportUnusedCoroutine)
+c:\HCI-PROJECT\voice-agent\src\foodease_agent\engine.py
+  c:\HCI-PROJECT\voice-agent\src\foodease_agent\engine.py:43:66 - error: Function with declared return type "list[ToolCall] | str" must return value on all code paths
+    Type "None" is not assignable to type "list[ToolCall] | str"
+      "None" is not assignable to "list[ToolCall]"
+      "None" is not assignable to "str" (reportReturnType)
+c:\HCI-PROJECT\voice-agent\src\foodease_agent\session.py
+  c:\HCI-PROJECT\voice-agent\src\foodease_agent\session.py:82:25 - error: Argument of type "dict[str, str]" cannot be assigned to parameter "thinking_config" of type "NotGivenOr[ThinkingConfigOrDict]" in function "__init__"
+    Type "dict[str, str]" is not assignable to type "NotGivenOr[ThinkingConfigOrDict]"
+      "dict[str, str]" is not assignable to "ThinkingConfig"
+      "dict[str, str]" is not assignable to "ThinkingConfigDict"
+      "dict[str, str]" is not assignable to "NotGiven" (reportArgumentType)
+  c:\HCI-PROJECT\voice-agent\src\foodease_agent\session.py:92:30 - error: Type "str" is not assignable to declared type "PipelineConfig"
+    Type "str" is not assignable to type "PipelineConfig"
+      "str" is not assignable to type "Literal['A']"
+      "str" is not assignable to type "Literal['B']" (reportAssignmentType)
+  c:\HCI-PROJECT\voice-agent\src\foodease_agent\session.py:113:15 - error: Argument of type "float" cannot be assigned to parameter "interruption_min_words" of type "int" in function "turn_handling_options"
+    "float" is not assignable to "int" (reportArgumentType)
+  c:\HCI-PROJECT\voice-agent\src\foodease_agent\session.py:131:15 - error: Argument of type "float" cannot be assigned to parameter "interruption_min_words" of type "int" in function "turn_handling_options"
+    "float" is not assignable to "int" (reportArgumentType)
+c:\HCI-PROJECT\voice-agent\tests\test_phase4_acceptance.py
+  c:\HCI-PROJECT\voice-agent\tests\test_phase4_acceptance.py:44:70 - error: Argument of type "dict[str, list[ToolCall]]" cannot be assigned to parameter "scripts" of type "dict[str, list[ToolCall] | str]" in function "__init__"
+    "dict[str, list[ToolCall]]" is not assignable to "dict[str, list[ToolCall] | str]"
+      Type parameter "_VT@dict" is invariant, but "list[ToolCall]" is not the same as "list[ToolCall] | str"
+      Consider switching from "dict" to "Mapping" which is covariant in the value type (reportArgumentType)
+  c:\HCI-PROJECT\voice-agent\tests\test_phase4_acceptance.py:68:70 - error: Argument of type "dict[str, list[ToolCall]]" cannot be assigned to parameter "scripts" of type "dict[str, list[ToolCall] | str]" in function "__init__"
+    "dict[str, list[ToolCall]]" is not assignable to "dict[str, list[ToolCall] | str]"
+      Type parameter "_VT@dict" is invariant, but "list[ToolCall]" is not the same as "list[ToolCall] | str"
+      Consider switching from "dict" to "Mapping" which is covariant in the value type (reportArgumentType)
+  c:\HCI-PROJECT\voice-agent\tests\test_phase4_acceptance.py:82:70 - error: Argument of type "dict[str, list[ToolCall]]" cannot be assigned to parameter "scripts" of type "dict[str, list[ToolCall] | str]" in function "__init__"
+    "dict[str, list[ToolCall]]" is not assignable to "dict[str, list[ToolCall] | str]"
+      Type parameter "_VT@dict" is invariant, but "list[ToolCall]" is not the same as "list[ToolCall] | str"
+      Consider switching from "dict" to "Mapping" which is covariant in the value type (reportArgumentType)
+  c:\HCI-PROJECT\voice-agent\tests\test_phase4_acceptance.py:100:70 - error: Argument of type "dict[str, list[ToolCall]]" cannot be assigned to parameter "scripts" of type "dict[str, list[ToolCall] | str]" in function "__init__"
+    "dict[str, list[ToolCall]]" is not assignable to "dict[str, list[ToolCall] | str]"
+      Type parameter "_VT@dict" is invariant, but "list[ToolCall]" is not the same as "list[ToolCall] | str"
+      Consider switching from "dict" to "Mapping" which is covariant in the value type (reportArgumentType)
+  c:\HCI-PROJECT\voice-agent\tests\test_phase4_acceptance.py:115:70 - error: Argument of type "dict[str, list[ToolCall]]" cannot be assigned to parameter "scripts" of type "dict[str, list[ToolCall] | str]" in function "__init__"
+    "dict[str, list[ToolCall]]" is not assignable to "dict[str, list[ToolCall] | str]"
+      Type parameter "_VT@dict" is invariant, but "list[ToolCall]" is not the same as "list[ToolCall] | str"
+      Consider switching from "dict" to "Mapping" which is covariant in the value type (reportArgumentType)
+  c:\HCI-PROJECT\voice-agent\tests\test_phase4_acceptance.py:132:70 - error: Argument of type "dict[str, list[ToolCall]]" cannot be assigned to parameter "scripts" of type "dict[str, list[ToolCall] | str]" in function "__init__"
+    "dict[str, list[ToolCall]]" is not assignable to "dict[str, list[ToolCall] | str]"
+      Type parameter "_VT@dict" is invariant, but "list[ToolCall]" is not the same as "list[ToolCall] | str"
+      Consider switching from "dict" to "Mapping" which is covariant in the value type (reportArgumentType)
+c:\HCI-PROJECT\voice-agent\tests\test_phase4_engine.py
+  c:\HCI-PROJECT\voice-agent\tests\test_phase4_engine.py:21:34 - error: "intent" is not a known attribute of "None" (reportOptionalMemberAccess)
+  c:\HCI-PROJECT\voice-agent\tests\test_phase4_engine.py:67:80 - error: Argument of type "dict[str, list[ToolCall]]" cannot be assigned to parameter "scripts" of type "dict[str, list[ToolCall] | str]" in function "__init__"
+    "dict[str, list[ToolCall]]" is not assignable to "dict[str, list[ToolCall] | str]"
+      Type parameter "_VT@dict" is invariant, but "list[ToolCall]" is not the same as "list[ToolCall] | str"
+      Consider switching from "dict" to "Mapping" which is covariant in the value type (reportArgumentType)
+  c:\HCI-PROJECT\voice-agent\tests\test_phase4_engine.py:81:80 - error: Argument of type "dict[str, list[ToolCall]]" cannot be assigned to parameter "scripts" of type "dict[str, list[ToolCall] | str]" in function "__init__"
+    "dict[str, list[ToolCall]]" is not assignable to "dict[str, list[ToolCall] | str]"
+      Type parameter "_VT@dict" is invariant, but "list[ToolCall]" is not the same as "list[ToolCall] | str"
+      Consider switching from "dict" to "Mapping" which is covariant in the value type (reportArgumentType)
+  c:\HCI-PROJECT\voice-agent\tests\test_phase4_engine.py:94:70 - error: Argument of type "dict[str, list[ToolCall]]" cannot be assigned to parameter "scripts" of type "dict[str, list[ToolCall] | str]" in function "__init__"
+    "dict[str, list[ToolCall]]" is not assignable to "dict[str, list[ToolCall] | str]"
+      Type parameter "_VT@dict" is invariant, but "list[ToolCall]" is not the same as "list[ToolCall] | str"
+      Consider switching from "dict" to "Mapping" which is covariant in the value type (reportArgumentType)
+  c:\HCI-PROJECT\voice-agent\tests\test_phase4_engine.py:115:70 - error: Argument of type "dict[str, list[ToolCall]]" cannot be assigned to parameter "scripts" of type "dict[str, list[ToolCall] | str]" in function "__init__"
+    "dict[str, list[ToolCall]]" is not assignable to "dict[str, list[ToolCall] | str]"
+      Type parameter "_VT@dict" is invariant, but "list[ToolCall]" is not the same as "list[ToolCall] | str"
+      Consider switching from "dict" to "Mapping" which is covariant in the value type (reportArgumentType)
+  c:\HCI-PROJECT\voice-agent\tests\test_phase4_engine.py:144:70 - error: Argument of type "dict[str, list[ToolCall]]" cannot be assigned to parameter "scripts" of type "dict[str, list[ToolCall] | str]" in function "__init__"
+    "dict[str, list[ToolCall]]" is not assignable to "dict[str, list[ToolCall] | str]"
+      Type parameter "_VT@dict" is invariant, but "list[ToolCall]" is not the same as "list[ToolCall] | str"
+      Consider switching from "dict" to "Mapping" which is covariant in the value type (reportArgumentType)
+  c:\HCI-PROJECT\voice-agent\tests\test_phase4_engine.py:170:81 - error: Argument of type "dict[str, list[ToolCall]]" cannot be assigned to parameter "scripts" of type "dict[str, list[ToolCall] | str]" in function "__init__"
+    "dict[str, list[ToolCall]]" is not assignable to "dict[str, list[ToolCall] | str]"
+      Type parameter "_VT@dict" is invariant, but "list[ToolCall]" is not the same as "list[ToolCall] | str"
+      Consider switching from "dict" to "Mapping" which is covariant in the value type (reportArgumentType)
+  c:\HCI-PROJECT\voice-agent\tests\test_phase4_engine.py:180:80 - error: Argument of type "dict[str, list[ToolCall]]" cannot be assigned to parameter "scripts" of type "dict[str, list[ToolCall] | str]" in function "__init__"
+    "dict[str, list[ToolCall]]" is not assignable to "dict[str, list[ToolCall] | str]"
+      Type parameter "_VT@dict" is invariant, but "list[ToolCall]" is not the same as "list[ToolCall] | str"
+      Consider switching from "dict" to "Mapping" which is covariant in the value type (reportArgumentType)
+c:\HCI-PROJECT\voice-agent\tests\test_phase5_voice.py
+  c:\HCI-PROJECT\voice-agent\tests\test_phase5_voice.py:48:5 - error: No overloads for "update" match the provided arguments (reportCallIssue)
+  c:\HCI-PROJECT\voice-agent\tests\test_phase5_voice.py:48:17 - error: Argument of type "dict[str, object]" cannot be assigned to parameter "m" of type "Iterable[tuple[str, str | float]]" in function "update"
+    "dict[str, object]" is not assignable to "Iterable[tuple[str, str | float]]"
+      Type parameter "_T_co@Iterable" is covariant, but "str" is not a subtype of "tuple[str, str | float]"
+        "str" is not assignable to "tuple[str, str | float]" (reportArgumentType)
+  c:\HCI-PROJECT\voice-agent\tests\test_phase5_voice.py:212:12 - error: Could not access item in TypedDict
+    "preemptive_generation" is not a required key in "TurnHandlingOptions", so access may result in runtime exception (reportTypedDictNotRequiredAccess)
+  c:\HCI-PROJECT\voice-agent\tests\test_phase5_voice.py:212:12 - error: Could not access item in TypedDict
+    "enabled" is not a required key in "PreemptiveGenerationOptions", so access may result in runtime exception (reportTypedDictNotRequiredAccess)
+  c:\HCI-PROJECT\voice-agent\tests\test_phase5_voice.py:213:12 - error: Could not access item in TypedDict
+    "turn_detection" is not a required key in "TurnHandlingOptions", so access may result in runtime exception (reportTypedDictNotRequiredAccess)
+27 errors, 0 warnings, 0 informations

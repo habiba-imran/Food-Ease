@@ -5,6 +5,7 @@ description = "FoodEase orchestration glue — session/token mint, assist dispat
 readme = "README.md"
 requires-python = ">=3.12,<3.15"
 dependencies = [
+    "foodease-contract==2.0.0",
     "fastapi>=0.115.0",
     "livekit-api>=1.2.1",
     "pydantic>=2.13.5",
@@ -30,9 +31,12 @@ build-backend = "uv_build"
 [tool.uv]
 package = true
 
+[tool.uv.sources]
+foodease-contract = { path = "../contracts", editable = true }
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-pythonpath = ["src"]
+pythonpath = ["src", "../website/src"]
 
 [tool.ruff]
 target-version = "py312"
@@ -44,5 +48,8 @@ select = ["E", "F", "I", "UP", "B"]
 
 [tool.pyright]
 include = ["src", "tests"]
+extraPaths = ["src", "../website/src", "../contracts/src"]
+venvPath = "."
+venv = ".venv"
 pythonVersion = "3.12"
 typeCheckingMode = "basic"

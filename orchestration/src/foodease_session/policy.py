@@ -26,6 +26,8 @@ def normalize_room(room: str | None) -> str:
     if room is None or not str(room).strip():
         return new_room_name()
     name = str(room).strip()
+    if name.startswith("foodease-v2-"):
+        raise PolicyError("integrated rooms require the bound v2 API")
     if not _ROOM_RE.match(name):
         raise PolicyError(
             "room must match foodease-<id> (letters, digits, _-, max 64 chars after prefix rules)"

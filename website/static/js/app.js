@@ -97,6 +97,51 @@ let activeFilter = "all";
 let activeCategory = "all";
 let actionCounter = 0;
 let pendingConfirmationToken = null;
+let pendingSummaryRevision = null;
+let shoppingSessionPromise = null;
+
+async function checkedResponse(response) {
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({}));
+    const message = error.error === "session_expired"
+      ? "Your shopping session expired. Reload to start a new cart; earlier order status is unavailable."
+      : "The request could not be completed. Refresh the page and review your cart.";
+    if (response.status === 410) {
+      try { window.sessionStorage.removeItem("foodease.shopping-session.v2"); } catch { /* Memory only. */ }
+    }
+    setStatus(message);
+    throw new Error(message);
+  }
+  return response;
+}
+
+async function shoppingSession() {
+  if (!shoppingSessionPromise) {
+    shoppingSessionPromise = (async () => {
+      const key = "foodease.shopping-session.v2";
+      let stored = null;
+      try { stored = window.sessionStorage.getItem(key); } catch { /* Memory-only attachment. */ }
+      const response = await fetch(stored ? "/api/v2/app/sessions/attach" : "/api/v2/app/sessions", {
+        method: "POST", credentials: "same-origin",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(stored ? { session_id: stored } : {}),
+      });
+      await checkedResponse(response);
+      const state = await response.json();
+      try { window.sessionStorage.setItem(key, state.session_id); } catch { /* Memory only. */ }
+      return state.session_id;
+    })();
+  }
+  return shoppingSessionPromise;
+}
+
+async function shoppingFetch(url, options = {}) {
+  const sessionId = await shoppingSession();
+  return checkedResponse(await fetch(url, {
+    ...options, credentials: "same-origin",
+    headers: { ...options.headers, "X-FoodEase-Session": sessionId },
+  }));
+}
 let selectedDetailItem = null;
 let assistanceActive = false;
 let currentPreviewItemId = "wrap-hot-chicken";
@@ -266,7 +311,7 @@ function appendTranscript(kind, text) {
 }
 
 async function refreshContext() {
-  const response = await fetch("/api/app/context");
+  const response = await shoppingFetch("/api/app/context");
   appContext = await response.json();
   renderCart(appContext.cart);
   renderContractContext();
@@ -275,7 +320,7 @@ async function refreshContext() {
 }
 
 async function submitRawAction(actionId, operation, argumentsObject = {}, contextRevision = appContext?.revision) {
-  const response = await fetch("/api/app/action", {
+  const response = await shoppingFetch("/api/app/action", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -595,6 +640,7 @@ async function runAcceptanceSmoke() {
   const expired = await submitAction("checkout.submit_demo_order", {
     confirmed: true,
     confirmation_token: oldToken,
+    summary_revision: summary.verified_state.summary_revision,
   });
   recordAcceptance(
     results,
@@ -702,6 +748,7 @@ function applyMenuState() {
 
 function resetConfirmation() {
   pendingConfirmationToken = null;
+  pendingSummaryRevision = null;
   if (checkoutButton) {
     checkoutButton.textContent = "Demo checkout";
   }
@@ -1024,6 +1071,7 @@ checkoutButton?.addEventListener("click", async () => {
   const summary = await submitAction("checkout.get_summary");
   if (summary.status === "success") {
     pendingConfirmationToken = summary.confirmation_token;
+    pendingSummaryRevision = summary.verified_state.summary_revision;
     checkoutButton.textContent = "Demo checkout";
     renderCheckoutSummary(summary.verified_state);
     setStatus(`Please review and confirm demo checkout total ${money(summary.verified_state.total)}.`);
@@ -1040,9 +1088,11 @@ confirmOrderButton?.addEventListener("click", async () => {
   const submit = await submitAction("checkout.submit_demo_order", {
     confirmed: true,
     confirmation_token: pendingConfirmationToken,
+    summary_revision: pendingSummaryRevision,
   });
   if (submit.status === "success") {
     pendingConfirmationToken = null;
+    pendingSummaryRevision = null;
     renderReceipt(submit);
     setStatus(`Demo order placed: ${submit.verified_state.demo_order_id}. Cart is now empty.`);
   }
@@ -1110,6 +1160,7 @@ scenarioButtons.forEach((button) => {
       );
       if (result?.confirmation_token) {
         pendingConfirmationToken = result.confirmation_token;
+        pendingSummaryRevision = result.verified_state.summary_revision;
         renderCheckoutSummary(result.verified_state);
       }
     }
@@ -1251,9 +1302,8 @@ if (previewButtons.length) {
   });
 }
 
-refreshContext().catch(() => {
-  setStatus("Could not sync with the app state. Please refresh the page.");
-  renderCart({ lines: [], subtotal: 0, fees: [], total: 0 });
+refreshContext().catch((error) => {
+  setStatus(error.message || "Could not sync with the app state. Please refresh the page.");
 });
 applyTheme();
 applyMenuState();

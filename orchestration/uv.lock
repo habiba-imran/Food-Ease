@@ -210,11 +210,23 @@ wheels = [
 ]
 
 [[package]]
+name = "foodease-contract"
+version = "2.0.0"
+source = { editable = "../contracts" }
+dependencies = [
+    { name = "pydantic" },
+]
+
+[package.metadata]
+requires-dist = [{ name = "pydantic", specifier = ">=2.13.5,<3" }]
+
+[[package]]
 name = "foodease-session"
 version = "0.1.0"
 source = { editable = "." }
 dependencies = [
     { name = "fastapi" },
+    { name = "foodease-contract" },
     { name = "httpx" },
     { name = "livekit-api" },
     { name = "pydantic" },
@@ -232,6 +244,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "fastapi", specifier = ">=0.115.0" },
+    { name = "foodease-contract", editable = "../contracts" },
     { name = "httpx", specifier = ">=0.28.1" },
     { name = "livekit-api", specifier = ">=1.2.1" },
     { name = "pydantic", specifier = ">=2.13.5" },

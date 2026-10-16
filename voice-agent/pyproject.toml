@@ -5,6 +5,7 @@ description = "Standalone LiveKit voice agent for the FoodEase accessible food-o
 readme = "README.md"
 requires-python = ">=3.12,<3.15"
 dependencies = [
+    "foodease-contract==2.0.0",
     "cartesia>=4.2.0",
     "deepgram-sdk>=7.12.0",
     "google-genai>=2.27.0",
@@ -35,6 +36,9 @@ build-backend = "uv_build"
 
 [tool.uv]
 package = true
+
+[tool.uv.sources]
+foodease-contract = { path = "../contracts", editable = true }
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

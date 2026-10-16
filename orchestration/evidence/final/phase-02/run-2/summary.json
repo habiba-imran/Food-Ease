@@ -1,0 +1,200 @@
+{
+  "checks": [
+    {
+      "label": "website-tests",
+      "command": [
+        "C:\\HCI-PROJECT\\website\\.venv\\Scripts\\python.exe",
+        "-m",
+        "pytest",
+        "-q"
+      ],
+      "cwd": "website",
+      "exit_code": 0,
+      "inherited_baseline": false
+    },
+    {
+      "label": "website-shared-lint",
+      "command": [
+        "C:\\HCI-PROJECT\\website\\.venv\\Scripts\\python.exe",
+        "-m",
+        "ruff",
+        "check",
+        "src",
+        "tests",
+        "../contracts/src"
+      ],
+      "cwd": "website",
+      "exit_code": 0,
+      "inherited_baseline": false
+    },
+    {
+      "label": "website-shared-types",
+      "command": [
+        "C:\\HCI-PROJECT\\voice-agent\\.venv\\Scripts\\python.exe",
+        "-m",
+        "pyright",
+        "--project",
+        "../website"
+      ],
+      "cwd": "voice-agent",
+      "exit_code": 0,
+      "inherited_baseline": false
+    },
+    {
+      "label": "contract-tests",
+      "command": [
+        "C:\\HCI-PROJECT\\voice-agent\\.venv\\Scripts\\python.exe",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_contract_v1.py",
+        "tests/test_contract_v2.py"
+      ],
+      "cwd": "voice-agent",
+      "exit_code": 0,
+      "inherited_baseline": false
+    },
+    {
+      "label": "contract-freeze",
+      "command": [
+        "C:\\HCI-PROJECT\\voice-agent\\.venv\\Scripts\\python.exe",
+        "tools/freeze_contract_v2.py",
+        "--check"
+      ],
+      "cwd": "voice-agent",
+      "exit_code": 0,
+      "inherited_baseline": false
+    },
+    {
+      "label": "contract-lint",
+      "command": [
+        "C:\\HCI-PROJECT\\voice-agent\\.venv\\Scripts\\python.exe",
+        "-m",
+        "ruff",
+        "check",
+        "tools/freeze_contract_v2.py",
+        "tests/test_contract_v2.py",
+        "src/foodease_agent/contract/v2",
+        "../contracts/src"
+      ],
+      "cwd": "voice-agent",
+      "exit_code": 0,
+      "inherited_baseline": false
+    },
+    {
+      "label": "javascript-syntax",
+      "command": [
+        "node",
+        "--check",
+        "static/js/app.js"
+      ],
+      "cwd": "website",
+      "exit_code": 0,
+      "inherited_baseline": false
+    },
+    {
+      "label": "javascript-transport",
+      "command": [
+        "node",
+        "--test",
+        "tests/session_transport.test.cjs"
+      ],
+      "cwd": "website",
+      "exit_code": 0,
+      "inherited_baseline": false
+    },
+    {
+      "label": "orchestration-tests",
+      "command": [
+        "C:\\HCI-PROJECT\\orchestration\\.venv\\Scripts\\python.exe",
+        "-m",
+        "pytest",
+        "-q"
+      ],
+      "cwd": "orchestration",
+      "exit_code": 0,
+      "inherited_baseline": false
+    },
+    {
+      "label": "phase2-tools-lint",
+      "command": [
+        "C:\\HCI-PROJECT\\orchestration\\.venv\\Scripts\\python.exe",
+        "-m",
+        "ruff",
+        "check",
+        "tools/phase2_verify.py",
+        "tools/phase2_http_smoke.py",
+        "tools/phase0_website_smoke.py"
+      ],
+      "cwd": "orchestration",
+      "exit_code": 0,
+      "inherited_baseline": false
+    },
+    {
+      "label": "agent-full-tests",
+      "command": [
+        "C:\\HCI-PROJECT\\voice-agent\\.venv\\Scripts\\python.exe",
+        "-m",
+        "pytest",
+        "-q"
+      ],
+      "cwd": "voice-agent",
+      "exit_code": 1,
+      "inherited_baseline": true
+    },
+    {
+      "label": "agent-full-lint",
+      "command": [
+        "C:\\HCI-PROJECT\\voice-agent\\.venv\\Scripts\\python.exe",
+        "-m",
+        "ruff",
+        "check",
+        "."
+      ],
+      "cwd": "voice-agent",
+      "exit_code": 1,
+      "inherited_baseline": true
+    },
+    {
+      "label": "agent-full-types",
+      "command": [
+        "C:\\HCI-PROJECT\\voice-agent\\.venv\\Scripts\\python.exe",
+        "-m",
+        "pyright"
+      ],
+      "cwd": "voice-agent",
+      "exit_code": 1,
+      "inherited_baseline": true
+    },
+    {
+      "label": "manual-http-smoke",
+      "command": [
+        "C:\\HCI-PROJECT\\website\\.venv\\Scripts\\python.exe",
+        "C:\\HCI-PROJECT\\orchestration\\tools\\phase0_website_smoke.py",
+        "--output",
+        "C:\\HCI-PROJECT\\orchestration\\evidence\\final\\phase-02\\run-2\\manual-http-smoke.json"
+      ],
+      "cwd": "website",
+      "exit_code": 0,
+      "inherited_baseline": false
+    },
+    {
+      "label": "v2-http-smoke",
+      "command": [
+        "C:\\HCI-PROJECT\\website\\.venv\\Scripts\\python.exe",
+        "C:\\HCI-PROJECT\\orchestration\\tools\\phase2_http_smoke.py",
+        "--output",
+        "C:\\HCI-PROJECT\\orchestration\\evidence\\final\\phase-02\\run-2\\v2-http-smoke.json"
+      ],
+      "cwd": "website",
+      "exit_code": 0,
+      "inherited_baseline": false
+    }
+  ],
+  "restored_legacy_test_side_effects": [],
+  "v1_files_checked": 92,
+  "v1_drift": [],
+  "dotenv_disabled": true,
+  "worker_started": false,
+  "browser_or_audible_evidence": false
+}

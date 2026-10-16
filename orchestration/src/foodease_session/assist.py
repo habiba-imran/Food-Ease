@@ -17,9 +17,7 @@ class AssistError(RuntimeError):
 
 
 class DispatchClient(Protocol):
-    async def create_dispatch(
-        self, *, agent_name: str, room: str, metadata: str
-    ) -> str: ...
+    async def create_dispatch(self, *, agent_name: str, room: str, metadata: str) -> str: ...
 
     async def delete_dispatch(self, *, dispatch_id: str, room: str) -> None: ...
 
@@ -41,9 +39,7 @@ class LiveKitDispatchClient:
             return "http://" + u[len("ws://") :]
         return u
 
-    async def create_dispatch(
-        self, *, agent_name: str, room: str, metadata: str
-    ) -> str:
+    async def create_dispatch(self, *, agent_name: str, room: str, metadata: str) -> str:
         lk = api.LiveKitAPI(self._http_url(), self.api_key, self.api_secret)
         try:
             created = await lk.agent_dispatch.create_dispatch(
@@ -62,19 +58,50 @@ class LiveKitDispatchClient:
             )
             return dispatch_id
         except Exception as exc:  # noqa: BLE001
-            raise AssistError(f"CreateAgentDispatch failed: {exc}") from exc
+            raise AssistError("CreateAgentDispatch failed") from exc
         finally:
             await lk.aclose()
 
     async def delete_dispatch(self, *, dispatch_id: str, room: str) -> None:
         lk = api.LiveKitAPI(self._http_url(), self.api_key, self.api_secret)
         try:
-            await lk.agent_dispatch.delete_dispatch(
-                api.DeleteAgentDispatchRequest(dispatch_id=dispatch_id, room=room)
-            )
+            await lk.agent_dispatch.delete_dispatch(dispatch_id, room)
             logger.info("dispatch_deleted dispatch_id=%s room=%s", dispatch_id, room)
         except Exception as exc:  # noqa: BLE001
-            raise AssistError(f"DeleteAgentDispatch failed: {exc}") from exc
+            raise AssistError("DeleteAgentDispatch failed") from exc
+        finally:
+            await lk.aclose()
+
+    async def participants(self, room: str) -> list[dict[str, Any]]:
+        lk = api.LiveKitAPI(self._http_url(), self.api_key, self.api_secret)
+        try:
+            result = await lk.room.list_participants(api.ListParticipantsRequest(room=room))
+            return [
+                {"identity": p.identity, "attributes": dict(p.attributes)}
+                for p in result.participants
+            ]
+        finally:
+            await lk.aclose()
+
+    async def list_dispatches(self, room: str) -> list[dict[str, Any]]:
+        lk = api.LiveKitAPI(self._http_url(), self.api_key, self.api_secret)
+        try:
+            result = await lk.agent_dispatch.list_dispatch(room)
+            return [{"id": d.id, "metadata": d.metadata} for d in result]
+        except api.TwirpError as exc:
+            if exc.code != "not_found":
+                raise
+            return []
+        finally:
+            await lk.aclose()
+
+    async def delete_room(self, room: str) -> None:
+        lk = api.LiveKitAPI(self._http_url(), self.api_key, self.api_secret)
+        try:
+            await lk.room.delete_room(api.DeleteRoomRequest(room=room))
+        except api.TwirpError as exc:
+            if exc.code != "not_found":
+                raise
         finally:
             await lk.aclose()
 
@@ -92,9 +119,7 @@ class FakeDispatchClient:
         self.deleted = []
         self._n = 0
 
-    async def create_dispatch(
-        self, *, agent_name: str, room: str, metadata: str
-    ) -> str:
+    async def create_dispatch(self, *, agent_name: str, room: str, metadata: str) -> str:
         self._n += 1
         did = f"AD_fake_{self._n}"
         self.created.append(
@@ -141,7 +166,5 @@ class AssistRegistry:
     def forget(self, *, session_id: str | None, room: str, dispatch_id: str | None) -> None:
         if session_id:
             self.by_session.pop(session_id, None)
-        if room in self.by_room and (
-            dispatch_id is None or self.by_room.get(room) == dispatch_id
-        ):
+        if room in self.by_room and (dispatch_id is None or self.by_room.get(room) == dispatch_id):
             self.by_room.pop(room, None)

@@ -1,0 +1,3293 @@
+{
+  "$defs": {
+    "ActionResult": {
+      "additionalProperties": false,
+      "properties": {
+        "action_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Action Id",
+          "type": "string"
+        },
+        "operation": {
+          "$ref": "#/$defs/Operation"
+        },
+        "status": {
+          "$ref": "#/$defs/ActionResultStatus"
+        },
+        "verified_state": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Verified State"
+        },
+        "error_code": {
+          "anyOf": [
+            {
+              "enum": [
+                "unknown_operation",
+                "invalid_arguments",
+                "missing_action_id",
+                "stale_context",
+                "not_available",
+                "out_of_stock",
+                "confirmation_required",
+                "confirmation_expired",
+                "timeout",
+                "rejected",
+                "internal",
+                "rate_limited",
+                "idempotency_conflict",
+                "session_mismatch",
+                "unauthorized_sender",
+                "payload_too_large",
+                "unsupported_version"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Error Code"
+        },
+        "error_message": {
+          "anyOf": [
+            {
+              "maxLength": 500,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Error Message"
+        },
+        "confirmation_token": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confirmation Token"
+        }
+      },
+      "required": [
+        "action_id",
+        "operation",
+        "status"
+      ],
+      "title": "ActionResult",
+      "type": "object",
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "operation": {
+                "const": "navigate"
+              },
+              "status": {
+                "const": "success"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "verified_state": {
+                "additionalProperties": false,
+                "properties": {
+                  "route": {
+                    "enum": [
+                      "home",
+                      "menu",
+                      "item",
+                      "cart",
+                      "checkout",
+                      "confirmation"
+                    ],
+                    "title": "Route",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "route"
+                ],
+                "title": "NavigationResult",
+                "type": "object"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "operation": {
+                "const": "search_menu"
+              },
+              "status": {
+                "const": "success"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "verified_state": {
+                "additionalProperties": false,
+                "properties": {
+                  "items": {
+                    "items": {
+                      "$ref": "#/$defs/VisibleItem"
+                    },
+                    "maxItems": 25,
+                    "title": "Items",
+                    "type": "array"
+                  },
+                  "result_count": {
+                    "minimum": 0,
+                    "title": "Result Count",
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "items",
+                  "result_count"
+                ],
+                "title": "ItemsResult",
+                "type": "object"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "operation": {
+                "const": "filter_menu"
+              },
+              "status": {
+                "const": "success"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "verified_state": {
+                "additionalProperties": false,
+                "properties": {
+                  "items": {
+                    "items": {
+                      "$ref": "#/$defs/VisibleItem"
+                    },
+                    "maxItems": 25,
+                    "title": "Items",
+                    "type": "array"
+                  },
+                  "result_count": {
+                    "minimum": 0,
+                    "title": "Result Count",
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "items",
+                  "result_count"
+                ],
+                "title": "ItemsResult",
+                "type": "object"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "operation": {
+                "const": "select_item"
+              },
+              "status": {
+                "const": "success"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "verified_state": {
+                "additionalProperties": false,
+                "properties": {
+                  "item_id": {
+                    "pattern": "^[a-z][a-z0-9_\\-]{1,63}$",
+                    "title": "Item Id",
+                    "type": "string"
+                  },
+                  "name": {
+                    "maxLength": 200,
+                    "minLength": 1,
+                    "title": "Name",
+                    "type": "string"
+                  },
+                  "price": {
+                    "minimum": 0,
+                    "multipleOf": 0.01,
+                    "title": "Price",
+                    "type": "number"
+                  },
+                  "currency": {
+                    "const": "PKR",
+                    "title": "Currency",
+                    "type": "string"
+                  },
+                  "descriptors": {
+                    "items": {
+                      "type": "string"
+                    },
+                    "maxItems": 16,
+                    "title": "Descriptors",
+                    "type": "array"
+                  },
+                  "available": {
+                    "title": "Available",
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "item_id",
+                  "name",
+                  "price",
+                  "currency",
+                  "descriptors",
+                  "available"
+                ],
+                "title": "VisibleItem",
+                "type": "object"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "operation": {
+                "const": "get_item_details"
+              },
+              "status": {
+                "const": "success"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "verified_state": {
+                "additionalProperties": false,
+                "properties": {
+                  "item_id": {
+                    "pattern": "^[a-z][a-z0-9_\\-]{1,63}$",
+                    "title": "Item Id",
+                    "type": "string"
+                  },
+                  "name": {
+                    "maxLength": 200,
+                    "minLength": 1,
+                    "title": "Name",
+                    "type": "string"
+                  },
+                  "price": {
+                    "minimum": 0,
+                    "multipleOf": 0.01,
+                    "title": "Price",
+                    "type": "number"
+                  },
+                  "currency": {
+                    "const": "PKR",
+                    "title": "Currency",
+                    "type": "string"
+                  },
+                  "descriptors": {
+                    "items": {
+                      "type": "string"
+                    },
+                    "maxItems": 16,
+                    "title": "Descriptors",
+                    "type": "array"
+                  },
+                  "available": {
+                    "title": "Available",
+                    "type": "boolean"
+                  },
+                  "description": {
+                    "maxLength": 2000,
+                    "title": "Description",
+                    "type": "string"
+                  },
+                  "ingredients": {
+                    "anyOf": [
+                      {
+                        "items": {
+                          "type": "string"
+                        },
+                        "type": "array"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "title": "Ingredients"
+                  },
+                  "ingredients_available": {
+                    "title": "Ingredients Available",
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "item_id",
+                  "name",
+                  "price",
+                  "currency",
+                  "descriptors",
+                  "available",
+                  "description",
+                  "ingredients",
+                  "ingredients_available"
+                ],
+                "title": "ItemDetails",
+                "type": "object"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "operation": {
+                "const": "get_cart"
+              },
+              "status": {
+                "const": "success"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "verified_state": {
+                "additionalProperties": false,
+                "properties": {
+                  "lines": {
+                    "items": {
+                      "$ref": "#/$defs/CartLine"
+                    },
+                    "maxItems": 32,
+                    "title": "Lines",
+                    "type": "array"
+                  },
+                  "currency": {
+                    "const": "PKR",
+                    "title": "Currency",
+                    "type": "string"
+                  },
+                  "subtotal": {
+                    "minimum": 0,
+                    "multipleOf": 0.01,
+                    "title": "Subtotal",
+                    "type": "number"
+                  },
+                  "fees": {
+                    "items": {
+                      "$ref": "#/$defs/Fee"
+                    },
+                    "maxItems": 16,
+                    "title": "Fees",
+                    "type": "array"
+                  },
+                  "total": {
+                    "minimum": 0,
+                    "multipleOf": 0.01,
+                    "title": "Total",
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "lines",
+                  "currency",
+                  "subtotal",
+                  "fees",
+                  "total"
+                ],
+                "title": "CartSummary",
+                "type": "object"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "operation": {
+                "const": "cart.add_item"
+              },
+              "status": {
+                "const": "success"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "verified_state": {
+                "additionalProperties": false,
+                "properties": {
+                  "lines": {
+                    "items": {
+                      "$ref": "#/$defs/CartLine"
+                    },
+                    "maxItems": 32,
+                    "title": "Lines",
+                    "type": "array"
+                  },
+                  "currency": {
+                    "const": "PKR",
+                    "title": "Currency",
+                    "type": "string"
+                  },
+                  "subtotal": {
+                    "minimum": 0,
+                    "multipleOf": 0.01,
+                    "title": "Subtotal",
+                    "type": "number"
+                  },
+                  "fees": {
+                    "items": {
+                      "$ref": "#/$defs/Fee"
+                    },
+                    "maxItems": 16,
+                    "title": "Fees",
+                    "type": "array"
+                  },
+                  "total": {
+                    "minimum": 0,
+                    "multipleOf": 0.01,
+                    "title": "Total",
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "lines",
+                  "currency",
+                  "subtotal",
+                  "fees",
+                  "total"
+                ],
+                "title": "CartSummary",
+                "type": "object"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "operation": {
+                "const": "cart.set_quantity"
+              },
+              "status": {
+                "const": "success"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "verified_state": {
+                "additionalProperties": false,
+                "properties": {
+                  "lines": {
+                    "items": {
+                      "$ref": "#/$defs/CartLine"
+                    },
+                    "maxItems": 32,
+                    "title": "Lines",
+                    "type": "array"
+                  },
+                  "currency": {
+                    "const": "PKR",
+                    "title": "Currency",
+                    "type": "string"
+                  },
+                  "subtotal": {
+                    "minimum": 0,
+                    "multipleOf": 0.01,
+                    "title": "Subtotal",
+                    "type": "number"
+                  },
+                  "fees": {
+                    "items": {
+                      "$ref": "#/$defs/Fee"
+                    },
+                    "maxItems": 16,
+                    "title": "Fees",
+                    "type": "array"
+                  },
+                  "total": {
+                    "minimum": 0,
+                    "multipleOf": 0.01,
+                    "title": "Total",
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "lines",
+                  "currency",
+                  "subtotal",
+                  "fees",
+                  "total"
+                ],
+                "title": "CartSummary",
+                "type": "object"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "operation": {
+                "const": "cart.remove_item"
+              },
+              "status": {
+                "const": "success"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "verified_state": {
+                "additionalProperties": false,
+                "properties": {
+                  "lines": {
+                    "items": {
+                      "$ref": "#/$defs/CartLine"
+                    },
+                    "maxItems": 32,
+                    "title": "Lines",
+                    "type": "array"
+                  },
+                  "currency": {
+                    "const": "PKR",
+                    "title": "Currency",
+                    "type": "string"
+                  },
+                  "subtotal": {
+                    "minimum": 0,
+                    "multipleOf": 0.01,
+                    "title": "Subtotal",
+                    "type": "number"
+                  },
+                  "fees": {
+                    "items": {
+                      "$ref": "#/$defs/Fee"
+                    },
+                    "maxItems": 16,
+                    "title": "Fees",
+                    "type": "array"
+                  },
+                  "total": {
+                    "minimum": 0,
+                    "multipleOf": 0.01,
+                    "title": "Total",
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "lines",
+                  "currency",
+                  "subtotal",
+                  "fees",
+                  "total"
+                ],
+                "title": "CartSummary",
+                "type": "object"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "operation": {
+                "const": "checkout.get_summary"
+              },
+              "status": {
+                "const": "success"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "verified_state": {
+                "additionalProperties": false,
+                "properties": {
+                  "lines": {
+                    "items": {
+                      "$ref": "#/$defs/CartLine"
+                    },
+                    "maxItems": 32,
+                    "title": "Lines",
+                    "type": "array"
+                  },
+                  "currency": {
+                    "const": "PKR",
+                    "title": "Currency",
+                    "type": "string"
+                  },
+                  "subtotal": {
+                    "minimum": 0,
+                    "multipleOf": 0.01,
+                    "title": "Subtotal",
+                    "type": "number"
+                  },
+                  "fees": {
+                    "items": {
+                      "$ref": "#/$defs/Fee"
+                    },
+                    "maxItems": 16,
+                    "title": "Fees",
+                    "type": "array"
+                  },
+                  "total": {
+                    "minimum": 0,
+                    "multipleOf": 0.01,
+                    "title": "Total",
+                    "type": "number"
+                  },
+                  "summary_revision": {
+                    "minimum": 0,
+                    "title": "Summary Revision",
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "lines",
+                  "currency",
+                  "subtotal",
+                  "fees",
+                  "total",
+                  "summary_revision"
+                ],
+                "title": "CheckoutSummary",
+                "type": "object"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "operation": {
+                "const": "checkout.submit_demo_order"
+              },
+              "status": {
+                "const": "success"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "verified_state": {
+                "additionalProperties": false,
+                "properties": {
+                  "demo_order_id": {
+                    "maxLength": 128,
+                    "minLength": 1,
+                    "title": "Demo Order Id",
+                    "type": "string"
+                  },
+                  "demo": {
+                    "const": true,
+                    "title": "Demo",
+                    "type": "boolean"
+                  },
+                  "order": {
+                    "$ref": "#/$defs/CartSummary"
+                  }
+                },
+                "required": [
+                  "demo_order_id",
+                  "demo",
+                  "order"
+                ],
+                "title": "DemoReceipt",
+                "type": "object"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "operation": {
+                "const": "undo_last_reversible_action"
+              },
+              "status": {
+                "const": "success"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "verified_state": {
+                "additionalProperties": false,
+                "properties": {
+                  "lines": {
+                    "items": {
+                      "$ref": "#/$defs/CartLine"
+                    },
+                    "maxItems": 32,
+                    "title": "Lines",
+                    "type": "array"
+                  },
+                  "currency": {
+                    "const": "PKR",
+                    "title": "Currency",
+                    "type": "string"
+                  },
+                  "subtotal": {
+                    "minimum": 0,
+                    "multipleOf": 0.01,
+                    "title": "Subtotal",
+                    "type": "number"
+                  },
+                  "fees": {
+                    "items": {
+                      "$ref": "#/$defs/Fee"
+                    },
+                    "maxItems": 16,
+                    "title": "Fees",
+                    "type": "array"
+                  },
+                  "total": {
+                    "minimum": 0,
+                    "multipleOf": 0.01,
+                    "title": "Total",
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "lines",
+                  "currency",
+                  "subtotal",
+                  "fees",
+                  "total"
+                ],
+                "title": "CartSummary",
+                "type": "object"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "operation": {
+                "const": "get_current_context"
+              },
+              "status": {
+                "const": "success"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "verified_state": {
+                "additionalProperties": false,
+                "properties": {
+                  "snapshot": {
+                    "$ref": "#/$defs/ContextSnapshot"
+                  }
+                },
+                "required": [
+                  "snapshot"
+                ],
+                "title": "ContextResult",
+                "type": "object"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "success"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "verified_state"
+            ],
+            "properties": {
+              "error_code": {
+                "type": "null"
+              }
+            }
+          },
+          "else": {
+            "required": [
+              "error_code"
+            ],
+            "properties": {
+              "error_code": {
+                "type": "string"
+              },
+              "verified_state": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "success"
+              },
+              "operation": {
+                "const": "checkout.get_summary"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "confirmation_token"
+            ],
+            "properties": {
+              "confirmation_token": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "timeout_unknown"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "error_code": {
+                "const": "timeout"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "stale_context"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "error_code": {
+                "const": "stale_context"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "requires_confirmation"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "error_code": {
+                "const": "confirmation_required"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "not": {
+              "properties": {
+                "status": {
+                  "const": "success"
+                },
+                "operation": {
+                  "const": "checkout.get_summary"
+                }
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "confirmation_token": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "ActionResultEvent": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "2.0",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "session_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Session Id",
+          "type": "string"
+        },
+        "event_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Event Id",
+          "type": "string"
+        },
+        "turn_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Turn Id",
+          "type": "string"
+        },
+        "timestamp": {
+          "format": "date-time",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}[Tt]\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?(?:[Zz]|[+-]\\d{2}:\\d{2})$",
+          "title": "Timestamp",
+          "type": "string"
+        },
+        "context_revision": {
+          "minimum": 0,
+          "title": "Context Revision",
+          "type": "integer"
+        },
+        "type": {
+          "const": "app.action_result",
+          "title": "Type",
+          "type": "string"
+        },
+        "reply_to": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Reply To",
+          "type": "string"
+        },
+        "payload": {
+          "$ref": "#/$defs/ActionResult"
+        }
+      },
+      "required": [
+        "schema_version",
+        "session_id",
+        "event_id",
+        "turn_id",
+        "timestamp",
+        "context_revision",
+        "type",
+        "reply_to",
+        "payload"
+      ],
+      "title": "ActionResultEvent",
+      "type": "object"
+    },
+    "ActionResultStatus": {
+      "enum": [
+        "success",
+        "failed",
+        "rejected",
+        "stale_context",
+        "requires_confirmation",
+        "timeout_unknown"
+      ],
+      "title": "ActionResultStatus",
+      "type": "string"
+    },
+    "Operation": {
+      "enum": [
+        "navigate",
+        "search_menu",
+        "filter_menu",
+        "select_item",
+        "get_item_details",
+        "get_cart",
+        "cart.add_item",
+        "cart.set_quantity",
+        "cart.remove_item",
+        "checkout.get_summary",
+        "checkout.submit_demo_order",
+        "undo_last_reversible_action",
+        "get_current_context"
+      ],
+      "title": "Operation",
+      "type": "string"
+    },
+    "ActionRequest": {
+      "additionalProperties": false,
+      "properties": {
+        "action_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Action Id",
+          "type": "string"
+        },
+        "operation": {
+          "$ref": "#/$defs/Operation"
+        },
+        "arguments": {
+          "additionalProperties": true,
+          "title": "Arguments",
+          "type": "object"
+        }
+      },
+      "required": [
+        "action_id",
+        "operation",
+        "arguments"
+      ],
+      "title": "ActionRequest",
+      "type": "object",
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "operation": {
+                "const": "navigate"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "arguments": {
+                "additionalProperties": false,
+                "properties": {
+                  "target": {
+                    "maxLength": 64,
+                    "minLength": 1,
+                    "title": "Target",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "target"
+                ],
+                "title": "NavigateArgs",
+                "type": "object"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "operation": {
+                "const": "search_menu"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "arguments": {
+                "additionalProperties": false,
+                "properties": {
+                  "query": {
+                    "maxLength": 200,
+                    "title": "Query",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "query"
+                ],
+                "title": "SearchArgs",
+                "type": "object"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "operation": {
+                "const": "filter_menu"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "arguments": {
+                "additionalProperties": false,
+                "properties": {
+                  "tags": {
+                    "items": {
+                      "maxLength": 64,
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "maxItems": 16,
+                    "title": "Tags",
+                    "type": "array"
+                  },
+                  "category": {
+                    "anyOf": [
+                      {
+                        "pattern": "^[a-z][a-z0-9_\\-]{1,63}$",
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null,
+                    "title": "Category"
+                  },
+                  "max_price_pkr": {
+                    "anyOf": [
+                      {
+                        "minimum": 0,
+                        "multipleOf": 0.01,
+                        "type": "number"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null,
+                    "title": "Max Price Pkr"
+                  }
+                },
+                "title": "FilterArgs",
+                "type": "object"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "operation": {
+                "const": "select_item"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "arguments": {
+                "additionalProperties": false,
+                "properties": {
+                  "item_id": {
+                    "pattern": "^[a-z][a-z0-9_\\-]{1,63}$",
+                    "title": "Item Id",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "item_id"
+                ],
+                "title": "ItemArgs",
+                "type": "object"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "operation": {
+                "const": "get_item_details"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "arguments": {
+                "additionalProperties": false,
+                "properties": {
+                  "item_id": {
+                    "pattern": "^[a-z][a-z0-9_\\-]{1,63}$",
+                    "title": "Item Id",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "item_id"
+                ],
+                "title": "ItemArgs",
+                "type": "object"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "operation": {
+                "const": "get_cart"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "arguments": {
+                "additionalProperties": false,
+                "properties": {},
+                "title": "NoArgs",
+                "type": "object"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "operation": {
+                "const": "cart.add_item"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "arguments": {
+                "additionalProperties": false,
+                "properties": {
+                  "item_id": {
+                    "pattern": "^[a-z][a-z0-9_\\-]{1,63}$",
+                    "title": "Item Id",
+                    "type": "string"
+                  },
+                  "quantity": {
+                    "default": 1,
+                    "maximum": 99,
+                    "minimum": 1,
+                    "title": "Quantity",
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "item_id"
+                ],
+                "title": "AddArgs",
+                "type": "object"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "operation": {
+                "const": "cart.set_quantity"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "arguments": {
+                "additionalProperties": false,
+                "properties": {
+                  "item_id": {
+                    "pattern": "^[a-z][a-z0-9_\\-]{1,63}$",
+                    "title": "Item Id",
+                    "type": "string"
+                  },
+                  "quantity": {
+                    "maximum": 99,
+                    "minimum": 1,
+                    "title": "Quantity",
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "item_id",
+                  "quantity"
+                ],
+                "title": "SetQuantityArgs",
+                "type": "object"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "operation": {
+                "const": "cart.remove_item"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "arguments": {
+                "additionalProperties": false,
+                "properties": {
+                  "item_id": {
+                    "pattern": "^[a-z][a-z0-9_\\-]{1,63}$",
+                    "title": "Item Id",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "item_id"
+                ],
+                "title": "ItemArgs",
+                "type": "object"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "operation": {
+                "const": "checkout.get_summary"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "arguments": {
+                "additionalProperties": false,
+                "properties": {},
+                "title": "NoArgs",
+                "type": "object"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "operation": {
+                "const": "checkout.submit_demo_order"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "arguments": {
+                "additionalProperties": false,
+                "properties": {
+                  "confirmed": {
+                    "const": true,
+                    "title": "Confirmed",
+                    "type": "boolean"
+                  },
+                  "confirmation_token": {
+                    "maxLength": 128,
+                    "minLength": 1,
+                    "title": "Confirmation Token",
+                    "type": "string"
+                  },
+                  "summary_revision": {
+                    "minimum": 0,
+                    "title": "Summary Revision",
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "confirmed",
+                  "confirmation_token",
+                  "summary_revision"
+                ],
+                "title": "SubmitArgs",
+                "type": "object"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "operation": {
+                "const": "undo_last_reversible_action"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "arguments": {
+                "additionalProperties": false,
+                "properties": {},
+                "title": "NoArgs",
+                "type": "object"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "operation": {
+                "const": "get_current_context"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "arguments": {
+                "additionalProperties": false,
+                "properties": {},
+                "title": "NoArgs",
+                "type": "object"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "ActionRequestEvent": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "2.0",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "session_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Session Id",
+          "type": "string"
+        },
+        "event_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Event Id",
+          "type": "string"
+        },
+        "turn_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Turn Id",
+          "type": "string"
+        },
+        "timestamp": {
+          "format": "date-time",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}[Tt]\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?(?:[Zz]|[+-]\\d{2}:\\d{2})$",
+          "title": "Timestamp",
+          "type": "string"
+        },
+        "context_revision": {
+          "minimum": 0,
+          "title": "Context Revision",
+          "type": "integer"
+        },
+        "type": {
+          "const": "agent.action_request",
+          "title": "Type",
+          "type": "string"
+        },
+        "payload": {
+          "$ref": "#/$defs/ActionRequest"
+        }
+      },
+      "required": [
+        "schema_version",
+        "session_id",
+        "event_id",
+        "turn_id",
+        "timestamp",
+        "context_revision",
+        "type",
+        "payload"
+      ],
+      "title": "ActionRequestEvent",
+      "type": "object"
+    },
+    "AgentControl": {
+      "additionalProperties": false,
+      "properties": {
+        "intent": {
+          "$ref": "#/$defs/AgentControlIntent"
+        },
+        "mode": {
+          "anyOf": [
+            {
+              "enum": [
+                "manual",
+                "voice",
+                "typed"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Mode"
+        }
+      },
+      "required": [
+        "intent"
+      ],
+      "title": "AgentControl",
+      "type": "object",
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "intent": {
+                "const": "switch_mode"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "mode"
+            ],
+            "properties": {
+              "mode": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "AgentControlEvent": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "2.0",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "session_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Session Id",
+          "type": "string"
+        },
+        "event_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Event Id",
+          "type": "string"
+        },
+        "turn_id": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Turn Id"
+        },
+        "timestamp": {
+          "format": "date-time",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}[Tt]\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?(?:[Zz]|[+-]\\d{2}:\\d{2})$",
+          "title": "Timestamp",
+          "type": "string"
+        },
+        "context_revision": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Context Revision"
+        },
+        "type": {
+          "const": "agent.control",
+          "title": "Type",
+          "type": "string"
+        },
+        "payload": {
+          "$ref": "#/$defs/AgentControl"
+        }
+      },
+      "required": [
+        "schema_version",
+        "session_id",
+        "event_id",
+        "timestamp",
+        "type",
+        "payload"
+      ],
+      "title": "AgentControlEvent",
+      "type": "object"
+    },
+    "AgentControlIntent": {
+      "enum": [
+        "mute",
+        "unmute",
+        "pause",
+        "resume",
+        "end",
+        "switch_mode"
+      ],
+      "title": "AgentControlIntent",
+      "type": "string"
+    },
+    "AgentError": {
+      "additionalProperties": false,
+      "properties": {
+        "code": {
+          "$ref": "#/$defs/UserSafeErrorCode"
+        },
+        "message": {
+          "maxLength": 500,
+          "title": "Message",
+          "type": "string"
+        },
+        "fatal": {
+          "title": "Fatal",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "code",
+        "message",
+        "fatal"
+      ],
+      "title": "AgentError",
+      "type": "object"
+    },
+    "AgentErrorEvent": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "2.0",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "session_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Session Id",
+          "type": "string"
+        },
+        "event_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Event Id",
+          "type": "string"
+        },
+        "turn_id": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Turn Id"
+        },
+        "timestamp": {
+          "format": "date-time",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}[Tt]\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?(?:[Zz]|[+-]\\d{2}:\\d{2})$",
+          "title": "Timestamp",
+          "type": "string"
+        },
+        "context_revision": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Context Revision"
+        },
+        "type": {
+          "const": "agent.error",
+          "title": "Type",
+          "type": "string"
+        },
+        "payload": {
+          "$ref": "#/$defs/AgentError"
+        }
+      },
+      "required": [
+        "schema_version",
+        "session_id",
+        "event_id",
+        "timestamp",
+        "type",
+        "payload"
+      ],
+      "title": "AgentErrorEvent",
+      "type": "object"
+    },
+    "AgentStatus": {
+      "additionalProperties": false,
+      "properties": {
+        "state": {
+          "$ref": "#/$defs/ProductState"
+        },
+        "detail": {
+          "anyOf": [
+            {
+              "maxLength": 500,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Detail"
+        }
+      },
+      "required": [
+        "state"
+      ],
+      "title": "AgentStatus",
+      "type": "object"
+    },
+    "AgentStatusEvent": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "2.0",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "session_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Session Id",
+          "type": "string"
+        },
+        "event_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Event Id",
+          "type": "string"
+        },
+        "turn_id": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Turn Id"
+        },
+        "timestamp": {
+          "format": "date-time",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}[Tt]\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?(?:[Zz]|[+-]\\d{2}:\\d{2})$",
+          "title": "Timestamp",
+          "type": "string"
+        },
+        "context_revision": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Context Revision"
+        },
+        "type": {
+          "const": "agent.status",
+          "title": "Type",
+          "type": "string"
+        },
+        "payload": {
+          "$ref": "#/$defs/AgentStatus"
+        }
+      },
+      "required": [
+        "schema_version",
+        "session_id",
+        "event_id",
+        "timestamp",
+        "type",
+        "payload"
+      ],
+      "title": "AgentStatusEvent",
+      "type": "object"
+    },
+    "AppControlEvent": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "2.0",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "session_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Session Id",
+          "type": "string"
+        },
+        "event_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Event Id",
+          "type": "string"
+        },
+        "turn_id": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Turn Id"
+        },
+        "timestamp": {
+          "format": "date-time",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}[Tt]\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?(?:[Zz]|[+-]\\d{2}:\\d{2})$",
+          "title": "Timestamp",
+          "type": "string"
+        },
+        "context_revision": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Context Revision"
+        },
+        "type": {
+          "const": "app.control",
+          "title": "Type",
+          "type": "string"
+        },
+        "payload": {
+          "$ref": "#/$defs/Control"
+        }
+      },
+      "required": [
+        "schema_version",
+        "session_id",
+        "event_id",
+        "timestamp",
+        "type",
+        "payload"
+      ],
+      "title": "AppControlEvent",
+      "type": "object"
+    },
+    "AssistantTranscript": {
+      "additionalProperties": false,
+      "properties": {
+        "utterance_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Utterance Id",
+          "type": "string"
+        },
+        "text": {
+          "maxLength": 2000,
+          "title": "Text",
+          "type": "string"
+        },
+        "phase": {
+          "$ref": "#/$defs/AssistantTranscriptPhase"
+        }
+      },
+      "required": [
+        "utterance_id",
+        "text",
+        "phase"
+      ],
+      "title": "AssistantTranscript",
+      "type": "object"
+    },
+    "AssistantTranscriptEvent": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "2.0",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "session_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Session Id",
+          "type": "string"
+        },
+        "event_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Event Id",
+          "type": "string"
+        },
+        "turn_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Turn Id",
+          "type": "string"
+        },
+        "timestamp": {
+          "format": "date-time",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}[Tt]\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?(?:[Zz]|[+-]\\d{2}:\\d{2})$",
+          "title": "Timestamp",
+          "type": "string"
+        },
+        "context_revision": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Context Revision"
+        },
+        "type": {
+          "const": "transcript.assistant",
+          "title": "Type",
+          "type": "string"
+        },
+        "payload": {
+          "$ref": "#/$defs/AssistantTranscript"
+        }
+      },
+      "required": [
+        "schema_version",
+        "session_id",
+        "event_id",
+        "turn_id",
+        "timestamp",
+        "type",
+        "payload"
+      ],
+      "title": "AssistantTranscriptEvent",
+      "type": "object"
+    },
+    "AssistantTranscriptPhase": {
+      "enum": [
+        "started",
+        "updated",
+        "completed",
+        "interrupted"
+      ],
+      "title": "AssistantTranscriptPhase",
+      "type": "string"
+    },
+    "CartLine": {
+      "additionalProperties": false,
+      "properties": {
+        "item_id": {
+          "pattern": "^[a-z][a-z0-9_\\-]{1,63}$",
+          "title": "Item Id",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "quantity": {
+          "maximum": 99,
+          "minimum": 1,
+          "title": "Quantity",
+          "type": "integer"
+        },
+        "unit_price": {
+          "minimum": 0,
+          "multipleOf": 0.01,
+          "title": "Unit Price",
+          "type": "number"
+        },
+        "line_total": {
+          "minimum": 0,
+          "multipleOf": 0.01,
+          "title": "Line Total",
+          "type": "number"
+        }
+      },
+      "required": [
+        "item_id",
+        "name",
+        "quantity",
+        "unit_price",
+        "line_total"
+      ],
+      "title": "CartLine",
+      "type": "object"
+    },
+    "CartSummary": {
+      "additionalProperties": false,
+      "properties": {
+        "lines": {
+          "items": {
+            "$ref": "#/$defs/CartLine"
+          },
+          "maxItems": 32,
+          "title": "Lines",
+          "type": "array"
+        },
+        "currency": {
+          "const": "PKR",
+          "title": "Currency",
+          "type": "string"
+        },
+        "subtotal": {
+          "minimum": 0,
+          "multipleOf": 0.01,
+          "title": "Subtotal",
+          "type": "number"
+        },
+        "fees": {
+          "items": {
+            "$ref": "#/$defs/Fee"
+          },
+          "maxItems": 16,
+          "title": "Fees",
+          "type": "array"
+        },
+        "total": {
+          "minimum": 0,
+          "multipleOf": 0.01,
+          "title": "Total",
+          "type": "number"
+        }
+      },
+      "required": [
+        "lines",
+        "currency",
+        "subtotal",
+        "fees",
+        "total"
+      ],
+      "title": "CartSummary",
+      "type": "object"
+    },
+    "Choice": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Id",
+          "type": "string"
+        },
+        "label": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Label",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "label"
+      ],
+      "title": "Choice",
+      "type": "object"
+    },
+    "Clarification": {
+      "additionalProperties": false,
+      "properties": {
+        "question": {
+          "maxLength": 500,
+          "minLength": 1,
+          "title": "Question",
+          "type": "string"
+        },
+        "choices": {
+          "items": {
+            "$ref": "#/$defs/Choice"
+          },
+          "maxItems": 8,
+          "title": "Choices",
+          "type": "array"
+        }
+      },
+      "required": [
+        "question",
+        "choices"
+      ],
+      "title": "Clarification",
+      "type": "object"
+    },
+    "ClarificationEvent": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "2.0",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "session_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Session Id",
+          "type": "string"
+        },
+        "event_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Event Id",
+          "type": "string"
+        },
+        "turn_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Turn Id",
+          "type": "string"
+        },
+        "timestamp": {
+          "format": "date-time",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}[Tt]\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?(?:[Zz]|[+-]\\d{2}:\\d{2})$",
+          "title": "Timestamp",
+          "type": "string"
+        },
+        "context_revision": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Context Revision"
+        },
+        "type": {
+          "const": "agent.clarification_required",
+          "title": "Type",
+          "type": "string"
+        },
+        "payload": {
+          "$ref": "#/$defs/Clarification"
+        }
+      },
+      "required": [
+        "schema_version",
+        "session_id",
+        "event_id",
+        "turn_id",
+        "timestamp",
+        "type",
+        "payload"
+      ],
+      "title": "ClarificationEvent",
+      "type": "object"
+    },
+    "ContextEvent": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "2.0",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "session_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Session Id",
+          "type": "string"
+        },
+        "event_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Event Id",
+          "type": "string"
+        },
+        "turn_id": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Turn Id"
+        },
+        "timestamp": {
+          "format": "date-time",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}[Tt]\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?(?:[Zz]|[+-]\\d{2}:\\d{2})$",
+          "title": "Timestamp",
+          "type": "string"
+        },
+        "context_revision": {
+          "minimum": 0,
+          "title": "Context Revision",
+          "type": "integer"
+        },
+        "type": {
+          "enum": [
+            "app.context_snapshot",
+            "app.context_updated"
+          ],
+          "title": "Type",
+          "type": "string"
+        },
+        "payload": {
+          "$ref": "#/$defs/ContextSnapshot"
+        }
+      },
+      "required": [
+        "schema_version",
+        "session_id",
+        "event_id",
+        "timestamp",
+        "context_revision",
+        "type",
+        "payload"
+      ],
+      "title": "ContextEvent",
+      "type": "object"
+    },
+    "ContextSnapshot": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "2.0",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "session_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Session Id",
+          "type": "string"
+        },
+        "revision": {
+          "minimum": 0,
+          "title": "Revision",
+          "type": "integer"
+        },
+        "route": {
+          "enum": [
+            "home",
+            "menu",
+            "item",
+            "cart",
+            "checkout",
+            "confirmation"
+          ],
+          "title": "Route",
+          "type": "string"
+        },
+        "focus_item_id": {
+          "anyOf": [
+            {
+              "pattern": "^[a-z][a-z0-9_\\-]{1,63}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Focus Item Id"
+        },
+        "valid_actions": {
+          "items": {
+            "$ref": "#/$defs/Operation"
+          },
+          "maxItems": 13,
+          "title": "Valid Actions",
+          "type": "array"
+        },
+        "valid_navigation_targets": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 64,
+          "title": "Valid Navigation Targets",
+          "type": "array"
+        },
+        "filter_tags": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 16,
+          "title": "Filter Tags",
+          "type": "array"
+        },
+        "category": {
+          "anyOf": [
+            {
+              "pattern": "^[a-z][a-z0-9_\\-]{1,63}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Category"
+        },
+        "max_price_pkr": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "multipleOf": 0.01,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Max Price Pkr"
+        },
+        "search_query": {
+          "anyOf": [
+            {
+              "maxLength": 200,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Search Query"
+        },
+        "visible_items": {
+          "items": {
+            "$ref": "#/$defs/VisibleItem"
+          },
+          "maxItems": 25,
+          "title": "Visible Items",
+          "type": "array"
+        },
+        "cart": {
+          "$ref": "#/$defs/CartSummary"
+        },
+        "checkout_available": {
+          "title": "Checkout Available",
+          "type": "boolean"
+        },
+        "action_pending": {
+          "title": "Action Pending",
+          "type": "boolean"
+        },
+        "language": {
+          "maxLength": 35,
+          "minLength": 1,
+          "title": "Language",
+          "type": "string"
+        }
+      },
+      "required": [
+        "schema_version",
+        "session_id",
+        "revision",
+        "route",
+        "focus_item_id",
+        "valid_actions",
+        "valid_navigation_targets",
+        "filter_tags",
+        "category",
+        "max_price_pkr",
+        "search_query",
+        "visible_items",
+        "cart",
+        "checkout_available",
+        "action_pending",
+        "language"
+      ],
+      "title": "ContextSnapshot",
+      "type": "object"
+    },
+    "Control": {
+      "additionalProperties": false,
+      "properties": {
+        "intent": {
+          "enum": [
+            "start",
+            "pause",
+            "resume",
+            "mute",
+            "unmute",
+            "end",
+            "explain",
+            "switch_mode",
+            "pause_tips",
+            "resume_tips"
+          ],
+          "title": "Intent",
+          "type": "string"
+        },
+        "mode": {
+          "anyOf": [
+            {
+              "enum": [
+                "manual",
+                "voice",
+                "typed"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Mode"
+        }
+      },
+      "required": [
+        "intent"
+      ],
+      "title": "Control",
+      "type": "object",
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "intent": {
+                "const": "switch_mode"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "mode"
+            ],
+            "properties": {
+              "mode": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "Fee": {
+      "additionalProperties": false,
+      "properties": {
+        "code": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Code",
+          "type": "string"
+        },
+        "label": {
+          "title": "Label",
+          "type": "string"
+        },
+        "amount": {
+          "minimum": 0,
+          "multipleOf": 0.01,
+          "title": "Amount",
+          "type": "number"
+        }
+      },
+      "required": [
+        "code",
+        "label",
+        "amount"
+      ],
+      "title": "Fee",
+      "type": "object"
+    },
+    "ProductState": {
+      "description": "VA-07 product-level UI meanings.",
+      "enum": [
+        "off/awaiting_consent",
+        "connecting",
+        "ready/listening",
+        "user_speaking",
+        "thinking",
+        "assistant_speaking",
+        "waiting_for_action_result",
+        "idle",
+        "muted/paused",
+        "reconnecting",
+        "error",
+        "ended"
+      ],
+      "title": "ProductState",
+      "type": "string"
+    },
+    "TextInput": {
+      "additionalProperties": false,
+      "properties": {
+        "text": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Text",
+          "type": "string"
+        }
+      },
+      "required": [
+        "text"
+      ],
+      "title": "TextInput",
+      "type": "object"
+    },
+    "TextInputEvent": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "2.0",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "session_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Session Id",
+          "type": "string"
+        },
+        "event_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Event Id",
+          "type": "string"
+        },
+        "turn_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Turn Id",
+          "type": "string"
+        },
+        "timestamp": {
+          "format": "date-time",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}[Tt]\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?(?:[Zz]|[+-]\\d{2}:\\d{2})$",
+          "title": "Timestamp",
+          "type": "string"
+        },
+        "context_revision": {
+          "minimum": 0,
+          "title": "Context Revision",
+          "type": "integer"
+        },
+        "type": {
+          "const": "app.text_input",
+          "title": "Type",
+          "type": "string"
+        },
+        "payload": {
+          "$ref": "#/$defs/TextInput"
+        }
+      },
+      "required": [
+        "schema_version",
+        "session_id",
+        "event_id",
+        "turn_id",
+        "timestamp",
+        "context_revision",
+        "type",
+        "payload"
+      ],
+      "title": "TextInputEvent",
+      "type": "object"
+    },
+    "UserSafeErrorCode": {
+      "description": "User-safe codes only — never provider stack traces.",
+      "enum": [
+        "unknown_operation",
+        "invalid_arguments",
+        "missing_action_id",
+        "stale_context",
+        "not_available",
+        "out_of_stock",
+        "confirmation_required",
+        "confirmation_expired",
+        "timeout",
+        "rejected",
+        "internal",
+        "rate_limited"
+      ],
+      "title": "UserSafeErrorCode",
+      "type": "string"
+    },
+    "UserTranscript": {
+      "additionalProperties": false,
+      "properties": {
+        "utterance_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Utterance Id",
+          "type": "string"
+        },
+        "text": {
+          "maxLength": 2000,
+          "title": "Text",
+          "type": "string"
+        },
+        "source": {
+          "const": "speech",
+          "title": "Source",
+          "type": "string"
+        }
+      },
+      "required": [
+        "utterance_id",
+        "text",
+        "source"
+      ],
+      "title": "UserTranscript",
+      "type": "object"
+    },
+    "UserTranscriptEvent": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "2.0",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "session_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Session Id",
+          "type": "string"
+        },
+        "event_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Event Id",
+          "type": "string"
+        },
+        "turn_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Turn Id",
+          "type": "string"
+        },
+        "timestamp": {
+          "format": "date-time",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}[Tt]\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?(?:[Zz]|[+-]\\d{2}:\\d{2})$",
+          "title": "Timestamp",
+          "type": "string"
+        },
+        "context_revision": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Context Revision"
+        },
+        "type": {
+          "enum": [
+            "transcript.user.partial",
+            "transcript.user.final"
+          ],
+          "title": "Type",
+          "type": "string"
+        },
+        "payload": {
+          "$ref": "#/$defs/UserTranscript"
+        }
+      },
+      "required": [
+        "schema_version",
+        "session_id",
+        "event_id",
+        "turn_id",
+        "timestamp",
+        "type",
+        "payload"
+      ],
+      "title": "UserTranscriptEvent",
+      "type": "object"
+    },
+    "VisibleItem": {
+      "additionalProperties": false,
+      "properties": {
+        "item_id": {
+          "pattern": "^[a-z][a-z0-9_\\-]{1,63}$",
+          "title": "Item Id",
+          "type": "string"
+        },
+        "name": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Name",
+          "type": "string"
+        },
+        "price": {
+          "minimum": 0,
+          "multipleOf": 0.01,
+          "title": "Price",
+          "type": "number"
+        },
+        "currency": {
+          "const": "PKR",
+          "title": "Currency",
+          "type": "string"
+        },
+        "descriptors": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 16,
+          "title": "Descriptors",
+          "type": "array"
+        },
+        "available": {
+          "title": "Available",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "item_id",
+        "name",
+        "price",
+        "currency",
+        "descriptors",
+        "available"
+      ],
+      "title": "VisibleItem",
+      "type": "object"
+    },
+    "NavigateArgs": {
+      "additionalProperties": false,
+      "properties": {
+        "target": {
+          "maxLength": 64,
+          "minLength": 1,
+          "title": "Target",
+          "type": "string"
+        }
+      },
+      "required": [
+        "target"
+      ],
+      "title": "NavigateArgs",
+      "type": "object"
+    },
+    "SearchArgs": {
+      "additionalProperties": false,
+      "properties": {
+        "query": {
+          "maxLength": 200,
+          "title": "Query",
+          "type": "string"
+        }
+      },
+      "required": [
+        "query"
+      ],
+      "title": "SearchArgs",
+      "type": "object"
+    },
+    "FilterArgs": {
+      "additionalProperties": false,
+      "properties": {
+        "tags": {
+          "items": {
+            "maxLength": 64,
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 16,
+          "title": "Tags",
+          "type": "array"
+        },
+        "category": {
+          "anyOf": [
+            {
+              "pattern": "^[a-z][a-z0-9_\\-]{1,63}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Category"
+        },
+        "max_price_pkr": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "multipleOf": 0.01,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Max Price Pkr"
+        }
+      },
+      "title": "FilterArgs",
+      "type": "object"
+    },
+    "ItemArgs": {
+      "additionalProperties": false,
+      "properties": {
+        "item_id": {
+          "pattern": "^[a-z][a-z0-9_\\-]{1,63}$",
+          "title": "Item Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "item_id"
+      ],
+      "title": "ItemArgs",
+      "type": "object"
+    },
+    "NoArgs": {
+      "additionalProperties": false,
+      "properties": {},
+      "title": "NoArgs",
+      "type": "object"
+    },
+    "AddArgs": {
+      "additionalProperties": false,
+      "properties": {
+        "item_id": {
+          "pattern": "^[a-z][a-z0-9_\\-]{1,63}$",
+          "title": "Item Id",
+          "type": "string"
+        },
+        "quantity": {
+          "default": 1,
+          "maximum": 99,
+          "minimum": 1,
+          "title": "Quantity",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "item_id"
+      ],
+      "title": "AddArgs",
+      "type": "object"
+    },
+    "SetQuantityArgs": {
+      "additionalProperties": false,
+      "properties": {
+        "item_id": {
+          "pattern": "^[a-z][a-z0-9_\\-]{1,63}$",
+          "title": "Item Id",
+          "type": "string"
+        },
+        "quantity": {
+          "maximum": 99,
+          "minimum": 1,
+          "title": "Quantity",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "item_id",
+        "quantity"
+      ],
+      "title": "SetQuantityArgs",
+      "type": "object"
+    },
+    "SubmitArgs": {
+      "additionalProperties": false,
+      "properties": {
+        "confirmed": {
+          "const": true,
+          "title": "Confirmed",
+          "type": "boolean"
+        },
+        "confirmation_token": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Confirmation Token",
+          "type": "string"
+        },
+        "summary_revision": {
+          "minimum": 0,
+          "title": "Summary Revision",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "confirmed",
+        "confirmation_token",
+        "summary_revision"
+      ],
+      "title": "SubmitArgs",
+      "type": "object"
+    },
+    "NavigationResult": {
+      "additionalProperties": false,
+      "properties": {
+        "route": {
+          "enum": [
+            "home",
+            "menu",
+            "item",
+            "cart",
+            "checkout",
+            "confirmation"
+          ],
+          "title": "Route",
+          "type": "string"
+        }
+      },
+      "required": [
+        "route"
+      ],
+      "title": "NavigationResult",
+      "type": "object"
+    },
+    "ItemsResult": {
+      "additionalProperties": false,
+      "properties": {
+        "items": {
+          "items": {
+            "$ref": "#/$defs/VisibleItem"
+          },
+          "maxItems": 25,
+          "title": "Items",
+          "type": "array"
+        },
+        "result_count": {
+          "minimum": 0,
+          "title": "Result Count",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "items",
+        "result_count"
+      ],
+      "title": "ItemsResult",
+      "type": "object"
+    },
+    "ItemDetails": {
+      "additionalProperties": false,
+      "properties": {
+        "item_id": {
+          "pattern": "^[a-z][a-z0-9_\\-]{1,63}$",
+          "title": "Item Id",
+          "type": "string"
+        },
+        "name": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Name",
+          "type": "string"
+        },
+        "price": {
+          "minimum": 0,
+          "multipleOf": 0.01,
+          "title": "Price",
+          "type": "number"
+        },
+        "currency": {
+          "const": "PKR",
+          "title": "Currency",
+          "type": "string"
+        },
+        "descriptors": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 16,
+          "title": "Descriptors",
+          "type": "array"
+        },
+        "available": {
+          "title": "Available",
+          "type": "boolean"
+        },
+        "description": {
+          "maxLength": 2000,
+          "title": "Description",
+          "type": "string"
+        },
+        "ingredients": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Ingredients"
+        },
+        "ingredients_available": {
+          "title": "Ingredients Available",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "item_id",
+        "name",
+        "price",
+        "currency",
+        "descriptors",
+        "available",
+        "description",
+        "ingredients",
+        "ingredients_available"
+      ],
+      "title": "ItemDetails",
+      "type": "object"
+    },
+    "CheckoutSummary": {
+      "additionalProperties": false,
+      "properties": {
+        "lines": {
+          "items": {
+            "$ref": "#/$defs/CartLine"
+          },
+          "maxItems": 32,
+          "title": "Lines",
+          "type": "array"
+        },
+        "currency": {
+          "const": "PKR",
+          "title": "Currency",
+          "type": "string"
+        },
+        "subtotal": {
+          "minimum": 0,
+          "multipleOf": 0.01,
+          "title": "Subtotal",
+          "type": "number"
+        },
+        "fees": {
+          "items": {
+            "$ref": "#/$defs/Fee"
+          },
+          "maxItems": 16,
+          "title": "Fees",
+          "type": "array"
+        },
+        "total": {
+          "minimum": 0,
+          "multipleOf": 0.01,
+          "title": "Total",
+          "type": "number"
+        },
+        "summary_revision": {
+          "minimum": 0,
+          "title": "Summary Revision",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "lines",
+        "currency",
+        "subtotal",
+        "fees",
+        "total",
+        "summary_revision"
+      ],
+      "title": "CheckoutSummary",
+      "type": "object"
+    },
+    "DemoReceipt": {
+      "additionalProperties": false,
+      "properties": {
+        "demo_order_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Demo Order Id",
+          "type": "string"
+        },
+        "demo": {
+          "const": true,
+          "title": "Demo",
+          "type": "boolean"
+        },
+        "order": {
+          "$ref": "#/$defs/CartSummary"
+        }
+      },
+      "required": [
+        "demo_order_id",
+        "demo",
+        "order"
+      ],
+      "title": "DemoReceipt",
+      "type": "object"
+    },
+    "ContextResult": {
+      "additionalProperties": false,
+      "properties": {
+        "snapshot": {
+          "$ref": "#/$defs/ContextSnapshot"
+        }
+      },
+      "required": [
+        "snapshot"
+      ],
+      "title": "ContextResult",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "2.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "session_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Session Id",
+      "type": "string"
+    },
+    "event_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Event Id",
+      "type": "string"
+    },
+    "reply_to": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Reply To",
+      "type": "string"
+    },
+    "timestamp": {
+      "format": "date-time",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}[Tt]\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?(?:[Zz]|[+-]\\d{2}:\\d{2})$",
+      "title": "Timestamp",
+      "type": "string"
+    },
+    "action_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Action Id",
+      "type": "string"
+    },
+    "state": {
+      "enum": [
+        "not_seen",
+        "pending",
+        "found",
+        "expired"
+      ],
+      "title": "State",
+      "type": "string"
+    },
+    "result": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ActionResultEvent"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    }
+  },
+  "required": [
+    "schema_version",
+    "session_id",
+    "event_id",
+    "reply_to",
+    "timestamp",
+    "action_id",
+    "state"
+  ],
+  "title": "LookupResponse",
+  "type": "object",
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "state": {
+            "const": "found"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "result"
+        ],
+        "properties": {
+          "result": {
+            "type": "object",
+            "properties": {
+              "payload": {
+                "properties": {
+                  "status": {
+                    "not": {
+                      "const": "timeout_unknown"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "result": {
+            "type": "null"
+          }
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "schema_version": "2.0",
+  "session_id": "contract-demo",
+  "event_id": "request-contract-8",
+  "turn_id": "contract-turn",
+  "timestamp": "2026-10-17T12:00:00Z",
+  "context_revision": 7,
+  "type": "agent.action_request",
+  "payload": {
+    "action_id": "contract-8",
+    "operation": "cart.remove_item",
+    "arguments": {
+      "item_id": "wrap-hot-chicken"
+    }
+  }
+}

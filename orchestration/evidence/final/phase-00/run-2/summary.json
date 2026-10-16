@@ -1,0 +1,170 @@
+{
+  "generated_at_utc": "2026-10-16T20:14:03.368484+00:00",
+  "mode": "offline-components-only",
+  "dotenv_disabled": true,
+  "worker_started": false,
+  "lock_sha256": {
+    "voice-agent": "ba2d5de941c5e4fc5f8ad07006bfff9780d693c4116cce0cc151a40174d32a67",
+    "orchestration": "9f140a1f9cea191aae59b2c0132f6efb038a118211226bad08640c13d27cb2b2",
+    "website": "52a6f94ffe41f8cea6054c3a029fa34c1faf6dfaf339d59ee532d04f48c649e5"
+  },
+  "preserved_handover_files": 17,
+  "requirements_coverage": {
+    "WEB": 22,
+    "W": 22,
+    "VA": 17,
+    "T": 20,
+    "O": 21
+  },
+  "checks": [
+    {
+      "label": "voice-agent-inventory",
+      "cwd": "voice-agent",
+      "command": [
+        "C:\\HCI-PROJECT\\voice-agent\\.venv\\Scripts\\python.exe",
+        "C:\\HCI-PROJECT\\orchestration\\tools\\phase0_baseline.py",
+        "--inventory",
+        "--livekit-api"
+      ],
+      "exit_code": 0,
+      "duration_seconds": 9.171
+    },
+    {
+      "label": "voice-agent-tests",
+      "cwd": "voice-agent",
+      "command": [
+        "C:\\HCI-PROJECT\\voice-agent\\.venv\\Scripts\\python.exe",
+        "-m",
+        "pytest",
+        "-q"
+      ],
+      "exit_code": 1,
+      "duration_seconds": 19.204
+    },
+    {
+      "label": "voice-agent-lint",
+      "cwd": "voice-agent",
+      "command": [
+        "C:\\HCI-PROJECT\\voice-agent\\.venv\\Scripts\\python.exe",
+        "-m",
+        "ruff",
+        "check",
+        "."
+      ],
+      "exit_code": 1,
+      "duration_seconds": 0.328
+    },
+    {
+      "label": "orchestration-inventory",
+      "cwd": "orchestration",
+      "command": [
+        "C:\\HCI-PROJECT\\orchestration\\.venv\\Scripts\\python.exe",
+        "C:\\HCI-PROJECT\\orchestration\\tools\\phase0_baseline.py",
+        "--inventory"
+      ],
+      "exit_code": 0,
+      "duration_seconds": 0.531
+    },
+    {
+      "label": "orchestration-tests",
+      "cwd": "orchestration",
+      "command": [
+        "C:\\HCI-PROJECT\\orchestration\\.venv\\Scripts\\python.exe",
+        "-m",
+        "pytest",
+        "-q"
+      ],
+      "exit_code": 0,
+      "duration_seconds": 3.75
+    },
+    {
+      "label": "orchestration-lint",
+      "cwd": "orchestration",
+      "command": [
+        "C:\\HCI-PROJECT\\orchestration\\.venv\\Scripts\\python.exe",
+        "-m",
+        "ruff",
+        "check",
+        "src",
+        "tests",
+        "tools"
+      ],
+      "exit_code": 0,
+      "duration_seconds": 0.234
+    },
+    {
+      "label": "website-inventory",
+      "cwd": "website",
+      "command": [
+        "C:\\HCI-PROJECT\\website\\.venv\\Scripts\\python.exe",
+        "C:\\HCI-PROJECT\\orchestration\\tools\\phase0_baseline.py",
+        "--inventory"
+      ],
+      "exit_code": 0,
+      "duration_seconds": 1.422
+    },
+    {
+      "label": "website-tests",
+      "cwd": "website",
+      "command": [
+        "C:\\HCI-PROJECT\\website\\.venv\\Scripts\\python.exe",
+        "-m",
+        "pytest",
+        "-q"
+      ],
+      "exit_code": 0,
+      "duration_seconds": 3.985
+    },
+    {
+      "label": "website-lint",
+      "cwd": "website",
+      "command": [
+        "C:\\HCI-PROJECT\\website\\.venv\\Scripts\\python.exe",
+        "-m",
+        "ruff",
+        "check",
+        "src",
+        "tests"
+      ],
+      "exit_code": 0,
+      "duration_seconds": 0.359
+    },
+    {
+      "label": "voice-agent-typecheck",
+      "cwd": "voice-agent",
+      "command": [
+        "C:\\HCI-PROJECT\\voice-agent\\.venv\\Scripts\\python.exe",
+        "-m",
+        "pyright"
+      ],
+      "exit_code": 1,
+      "duration_seconds": 11.859
+    },
+    {
+      "label": "website-js-syntax",
+      "cwd": "website",
+      "command": [
+        "node",
+        "--check",
+        "static/js/app.js"
+      ],
+      "exit_code": 0,
+      "duration_seconds": 0.125
+    },
+    {
+      "label": "node-version",
+      "cwd": ".",
+      "command": [
+        "node",
+        "--version"
+      ],
+      "exit_code": 0,
+      "duration_seconds": 0.063
+    }
+  ],
+  "failed_checks": [
+    "voice-agent-tests",
+    "voice-agent-lint",
+    "voice-agent-typecheck"
+  ]
+}

@@ -6,6 +6,70 @@ Newest entries at the top.
 
 ---
 
+## ADR-0015 — Bound preparation, generation ownership and honest cleanup
+
+- **Context:** Habiba authorized final orchestration Phase 3 only. The old API
+  dispatched immediately and accepted client room/dispatch IDs. Failed deletion
+  could be forgotten. Installed LiveKit API 1.2.1 also requires a different
+  delete_dispatch call signature than the existing wrapper used.
+- **Decision:** Add owner-verified v2 lifecycle routes using the real shopping
+  authority. Separate credentials/preparation from app/media/playback/context
+  readiness, one owned dispatch task and authenticated worker acknowledgement.
+  Retain cancellation tombstones and uncertain cleanup; no blind create retry,
+  guessed deletion success, arbitrary app destination or mock fallback. Disable
+  unbound v1 routes by default and reserve integrated rooms even in legacy dev
+  mode. Correct the installed SDK deletion call. Keep browser lifecycle ownership
+  as a tested injectable controller; page/SDK wiring is Phase 5. The actual worker
+  gate exposes a runtime attachment point; absence of Phase 4's v2 runtime is an
+  explicit unavailable/cleanup outcome, never a v1 substitution. Coordination is
+  process-local, without durability or Cloud restart-cleanup guarantees.
+- **Evidence:** `../../orchestration/docs/PHASE_03_ASSISTANCE_LIFECYCLE.md`, installed
+  SDK source, official LiveKit Python API docs, and Phase 3 verification report.
+- **Date:** 2026-10-17
+
+---
+
+## ADR-0014 — Shared pure contract and process-local application authority
+
+- **Context:** Habiba authorized final orchestration Phase 2 only. The website
+  must enforce the frozen v2 contract without installing the voice stack, and
+  manual actions and future app-seat forwarding must use one business authority.
+- **Decision:** Extract pure v2 models into the sibling `foodease-contract`
+  package while preserving the agent import path. Replace the website singleton
+  with bounded anonymous-owner sessions; execute on a copy under a session lock,
+  validate output and commit state/revision/result together. Retain accepted
+  action outcomes for the session lifetime, reject admission at capacity, bind
+  one-use checkout approval to the session/cart/summary, and retain receipts.
+  In-memory state requires one process and honest expiry/restart reporting.
+  Keep Phase 1 examples hash-pinned as historical captures; current authority
+  conformance runs through actual API tests and localhost HTTP checks. No v1
+  artifact changes or LiveKit lifecycle/worker activation.
+- **Evidence:** `../../orchestration/evidence/final/phase-02/report.md` and
+  `../../orchestration/docs/PHASE_02_APPLICATION_AUTHORITY.md`.
+- **Date:** 2026-10-17
+
+---
+
+## ADR-0013 — Final integration contract 2.0, opt-in only
+
+- **Context:** Actual website results contain lines/line_total, complete filter
+  state is absent from snapshots, live filter arguments mismatch v1, and action
+  requests omit expected revision. Mandatory app-side checkout token/summary
+  binding would break frozen v1's optional-token promise. Habiba requested only
+  final orchestration Phase 1 after the recorded Phase 0 baseline.
+- **Decision:** Publish separate v2 executable models, explicit projections,
+  schemas/examples and a mirrored handoff. Keep all thirteen semantic operations
+  and event names; version transport channels to prevent accidental mixing.
+  Define strict metadata/correlation, sender binding, result/status shapes,
+  confirmation and read-only reconciliation. Preserve both original v1 trees;
+  defer activation and storage/transport enforcement to Phases 2–5.
+- **Evidence:** `tests/test_contract_v2.py` reproduces original real-domain
+  incompatibilities, then validates all thirteen projected operations. See
+  `../../orchestration/docs/PHASE_01_CONTRACT_FREEZE.md` and Phase 1 evidence.
+- **Date:** 2026-10-17
+
+---
+
 ## ADR-0012 — Phase 10 live audio / usability waived
 
 - **Context:** Phase 10.2 requires live audio runs (≥3 each) for T01–T04, T09, T10, T15, T17, T18, T20. Phase 10.3 is optional usability with fresh participants. Habiba asks to skip and start Phase 11.

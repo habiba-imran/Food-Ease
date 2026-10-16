@@ -1,0 +1,16 @@
+{
+  "schema_version": "2.0",
+  "session_id": "contract-demo",
+  "event_id": "request-contract-5",
+  "turn_id": "contract-turn",
+  "timestamp": "2026-10-17T12:00:00Z",
+  "context_revision": 5,
+  "type": "agent.action_request",
+  "payload": {
+    "action_id": "contract-5",
+    "operation": "get_item_details",
+    "arguments": {
+      "item_id": "wrap-veg"
+    }
+  }
+}

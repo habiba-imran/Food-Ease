@@ -2,7 +2,9 @@
 
 from __future__ import annotations
 
+import asyncio
 import logging
+from contextlib import asynccontextmanager, suppress
 from datetime import UTC, datetime, timedelta
 
 from fastapi import FastAPI, Request
@@ -17,6 +19,8 @@ from foodease_session.assist import (
     assist_metadata,
 )
 from foodease_session.config import ConfigError, Settings, load_settings
+from foodease_session.lifecycle import AssistanceService, HttpShoppingAuthority, LifecycleError
+from foodease_session.lifecycle_api import router as lifecycle_router
 from foodease_session.mint import MintError, Role, mint_pair, mint_token
 from foodease_session.models import (
     AssistEndRequest,
@@ -45,18 +49,39 @@ def create_app(
     settings: Settings | None = None,
     *,
     dispatch_client: DispatchClient | None = None,
+    assistance_service: AssistanceService | None = None,
 ) -> FastAPI:
     try:
         cfg = settings or load_settings()
     except ConfigError:
         cfg = None
 
+    @asynccontextmanager
+    async def lifespan(app_instance: FastAPI):
+        service = app_instance.state.assistance
+
+        async def sweep():
+            while True:
+                await asyncio.sleep(1)
+                await service.sweep()
+
+        task = asyncio.create_task(sweep()) if service is not None else None
+        try:
+            yield
+        finally:
+            if task is not None:
+                task.cancel()
+                with suppress(asyncio.CancelledError):
+                    await task
+                if service is not None:
+                    await service.close()
+
     app = FastAPI(
         title="FoodEase Session API",
         version="1.1.0",
+        lifespan=lifespan,
         description=(
-            "Short-lived LiveKit JWTs + consent-gated agent dispatch "
-            "(no shopping logic)."
+            "Short-lived LiveKit JWTs + consent-gated agent dispatch (no shopping logic)."
         ),
     )
     app.state.settings = cfg
@@ -71,6 +96,20 @@ def create_app(
         )
     else:
         app.state.dispatch = None
+    app.state.assistance = assistance_service
+    if (
+        assistance_service is None
+        and cfg is not None
+        and isinstance(app.state.dispatch, LiveKitDispatchClient)
+    ):
+        app.state.assistance = AssistanceService(
+            cfg, HttpShoppingAuthority(cfg.website_base_url), app.state.dispatch
+        )
+    app.include_router(lifecycle_router())
+
+    @app.exception_handler(LifecycleError)
+    async def lifecycle_error(request: Request, exc: LifecycleError) -> JSONResponse:
+        return JSONResponse({"error": exc.code}, status_code=exc.status)
 
     limiter = RateLimiter(
         max_requests=(cfg.rate_limit_requests if cfg else 60),
@@ -82,13 +121,22 @@ def create_app(
         app.add_middleware(
             CORSMiddleware,
             allow_origins=list(cfg.cors_origins),
-            allow_credentials=False,
+            allow_credentials=True,
             allow_methods=["GET", "POST", "OPTIONS"],
-            allow_headers=["Content-Type"],
+            allow_headers=["Content-Type", "X-FoodEase-Session"],
         )
 
     @app.middleware("http")
     async def rate_limit_middleware(request: Request, call_next):  # type: ignore[no-untyped-def]
+        if request.url.path.startswith("/v1/") and (cfg is None or not cfg.enable_legacy_api):
+            return JSONResponse({"error": "legacy_api_disabled_use_bound_v2"}, status_code=410)
+        origin = request.headers.get("origin")
+        if (
+            request.url.path.startswith("/v2/")
+            and origin
+            and (cfg is None or origin not in cfg.cors_origins)
+        ):
+            return JSONResponse({"error": "unauthorized_origin"}, status_code=403)
         if request.url.path == "/healthz":
             return await call_next(request)
         client = request.client.host if request.client else "unknown"
@@ -98,7 +146,9 @@ def create_app(
                 status_code=429,
                 content=ErrorBody(error="rate_limited", detail="Too many requests").model_dump(),
             )
-        return await call_next(request)
+        response = await call_next(request)
+        response.headers["Cache-Control"] = "no-store"
+        return response
 
     @app.get("/healthz", response_model=HealthResponse)
     def healthz() -> HealthResponse:

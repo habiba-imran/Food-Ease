@@ -52,6 +52,8 @@ def mint_token(
     identity: str,
     ttl_seconds: int,
     name: str | None = None,
+    session_id: str | None = None,
+    generation: str | None = None,
 ) -> str:
     """Return a short-lived LiveKit access JWT for the given role."""
     try:
@@ -63,13 +65,20 @@ def mint_token(
     if ttl_seconds < 60:
         raise MintError("ttl_seconds must be >= 60")
 
+    attributes = _attributes_for_role(role_enum)
+    grants = _grants_for_role(role_enum, room)
+    if session_id is not None and generation is not None:
+        attributes.update({"foodease.session": session_id, "foodease.generation": generation})
+        grants.can_update_own_metadata = False
+        if role_enum is Role.USER:
+            grants.can_publish_sources = ["microphone"]
     token = (
         AccessToken(api_key, api_secret)
         .with_identity(identity)
         .with_name(name or identity)
         .with_ttl(timedelta(seconds=ttl_seconds))
-        .with_attributes(_attributes_for_role(role_enum))
-        .with_grants(_grants_for_role(role_enum, room))
+        .with_attributes(attributes)
+        .with_grants(grants)
     )
     return token.to_jwt()
 

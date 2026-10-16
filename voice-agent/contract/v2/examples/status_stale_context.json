@@ -1,0 +1,18 @@
+{
+  "schema_version": "2.0",
+  "session_id": "contract-demo",
+  "event_id": "result-stale_context",
+  "turn_id": "contract-turn",
+  "timestamp": "2026-10-17T12:00:00Z",
+  "context_revision": 11,
+  "type": "app.action_result",
+  "reply_to": "request-status",
+  "payload": {
+    "action_id": "negative-stale_context",
+    "status": "stale_context",
+    "verified_state": null,
+    "error_code": "stale_context",
+    "error_message": "Context is out of date. Refresh and try again.",
+    "operation": "cart.add_item"
+  }
+}

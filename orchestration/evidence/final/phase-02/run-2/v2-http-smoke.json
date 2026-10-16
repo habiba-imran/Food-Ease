@@ -1,0 +1,892 @@
+{
+  "mode": "actual-localhost-http",
+  "operations": 13,
+  "receipt_lookup": "pass",
+  "session_isolation": "pass",
+  "reload_attachment": "pass",
+  "trace": [
+    {
+      "request": {
+        "schema_version": "2.0",
+        "session_id": "16TE7QS1wDLaOjsSUX-gL2BKqU2N_XbQ",
+        "event_id": "http-request-1",
+        "turn_id": "http-smoke",
+        "timestamp": "2026-10-16T21:10:42.014122+00:00",
+        "context_revision": 1,
+        "type": "agent.action_request",
+        "payload": {
+          "action_id": "http-1",
+          "operation": "navigate",
+          "arguments": {
+            "target": "menu"
+          }
+        }
+      },
+      "result": {
+        "schema_version": "2.0",
+        "session_id": "16TE7QS1wDLaOjsSUX-gL2BKqU2N_XbQ",
+        "event_id": "qFMUUgzRYVsyuZ-Cy1vzC53-",
+        "turn_id": "http-smoke",
+        "timestamp": "2026-10-16T21:10:42.022179Z",
+        "context_revision": 2,
+        "type": "app.action_result",
+        "reply_to": "http-request-1",
+        "payload": {
+          "action_id": "http-1",
+          "operation": "navigate",
+          "status": "success",
+          "verified_state": {
+            "route": "menu"
+          },
+          "error_code": null,
+          "error_message": null,
+          "confirmation_token": null
+        }
+      }
+    },
+    {
+      "request": {
+        "schema_version": "2.0",
+        "session_id": "16TE7QS1wDLaOjsSUX-gL2BKqU2N_XbQ",
+        "event_id": "http-request-2",
+        "turn_id": "http-smoke",
+        "timestamp": "2026-10-16T21:10:42.034931+00:00",
+        "context_revision": 2,
+        "type": "agent.action_request",
+        "payload": {
+          "action_id": "http-2",
+          "operation": "filter_menu",
+          "arguments": {
+            "tags": [
+              "vegetarian"
+            ],
+            "max_price_pkr": 800
+          }
+        }
+      },
+      "result": {
+        "schema_version": "2.0",
+        "session_id": "16TE7QS1wDLaOjsSUX-gL2BKqU2N_XbQ",
+        "event_id": "EPYnIpk_V9RLDme1dk2BlhfN",
+        "turn_id": "http-smoke",
+        "timestamp": "2026-10-16T21:10:42.040971Z",
+        "context_revision": 3,
+        "type": "app.action_result",
+        "reply_to": "http-request-2",
+        "payload": {
+          "action_id": "http-2",
+          "operation": "filter_menu",
+          "status": "success",
+          "verified_state": {
+            "items": [
+              {
+                "item_id": "burger-veg",
+                "name": "Veggie Patty Burger",
+                "price": 550.0,
+                "currency": "PKR",
+                "descriptors": [
+                  "vegetarian"
+                ],
+                "available": true
+              },
+              {
+                "item_id": "wrap-veg",
+                "name": "Veggie Wrap",
+                "price": 500.0,
+                "currency": "PKR",
+                "descriptors": [
+                  "vegetarian"
+                ],
+                "available": true
+              },
+              {
+                "item_id": "roll-paneer",
+                "name": "Paneer Roll",
+                "price": 420.0,
+                "currency": "PKR",
+                "descriptors": [
+                  "vegetarian"
+                ],
+                "available": true
+              },
+              {
+                "item_id": "drink-lassi-small",
+                "name": "Sweet Lassi",
+                "price": 150.0,
+                "currency": "PKR",
+                "descriptors": [
+                  "vegetarian"
+                ],
+                "available": true
+              },
+              {
+                "item_id": "drink-chai",
+                "name": "Karak Chai",
+                "price": 120.0,
+                "currency": "PKR",
+                "descriptors": [
+                  "vegetarian"
+                ],
+                "available": true
+              },
+              {
+                "item_id": "drink-cola",
+                "name": "Cola Can",
+                "price": 100.0,
+                "currency": "PKR",
+                "descriptors": [
+                  "vegetarian"
+                ],
+                "available": true
+              },
+              {
+                "item_id": "drink-mango",
+                "name": "Mango Juice",
+                "price": 200.0,
+                "currency": "PKR",
+                "descriptors": [
+                  "vegetarian"
+                ],
+                "available": true
+              },
+              {
+                "item_id": "dessert-gulab",
+                "name": "Gulab Jamun (2pc)",
+                "price": 250.0,
+                "currency": "PKR",
+                "descriptors": [
+                  "vegetarian"
+                ],
+                "available": true
+              },
+              {
+                "item_id": "dessert-kheer",
+                "name": "Rice Kheer",
+                "price": 280.0,
+                "currency": "PKR",
+                "descriptors": [
+                  "vegetarian"
+                ],
+                "available": true
+              },
+              {
+                "item_id": "dessert-brownie",
+                "name": "Chocolate Brownie",
+                "price": 350.0,
+                "currency": "PKR",
+                "descriptors": [
+                  "vegetarian"
+                ],
+                "available": true
+              },
+              {
+                "item_id": "dessert-mystery",
+                "name": "Chef Special Sweet",
+                "price": 300.0,
+                "currency": "PKR",
+                "descriptors": [
+                  "vegetarian"
+                ],
+                "available": true
+              },
+              {
+                "item_id": "side-fries",
+                "name": "Masala Fries",
+                "price": 220.0,
+                "currency": "PKR",
+                "descriptors": [
+                  "vegetarian"
+                ],
+                "available": true
+              },
+              {
+                "item_id": "side-salad",
+                "name": "Garden Salad",
+                "price": 180.0,
+                "currency": "PKR",
+                "descriptors": [
+                  "vegetarian"
+                ],
+                "available": true
+              },
+              {
+                "item_id": "side-raita",
+                "name": "Mint Raita",
+                "price": 80.0,
+                "currency": "PKR",
+                "descriptors": [
+                  "vegetarian"
+                ],
+                "available": true
+              },
+              {
+                "item_id": "soup-corn",
+                "name": "Corn Soup",
+                "price": 320.0,
+                "currency": "PKR",
+                "descriptors": [
+                  "vegetarian"
+                ],
+                "available": true
+              }
+            ],
+            "result_count": 15
+          },
+          "error_code": null,
+          "error_message": null,
+          "confirmation_token": null
+        }
+      }
+    },
+    {
+      "request": {
+        "schema_version": "2.0",
+        "session_id": "16TE7QS1wDLaOjsSUX-gL2BKqU2N_XbQ",
+        "event_id": "http-request-3",
+        "turn_id": "http-smoke",
+        "timestamp": "2026-10-16T21:10:42.051520+00:00",
+        "context_revision": 3,
+        "type": "agent.action_request",
+        "payload": {
+          "action_id": "http-3",
+          "operation": "search_menu",
+          "arguments": {
+            "query": "wrap"
+          }
+        }
+      },
+      "result": {
+        "schema_version": "2.0",
+        "session_id": "16TE7QS1wDLaOjsSUX-gL2BKqU2N_XbQ",
+        "event_id": "pm4zocqUnKi2AssG2OnE3BOP",
+        "turn_id": "http-smoke",
+        "timestamp": "2026-10-16T21:10:42.055548Z",
+        "context_revision": 4,
+        "type": "app.action_result",
+        "reply_to": "http-request-3",
+        "payload": {
+          "action_id": "http-3",
+          "operation": "search_menu",
+          "status": "success",
+          "verified_state": {
+            "items": [
+              {
+                "item_id": "wrap-veg",
+                "name": "Veggie Wrap",
+                "price": 500.0,
+                "currency": "PKR",
+                "descriptors": [
+                  "vegetarian"
+                ],
+                "available": true
+              }
+            ],
+            "result_count": 1
+          },
+          "error_code": null,
+          "error_message": null,
+          "confirmation_token": null
+        }
+      }
+    },
+    {
+      "request": {
+        "schema_version": "2.0",
+        "session_id": "16TE7QS1wDLaOjsSUX-gL2BKqU2N_XbQ",
+        "event_id": "http-request-4",
+        "turn_id": "http-smoke",
+        "timestamp": "2026-10-16T21:10:42.064159+00:00",
+        "context_revision": 4,
+        "type": "agent.action_request",
+        "payload": {
+          "action_id": "http-4",
+          "operation": "select_item",
+          "arguments": {
+            "item_id": "wrap-veg"
+          }
+        }
+      },
+      "result": {
+        "schema_version": "2.0",
+        "session_id": "16TE7QS1wDLaOjsSUX-gL2BKqU2N_XbQ",
+        "event_id": "0Ewtc8UGpTRpkCOJ3oArEB78",
+        "turn_id": "http-smoke",
+        "timestamp": "2026-10-16T21:10:42.070198Z",
+        "context_revision": 5,
+        "type": "app.action_result",
+        "reply_to": "http-request-4",
+        "payload": {
+          "action_id": "http-4",
+          "operation": "select_item",
+          "status": "success",
+          "verified_state": {
+            "item_id": "wrap-veg",
+            "name": "Veggie Wrap",
+            "price": 500.0,
+            "currency": "PKR",
+            "descriptors": [
+              "vegetarian"
+            ],
+            "available": true
+          },
+          "error_code": null,
+          "error_message": null,
+          "confirmation_token": null
+        }
+      }
+    },
+    {
+      "request": {
+        "schema_version": "2.0",
+        "session_id": "16TE7QS1wDLaOjsSUX-gL2BKqU2N_XbQ",
+        "event_id": "http-request-5",
+        "turn_id": "http-smoke",
+        "timestamp": "2026-10-16T21:10:42.080110+00:00",
+        "context_revision": 5,
+        "type": "agent.action_request",
+        "payload": {
+          "action_id": "http-5",
+          "operation": "get_item_details",
+          "arguments": {
+            "item_id": "wrap-veg"
+          }
+        }
+      },
+      "result": {
+        "schema_version": "2.0",
+        "session_id": "16TE7QS1wDLaOjsSUX-gL2BKqU2N_XbQ",
+        "event_id": "Tu6LgBs1CrX8C5TDmgNpZApl",
+        "turn_id": "http-smoke",
+        "timestamp": "2026-10-16T21:10:42.084830Z",
+        "context_revision": 5,
+        "type": "app.action_result",
+        "reply_to": "http-request-5",
+        "payload": {
+          "action_id": "http-5",
+          "operation": "get_item_details",
+          "status": "success",
+          "verified_state": {
+            "item_id": "wrap-veg",
+            "name": "Veggie Wrap",
+            "price": 500.0,
+            "currency": "PKR",
+            "descriptors": [
+              "vegetarian"
+            ],
+            "available": true,
+            "description": "Fresh vegetable wrap.",
+            "ingredients": [],
+            "ingredients_available": true
+          },
+          "error_code": null,
+          "error_message": null,
+          "confirmation_token": null
+        }
+      }
+    },
+    {
+      "request": {
+        "schema_version": "2.0",
+        "session_id": "16TE7QS1wDLaOjsSUX-gL2BKqU2N_XbQ",
+        "event_id": "http-request-6",
+        "turn_id": "http-smoke",
+        "timestamp": "2026-10-16T21:10:42.092886+00:00",
+        "context_revision": 5,
+        "type": "agent.action_request",
+        "payload": {
+          "action_id": "http-6",
+          "operation": "cart.add_item",
+          "arguments": {
+            "item_id": "wrap-hot-chicken",
+            "quantity": 2
+          }
+        }
+      },
+      "result": {
+        "schema_version": "2.0",
+        "session_id": "16TE7QS1wDLaOjsSUX-gL2BKqU2N_XbQ",
+        "event_id": "-HhX80jDx5YlZqnPZ8UlSAm3",
+        "turn_id": "http-smoke",
+        "timestamp": "2026-10-16T21:10:42.099464Z",
+        "context_revision": 6,
+        "type": "app.action_result",
+        "reply_to": "http-request-6",
+        "payload": {
+          "action_id": "http-6",
+          "operation": "cart.add_item",
+          "status": "success",
+          "verified_state": {
+            "lines": [
+              {
+                "item_id": "wrap-hot-chicken",
+                "name": "Hot Chicken Wrap",
+                "quantity": 2,
+                "unit_price": 850.0,
+                "line_total": 1700.0
+              }
+            ],
+            "currency": "PKR",
+            "subtotal": 1700.0,
+            "fees": [
+              {
+                "code": "service",
+                "label": "Service fee",
+                "amount": 50.0
+              }
+            ],
+            "total": 1750.0
+          },
+          "error_code": null,
+          "error_message": null,
+          "confirmation_token": null
+        }
+      }
+    },
+    {
+      "request": {
+        "schema_version": "2.0",
+        "session_id": "16TE7QS1wDLaOjsSUX-gL2BKqU2N_XbQ",
+        "event_id": "http-request-7",
+        "turn_id": "http-smoke",
+        "timestamp": "2026-10-16T21:10:42.107520+00:00",
+        "context_revision": 6,
+        "type": "agent.action_request",
+        "payload": {
+          "action_id": "http-7",
+          "operation": "cart.set_quantity",
+          "arguments": {
+            "item_id": "wrap-hot-chicken",
+            "quantity": 1
+          }
+        }
+      },
+      "result": {
+        "schema_version": "2.0",
+        "session_id": "16TE7QS1wDLaOjsSUX-gL2BKqU2N_XbQ",
+        "event_id": "6M3ZvX9XmHdtPhBTH7nlQJLR",
+        "turn_id": "http-smoke",
+        "timestamp": "2026-10-16T21:10:42.112561Z",
+        "context_revision": 7,
+        "type": "app.action_result",
+        "reply_to": "http-request-7",
+        "payload": {
+          "action_id": "http-7",
+          "operation": "cart.set_quantity",
+          "status": "success",
+          "verified_state": {
+            "lines": [
+              {
+                "item_id": "wrap-hot-chicken",
+                "name": "Hot Chicken Wrap",
+                "quantity": 1,
+                "unit_price": 850.0,
+                "line_total": 850.0
+              }
+            ],
+            "currency": "PKR",
+            "subtotal": 850.0,
+            "fees": [
+              {
+                "code": "service",
+                "label": "Service fee",
+                "amount": 50.0
+              }
+            ],
+            "total": 900.0
+          },
+          "error_code": null,
+          "error_message": null,
+          "confirmation_token": null
+        }
+      }
+    },
+    {
+      "request": {
+        "schema_version": "2.0",
+        "session_id": "16TE7QS1wDLaOjsSUX-gL2BKqU2N_XbQ",
+        "event_id": "http-request-8",
+        "turn_id": "http-smoke",
+        "timestamp": "2026-10-16T21:10:42.122208+00:00",
+        "context_revision": 7,
+        "type": "agent.action_request",
+        "payload": {
+          "action_id": "http-8",
+          "operation": "cart.remove_item",
+          "arguments": {
+            "item_id": "wrap-hot-chicken"
+          }
+        }
+      },
+      "result": {
+        "schema_version": "2.0",
+        "session_id": "16TE7QS1wDLaOjsSUX-gL2BKqU2N_XbQ",
+        "event_id": "EjIiQu4aEVYS2oqWFWUmQeGE",
+        "turn_id": "http-smoke",
+        "timestamp": "2026-10-16T21:10:42.128243Z",
+        "context_revision": 8,
+        "type": "app.action_result",
+        "reply_to": "http-request-8",
+        "payload": {
+          "action_id": "http-8",
+          "operation": "cart.remove_item",
+          "status": "success",
+          "verified_state": {
+            "lines": [],
+            "currency": "PKR",
+            "subtotal": 0.0,
+            "fees": [],
+            "total": 0.0
+          },
+          "error_code": null,
+          "error_message": null,
+          "confirmation_token": null
+        }
+      }
+    },
+    {
+      "request": {
+        "schema_version": "2.0",
+        "session_id": "16TE7QS1wDLaOjsSUX-gL2BKqU2N_XbQ",
+        "event_id": "http-request-9",
+        "turn_id": "http-smoke",
+        "timestamp": "2026-10-16T21:10:42.136499+00:00",
+        "context_revision": 8,
+        "type": "agent.action_request",
+        "payload": {
+          "action_id": "http-9",
+          "operation": "undo_last_reversible_action",
+          "arguments": {}
+        }
+      },
+      "result": {
+        "schema_version": "2.0",
+        "session_id": "16TE7QS1wDLaOjsSUX-gL2BKqU2N_XbQ",
+        "event_id": "FFyUR8tyWQdDmlVa8zkBDMDV",
+        "turn_id": "http-smoke",
+        "timestamp": "2026-10-16T21:10:42.142496Z",
+        "context_revision": 9,
+        "type": "app.action_result",
+        "reply_to": "http-request-9",
+        "payload": {
+          "action_id": "http-9",
+          "operation": "undo_last_reversible_action",
+          "status": "success",
+          "verified_state": {
+            "lines": [
+              {
+                "item_id": "wrap-hot-chicken",
+                "name": "Hot Chicken Wrap",
+                "quantity": 1,
+                "unit_price": 850.0,
+                "line_total": 850.0
+              }
+            ],
+            "currency": "PKR",
+            "subtotal": 850.0,
+            "fees": [
+              {
+                "code": "service",
+                "label": "Service fee",
+                "amount": 50.0
+              }
+            ],
+            "total": 900.0
+          },
+          "error_code": null,
+          "error_message": null,
+          "confirmation_token": null
+        }
+      }
+    },
+    {
+      "request": {
+        "schema_version": "2.0",
+        "session_id": "16TE7QS1wDLaOjsSUX-gL2BKqU2N_XbQ",
+        "event_id": "http-request-10",
+        "turn_id": "http-smoke",
+        "timestamp": "2026-10-16T21:10:42.151546+00:00",
+        "context_revision": 9,
+        "type": "agent.action_request",
+        "payload": {
+          "action_id": "http-10",
+          "operation": "get_cart",
+          "arguments": {}
+        }
+      },
+      "result": {
+        "schema_version": "2.0",
+        "session_id": "16TE7QS1wDLaOjsSUX-gL2BKqU2N_XbQ",
+        "event_id": "_PuyPwTc6aEd6r6SYi3qJeT2",
+        "turn_id": "http-smoke",
+        "timestamp": "2026-10-16T21:10:42.155575Z",
+        "context_revision": 9,
+        "type": "app.action_result",
+        "reply_to": "http-request-10",
+        "payload": {
+          "action_id": "http-10",
+          "operation": "get_cart",
+          "status": "success",
+          "verified_state": {
+            "lines": [
+              {
+                "item_id": "wrap-hot-chicken",
+                "name": "Hot Chicken Wrap",
+                "quantity": 1,
+                "unit_price": 850.0,
+                "line_total": 850.0
+              }
+            ],
+            "currency": "PKR",
+            "subtotal": 850.0,
+            "fees": [
+              {
+                "code": "service",
+                "label": "Service fee",
+                "amount": 50.0
+              }
+            ],
+            "total": 900.0
+          },
+          "error_code": null,
+          "error_message": null,
+          "confirmation_token": null
+        }
+      }
+    },
+    {
+      "request": {
+        "schema_version": "2.0",
+        "session_id": "16TE7QS1wDLaOjsSUX-gL2BKqU2N_XbQ",
+        "event_id": "http-request-11",
+        "turn_id": "http-smoke",
+        "timestamp": "2026-10-16T21:10:42.163415+00:00",
+        "context_revision": 9,
+        "type": "agent.action_request",
+        "payload": {
+          "action_id": "http-11",
+          "operation": "get_current_context",
+          "arguments": {}
+        }
+      },
+      "result": {
+        "schema_version": "2.0",
+        "session_id": "16TE7QS1wDLaOjsSUX-gL2BKqU2N_XbQ",
+        "event_id": "O3E-VFYszMcgnldgsRM_EHcs",
+        "turn_id": "http-smoke",
+        "timestamp": "2026-10-16T21:10:42.169431Z",
+        "context_revision": 9,
+        "type": "app.action_result",
+        "reply_to": "http-request-11",
+        "payload": {
+          "action_id": "http-11",
+          "operation": "get_current_context",
+          "status": "success",
+          "verified_state": {
+            "snapshot": {
+              "schema_version": "2.0",
+              "session_id": "16TE7QS1wDLaOjsSUX-gL2BKqU2N_XbQ",
+              "revision": 9,
+              "route": "item",
+              "focus_item_id": "wrap-veg",
+              "valid_actions": [
+                "navigate",
+                "search_menu",
+                "filter_menu",
+                "select_item",
+                "get_item_details",
+                "get_cart",
+                "cart.add_item",
+                "cart.set_quantity",
+                "cart.remove_item",
+                "checkout.get_summary",
+                "checkout.submit_demo_order",
+                "undo_last_reversible_action",
+                "get_current_context"
+              ],
+              "valid_navigation_targets": [
+                "home",
+                "menu",
+                "back",
+                "cart",
+                "checkout",
+                "biryani",
+                "burgers",
+                "desserts",
+                "drinks",
+                "karahi",
+                "platters",
+                "rolls",
+                "sides",
+                "wraps"
+              ],
+              "filter_tags": [
+                "vegetarian"
+              ],
+              "category": null,
+              "max_price_pkr": 800.0,
+              "search_query": "wrap",
+              "visible_items": [
+                {
+                  "item_id": "wrap-veg",
+                  "name": "Veggie Wrap",
+                  "price": 500.0,
+                  "currency": "PKR",
+                  "descriptors": [
+                    "vegetarian"
+                  ],
+                  "available": true
+                }
+              ],
+              "cart": {
+                "lines": [
+                  {
+                    "item_id": "wrap-hot-chicken",
+                    "name": "Hot Chicken Wrap",
+                    "quantity": 1,
+                    "unit_price": 850.0,
+                    "line_total": 850.0
+                  }
+                ],
+                "currency": "PKR",
+                "subtotal": 850.0,
+                "fees": [
+                  {
+                    "code": "service",
+                    "label": "Service fee",
+                    "amount": 50.0
+                  }
+                ],
+                "total": 900.0
+              },
+              "checkout_available": true,
+              "action_pending": false,
+              "language": "en"
+            }
+          },
+          "error_code": null,
+          "error_message": null,
+          "confirmation_token": null
+        }
+      }
+    },
+    {
+      "request": {
+        "schema_version": "2.0",
+        "session_id": "16TE7QS1wDLaOjsSUX-gL2BKqU2N_XbQ",
+        "event_id": "http-request-12",
+        "turn_id": "http-smoke",
+        "timestamp": "2026-10-16T21:10:42.176536+00:00",
+        "context_revision": 9,
+        "type": "agent.action_request",
+        "payload": {
+          "action_id": "http-12",
+          "operation": "checkout.get_summary",
+          "arguments": {}
+        }
+      },
+      "result": {
+        "schema_version": "2.0",
+        "session_id": "16TE7QS1wDLaOjsSUX-gL2BKqU2N_XbQ",
+        "event_id": "FbysUD9_sBiqiydmEZCOrm3V",
+        "turn_id": "http-smoke",
+        "timestamp": "2026-10-16T21:10:42.182719Z",
+        "context_revision": 10,
+        "type": "app.action_result",
+        "reply_to": "http-request-12",
+        "payload": {
+          "action_id": "http-12",
+          "operation": "checkout.get_summary",
+          "status": "success",
+          "verified_state": {
+            "lines": [
+              {
+                "item_id": "wrap-hot-chicken",
+                "name": "Hot Chicken Wrap",
+                "quantity": 1,
+                "unit_price": 850.0,
+                "line_total": 850.0
+              }
+            ],
+            "currency": "PKR",
+            "subtotal": 850.0,
+            "fees": [
+              {
+                "code": "service",
+                "label": "Service fee",
+                "amount": 50.0
+              }
+            ],
+            "total": 900.0,
+            "summary_revision": 4
+          },
+          "error_code": null,
+          "error_message": null,
+          "confirmation_token": "[redacted]"
+        }
+      }
+    },
+    {
+      "request": {
+        "schema_version": "2.0",
+        "session_id": "16TE7QS1wDLaOjsSUX-gL2BKqU2N_XbQ",
+        "event_id": "http-request-13",
+        "turn_id": "http-smoke",
+        "timestamp": "2026-10-16T21:10:42.190779+00:00",
+        "context_revision": 10,
+        "type": "agent.action_request",
+        "payload": {
+          "action_id": "http-13",
+          "operation": "checkout.submit_demo_order",
+          "arguments": {
+            "confirmed": true,
+            "confirmation_token": "[redacted]",
+            "summary_revision": 4
+          }
+        }
+      },
+      "result": {
+        "schema_version": "2.0",
+        "session_id": "16TE7QS1wDLaOjsSUX-gL2BKqU2N_XbQ",
+        "event_id": "K9n_NWOfPnUsaacrkFJQyfT_",
+        "turn_id": "http-smoke",
+        "timestamp": "2026-10-16T21:10:42.197490Z",
+        "context_revision": 11,
+        "type": "app.action_result",
+        "reply_to": "http-request-13",
+        "payload": {
+          "action_id": "http-13",
+          "operation": "checkout.submit_demo_order",
+          "status": "success",
+          "verified_state": {
+            "demo_order_id": "DEMO-c5c209d5b0c72ccb515d9942",
+            "demo": true,
+            "order": {
+              "lines": [
+                {
+                  "item_id": "wrap-hot-chicken",
+                  "name": "Hot Chicken Wrap",
+                  "quantity": 1,
+                  "unit_price": 850.0,
+                  "line_total": 850.0
+                }
+              ],
+              "currency": "PKR",
+              "subtotal": 850.0,
+              "fees": [
+                {
+                  "code": "service",
+                  "label": "Service fee",
+                  "amount": 50.0
+                }
+              ],
+              "total": 900.0
+            }
+          },
+          "error_code": null,
+          "error_message": null,
+          "confirmation_token": null
+        }
+      }
+    }
+  ]
+}

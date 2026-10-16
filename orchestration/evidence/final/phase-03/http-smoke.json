@@ -1,0 +1,30 @@
+{
+  "website_http": "real localhost",
+  "lifecycle_http": "real localhost",
+  "livekit": "fake",
+  "audio": "not exercised",
+  "cart_total_before_and_after": 900,
+  "trace": [
+    {
+      "state": "preparing",
+      "dispatch_count": 0
+    },
+    {
+      "state": "waiting_worker",
+      "greeting_allowed": false
+    },
+    {
+      "state": "active",
+      "runtime": "FAKE readiness acknowledgement"
+    },
+    {
+      "state": "cleanup_pending",
+      "dispatch_deleted": false
+    },
+    {
+      "state": "ended",
+      "dispatch_deleted": true,
+      "room_deleted": true
+    }
+  ]
+}

@@ -1,0 +1,172 @@
+{
+  "schema_version": "2.0",
+  "session_id": "contract-demo",
+  "event_id": "result-contract-2",
+  "turn_id": "contract-turn",
+  "timestamp": "2026-10-17T12:00:00Z",
+  "context_revision": 3,
+  "type": "app.action_result",
+  "reply_to": "request-contract-2",
+  "payload": {
+    "action_id": "contract-2",
+    "status": "success",
+    "verified_state": {
+      "items": [
+        {
+          "item_id": "burger-veg",
+          "name": "Veggie Patty Burger",
+          "price": 550.0,
+          "currency": "PKR",
+          "descriptors": [
+            "vegetarian"
+          ],
+          "available": true
+        },
+        {
+          "item_id": "wrap-veg",
+          "name": "Veggie Wrap",
+          "price": 500.0,
+          "currency": "PKR",
+          "descriptors": [
+            "vegetarian"
+          ],
+          "available": true
+        },
+        {
+          "item_id": "roll-paneer",
+          "name": "Paneer Roll",
+          "price": 420.0,
+          "currency": "PKR",
+          "descriptors": [
+            "vegetarian"
+          ],
+          "available": true
+        },
+        {
+          "item_id": "drink-lassi-small",
+          "name": "Sweet Lassi",
+          "price": 150.0,
+          "currency": "PKR",
+          "descriptors": [
+            "vegetarian"
+          ],
+          "available": true
+        },
+        {
+          "item_id": "drink-chai",
+          "name": "Karak Chai",
+          "price": 120.0,
+          "currency": "PKR",
+          "descriptors": [
+            "vegetarian"
+          ],
+          "available": true
+        },
+        {
+          "item_id": "drink-cola",
+          "name": "Cola Can",
+          "price": 100.0,
+          "currency": "PKR",
+          "descriptors": [
+            "vegetarian"
+          ],
+          "available": true
+        },
+        {
+          "item_id": "drink-mango",
+          "name": "Mango Juice",
+          "price": 200.0,
+          "currency": "PKR",
+          "descriptors": [
+            "vegetarian"
+          ],
+          "available": true
+        },
+        {
+          "item_id": "dessert-gulab",
+          "name": "Gulab Jamun (2pc)",
+          "price": 250.0,
+          "currency": "PKR",
+          "descriptors": [
+            "vegetarian"
+          ],
+          "available": true
+        },
+        {
+          "item_id": "dessert-kheer",
+          "name": "Rice Kheer",
+          "price": 280.0,
+          "currency": "PKR",
+          "descriptors": [
+            "vegetarian"
+          ],
+          "available": true
+        },
+        {
+          "item_id": "dessert-brownie",
+          "name": "Chocolate Brownie",
+          "price": 350.0,
+          "currency": "PKR",
+          "descriptors": [
+            "vegetarian"
+          ],
+          "available": true
+        },
+        {
+          "item_id": "dessert-mystery",
+          "name": "Chef Special Sweet",
+          "price": 300.0,
+          "currency": "PKR",
+          "descriptors": [
+            "vegetarian"
+          ],
+          "available": true
+        },
+        {
+          "item_id": "side-fries",
+          "name": "Masala Fries",
+          "price": 220.0,
+          "currency": "PKR",
+          "descriptors": [
+            "vegetarian"
+          ],
+          "available": true
+        },
+        {
+          "item_id": "side-salad",
+          "name": "Garden Salad",
+          "price": 180.0,
+          "currency": "PKR",
+          "descriptors": [
+            "vegetarian"
+          ],
+          "available": true
+        },
+        {
+          "item_id": "side-raita",
+          "name": "Mint Raita",
+          "price": 80.0,
+          "currency": "PKR",
+          "descriptors": [
+            "vegetarian"
+          ],
+          "available": true
+        },
+        {
+          "item_id": "soup-corn",
+          "name": "Corn Soup",
+          "price": 320.0,
+          "currency": "PKR",
+          "descriptors": [
+            "vegetarian"
+          ],
+          "available": true
+        }
+      ],
+      "result_count": 15
+    },
+    "error_code": null,
+    "error_message": null,
+    "operation": "filter_menu"
+  }
+}

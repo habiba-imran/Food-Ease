@@ -1,0 +1,107 @@
+[
+  {
+    "label": "website-regression",
+    "command": [
+      "C:\\HCI-PROJECT\\website\\.venv\\Scripts\\python.exe",
+      "-m",
+      "pytest",
+      "-q"
+    ],
+    "cwd": "website",
+    "exit_code": 0
+  },
+  {
+    "label": "orchestration-regression",
+    "command": [
+      "C:\\HCI-PROJECT\\orchestration\\.venv\\Scripts\\python.exe",
+      "-m",
+      "pytest",
+      "-q"
+    ],
+    "cwd": "orchestration",
+    "exit_code": 0
+  },
+  {
+    "label": "contract-tests",
+    "cwd": "voice-agent",
+    "command": [
+      "C:\\HCI-PROJECT\\voice-agent\\.venv\\Scripts\\python.exe",
+      "-m",
+      "pytest",
+      "tests/test_contract_v2.py",
+      "tests/test_contract_v1.py",
+      "-q"
+    ],
+    "exit_code": 0
+  },
+  {
+    "label": "contract-drift",
+    "cwd": "voice-agent",
+    "command": [
+      "C:\\HCI-PROJECT\\voice-agent\\.venv\\Scripts\\python.exe",
+      "tools/freeze_contract_v2.py",
+      "--check"
+    ],
+    "exit_code": 0
+  },
+  {
+    "label": "contract-lint",
+    "cwd": "voice-agent",
+    "command": [
+      "C:\\HCI-PROJECT\\voice-agent\\.venv\\Scripts\\python.exe",
+      "-m",
+      "ruff",
+      "check",
+      "src/foodease_agent/contract/v2",
+      "tools/freeze_contract_v2.py",
+      "tests/test_contract_v2.py"
+    ],
+    "exit_code": 0
+  },
+  {
+    "label": "contract-typecheck",
+    "cwd": "voice-agent",
+    "command": [
+      "C:\\HCI-PROJECT\\voice-agent\\.venv\\Scripts\\python.exe",
+      "-m",
+      "pyright",
+      "src/foodease_agent/contract/v2",
+      "tools/freeze_contract_v2.py",
+      "tests/test_contract_v2.py"
+    ],
+    "exit_code": 0
+  },
+  {
+    "label": "agent-regression",
+    "cwd": "voice-agent",
+    "command": [
+      "C:\\HCI-PROJECT\\voice-agent\\.venv\\Scripts\\python.exe",
+      "-m",
+      "pytest",
+      "-q"
+    ],
+    "exit_code": 1
+  },
+  {
+    "label": "agent-full-lint",
+    "cwd": "voice-agent",
+    "command": [
+      "C:\\HCI-PROJECT\\voice-agent\\.venv\\Scripts\\python.exe",
+      "-m",
+      "ruff",
+      "check",
+      "."
+    ],
+    "exit_code": 1
+  },
+  {
+    "label": "agent-full-typecheck",
+    "cwd": "voice-agent",
+    "command": [
+      "C:\\HCI-PROJECT\\voice-agent\\.venv\\Scripts\\python.exe",
+      "-m",
+      "pyright"
+    ],
+    "exit_code": 1
+  }
+]

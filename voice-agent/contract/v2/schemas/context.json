@@ -1,0 +1,337 @@
+{
+  "$defs": {
+    "CartLine": {
+      "additionalProperties": false,
+      "properties": {
+        "item_id": {
+          "pattern": "^[a-z][a-z0-9_\\-]{1,63}$",
+          "title": "Item Id",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "quantity": {
+          "maximum": 99,
+          "minimum": 1,
+          "title": "Quantity",
+          "type": "integer"
+        },
+        "unit_price": {
+          "minimum": 0,
+          "multipleOf": 0.01,
+          "title": "Unit Price",
+          "type": "number"
+        },
+        "line_total": {
+          "minimum": 0,
+          "multipleOf": 0.01,
+          "title": "Line Total",
+          "type": "number"
+        }
+      },
+      "required": [
+        "item_id",
+        "name",
+        "quantity",
+        "unit_price",
+        "line_total"
+      ],
+      "title": "CartLine",
+      "type": "object"
+    },
+    "CartSummary": {
+      "additionalProperties": false,
+      "properties": {
+        "lines": {
+          "items": {
+            "$ref": "#/$defs/CartLine"
+          },
+          "maxItems": 32,
+          "title": "Lines",
+          "type": "array"
+        },
+        "currency": {
+          "const": "PKR",
+          "title": "Currency",
+          "type": "string"
+        },
+        "subtotal": {
+          "minimum": 0,
+          "multipleOf": 0.01,
+          "title": "Subtotal",
+          "type": "number"
+        },
+        "fees": {
+          "items": {
+            "$ref": "#/$defs/Fee"
+          },
+          "maxItems": 16,
+          "title": "Fees",
+          "type": "array"
+        },
+        "total": {
+          "minimum": 0,
+          "multipleOf": 0.01,
+          "title": "Total",
+          "type": "number"
+        }
+      },
+      "required": [
+        "lines",
+        "currency",
+        "subtotal",
+        "fees",
+        "total"
+      ],
+      "title": "CartSummary",
+      "type": "object"
+    },
+    "Fee": {
+      "additionalProperties": false,
+      "properties": {
+        "code": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Code",
+          "type": "string"
+        },
+        "label": {
+          "title": "Label",
+          "type": "string"
+        },
+        "amount": {
+          "minimum": 0,
+          "multipleOf": 0.01,
+          "title": "Amount",
+          "type": "number"
+        }
+      },
+      "required": [
+        "code",
+        "label",
+        "amount"
+      ],
+      "title": "Fee",
+      "type": "object"
+    },
+    "Operation": {
+      "enum": [
+        "navigate",
+        "search_menu",
+        "filter_menu",
+        "select_item",
+        "get_item_details",
+        "get_cart",
+        "cart.add_item",
+        "cart.set_quantity",
+        "cart.remove_item",
+        "checkout.get_summary",
+        "checkout.submit_demo_order",
+        "undo_last_reversible_action",
+        "get_current_context"
+      ],
+      "title": "Operation",
+      "type": "string"
+    },
+    "VisibleItem": {
+      "additionalProperties": false,
+      "properties": {
+        "item_id": {
+          "pattern": "^[a-z][a-z0-9_\\-]{1,63}$",
+          "title": "Item Id",
+          "type": "string"
+        },
+        "name": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Name",
+          "type": "string"
+        },
+        "price": {
+          "minimum": 0,
+          "multipleOf": 0.01,
+          "title": "Price",
+          "type": "number"
+        },
+        "currency": {
+          "const": "PKR",
+          "title": "Currency",
+          "type": "string"
+        },
+        "descriptors": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 16,
+          "title": "Descriptors",
+          "type": "array"
+        },
+        "available": {
+          "title": "Available",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "item_id",
+        "name",
+        "price",
+        "currency",
+        "descriptors",
+        "available"
+      ],
+      "title": "VisibleItem",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "2.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "session_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Session Id",
+      "type": "string"
+    },
+    "revision": {
+      "minimum": 0,
+      "title": "Revision",
+      "type": "integer"
+    },
+    "route": {
+      "enum": [
+        "home",
+        "menu",
+        "item",
+        "cart",
+        "checkout",
+        "confirmation"
+      ],
+      "title": "Route",
+      "type": "string"
+    },
+    "focus_item_id": {
+      "anyOf": [
+        {
+          "pattern": "^[a-z][a-z0-9_\\-]{1,63}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Focus Item Id"
+    },
+    "valid_actions": {
+      "items": {
+        "$ref": "#/$defs/Operation"
+      },
+      "maxItems": 13,
+      "title": "Valid Actions",
+      "type": "array"
+    },
+    "valid_navigation_targets": {
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 64,
+      "title": "Valid Navigation Targets",
+      "type": "array"
+    },
+    "filter_tags": {
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 16,
+      "title": "Filter Tags",
+      "type": "array"
+    },
+    "category": {
+      "anyOf": [
+        {
+          "pattern": "^[a-z][a-z0-9_\\-]{1,63}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Category"
+    },
+    "max_price_pkr": {
+      "anyOf": [
+        {
+          "minimum": 0,
+          "multipleOf": 0.01,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Max Price Pkr"
+    },
+    "search_query": {
+      "anyOf": [
+        {
+          "maxLength": 200,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Search Query"
+    },
+    "visible_items": {
+      "items": {
+        "$ref": "#/$defs/VisibleItem"
+      },
+      "maxItems": 25,
+      "title": "Visible Items",
+      "type": "array"
+    },
+    "cart": {
+      "$ref": "#/$defs/CartSummary"
+    },
+    "checkout_available": {
+      "title": "Checkout Available",
+      "type": "boolean"
+    },
+    "action_pending": {
+      "title": "Action Pending",
+      "type": "boolean"
+    },
+    "language": {
+      "maxLength": 35,
+      "minLength": 1,
+      "title": "Language",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema_version",
+    "session_id",
+    "revision",
+    "route",
+    "focus_item_id",
+    "valid_actions",
+    "valid_navigation_targets",
+    "filter_tags",
+    "category",
+    "max_price_pkr",
+    "search_query",
+    "visible_items",
+    "cart",
+    "checkout_available",
+    "action_pending",
+    "language"
+  ],
+  "title": "ContextSnapshot",
+  "type": "object"
+}

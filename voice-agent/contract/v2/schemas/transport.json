@@ -1,0 +1,26 @@
+{
+  "schema_version": "2.0",
+  "max_wire_bytes": 14336,
+  "action_rpc": "foodease.action.v2",
+  "lookup_rpc": "foodease.action_status.v2",
+  "context_topic": "foodease.context.v2",
+  "control_topic": "foodease.control.v2",
+  "text_topic": "foodease.text_input.v2",
+  "agent_events_topic": "foodease.events.v2",
+  "http_action_status": "GET /api/v2/app/actions/{action_id}",
+  "rpc_timeout_seconds": 5,
+  "session_idle_ttl_seconds": 1800,
+  "session_absolute_ttl_seconds": 7200,
+  "result_retention": "entire shopping session",
+  "idempotency_key": [
+    "session_id",
+    "action_id"
+  ],
+  "lookup_states": [
+    "not_seen",
+    "pending",
+    "found",
+    "expired"
+  ],
+  "source": "Project defaults; endpoints and runtime enforcement are future phases"
+}

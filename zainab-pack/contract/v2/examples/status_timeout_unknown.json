@@ -1,0 +1,19 @@
+{
+  "schema_version": "2.0",
+  "session_id": "contract-demo",
+  "event_id": "result-timeout_unknown",
+  "turn_id": "contract-turn",
+  "timestamp": "2026-10-17T12:00:00Z",
+  "context_revision": 1,
+  "type": "app.action_result",
+  "reply_to": "request-status",
+  "payload": {
+    "action_id": "status-action",
+    "operation": "cart.add_item",
+    "status": "timeout_unknown",
+    "verified_state": null,
+    "error_code": "timeout",
+    "error_message": null,
+    "confirmation_token": null
+  }
+}

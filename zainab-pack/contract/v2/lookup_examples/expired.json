@@ -1,0 +1,10 @@
+{
+  "schema_version": "2.0",
+  "session_id": "contract-demo",
+  "event_id": "lookup-expired",
+  "reply_to": "lookup-request",
+  "timestamp": "2026-10-17T12:00:00Z",
+  "action_id": "contract-1",
+  "state": "expired",
+  "result": null
+}

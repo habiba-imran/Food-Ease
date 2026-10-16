@@ -1,0 +1,30 @@
+{
+  "schema_version": "2.0",
+  "session_id": "contract-demo",
+  "event_id": "lookup-found",
+  "reply_to": "lookup-request",
+  "timestamp": "2026-10-17T12:00:00Z",
+  "action_id": "contract-1",
+  "state": "found",
+  "result": {
+    "schema_version": "2.0",
+    "session_id": "contract-demo",
+    "event_id": "result-contract-1",
+    "turn_id": "contract-turn",
+    "timestamp": "2026-10-17T12:00:00Z",
+    "context_revision": 2,
+    "type": "app.action_result",
+    "reply_to": "request-contract-1",
+    "payload": {
+      "action_id": "contract-1",
+      "operation": "navigate",
+      "status": "success",
+      "verified_state": {
+        "route": "menu"
+      },
+      "error_code": null,
+      "error_message": null,
+      "confirmation_token": null
+    }
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "kind": "event",
+  "event": {
+    "schema_version": "2.0",
+    "session_id": "contract-demo",
+    "event_id": "request-contract-6",
+    "turn_id": "contract-turn",
+    "timestamp": "2026-10-17T12:00:00Z",
+    "context_revision": 5,
+    "type": "agent.action_request",
+    "payload": {
+      "action_id": "contract-6",
+      "operation": "cart.add_item",
+      "arguments": {
+        "item_id": "wrap-hot-chicken",
+        "quantity": 1
+      }
+    },
+    "execute": "arbitrary code"
+  }
+}

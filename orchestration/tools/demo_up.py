@@ -94,11 +94,7 @@ def check_stack(session_api: str) -> int:
         )
         sess.raise_for_status()
         body = sess.json()
-        redacted = {
-            k: v
-            for k, v in body.items()
-            if k not in {"user", "app"}
-        }
+        redacted = {k: v for k, v in body.items() if k not in {"user", "app"}}
         if "user" in body:
             redacted["user"] = {
                 **{k: v for k, v in body["user"].items() if k != "token"},
@@ -118,16 +114,46 @@ def check_stack(session_api: str) -> int:
     return 0
 
 
+def print_integrated_stack() -> None:
+    print("""FoodEase bound website lifecycle (Phase 3)
+1) cd website
+   uv sync --locked
+   uv run foodease-website
+2) cd orchestration
+   $env:FOODEASE_LEGACY_DEV_API='false'
+   $env:FOODEASE_WEBSITE_URL='http://127.0.0.1:8080'
+   uv sync --locked
+   uv run foodease-session
+3) cd voice-agent
+   $env:FOODEASE_APP_TRANSPORT='website'
+   $env:FOODEASE_SESSION_API='http://127.0.0.1:8090'
+   uv sync --locked
+   uv run foodease-worker
+The browser bridge is Phase 5; v2 conversation runtime is Phase 4.
+Until those are attached, integrated startup fails closed with
+integrated_runtime_unavailable. No mock fallback. Manual ordering stays independent.
+Use /v2/assist/start -> ready -> worker-ready; /v1 is disabled by default.
+""")
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="FoodEase demo stack bring-up")
     parser.add_argument("--session-api", default=SESSION_DEFAULT)
     parser.add_argument("--room", default=ROOM_DEFAULT)
+    parser.add_argument(
+        "--integrated", action="store_true", help="Print bound website launch commands"
+    )
     parser.add_argument(
         "--check",
         action="store_true",
         help="Hit healthz + /v1/session (session API must be running)",
     )
     args = parser.parse_args()
+    if args.integrated:
+        if args.check:
+            parser.error("--check is the legacy harness smoke; use Phase 3 verification for v2")
+        print_integrated_stack()
+        return
     print_stack(session_api=args.session_api, room=args.room)
     if args.check:
         raise SystemExit(check_stack(args.session_api))

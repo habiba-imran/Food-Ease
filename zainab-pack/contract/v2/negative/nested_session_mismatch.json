@@ -1,0 +1,302 @@
+{
+  "kind": "event",
+  "event": {
+    "schema_version": "2.0",
+    "session_id": "contract-demo",
+    "event_id": "context-1",
+    "turn_id": "contract-turn",
+    "timestamp": "2026-10-17T12:00:00Z",
+    "context_revision": 1,
+    "type": "app.context_snapshot",
+    "payload": {
+      "schema_version": "2.0",
+      "session_id": "foreign-session",
+      "revision": 1,
+      "route": "home",
+      "focus_item_id": null,
+      "valid_actions": [
+        "navigate",
+        "search_menu",
+        "filter_menu",
+        "select_item",
+        "get_item_details",
+        "get_cart",
+        "cart.add_item",
+        "cart.set_quantity",
+        "cart.remove_item",
+        "checkout.get_summary",
+        "checkout.submit_demo_order",
+        "undo_last_reversible_action",
+        "get_current_context"
+      ],
+      "valid_navigation_targets": [
+        "home",
+        "menu",
+        "back",
+        "cart",
+        "checkout",
+        "biryani",
+        "burgers",
+        "desserts",
+        "drinks",
+        "karahi",
+        "platters",
+        "rolls",
+        "sides",
+        "wraps"
+      ],
+      "filter_tags": [],
+      "category": null,
+      "max_price_pkr": null,
+      "search_query": null,
+      "visible_items": [
+        {
+          "item_id": "zinger-classic",
+          "name": "Zinger Burger",
+          "price": 650.0,
+          "currency": "PKR",
+          "descriptors": [
+            "spicy"
+          ],
+          "available": true
+        },
+        {
+          "item_id": "zinger-supreme",
+          "name": "Zinger Burger Supreme",
+          "price": 850.0,
+          "currency": "PKR",
+          "descriptors": [
+            "spicy"
+          ],
+          "available": true
+        },
+        {
+          "item_id": "burger-beef",
+          "name": "Beef Smash Burger",
+          "price": 750.0,
+          "currency": "PKR",
+          "descriptors": [],
+          "available": true
+        },
+        {
+          "item_id": "burger-veg",
+          "name": "Veggie Patty Burger",
+          "price": 550.0,
+          "currency": "PKR",
+          "descriptors": [
+            "vegetarian"
+          ],
+          "available": true
+        },
+        {
+          "item_id": "burger-soldout",
+          "name": "Smoky BBQ Burger",
+          "price": 700.0,
+          "currency": "PKR",
+          "descriptors": [],
+          "available": false
+        },
+        {
+          "item_id": "wrap-chicken",
+          "name": "Chicken Wrap",
+          "price": 600.0,
+          "currency": "PKR",
+          "descriptors": [],
+          "available": true
+        },
+        {
+          "item_id": "wrap-veg",
+          "name": "Veggie Wrap",
+          "price": 500.0,
+          "currency": "PKR",
+          "descriptors": [
+            "vegetarian"
+          ],
+          "available": true
+        },
+        {
+          "item_id": "wrap-hot-chicken",
+          "name": "Hot Chicken Wrap",
+          "price": 850.0,
+          "currency": "PKR",
+          "descriptors": [
+            "spicy"
+          ],
+          "available": true
+        },
+        {
+          "item_id": "roll-seekh",
+          "name": "Seekh Kabab Roll",
+          "price": 450.0,
+          "currency": "PKR",
+          "descriptors": [
+            "spicy"
+          ],
+          "available": true
+        },
+        {
+          "item_id": "roll-paneer",
+          "name": "Paneer Roll",
+          "price": 420.0,
+          "currency": "PKR",
+          "descriptors": [
+            "vegetarian"
+          ],
+          "available": true
+        },
+        {
+          "item_id": "roll-chicken",
+          "name": "Chicken Tikka Roll",
+          "price": 480.0,
+          "currency": "PKR",
+          "descriptors": [],
+          "available": true
+        },
+        {
+          "item_id": "karahi-chicken",
+          "name": "Chicken Karahi",
+          "price": 1200.0,
+          "currency": "PKR",
+          "descriptors": [
+            "spicy"
+          ],
+          "available": true
+        },
+        {
+          "item_id": "karahi-mutton",
+          "name": "Mutton Karahi",
+          "price": 1800.0,
+          "currency": "PKR",
+          "descriptors": [
+            "spicy"
+          ],
+          "available": true
+        },
+        {
+          "item_id": "biryani-chicken",
+          "name": "Chicken Biryani",
+          "price": 550.0,
+          "currency": "PKR",
+          "descriptors": [],
+          "available": true
+        },
+        {
+          "item_id": "biryani-beef",
+          "name": "Beef Biryani",
+          "price": 650.0,
+          "currency": "PKR",
+          "descriptors": [],
+          "available": true
+        },
+        {
+          "item_id": "drink-lassi-small",
+          "name": "Sweet Lassi",
+          "price": 150.0,
+          "currency": "PKR",
+          "descriptors": [
+            "vegetarian"
+          ],
+          "available": true
+        },
+        {
+          "item_id": "platter-family",
+          "name": "Family Mixed Platter",
+          "price": 1500.0,
+          "currency": "PKR",
+          "descriptors": [],
+          "available": true
+        },
+        {
+          "item_id": "drink-chai",
+          "name": "Karak Chai",
+          "price": 120.0,
+          "currency": "PKR",
+          "descriptors": [
+            "vegetarian"
+          ],
+          "available": true
+        },
+        {
+          "item_id": "drink-cola",
+          "name": "Cola Can",
+          "price": 100.0,
+          "currency": "PKR",
+          "descriptors": [
+            "vegetarian"
+          ],
+          "available": true
+        },
+        {
+          "item_id": "drink-mango",
+          "name": "Mango Juice",
+          "price": 200.0,
+          "currency": "PKR",
+          "descriptors": [
+            "vegetarian"
+          ],
+          "available": true
+        },
+        {
+          "item_id": "dessert-gulab",
+          "name": "Gulab Jamun (2pc)",
+          "price": 250.0,
+          "currency": "PKR",
+          "descriptors": [
+            "vegetarian"
+          ],
+          "available": true
+        },
+        {
+          "item_id": "dessert-kheer",
+          "name": "Rice Kheer",
+          "price": 280.0,
+          "currency": "PKR",
+          "descriptors": [
+            "vegetarian"
+          ],
+          "available": true
+        },
+        {
+          "item_id": "dessert-brownie",
+          "name": "Chocolate Brownie",
+          "price": 350.0,
+          "currency": "PKR",
+          "descriptors": [
+            "vegetarian"
+          ],
+          "available": true
+        },
+        {
+          "item_id": "dessert-mystery",
+          "name": "Chef Special Sweet",
+          "price": 300.0,
+          "currency": "PKR",
+          "descriptors": [
+            "vegetarian"
+          ],
+          "available": true
+        },
+        {
+          "item_id": "side-fries",
+          "name": "Masala Fries",
+          "price": 220.0,
+          "currency": "PKR",
+          "descriptors": [
+            "vegetarian"
+          ],
+          "available": true
+        }
+      ],
+      "cart": {
+        "lines": [],
+        "currency": "PKR",
+        "subtotal": 0.0,
+        "fees": [],
+        "total": 0.0
+      },
+      "checkout_available": false,
+      "action_pending": false,
+      "language": "en"
+    }
+  }
+}

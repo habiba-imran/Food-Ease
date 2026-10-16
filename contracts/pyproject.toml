@@ -1,0 +1,17 @@
+[project]
+name = "foodease-contract"
+version = "2.0.0"
+description = "Pure FoodEase v2 interface models shared by the website and agent"
+requires-python = ">=3.11,<3.15"
+dependencies = ["pydantic>=2.13.5,<3"]
+
+[build-system]
+requires = ["uv_build>=0.10.6,<0.11.0"]
+build-backend = "uv_build"
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]

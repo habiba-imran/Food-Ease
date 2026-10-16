@@ -1,9 +1,28 @@
 # FoodEase orchestration (sibling glue package)
 
+Final orchestration Phase 3: [bound lifecycle, endpoints and launch](docs/PHASE_03_ASSISTANCE_LIFECYCLE.md)
+and [verification](evidence/final/phase-03/report.md). `/v1/*` is disabled by default;
+the integrated path uses `/v2/*` with the existing shopping cookie/session.
+Use `tools/demo_up.py --integrated`. Phase 4 conversation runtime and Phase 5 page
+bridge are pending, so integrated startup currently fails closed without them.
+
+Final orchestration Phase 2 implements session-scoped shopping authority in the
+website. See [authority and limits](docs/PHASE_02_APPLICATION_AUTHORITY.md) and
+[verification](evidence/final/phase-02/report.md). The older assistance scaffold
+below is not yet connected to that authority; Phase 3 has not started.
+
 **Habiba-owned.** Session/token minting, consent/dispatch gate, demo bring-up.  
 Not the voice brain (`voice-agent/`). Not the shopping UI (future `website/`).
 
 See [`docs/OWNERSHIP.md`](docs/OWNERSHIP.md).
+
+Final orchestration Phase 0: [baseline runbook](docs/PHASE_00_BASELINE_RUNBOOK.md)
+and [evidence/status](evidence/final/phase-00/report.md). This records the current
+offline baseline; final website/voice integration has not been implemented.
+
+Final orchestration Phase 1: [contract 2.0 freeze](docs/PHASE_01_CONTRACT_FREEZE.md)
+and [verification](evidence/final/phase-01/report.md). This is an opt-in contract;
+the existing runtime continues to use frozen v1 until later integration phases.
 
 ## What’s in this package
 

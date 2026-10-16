@@ -7,8 +7,15 @@ checkout confirmation, revision state, and future agent action handling.
 from __future__ import annotations
 
 import copy
+import secrets
+import time
+from collections.abc import Callable
 from dataclasses import dataclass, field
+from decimal import Decimal
 from typing import Any
+
+from foodease_contract.models import ActionRequest
+from pydantic import ValidationError
 
 from foodease_website.catalog import CatalogSeed, MenuItem
 
@@ -69,7 +76,14 @@ class FoodEaseDomain:
     undo_stack: list[dict[str, CartLineState]] = field(default_factory=list)
     pending_confirmation_token: str | None = None
     pending_confirmation_revision: int | None = None
+    pending_confirmation_cart: dict[str, Any] | None = None
     demo_order_count: int = 0
+    cart_revision: int = 0
+    clock: Callable[[], float] = time.monotonic
+    confirmation_ttl: float = 300
+    confirmation_expires_at: float = 0
+    view_history: list[dict[str, Any]] = field(default_factory=list)
+    fingerprints: dict[str, tuple[str, dict[str, Any]]] = field(default_factory=dict)
 
     def __post_init__(self) -> None:
         self.menu_by_id = {item.item_id: item for item in self.catalog.items}
@@ -85,12 +99,25 @@ class FoodEaseDomain:
     ) -> dict[str, Any]:
         if not action_id:
             return self._result(action_id, REJECTED, error_code="missing_action_id")
-        if action_id in self.action_log:
-            return copy.deepcopy(self.action_log[action_id])
         if operation not in ALL_OPERATIONS:
-            result = self._result(action_id, REJECTED, error_code="unknown_operation")
-            self.action_log[action_id] = result
-            return copy.deepcopy(result)
+            return self._result(action_id, REJECTED, error_code="unknown_operation")
+        try:
+            request = ActionRequest.model_validate(
+                {
+                    "action_id": action_id,
+                    "operation": operation,
+                    "arguments": arguments if arguments is not None else {},
+                }
+            )
+        except ValidationError:
+            return self._result(action_id, REJECTED, error_code="invalid_arguments")
+        args = request.arguments
+        fingerprint = (operation, args)
+        if action_id in self.action_log:
+            if self.fingerprints.get(action_id) != fingerprint:
+                return self._result(action_id, REJECTED, error_code="idempotency_conflict")
+            return copy.deepcopy(self.action_log[action_id])
+        self.fingerprints[action_id] = fingerprint
         if self._is_stale(operation, context_revision):
             result = self._result(
                 action_id,
@@ -101,14 +128,13 @@ class FoodEaseDomain:
             self.action_log[action_id] = result
             return copy.deepcopy(result)
 
-        args = arguments or {}
         result = self._dispatch(action_id, operation, args)
         self.action_log[action_id] = result
         return copy.deepcopy(result)
 
     def snapshot(self) -> dict[str, Any]:
         return {
-            "schema_version": "1.0",
+            "schema_version": "2.0",
             "session_id": self.session_id,
             "revision": self.revision,
             "route": self.route,
@@ -116,6 +142,8 @@ class FoodEaseDomain:
             "valid_actions": ALL_OPERATIONS,
             "valid_navigation_targets": self._navigation_targets(),
             "filter_tags": self.filter_tags,
+            "category": self.category,
+            "max_price_pkr": self.max_price_pkr,
             "search_query": self.search_query,
             "visible_items": [self._visible_item(item) for item in self.visible_items()[:25]],
             "cart": self.cart_summary(),
@@ -144,10 +172,10 @@ class FoodEaseDomain:
 
     def cart_summary(self) -> dict[str, Any]:
         lines = []
-        subtotal = 0.0
+        subtotal = Decimal(0)
         for line in self.cart.values():
             item = self.menu_by_id[line.item_id]
-            amount = item.unit_price_pkr * line.quantity
+            amount = Decimal(str(item.unit_price_pkr)) * line.quantity
             subtotal += amount
             lines.append(
                 {
@@ -155,7 +183,7 @@ class FoodEaseDomain:
                     "name": item.name,
                     "quantity": line.quantity,
                     "unit_price": item.unit_price_pkr,
-                    "line_total": amount,
+                    "line_total": float(amount),
                 }
             )
         fees = (
@@ -166,9 +194,9 @@ class FoodEaseDomain:
         return {
             "lines": lines,
             "currency": self.catalog.currency,
-            "subtotal": subtotal,
+            "subtotal": float(subtotal),
             "fees": fees,
-            "total": subtotal + (self.catalog.service_fee_pkr if lines else 0),
+            "total": float(subtotal + Decimal(str(self.catalog.service_fee_pkr if lines else 0))),
         }
 
     def _dispatch(self, action_id: str, operation: str, args: dict[str, Any]) -> dict[str, Any]:
@@ -179,28 +207,40 @@ class FoodEaseDomain:
         if operation == "navigate":
             return self._navigate(action_id, str(args.get("target", "")))
         if operation == "search_menu":
+            self._save_view()
             self.search_query = str(args.get("query", "")).strip()
             self.route = "menu"
+            self.focus_item_id = None
             self._bump()
             return self._result(
                 action_id,
                 SUCCESS,
                 verified_state={
-                    "items": [self._visible_item(item) for item in self.visible_items()]
+                    "items": [self._visible_item(item) for item in self.visible_items()[:25]],
+                    "result_count": len(self.visible_items()),
                 },
             )
         if operation == "filter_menu":
+            known_tags = {tag for item in self.catalog.items for tag in item.tags}
+            if (
+                not set(args["tags"]).issubset(known_tags)
+                or args["category"] is not None
+                and args["category"] not in self.catalog.categories
+            ):
+                return self._result(action_id, REJECTED, error_code="invalid_arguments")
+            self._save_view()
             self.filter_tags = list(args.get("tags") or [])
             self.max_price_pkr = args.get("max_price_pkr")
             self.category = args.get("category")
             self.route = "menu"
-            self._clear_stale_focus()
+            self.focus_item_id = None
             self._bump()
             return self._result(
                 action_id,
                 SUCCESS,
                 verified_state={
-                    "items": [self._visible_item(item) for item in self.visible_items()]
+                    "items": [self._visible_item(item) for item in self.visible_items()[:25]],
+                    "result_count": len(self.visible_items()),
                 },
             )
         if operation == "select_item":
@@ -227,7 +267,16 @@ class FoodEaseDomain:
 
     def _navigate(self, action_id: str, target: str) -> dict[str, Any]:
         if target == "back":
-            target = "home"
+            if not self.view_history:
+                return self._result(action_id, REJECTED, error_code="not_available")
+            for key, value in self.view_history.pop().items():
+                setattr(self, key, value)
+            self._bump()
+            return self._result(action_id, SUCCESS, verified_state={"route": self.route})
+        if target not in {*self.catalog.categories, "home", "menu", "cart", "checkout"}:
+            return self._result(action_id, REJECTED, error_code="invalid_arguments")
+        self._save_view()
+        self.focus_item_id = None
         if target in self.catalog.categories:
             self.category = target
             self.route = "menu"
@@ -247,6 +296,7 @@ class FoodEaseDomain:
     def _select_item(self, action_id: str, item_id: str) -> dict[str, Any]:
         if item_id not in self.menu_by_id:
             return self._result(action_id, REJECTED, error_code="invalid_arguments")
+        self._save_view()
         self.focus_item_id = item_id
         self.route = "item"
         self._bump()
@@ -275,9 +325,11 @@ class FoodEaseDomain:
             return self._result(action_id, REJECTED, error_code="invalid_arguments")
         if not item.available:
             return self._result(action_id, REJECTED, error_code="out_of_stock")
-        self._save_undo()
         current = self.cart.get(item_id)
-        new_quantity = min(99, (current.quantity if current else 0) + quantity)
+        new_quantity = (current.quantity if current else 0) + quantity
+        if new_quantity > 99:
+            return self._result(action_id, REJECTED, error_code="invalid_arguments")
+        self._save_undo()
         self.cart[item_id] = CartLineState(item_id=item_id, quantity=new_quantity)
         self._invalidate_confirmation()
         self._bump()
@@ -304,9 +356,13 @@ class FoodEaseDomain:
     def _checkout_summary(self, action_id: str) -> dict[str, Any]:
         if not self.cart:
             return self._result(action_id, REJECTED, error_code="not_available")
+        self._save_view()
         self.route = "checkout"
-        self.pending_confirmation_revision = self.revision
-        self.pending_confirmation_token = f"confirm_{self.revision}_{len(self.cart)}"
+        self.focus_item_id = None
+        self.pending_confirmation_revision = self.cart_revision
+        self.pending_confirmation_cart = copy.deepcopy(self.cart_summary())
+        self.pending_confirmation_token = secrets.token_urlsafe(32)
+        self.confirmation_expires_at = self.clock() + self.confirmation_ttl
         self._bump()
         state = self.cart_summary()
         state["summary_revision"] = self.pending_confirmation_revision
@@ -325,7 +381,15 @@ class FoodEaseDomain:
                 action_id, REQUIRES_CONFIRMATION, error_code="confirmation_required"
             )
         token = args.get("confirmation_token")
-        if token and token != self.pending_confirmation_token:
+        if (
+            not token
+            or not self.pending_confirmation_token
+            or not secrets.compare_digest(token.encode(), self.pending_confirmation_token.encode())
+            or args.get("summary_revision") != self.pending_confirmation_revision
+            or self.cart_revision != self.pending_confirmation_revision
+            or self.cart_summary() != self.pending_confirmation_cart
+            or self.clock() >= self.confirmation_expires_at
+        ):
             return self._result(action_id, REJECTED, error_code="confirmation_expired")
         if self.pending_confirmation_revision is None:
             return self._result(
@@ -333,9 +397,11 @@ class FoodEaseDomain:
             )
         order = self.cart_summary()
         self.demo_order_count += 1
-        order_id = f"DEMO-{self.demo_order_count:04d}"
+        order_id = f"DEMO-{secrets.token_hex(12)}"
         self.cart.clear()
+        self.undo_stack.clear()
         self.route = "confirmation"
+        self.focus_item_id = None
         self._invalidate_confirmation()
         self._bump()
         return self._result(
@@ -354,17 +420,40 @@ class FoodEaseDomain:
 
     def _is_stale(self, operation: str, context_revision: int | None) -> bool:
         return (
-            operation in MUTATING_OPERATIONS
-            and context_revision is not None
-            and context_revision < self.revision
+            type(context_revision) is not int
+            or context_revision > self.revision
+            or operation in MUTATING_OPERATIONS
+            and context_revision != self.revision
         )
 
     def _save_undo(self) -> None:
         self.undo_stack.append(copy.deepcopy(self.cart))
+        del self.undo_stack[:-64]
 
     def _invalidate_confirmation(self) -> None:
+        self.cart_revision += 1
         self.pending_confirmation_token = None
         self.pending_confirmation_revision = None
+        self.pending_confirmation_cart = None
+        self.confirmation_expires_at = 0
+
+    def _save_view(self) -> None:
+        self.view_history.append(
+            copy.deepcopy(
+                {
+                    key: getattr(self, key)
+                    for key in (
+                        "route",
+                        "category",
+                        "search_query",
+                        "filter_tags",
+                        "max_price_pkr",
+                        "focus_item_id",
+                    )
+                }
+            )
+        )
+        del self.view_history[:-64]
 
     def _clear_stale_focus(self) -> None:
         if self.focus_item_id and self.focus_item_id not in {

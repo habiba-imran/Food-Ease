@@ -1,0 +1,14 @@
+{
+  "schema_version": "2.0",
+  "session_id": "contract-demo",
+  "event_id": "assistant-interrupted",
+  "turn_id": "contract-turn",
+  "timestamp": "2026-10-17T12:00:00Z",
+  "context_revision": 1,
+  "type": "transcript.assistant",
+  "payload": {
+    "utterance_id": "assistant-example-interrupted",
+    "text": "Here are",
+    "phase": "interrupted"
+  }
+}

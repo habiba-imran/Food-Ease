@@ -1,0 +1,14 @@
+✔ one session is created for concurrent requests; reload reattaches (28.6361ms)
+✔ a fresh tab creates its own handle (7.2825ms)
+✔ expired attachment reports uncertainty and never replaces/retries a mutation (3.7584ms)
+✔ blocked storage still keeps one in-memory tab session (3.0784ms)
+✔ unknown transport failures do not trigger a mutation retry (10.9378ms)
+✔ mid-session expiry clears the saved handle and shows an honest status (3.1651ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 516.2246

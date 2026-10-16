@@ -1,0 +1,2685 @@
+{
+  "mode": "actual-website-http-only",
+  "browser_verified": false,
+  "voice_verified": false,
+  "provider_calls": 0,
+  "base_url": "http://127.0.0.1:18080",
+  "result": "pass",
+  "demo_order_id": "DEMO-0001",
+  "total_pkr": 900,
+  "trace": [
+    {
+      "request": {
+        "action_id": "phase0-empty-checkout",
+        "operation": "checkout.get_summary",
+        "arguments": {},
+        "context_revision": 1
+      },
+      "result": {
+        "action_id": "phase0-empty-checkout",
+        "status": "rejected",
+        "verified_state": null,
+        "error_code": "not_available",
+        "error_message": null
+      },
+      "context": {
+        "schema_version": "1.0",
+        "session_id": "foodease-local-session",
+        "revision": 1,
+        "route": "home",
+        "focus_item_id": null,
+        "valid_actions": [
+          "navigate",
+          "search_menu",
+          "filter_menu",
+          "select_item",
+          "get_item_details",
+          "get_cart",
+          "cart.add_item",
+          "cart.set_quantity",
+          "cart.remove_item",
+          "checkout.get_summary",
+          "checkout.submit_demo_order",
+          "undo_last_reversible_action",
+          "get_current_context"
+        ],
+        "valid_navigation_targets": [
+          "home",
+          "menu",
+          "back",
+          "cart",
+          "checkout",
+          "biryani",
+          "burgers",
+          "desserts",
+          "drinks",
+          "karahi",
+          "platters",
+          "rolls",
+          "sides",
+          "wraps"
+        ],
+        "filter_tags": [],
+        "search_query": null,
+        "visible_items": [
+          {
+            "item_id": "zinger-classic",
+            "name": "Zinger Burger",
+            "price": 650.0,
+            "currency": "PKR",
+            "descriptors": [
+              "spicy"
+            ],
+            "available": true
+          },
+          {
+            "item_id": "zinger-supreme",
+            "name": "Zinger Burger Supreme",
+            "price": 850.0,
+            "currency": "PKR",
+            "descriptors": [
+              "spicy"
+            ],
+            "available": true
+          },
+          {
+            "item_id": "burger-beef",
+            "name": "Beef Smash Burger",
+            "price": 750.0,
+            "currency": "PKR",
+            "descriptors": [],
+            "available": true
+          },
+          {
+            "item_id": "burger-veg",
+            "name": "Veggie Patty Burger",
+            "price": 550.0,
+            "currency": "PKR",
+            "descriptors": [
+              "vegetarian"
+            ],
+            "available": true
+          },
+          {
+            "item_id": "burger-soldout",
+            "name": "Smoky BBQ Burger",
+            "price": 700.0,
+            "currency": "PKR",
+            "descriptors": [],
+            "available": false
+          },
+          {
+            "item_id": "wrap-chicken",
+            "name": "Chicken Wrap",
+            "price": 600.0,
+            "currency": "PKR",
+            "descriptors": [],
+            "available": true
+          },
+          {
+            "item_id": "wrap-veg",
+            "name": "Veggie Wrap",
+            "price": 500.0,
+            "currency": "PKR",
+            "descriptors": [
+              "vegetarian"
+            ],
+            "available": true
+          },
+          {
+            "item_id": "wrap-hot-chicken",
+            "name": "Hot Chicken Wrap",
+            "price": 850.0,
+            "currency": "PKR",
+            "descriptors": [
+              "spicy"
+            ],
+            "available": true
+          },
+          {
+            "item_id": "roll-seekh",
+            "name": "Seekh Kabab Roll",
+            "price": 450.0,
+            "currency": "PKR",
+            "descriptors": [
+              "spicy"
+            ],
+            "available": true
+          },
+          {
+            "item_id": "roll-paneer",
+            "name": "Paneer Roll",
+            "price": 420.0,
+            "currency": "PKR",
+            "descriptors": [
+              "vegetarian"
+            ],
+            "available": true
+          },
+          {
+            "item_id": "roll-chicken",
+            "name": "Chicken Tikka Roll",
+            "price": 480.0,
+            "currency": "PKR",
+            "descriptors": [],
+            "available": true
+          },
+          {
+            "item_id": "karahi-chicken",
+            "name": "Chicken Karahi",
+            "price": 1200.0,
+            "currency": "PKR",
+            "descriptors": [
+              "spicy"
+            ],
+            "available": true
+          },
+          {
+            "item_id": "karahi-mutton",
+            "name": "Mutton Karahi",
+            "price": 1800.0,
+            "currency": "PKR",
+            "descriptors": [
+              "spicy"
+            ],
+            "available": true
+          },
+          {
+            "item_id": "biryani-chicken",
+            "name": "Chicken Biryani",
+            "price": 550.0,
+            "currency": "PKR",
+            "descriptors": [],
+            "available": true
+          },
+          {
+            "item_id": "biryani-beef",
+            "name": "Beef Biryani",
+            "price": 650.0,
+            "currency": "PKR",
+            "descriptors": [],
+            "available": true
+          },
+          {
+            "item_id": "drink-lassi-small",
+            "name": "Sweet Lassi",
+            "price": 150.0,
+            "currency": "PKR",
+            "descriptors": [
+              "vegetarian"
+            ],
+            "available": true
+          },
+          {
+            "item_id": "platter-family",
+            "name": "Family Mixed Platter",
+            "price": 1500.0,
+            "currency": "PKR",
+            "descriptors": [],
+            "available": true
+          },
+          {
+            "item_id": "drink-chai",
+            "name": "Karak Chai",
+            "price": 120.0,
+            "currency": "PKR",
+            "descriptors": [
+              "vegetarian"
+            ],
+            "available": true
+          },
+          {
+            "item_id": "drink-cola",
+            "name": "Cola Can",
+            "price": 100.0,
+            "currency": "PKR",
+            "descriptors": [
+              "vegetarian"
+            ],
+            "available": true
+          },
+          {
+            "item_id": "drink-mango",
+            "name": "Mango Juice",
+            "price": 200.0,
+            "currency": "PKR",
+            "descriptors": [
+              "vegetarian"
+            ],
+            "available": true
+          },
+          {
+            "item_id": "dessert-gulab",
+            "name": "Gulab Jamun (2pc)",
+            "price": 250.0,
+            "currency": "PKR",
+            "descriptors": [
+              "vegetarian"
+            ],
+            "available": true
+          },
+          {
+            "item_id": "dessert-kheer",
+            "name": "Rice Kheer",
+            "price": 280.0,
+            "currency": "PKR",
+            "descriptors": [
+              "vegetarian"
+            ],
+            "available": true
+          },
+          {
+            "item_id": "dessert-brownie",
+            "name": "Chocolate Brownie",
+            "price": 350.0,
+            "currency": "PKR",
+            "descriptors": [
+              "vegetarian"
+            ],
+            "available": true
+          },
+          {
+            "item_id": "dessert-mystery",
+            "name": "Chef Special Sweet",
+            "price": 300.0,
+            "currency": "PKR",
+            "descriptors": [
+              "vegetarian"
+            ],
+            "available": true
+          },
+          {
+            "item_id": "side-fries",
+            "name": "Masala Fries",
+            "price": 220.0,
+            "currency": "PKR",
+            "descriptors": [
+              "vegetarian"
+            ],
+            "available": true
+          }
+        ],
+        "cart": {
+          "lines": [],
+          "currency": "PKR",
+          "subtotal": 0.0,
+          "fees": [],
+          "total": 0.0
+        },
+        "checkout_available": false,
+        "action_pending": false,
+        "language": "en"
+      }
+    },
+    {
+      "request": {
+        "action_id": "phase0-menu",
+        "operation": "navigate",
+        "arguments": {
+          "target": "menu"
+        },
+        "context_revision": 1
+      },
+      "result": {
+        "action_id": "phase0-menu",
+        "status": "success",
+        "verified_state": {
+          "route": "menu"
+        },
+        "error_code": null,
+        "error_message": null
+      },
+      "context": {
+        "schema_version": "1.0",
+        "session_id": "foodease-local-session",
+        "revision": 2,
+        "route": "menu",
+        "focus_item_id": null,
+        "valid_actions": [
+          "navigate",
+          "search_menu",
+          "filter_menu",
+          "select_item",
+          "get_item_details",
+          "get_cart",
+          "cart.add_item",
+          "cart.set_quantity",
+          "cart.remove_item",
+          "checkout.get_summary",
+          "checkout.submit_demo_order",
+          "undo_last_reversible_action",
+          "get_current_context"
+        ],
+        "valid_navigation_targets": [
+          "home",
+          "menu",
+          "back",
+          "cart",
+          "checkout",
+          "biryani",
+          "burgers",
+          "desserts",
+          "drinks",
+          "karahi",
+          "platters",
+          "rolls",
+          "sides",
+          "wraps"
+        ],
+        "filter_tags": [],
+        "search_query": null,
+        "visible_items": [
+          {
+            "item_id": "zinger-classic",
+            "name": "Zinger Burger",
+            "price": 650.0,
+            "currency": "PKR",
+            "descriptors": [
+              "spicy"
+            ],
+            "available": true
+          },
+          {
+            "item_id": "zinger-supreme",
+            "name": "Zinger Burger Supreme",
+            "price": 850.0,
+            "currency": "PKR",
+            "descriptors": [
+              "spicy"
+            ],
+            "available": true
+          },
+          {
+            "item_id": "burger-beef",
+            "name": "Beef Smash Burger",
+            "price": 750.0,
+            "currency": "PKR",
+            "descriptors": [],
+            "available": true
+          },
+          {
+            "item_id": "burger-veg",
+            "name": "Veggie Patty Burger",
+            "price": 550.0,
+            "currency": "PKR",
+            "descriptors": [
+              "vegetarian"
+            ],
+            "available": true
+          },
+          {
+            "item_id": "burger-soldout",
+            "name": "Smoky BBQ Burger",
+            "price": 700.0,
+            "currency": "PKR",
+            "descriptors": [],
+            "available": false
+          },
+          {
+            "item_id": "wrap-chicken",
+            "name": "Chicken Wrap",
+            "price": 600.0,
+            "currency": "PKR",
+            "descriptors": [],
+            "available": true
+          },
+          {
+            "item_id": "wrap-veg",
+            "name": "Veggie Wrap",
+            "price": 500.0,
+            "currency": "PKR",
+            "descriptors": [
+              "vegetarian"
+            ],
+            "available": true
+          },
+          {
+            "item_id": "wrap-hot-chicken",
+            "name": "Hot Chicken Wrap",
+            "price": 850.0,
+            "currency": "PKR",
+            "descriptors": [
+              "spicy"
+            ],
+            "available": true
+          },
+          {
+            "item_id": "roll-seekh",
+            "name": "Seekh Kabab Roll",
+            "price": 450.0,
+            "currency": "PKR",
+            "descriptors": [
+              "spicy"
+            ],
+            "available": true
+          },
+          {
+            "item_id": "roll-paneer",
+            "name": "Paneer Roll",
+            "price": 420.0,
+            "currency": "PKR",
+            "descriptors": [
+              "vegetarian"
+            ],
+            "available": true
+          },
+          {
+            "item_id": "roll-chicken",
+            "name": "Chicken Tikka Roll",
+            "price": 480.0,
+            "currency": "PKR",
+            "descriptors": [],
+            "available": true
+          },
+          {
+            "item_id": "karahi-chicken",
+            "name": "Chicken Karahi",
+            "price": 1200.0,
+            "currency": "PKR",
+            "descriptors": [
+              "spicy"
+            ],
+            "available": true
+          },
+          {
+            "item_id": "karahi-mutton",
+            "name": "Mutton Karahi",
+            "price": 1800.0,
+            "currency": "PKR",
+            "descriptors": [
+              "spicy"
+            ],
+            "available": true
+          },
+          {
+            "item_id": "biryani-chicken",
+            "name": "Chicken Biryani",
+            "price": 550.0,
+            "currency": "PKR",
+            "descriptors": [],
+            "available": true
+          },
+          {
+            "item_id": "biryani-beef",
+            "name": "Beef Biryani",
+            "price": 650.0,
+            "currency": "PKR",
+            "descriptors": [],
+            "available": true
+          },
+          {
+            "item_id": "drink-lassi-small",
+            "name": "Sweet Lassi",
+            "price": 150.0,
+            "currency": "PKR",
+            "descriptors": [
+              "vegetarian"
+            ],
+            "available": true
+          },
+          {
+            "item_id": "platter-family",
+            "name": "Family Mixed Platter",
+            "price": 1500.0,
+            "currency": "PKR",
+            "descriptors": [],
+            "available": true
+          },
+          {
+            "item_id": "drink-chai",
+            "name": "Karak Chai",
+            "price": 120.0,
+            "currency": "PKR",
+            "descriptors": [
+              "vegetarian"
+            ],
+            "available": true
+          },
+          {
+            "item_id": "drink-cola",
+            "name": "Cola Can",
+            "price": 100.0,
+            "currency": "PKR",
+            "descriptors": [
+              "vegetarian"
+            ],
+            "available": true
+          },
+          {
+            "item_id": "drink-mango",
+            "name": "Mango Juice",
+            "price": 200.0,
+            "currency": "PKR",
+            "descriptors": [
+              "vegetarian"
+            ],
+            "available": true
+          },
+          {
+            "item_id": "dessert-gulab",
+            "name": "Gulab Jamun (2pc)",
+            "price": 250.0,
+            "currency": "PKR",
+            "descriptors": [
+              "vegetarian"
+            ],
+            "available": true
+          },
+          {
+            "item_id": "dessert-kheer",
+            "name": "Rice Kheer",
+            "price": 280.0,
+            "currency": "PKR",
+            "descriptors": [
+              "vegetarian"
+            ],
+            "available": true
+          },
+          {
+            "item_id": "dessert-brownie",
+            "name": "Chocolate Brownie",
+            "price": 350.0,
+            "currency": "PKR",
+            "descriptors": [
+              "vegetarian"
+            ],
+            "available": true
+          },
+          {
+            "item_id": "dessert-mystery",
+            "name": "Chef Special Sweet",
+            "price": 300.0,
+            "currency": "PKR",
+            "descriptors": [
+              "vegetarian"
+            ],
+            "available": true
+          },
+          {
+            "item_id": "side-fries",
+            "name": "Masala Fries",
+            "price": 220.0,
+            "currency": "PKR",
+            "descriptors": [
+              "vegetarian"
+            ],
+            "available": true
+          }
+        ],
+        "cart": {
+          "lines": [],
+          "currency": "PKR",
+          "subtotal": 0.0,
+          "fees": [],
+          "total": 0.0
+        },
+        "checkout_available": false,
+        "action_pending": false,
+        "language": "en"
+      }
+    },
+    {
+      "request": {
+        "action_id": "phase0-filter",
+        "operation": "filter_menu",
+        "arguments": {
+          "tags": [
+            "vegetarian"
+          ],
+          "max_price_pkr": 800
+        },
+        "context_revision": 2
+      },
+      "result": {
+        "action_id": "phase0-filter",
+        "status": "success",
+        "verified_state": {
+          "items": [
+            {
+              "item_id": "burger-veg",
+              "name": "Veggie Patty Burger",
+              "price": 550.0,
+              "currency": "PKR",
+              "descriptors": [
+                "vegetarian"
+              ],
+              "available": true
+            },
+            {
+              "item_id": "wrap-veg",
+              "name": "Veggie Wrap",
+              "price": 500.0,
+              "currency": "PKR",
+              "descriptors": [
+                "vegetarian"
+              ],
+              "available": true
+            },
+            {
+              "item_id": "roll-paneer",
+              "name": "Paneer Roll",
+              "price": 420.0,
+              "currency": "PKR",
+              "descriptors": [
+                "vegetarian"
+              ],
+              "available": true
+            },
+            {
+              "item_id": "drink-lassi-small",
+              "name": "Sweet Lassi",
+              "price": 150.0,
+              "currency": "PKR",
+              "descriptors": [
+                "vegetarian"
+              ],
+              "available": true
+            },
+            {
+              "item_id": "drink-chai",
+              "name": "Karak Chai",
+              "price": 120.0,
+              "currency": "PKR",
+              "descriptors": [
+                "vegetarian"
+              ],
+              "available": true
+            },
+            {
+              "item_id": "drink-cola",
+              "name": "Cola Can",
+              "price": 100.0,
+              "currency": "PKR",
+              "descriptors": [
+                "vegetarian"
+              ],
+              "available": true
+            },
+            {
+              "item_id": "drink-mango",
+              "name": "Mango Juice",
+              "price": 200.0,
+              "currency": "PKR",
+              "descriptors": [
+                "vegetarian"
+              ],
+              "available": true
+            },
+            {
+              "item_id": "dessert-gulab",
+              "name": "Gulab Jamun (2pc)",
+              "price": 250.0,
+              "currency": "PKR",
+              "descriptors": [
+                "vegetarian"
+              ],
+              "available": true
+            },
+            {
+              "item_id": "dessert-kheer",
+              "name": "Rice Kheer",
+              "price": 280.0,
+              "currency": "PKR",
+              "descriptors": [
+                "vegetarian"
+              ],
+              "available": true
+            },
+            {
+              "item_id": "dessert-brownie",
+              "name": "Chocolate Brownie",
+              "price": 350.0,
+              "currency": "PKR",
+              "descriptors": [
+                "vegetarian"
+              ],
+              "available": true
+            },
+            {
+              "item_id": "dessert-mystery",
+              "name": "Chef Special Sweet",
+              "price": 300.0,
+              "currency": "PKR",
+              "descriptors": [
+                "vegetarian"
+              ],
+              "available": true
+            },
+            {
+              "item_id": "side-fries",
+              "name": "Masala Fries",
+              "price": 220.0,
+              "currency": "PKR",
+              "descriptors": [
+                "vegetarian"
+              ],
+              "available": true
+            },
+            {
+              "item_id": "side-salad",
+              "name": "Garden Salad",
+              "price": 180.0,
+              "currency": "PKR",
+              "descriptors": [
+                "vegetarian"
+              ],
+              "available": true
+            },
+            {
+              "item_id": "side-raita",
+              "name": "Mint Raita",
+              "price": 80.0,
+              "currency": "PKR",
+              "descriptors": [
+                "vegetarian"
+              ],
+              "available": true
+            },
+            {
+              "item_id": "soup-corn",
+              "name": "Corn Soup",
+              "price": 320.0,
+              "currency": "PKR",
+              "descriptors": [
+                "vegetarian"
+              ],
+              "available": true
+            }
+          ]
+        },
+        "error_code": null,
+        "error_message": null
+      },
+      "context": {
+        "schema_version": "1.0",
+        "session_id": "foodease-local-session",
+        "revision": 3,
+        "route": "menu",
+        "focus_item_id": null,
+        "valid_actions": [
+          "navigate",
+          "search_menu",
+          "filter_menu",
+          "select_item",
+          "get_item_details",
+          "get_cart",
+          "cart.add_item",
+          "cart.set_quantity",
+          "cart.remove_item",
+          "checkout.get_summary",
+          "checkout.submit_demo_order",
+          "undo_last_reversible_action",
+          "get_current_context"
+        ],
+        "valid_navigation_targets": [
+          "home",
+          "menu",
+          "back",
+          "cart",
+          "checkout",
+          "biryani",
+          "burgers",
+          "desserts",
+          "drinks",
+          "karahi",
+          "platters",
+          "rolls",
+          "sides",
+          "wraps"
+        ],
+        "filter_tags": [
+          "vegetarian"
+        ],
+        "search_query": null,
+        "visible_items": [
+          {
+            "item_id": "burger-veg",
+            "name": "Veggie Patty Burger",
+            "price": 550.0,
+            "currency": "PKR",
+            "descriptors": [
+              "vegetarian"
+            ],
+            "available": true
+          },
+          {
+            "item_id": "wrap-veg",
+            "name": "Veggie Wrap",
+            "price": 500.0,
+            "currency": "PKR",
+            "descriptors": [
+              "vegetarian"
+            ],
+            "available": true
+          },
+          {
+            "item_id": "roll-paneer",
+            "name": "Paneer Roll",
+            "price": 420.0,
+            "currency": "PKR",
+            "descriptors": [
+              "vegetarian"
+            ],
+            "available": true
+          },
+          {
+            "item_id": "drink-lassi-small",
+            "name": "Sweet Lassi",
+            "price": 150.0,
+            "currency": "PKR",
+            "descriptors": [
+              "vegetarian"
+            ],
+            "available": true
+          },
+          {
+            "item_id": "drink-chai",
+            "name": "Karak Chai",
+            "price": 120.0,
+            "currency": "PKR",
+            "descriptors": [
+              "vegetarian"
+            ],
+            "available": true
+          },
+          {
+            "item_id": "drink-cola",
+            "name": "Cola Can",
+            "price": 100.0,
+            "currency": "PKR",
+            "descriptors": [
+              "vegetarian"
+            ],
+            "available": true
+          },
+          {
+            "item_id": "drink-mango",
+            "name": "Mango Juice",
+            "price": 200.0,
+            "currency": "PKR",
+            "descriptors": [
+              "vegetarian"
+            ],
+            "available": true
+          },
+          {
+            "item_id": "dessert-gulab",
+            "name": "Gulab Jamun (2pc)",
+            "price": 250.0,
+            "currency": "PKR",
+            "descriptors": [
+              "vegetarian"
+            ],
+            "available": true
+          },
+          {
+            "item_id": "dessert-kheer",
+            "name": "Rice Kheer",
+            "price": 280.0,
+            "currency": "PKR",
+            "descriptors": [
+              "vegetarian"
+            ],
+            "available": true
+          },
+          {
+            "item_id": "dessert-brownie",
+            "name": "Chocolate Brownie",
+            "price": 350.0,
+            "currency": "PKR",
+            "descriptors": [
+              "vegetarian"
+            ],
+            "available": true
+          },
+          {
+            "item_id": "dessert-mystery",
+            "name": "Chef Special Sweet",
+            "price": 300.0,
+            "currency": "PKR",
+            "descriptors": [
+              "vegetarian"
+            ],
+            "available": true
+          },
+          {
+            "item_id": "side-fries",
+            "name": "Masala Fries",
+            "price": 220.0,
+            "currency": "PKR",
+            "descriptors": [
+              "vegetarian"
+            ],
+            "available": true
+          },
+          {
+            "item_id": "side-salad",
+            "name": "Garden Salad",
+            "price": 180.0,
+            "currency": "PKR",
+            "descriptors": [
+              "vegetarian"
+            ],
+            "available": true
+          },
+          {
+            "item_id": "side-raita",
+            "name": "Mint Raita",
+            "price": 80.0,
+            "currency": "PKR",
+            "descriptors": [
+              "vegetarian"
+            ],
+            "available": true
+          },
+          {
+            "item_id": "soup-corn",
+            "name": "Corn Soup",
+            "price": 320.0,
+            "currency": "PKR",
+            "descriptors": [
+              "vegetarian"
+            ],
+            "available": true
+          }
+        ],
+        "cart": {
+          "lines": [],
+          "currency": "PKR",
+          "subtotal": 0.0,
+          "fees": [],
+          "total": 0.0
+        },
+        "checkout_available": false,
+        "action_pending": false,
+        "language": "en"
+      }
+    },
+    {
+      "request": {
+        "action_id": "phase0-clear",
+        "operation": "filter_menu",
+        "arguments": {
+          "tags": [],
+          "category": null
+        },
+        "context_revision": 3
+      },
+      "result": {
+        "action_id": "phase0-clear",
+        "status": "success",
+        "verified_state": {
+          "items": [
+            {
+              "item_id": "zinger-classic",
+              "name": "Zinger Burger",
+              "price": 650.0,
+              "currency": "PKR",
+              "descriptors": [
+                "spicy"
+              ],
+              "available": true
+            },
+            {
+              "item_id": "zinger-supreme",
+              "name": "Zinger Burger Supreme",
+              "price": 850.0,
+              "currency": "PKR",
+              "descriptors": [
+                "spicy"
+              ],
+              "available": true
+            },
+            {
+              "item_id": "burger-beef",
+              "name": "Beef Smash Burger",
+              "price": 750.0,
+              "currency": "PKR",
+              "descriptors": [],
+              "available": true
+            },
+            {
+              "item_id": "burger-veg",
+              "name": "Veggie Patty Burger",
+              "price": 550.0,
+              "currency": "PKR",
+              "descriptors": [
+                "vegetarian"
+              ],
+              "available": true
+            },
+            {
+              "item_id": "burger-soldout",
+              "name": "Smoky BBQ Burger",
+              "price": 700.0,
+              "currency": "PKR",
+              "descriptors": [],
+              "available": false
+            },
+            {
+              "item_id": "wrap-chicken",
+              "name": "Chicken Wrap",
+              "price": 600.0,
+              "currency": "PKR",
+              "descriptors": [],
+              "available": true
+            },
+            {
+              "item_id": "wrap-veg",
+              "name": "Veggie Wrap",
+              "price": 500.0,
+              "currency": "PKR",
+              "descriptors": [
+                "vegetarian"
+              ],
+              "available": true
+            },
+            {
+              "item_id": "wrap-hot-chicken",
+              "name": "Hot Chicken Wrap",
+              "price": 850.0,
+              "currency": "PKR",
+              "descriptors": [
+                "spicy"
+              ],
+              "available": true
+            },
+            {
+              "item_id": "roll-seekh",
+              "name": "Seekh Kabab Roll",
+              "price": 450.0,
+              "currency": "PKR",
+              "descriptors": [
+                "spicy"
+              ],
+              "available": true
+            },
+            {
+              "item_id": "roll-paneer",
+              "name": "Paneer Roll",
+              "price": 420.0,
+              "currency": "PKR",
+              "descriptors": [
+                "vegetarian"
+              ],
+              "available": true
+            },
+            {
+              "item_id": "roll-chicken",
+              "name": "Chicken Tikka Roll",
+              "price": 480.0,
+              "currency": "PKR",
+              "descriptors": [],
+              "available": true
+            },
+            {
+              "item_id": "karahi-chicken",
+              "name": "Chicken Karahi",
+              "price": 1200.0,
+              "currency": "PKR",
+              "descriptors": [
+                "spicy"
+              ],
+              "available": true
+            },
+            {
+              "item_id": "karahi-mutton",
+              "name": "Mutton Karahi",
+              "price": 1800.0,
+              "currency": "PKR",
+              "descriptors": [
+                "spicy"
+              ],
+              "available": true
+            },
+            {
+              "item_id": "biryani-chicken",
+              "name": "Chicken Biryani",
+              "price": 550.0,
+              "currency": "PKR",
+              "descriptors": [],
+              "available": true
+            },
+            {
+              "item_id": "biryani-beef",
+              "name": "Beef Biryani",
+              "price": 650.0,
+              "currency": "PKR",
+              "descriptors": [],
+              "available": true
+            },
+            {
+              "item_id": "drink-lassi-small",
+              "name": "Sweet Lassi",
+              "price": 150.0,
+              "currency": "PKR",
+              "descriptors": [
+                "vegetarian"
+              ],
+              "available": true
+            },
+            {
+              "item_id": "platter-family",
+              "name": "Family Mixed Platter",
+              "price": 1500.0,
+              "currency": "PKR",
+              "descriptors": [],
+              "available": true
+            },
+            {
+              "item_id": "drink-chai",
+              "name": "Karak Chai",
+              "price": 120.0,
+              "currency": "PKR",
+              "descriptors": [
+                "vegetarian"
+              ],
+              "available": true
+            },
+            {
+              "item_id": "drink-cola",
+              "name": "Cola Can",
+              "price": 100.0,
+              "currency": "PKR",
+              "descriptors": [
+                "vegetarian"
+              ],
+              "available": true
+            },
+            {
+              "item_id": "drink-mango",
+              "name": "Mango Juice",
+              "price": 200.0,
+              "currency": "PKR",
+              "descriptors": [
+                "vegetarian"
+              ],
+              "available": true
+            },
+            {
+              "item_id": "dessert-gulab",
+              "name": "Gulab Jamun (2pc)",
+              "price": 250.0,
+              "currency": "PKR",
+              "descriptors": [
+                "vegetarian"
+              ],
+              "available": true
+            },
+            {
+              "item_id": "dessert-kheer",
+              "name": "Rice Kheer",
+              "price": 280.0,
+              "currency": "PKR",
+              "descriptors": [
+                "vegetarian"
+              ],
+              "available": true
+            },
+            {
+              "item_id": "dessert-brownie",
+              "name": "Chocolate Brownie",
+              "price": 350.0,
+              "currency": "PKR",
+              "descriptors": [
+                "vegetarian"
+              ],
+              "available": true
+            },
+            {
+              "item_id": "dessert-mystery",
+              "name": "Chef Special Sweet",
+              "price": 300.0,
+              "currency": "PKR",
+              "descriptors": [
+                "vegetarian"
+              ],
+              "available": true
+            },
+            {
+              "item_id": "side-fries",
+              "name": "Masala Fries",
+              "price": 220.0,
+              "currency": "PKR",
+              "descriptors": [
+                "vegetarian"
+              ],
+              "available": true
+            },
+            {
+              "item_id": "side-salad",
+              "name": "Garden Salad",
+              "price": 180.0,
+              "currency": "PKR",
+              "descriptors": [
+                "vegetarian"
+              ],
+              "available": true
+            },
+            {
+              "item_id": "side-raita",
+              "name": "Mint Raita",
+              "price": 80.0,
+              "currency": "PKR",
+              "descriptors": [
+                "vegetarian"
+              ],
+              "available": true
+            },
+            {
+              "item_id": "soup-corn",
+              "name": "Corn Soup",
+              "price": 320.0,
+              "currency": "PKR",
+              "descriptors": [
+                "vegetarian"
+              ],
+              "available": true
+            }
+          ]
+        },
+        "error_code": null,
+        "error_message": null
+      },
+      "context": {
+        "schema_version": "1.0",
+        "session_id": "foodease-local-session",
+        "revision": 4,
+        "route": "menu",
+        "focus_item_id": null,
+        "valid_actions": [
+          "navigate",
+          "search_menu",
+          "filter_menu",
+          "select_item",
+          "get_item_details",
+          "get_cart",
+          "cart.add_item",
+          "cart.set_quantity",
+          "cart.remove_item",
+          "checkout.get_summary",
+          "checkout.submit_demo_order",
+          "undo_last_reversible_action",
+          "get_current_context"
+        ],
+        "valid_navigation_targets": [
+          "home",
+          "menu",
+          "back",
+          "cart",
+          "checkout",
+          "biryani",
+          "burgers",
+          "desserts",
+          "drinks",
+          "karahi",
+          "platters",
+          "rolls",
+          "sides",
+          "wraps"
+        ],
+        "filter_tags": [],
+        "search_query": null,
+        "visible_items": [
+          {
+            "item_id": "zinger-classic",
+            "name": "Zinger Burger",
+            "price": 650.0,
+            "currency": "PKR",
+            "descriptors": [
+              "spicy"
+            ],
+            "available": true
+          },
+          {
+            "item_id": "zinger-supreme",
+            "name": "Zinger Burger Supreme",
+            "price": 850.0,
+            "currency": "PKR",
+            "descriptors": [
+              "spicy"
+            ],
+            "available": true
+          },
+          {
+            "item_id": "burger-beef",
+            "name": "Beef Smash Burger",
+            "price": 750.0,
+            "currency": "PKR",
+            "descriptors": [],
+            "available": true
+          },
+          {
+            "item_id": "burger-veg",
+            "name": "Veggie Patty Burger",
+            "price": 550.0,
+            "currency": "PKR",
+            "descriptors": [
+              "vegetarian"
+            ],
+            "available": true
+          },
+          {
+            "item_id": "burger-soldout",
+            "name": "Smoky BBQ Burger",
+            "price": 700.0,
+            "currency": "PKR",
+            "descriptors": [],
+            "available": false
+          },
+          {
+            "item_id": "wrap-chicken",
+            "name": "Chicken Wrap",
+            "price": 600.0,
+            "currency": "PKR",
+            "descriptors": [],
+            "available": true
+          },
+          {
+            "item_id": "wrap-veg",
+            "name": "Veggie Wrap",
+            "price": 500.0,
+            "currency": "PKR",
+            "descriptors": [
+              "vegetarian"
+            ],
+            "available": true
+          },
+          {
+            "item_id": "wrap-hot-chicken",
+            "name": "Hot Chicken Wrap",
+            "price": 850.0,
+            "currency": "PKR",
+            "descriptors": [
+              "spicy"
+            ],
+            "available": true
+          },
+          {
+            "item_id": "roll-seekh",
+            "name": "Seekh Kabab Roll",
+            "price": 450.0,
+            "currency": "PKR",
+            "descriptors": [
+              "spicy"
+            ],
+            "available": true
+          },
+          {
+            "item_id": "roll-paneer",
+            "name": "Paneer Roll",
+            "price": 420.0,
+            "currency": "PKR",
+            "descriptors": [
+              "vegetarian"
+            ],
+            "available": true
+          },
+          {
+            "item_id": "roll-chicken",
+            "name": "Chicken Tikka Roll",
+            "price": 480.0,
+            "currency": "PKR",
+            "descriptors": [],
+            "available": true
+          },
+          {
+            "item_id": "karahi-chicken",
+            "name": "Chicken Karahi",
+            "price": 1200.0,
+            "currency": "PKR",
+            "descriptors": [
+              "spicy"
+            ],
+            "available": true
+          },
+          {
+            "item_id": "karahi-mutton",
+            "name": "Mutton Karahi",
+            "price": 1800.0,
+            "currency": "PKR",
+            "descriptors": [
+              "spicy"
+            ],
+            "available": true
+          },
+          {
+            "item_id": "biryani-chicken",
+            "name": "Chicken Biryani",
+            "price": 550.0,
+            "currency": "PKR",
+            "descriptors": [],
+            "available": true
+          },
+          {
+            "item_id": "biryani-beef",
+            "name": "Beef Biryani",
+            "price": 650.0,
+            "currency": "PKR",
+            "descriptors": [],
+            "available": true
+          },
+          {
+            "item_id": "drink-lassi-small",
+            "name": "Sweet Lassi",
+            "price": 150.0,
+            "currency": "PKR",
+            "descriptors": [
+              "vegetarian"
+            ],
+            "available": true
+          },
+          {
+            "item_id": "platter-family",
+            "name": "Family Mixed Platter",
+            "price": 1500.0,
+            "currency": "PKR",
+            "descriptors": [],
+            "available": true
+          },
+          {
+            "item_id": "drink-chai",
+            "name": "Karak Chai",
+            "price": 120.0,
+            "currency": "PKR",
+            "descriptors": [
+              "vegetarian"
+            ],
+            "available": true
+          },
+          {
+            "item_id": "drink-cola",
+            "name": "Cola Can",
+            "price": 100.0,
+            "currency": "PKR",
+            "descriptors": [
+              "vegetarian"
+            ],
+            "available": true
+          },
+          {
+            "item_id": "drink-mango",
+            "name": "Mango Juice",
+            "price": 200.0,
+            "currency": "PKR",
+            "descriptors": [
+              "vegetarian"
+            ],
+            "available": true
+          },
+          {
+            "item_id": "dessert-gulab",
+            "name": "Gulab Jamun (2pc)",
+            "price": 250.0,
+            "currency": "PKR",
+            "descriptors": [
+              "vegetarian"
+            ],
+            "available": true
+          },
+          {
+            "item_id": "dessert-kheer",
+            "name": "Rice Kheer",
+            "price": 280.0,
+            "currency": "PKR",
+            "descriptors": [
+              "vegetarian"
+            ],
+            "available": true
+          },
+          {
+            "item_id": "dessert-brownie",
+            "name": "Chocolate Brownie",
+            "price": 350.0,
+            "currency": "PKR",
+            "descriptors": [
+              "vegetarian"
+            ],
+            "available": true
+          },
+          {
+            "item_id": "dessert-mystery",
+            "name": "Chef Special Sweet",
+            "price": 300.0,
+            "currency": "PKR",
+            "descriptors": [
+              "vegetarian"
+            ],
+            "available": true
+          },
+          {
+            "item_id": "side-fries",
+            "name": "Masala Fries",
+            "price": 220.0,
+            "currency": "PKR",
+            "descriptors": [
+              "vegetarian"
+            ],
+            "available": true
+          }
+        ],
+        "cart": {
+          "lines": [],
+          "currency": "PKR",
+          "subtotal": 0.0,
+          "fees": [],
+          "total": 0.0
+        },
+        "checkout_available": false,
+        "action_pending": false,
+        "language": "en"
+      }
+    },
+    {
+      "request": {
+        "action_id": "phase0-search",
+        "operation": "search_menu",
+        "arguments": {
+          "query": "wrap"
+        },
+        "context_revision": 4
+      },
+      "result": {
+        "action_id": "phase0-search",
+        "status": "success",
+        "verified_state": {
+          "items": [
+            {
+              "item_id": "wrap-chicken",
+              "name": "Chicken Wrap",
+              "price": 600.0,
+              "currency": "PKR",
+              "descriptors": [],
+              "available": true
+            },
+            {
+              "item_id": "wrap-veg",
+              "name": "Veggie Wrap",
+              "price": 500.0,
+              "currency": "PKR",
+              "descriptors": [
+                "vegetarian"
+              ],
+              "available": true
+            },
+            {
+              "item_id": "wrap-hot-chicken",
+              "name": "Hot Chicken Wrap",
+              "price": 850.0,
+              "currency": "PKR",
+              "descriptors": [
+                "spicy"
+              ],
+              "available": true
+            }
+          ]
+        },
+        "error_code": null,
+        "error_message": null
+      },
+      "context": {
+        "schema_version": "1.0",
+        "session_id": "foodease-local-session",
+        "revision": 5,
+        "route": "menu",
+        "focus_item_id": null,
+        "valid_actions": [
+          "navigate",
+          "search_menu",
+          "filter_menu",
+          "select_item",
+          "get_item_details",
+          "get_cart",
+          "cart.add_item",
+          "cart.set_quantity",
+          "cart.remove_item",
+          "checkout.get_summary",
+          "checkout.submit_demo_order",
+          "undo_last_reversible_action",
+          "get_current_context"
+        ],
+        "valid_navigation_targets": [
+          "home",
+          "menu",
+          "back",
+          "cart",
+          "checkout",
+          "biryani",
+          "burgers",
+          "desserts",
+          "drinks",
+          "karahi",
+          "platters",
+          "rolls",
+          "sides",
+          "wraps"
+        ],
+        "filter_tags": [],
+        "search_query": "wrap",
+        "visible_items": [
+          {
+            "item_id": "wrap-chicken",
+            "name": "Chicken Wrap",
+            "price": 600.0,
+            "currency": "PKR",
+            "descriptors": [],
+            "available": true
+          },
+          {
+            "item_id": "wrap-veg",
+            "name": "Veggie Wrap",
+            "price": 500.0,
+            "currency": "PKR",
+            "descriptors": [
+              "vegetarian"
+            ],
+            "available": true
+          },
+          {
+            "item_id": "wrap-hot-chicken",
+            "name": "Hot Chicken Wrap",
+            "price": 850.0,
+            "currency": "PKR",
+            "descriptors": [
+              "spicy"
+            ],
+            "available": true
+          }
+        ],
+        "cart": {
+          "lines": [],
+          "currency": "PKR",
+          "subtotal": 0.0,
+          "fees": [],
+          "total": 0.0
+        },
+        "checkout_available": false,
+        "action_pending": false,
+        "language": "en"
+      }
+    },
+    {
+      "request": {
+        "action_id": "phase0-select",
+        "operation": "select_item",
+        "arguments": {
+          "item_id": "wrap-hot-chicken"
+        },
+        "context_revision": 5
+      },
+      "result": {
+        "action_id": "phase0-select",
+        "status": "success",
+        "verified_state": {
+          "item_id": "wrap-hot-chicken",
+          "name": "Hot Chicken Wrap",
+          "price": 850.0,
+          "currency": "PKR",
+          "descriptors": [
+            "spicy"
+          ],
+          "available": true
+        },
+        "error_code": null,
+        "error_message": null
+      },
+      "context": {
+        "schema_version": "1.0",
+        "session_id": "foodease-local-session",
+        "revision": 6,
+        "route": "item",
+        "focus_item_id": "wrap-hot-chicken",
+        "valid_actions": [
+          "navigate",
+          "search_menu",
+          "filter_menu",
+          "select_item",
+          "get_item_details",
+          "get_cart",
+          "cart.add_item",
+          "cart.set_quantity",
+          "cart.remove_item",
+          "checkout.get_summary",
+          "checkout.submit_demo_order",
+          "undo_last_reversible_action",
+          "get_current_context"
+        ],
+        "valid_navigation_targets": [
+          "home",
+          "menu",
+          "back",
+          "cart",
+          "checkout",
+          "biryani",
+          "burgers",
+          "desserts",
+          "drinks",
+          "karahi",
+          "platters",
+          "rolls",
+          "sides",
+          "wraps"
+        ],
+        "filter_tags": [],
+        "search_query": "wrap",
+        "visible_items": [
+          {
+            "item_id": "wrap-chicken",
+            "name": "Chicken Wrap",
+            "price": 600.0,
+            "currency": "PKR",
+            "descriptors": [],
+            "available": true
+          },
+          {
+            "item_id": "wrap-veg",
+            "name": "Veggie Wrap",
+            "price": 500.0,
+            "currency": "PKR",
+            "descriptors": [
+              "vegetarian"
+            ],
+            "available": true
+          },
+          {
+            "item_id": "wrap-hot-chicken",
+            "name": "Hot Chicken Wrap",
+            "price": 850.0,
+            "currency": "PKR",
+            "descriptors": [
+              "spicy"
+            ],
+            "available": true
+          }
+        ],
+        "cart": {
+          "lines": [],
+          "currency": "PKR",
+          "subtotal": 0.0,
+          "fees": [],
+          "total": 0.0
+        },
+        "checkout_available": false,
+        "action_pending": false,
+        "language": "en"
+      }
+    },
+    {
+      "request": {
+        "action_id": "phase0-details",
+        "operation": "get_item_details",
+        "arguments": {
+          "item_id": "wrap-hot-chicken"
+        },
+        "context_revision": 6
+      },
+      "result": {
+        "action_id": "phase0-details",
+        "status": "success",
+        "verified_state": {
+          "item_id": "wrap-hot-chicken",
+          "name": "Hot Chicken Wrap",
+          "price": 850.0,
+          "currency": "PKR",
+          "descriptors": [
+            "spicy"
+          ],
+          "available": true,
+          "description": "Hot chicken wrap with mayo.",
+          "ingredients": [],
+          "ingredients_available": true
+        },
+        "error_code": null,
+        "error_message": null
+      },
+      "context": {
+        "schema_version": "1.0",
+        "session_id": "foodease-local-session",
+        "revision": 6,
+        "route": "item",
+        "focus_item_id": "wrap-hot-chicken",
+        "valid_actions": [
+          "navigate",
+          "search_menu",
+          "filter_menu",
+          "select_item",
+          "get_item_details",
+          "get_cart",
+          "cart.add_item",
+          "cart.set_quantity",
+          "cart.remove_item",
+          "checkout.get_summary",
+          "checkout.submit_demo_order",
+          "undo_last_reversible_action",
+          "get_current_context"
+        ],
+        "valid_navigation_targets": [
+          "home",
+          "menu",
+          "back",
+          "cart",
+          "checkout",
+          "biryani",
+          "burgers",
+          "desserts",
+          "drinks",
+          "karahi",
+          "platters",
+          "rolls",
+          "sides",
+          "wraps"
+        ],
+        "filter_tags": [],
+        "search_query": "wrap",
+        "visible_items": [
+          {
+            "item_id": "wrap-chicken",
+            "name": "Chicken Wrap",
+            "price": 600.0,
+            "currency": "PKR",
+            "descriptors": [],
+            "available": true
+          },
+          {
+            "item_id": "wrap-veg",
+            "name": "Veggie Wrap",
+            "price": 500.0,
+            "currency": "PKR",
+            "descriptors": [
+              "vegetarian"
+            ],
+            "available": true
+          },
+          {
+            "item_id": "wrap-hot-chicken",
+            "name": "Hot Chicken Wrap",
+            "price": 850.0,
+            "currency": "PKR",
+            "descriptors": [
+              "spicy"
+            ],
+            "available": true
+          }
+        ],
+        "cart": {
+          "lines": [],
+          "currency": "PKR",
+          "subtotal": 0.0,
+          "fees": [],
+          "total": 0.0
+        },
+        "checkout_available": false,
+        "action_pending": false,
+        "language": "en"
+      }
+    },
+    {
+      "request": {
+        "action_id": "phase0-add",
+        "operation": "cart.add_item",
+        "arguments": {
+          "item_id": "wrap-hot-chicken",
+          "quantity": 2
+        },
+        "context_revision": 6
+      },
+      "result": {
+        "action_id": "phase0-add",
+        "status": "success",
+        "verified_state": {
+          "lines": [
+            {
+              "item_id": "wrap-hot-chicken",
+              "name": "Hot Chicken Wrap",
+              "quantity": 2,
+              "unit_price": 850.0,
+              "line_total": 1700.0
+            }
+          ],
+          "currency": "PKR",
+          "subtotal": 1700.0,
+          "fees": [
+            {
+              "code": "service",
+              "label": "Service fee",
+              "amount": 50.0
+            }
+          ],
+          "total": 1750.0
+        },
+        "error_code": null,
+        "error_message": null
+      },
+      "context": {
+        "schema_version": "1.0",
+        "session_id": "foodease-local-session",
+        "revision": 7,
+        "route": "item",
+        "focus_item_id": "wrap-hot-chicken",
+        "valid_actions": [
+          "navigate",
+          "search_menu",
+          "filter_menu",
+          "select_item",
+          "get_item_details",
+          "get_cart",
+          "cart.add_item",
+          "cart.set_quantity",
+          "cart.remove_item",
+          "checkout.get_summary",
+          "checkout.submit_demo_order",
+          "undo_last_reversible_action",
+          "get_current_context"
+        ],
+        "valid_navigation_targets": [
+          "home",
+          "menu",
+          "back",
+          "cart",
+          "checkout",
+          "biryani",
+          "burgers",
+          "desserts",
+          "drinks",
+          "karahi",
+          "platters",
+          "rolls",
+          "sides",
+          "wraps"
+        ],
+        "filter_tags": [],
+        "search_query": "wrap",
+        "visible_items": [
+          {
+            "item_id": "wrap-chicken",
+            "name": "Chicken Wrap",
+            "price": 600.0,
+            "currency": "PKR",
+            "descriptors": [],
+            "available": true
+          },
+          {
+            "item_id": "wrap-veg",
+            "name": "Veggie Wrap",
+            "price": 500.0,
+            "currency": "PKR",
+            "descriptors": [
+              "vegetarian"
+            ],
+            "available": true
+          },
+          {
+            "item_id": "wrap-hot-chicken",
+            "name": "Hot Chicken Wrap",
+            "price": 850.0,
+            "currency": "PKR",
+            "descriptors": [
+              "spicy"
+            ],
+            "available": true
+          }
+        ],
+        "cart": {
+          "lines": [
+            {
+              "item_id": "wrap-hot-chicken",
+              "name": "Hot Chicken Wrap",
+              "quantity": 2,
+              "unit_price": 850.0,
+              "line_total": 1700.0
+            }
+          ],
+          "currency": "PKR",
+          "subtotal": 1700.0,
+          "fees": [
+            {
+              "code": "service",
+              "label": "Service fee",
+              "amount": 50.0
+            }
+          ],
+          "total": 1750.0
+        },
+        "checkout_available": true,
+        "action_pending": false,
+        "language": "en"
+      }
+    },
+    {
+      "request": {
+        "action_id": "phase0-quantity",
+        "operation": "cart.set_quantity",
+        "arguments": {
+          "item_id": "wrap-hot-chicken",
+          "quantity": 1
+        },
+        "context_revision": 7
+      },
+      "result": {
+        "action_id": "phase0-quantity",
+        "status": "success",
+        "verified_state": {
+          "lines": [
+            {
+              "item_id": "wrap-hot-chicken",
+              "name": "Hot Chicken Wrap",
+              "quantity": 1,
+              "unit_price": 850.0,
+              "line_total": 850.0
+            }
+          ],
+          "currency": "PKR",
+          "subtotal": 850.0,
+          "fees": [
+            {
+              "code": "service",
+              "label": "Service fee",
+              "amount": 50.0
+            }
+          ],
+          "total": 900.0
+        },
+        "error_code": null,
+        "error_message": null
+      },
+      "context": {
+        "schema_version": "1.0",
+        "session_id": "foodease-local-session",
+        "revision": 8,
+        "route": "item",
+        "focus_item_id": "wrap-hot-chicken",
+        "valid_actions": [
+          "navigate",
+          "search_menu",
+          "filter_menu",
+          "select_item",
+          "get_item_details",
+          "get_cart",
+          "cart.add_item",
+          "cart.set_quantity",
+          "cart.remove_item",
+          "checkout.get_summary",
+          "checkout.submit_demo_order",
+          "undo_last_reversible_action",
+          "get_current_context"
+        ],
+        "valid_navigation_targets": [
+          "home",
+          "menu",
+          "back",
+          "cart",
+          "checkout",
+          "biryani",
+          "burgers",
+          "desserts",
+          "drinks",
+          "karahi",
+          "platters",
+          "rolls",
+          "sides",
+          "wraps"
+        ],
+        "filter_tags": [],
+        "search_query": "wrap",
+        "visible_items": [
+          {
+            "item_id": "wrap-chicken",
+            "name": "Chicken Wrap",
+            "price": 600.0,
+            "currency": "PKR",
+            "descriptors": [],
+            "available": true
+          },
+          {
+            "item_id": "wrap-veg",
+            "name": "Veggie Wrap",
+            "price": 500.0,
+            "currency": "PKR",
+            "descriptors": [
+              "vegetarian"
+            ],
+            "available": true
+          },
+          {
+            "item_id": "wrap-hot-chicken",
+            "name": "Hot Chicken Wrap",
+            "price": 850.0,
+            "currency": "PKR",
+            "descriptors": [
+              "spicy"
+            ],
+            "available": true
+          }
+        ],
+        "cart": {
+          "lines": [
+            {
+              "item_id": "wrap-hot-chicken",
+              "name": "Hot Chicken Wrap",
+              "quantity": 1,
+              "unit_price": 850.0,
+              "line_total": 850.0
+            }
+          ],
+          "currency": "PKR",
+          "subtotal": 850.0,
+          "fees": [
+            {
+              "code": "service",
+              "label": "Service fee",
+              "amount": 50.0
+            }
+          ],
+          "total": 900.0
+        },
+        "checkout_available": true,
+        "action_pending": false,
+        "language": "en"
+      }
+    },
+    {
+      "request": {
+        "action_id": "phase0-cart",
+        "operation": "get_cart",
+        "arguments": {},
+        "context_revision": 8
+      },
+      "result": {
+        "action_id": "phase0-cart",
+        "status": "success",
+        "verified_state": {
+          "lines": [
+            {
+              "item_id": "wrap-hot-chicken",
+              "name": "Hot Chicken Wrap",
+              "quantity": 1,
+              "unit_price": 850.0,
+              "line_total": 850.0
+            }
+          ],
+          "currency": "PKR",
+          "subtotal": 850.0,
+          "fees": [
+            {
+              "code": "service",
+              "label": "Service fee",
+              "amount": 50.0
+            }
+          ],
+          "total": 900.0
+        },
+        "error_code": null,
+        "error_message": null
+      },
+      "context": {
+        "schema_version": "1.0",
+        "session_id": "foodease-local-session",
+        "revision": 8,
+        "route": "item",
+        "focus_item_id": "wrap-hot-chicken",
+        "valid_actions": [
+          "navigate",
+          "search_menu",
+          "filter_menu",
+          "select_item",
+          "get_item_details",
+          "get_cart",
+          "cart.add_item",
+          "cart.set_quantity",
+          "cart.remove_item",
+          "checkout.get_summary",
+          "checkout.submit_demo_order",
+          "undo_last_reversible_action",
+          "get_current_context"
+        ],
+        "valid_navigation_targets": [
+          "home",
+          "menu",
+          "back",
+          "cart",
+          "checkout",
+          "biryani",
+          "burgers",
+          "desserts",
+          "drinks",
+          "karahi",
+          "platters",
+          "rolls",
+          "sides",
+          "wraps"
+        ],
+        "filter_tags": [],
+        "search_query": "wrap",
+        "visible_items": [
+          {
+            "item_id": "wrap-chicken",
+            "name": "Chicken Wrap",
+            "price": 600.0,
+            "currency": "PKR",
+            "descriptors": [],
+            "available": true
+          },
+          {
+            "item_id": "wrap-veg",
+            "name": "Veggie Wrap",
+            "price": 500.0,
+            "currency": "PKR",
+            "descriptors": [
+              "vegetarian"
+            ],
+            "available": true
+          },
+          {
+            "item_id": "wrap-hot-chicken",
+            "name": "Hot Chicken Wrap",
+            "price": 850.0,
+            "currency": "PKR",
+            "descriptors": [
+              "spicy"
+            ],
+            "available": true
+          }
+        ],
+        "cart": {
+          "lines": [
+            {
+              "item_id": "wrap-hot-chicken",
+              "name": "Hot Chicken Wrap",
+              "quantity": 1,
+              "unit_price": 850.0,
+              "line_total": 850.0
+            }
+          ],
+          "currency": "PKR",
+          "subtotal": 850.0,
+          "fees": [
+            {
+              "code": "service",
+              "label": "Service fee",
+              "amount": 50.0
+            }
+          ],
+          "total": 900.0
+        },
+        "checkout_available": true,
+        "action_pending": false,
+        "language": "en"
+      }
+    },
+    {
+      "request": {
+        "action_id": "phase0-summary",
+        "operation": "checkout.get_summary",
+        "arguments": {},
+        "context_revision": 8
+      },
+      "result": {
+        "action_id": "phase0-summary",
+        "status": "success",
+        "verified_state": {
+          "lines": [
+            {
+              "item_id": "wrap-hot-chicken",
+              "name": "Hot Chicken Wrap",
+              "quantity": 1,
+              "unit_price": 850.0,
+              "line_total": 850.0
+            }
+          ],
+          "currency": "PKR",
+          "subtotal": 850.0,
+          "fees": [
+            {
+              "code": "service",
+              "label": "Service fee",
+              "amount": 50.0
+            }
+          ],
+          "total": 900.0,
+          "summary_revision": 8
+        },
+        "error_code": null,
+        "error_message": null,
+        "confirmation_token": "confirm_8_1"
+      },
+      "context": {
+        "schema_version": "1.0",
+        "session_id": "foodease-local-session",
+        "revision": 9,
+        "route": "checkout",
+        "focus_item_id": "wrap-hot-chicken",
+        "valid_actions": [
+          "navigate",
+          "search_menu",
+          "filter_menu",
+          "select_item",
+          "get_item_details",
+          "get_cart",
+          "cart.add_item",
+          "cart.set_quantity",
+          "cart.remove_item",
+          "checkout.get_summary",
+          "checkout.submit_demo_order",
+          "undo_last_reversible_action",
+          "get_current_context"
+        ],
+        "valid_navigation_targets": [
+          "home",
+          "menu",
+          "back",
+          "cart",
+          "checkout",
+          "biryani",
+          "burgers",
+          "desserts",
+          "drinks",
+          "karahi",
+          "platters",
+          "rolls",
+          "sides",
+          "wraps"
+        ],
+        "filter_tags": [],
+        "search_query": "wrap",
+        "visible_items": [
+          {
+            "item_id": "wrap-chicken",
+            "name": "Chicken Wrap",
+            "price": 600.0,
+            "currency": "PKR",
+            "descriptors": [],
+            "available": true
+          },
+          {
+            "item_id": "wrap-veg",
+            "name": "Veggie Wrap",
+            "price": 500.0,
+            "currency": "PKR",
+            "descriptors": [
+              "vegetarian"
+            ],
+            "available": true
+          },
+          {
+            "item_id": "wrap-hot-chicken",
+            "name": "Hot Chicken Wrap",
+            "price": 850.0,
+            "currency": "PKR",
+            "descriptors": [
+              "spicy"
+            ],
+            "available": true
+          }
+        ],
+        "cart": {
+          "lines": [
+            {
+              "item_id": "wrap-hot-chicken",
+              "name": "Hot Chicken Wrap",
+              "quantity": 1,
+              "unit_price": 850.0,
+              "line_total": 850.0
+            }
+          ],
+          "currency": "PKR",
+          "subtotal": 850.0,
+          "fees": [
+            {
+              "code": "service",
+              "label": "Service fee",
+              "amount": 50.0
+            }
+          ],
+          "total": 900.0
+        },
+        "checkout_available": true,
+        "action_pending": false,
+        "language": "en"
+      }
+    },
+    {
+      "request": {
+        "action_id": "phase0-submit",
+        "operation": "checkout.submit_demo_order",
+        "arguments": {
+          "confirmed": true,
+          "confirmation_token": "confirm_8_1"
+        },
+        "context_revision": 9
+      },
+      "result": {
+        "action_id": "phase0-submit",
+        "status": "success",
+        "verified_state": {
+          "demo_order_id": "DEMO-0001",
+          "demo": true,
+          "order": {
+            "lines": [
+              {
+                "item_id": "wrap-hot-chicken",
+                "name": "Hot Chicken Wrap",
+                "quantity": 1,
+                "unit_price": 850.0,
+                "line_total": 850.0
+              }
+            ],
+            "currency": "PKR",
+            "subtotal": 850.0,
+            "fees": [
+              {
+                "code": "service",
+                "label": "Service fee",
+                "amount": 50.0
+              }
+            ],
+            "total": 900.0
+          }
+        },
+        "error_code": null,
+        "error_message": null
+      },
+      "context": {
+        "schema_version": "1.0",
+        "session_id": "foodease-local-session",
+        "revision": 10,
+        "route": "confirmation",
+        "focus_item_id": "wrap-hot-chicken",
+        "valid_actions": [
+          "navigate",
+          "search_menu",
+          "filter_menu",
+          "select_item",
+          "get_item_details",
+          "get_cart",
+          "cart.add_item",
+          "cart.set_quantity",
+          "cart.remove_item",
+          "checkout.get_summary",
+          "checkout.submit_demo_order",
+          "undo_last_reversible_action",
+          "get_current_context"
+        ],
+        "valid_navigation_targets": [
+          "home",
+          "menu",
+          "back",
+          "cart",
+          "checkout",
+          "biryani",
+          "burgers",
+          "desserts",
+          "drinks",
+          "karahi",
+          "platters",
+          "rolls",
+          "sides",
+          "wraps"
+        ],
+        "filter_tags": [],
+        "search_query": "wrap",
+        "visible_items": [
+          {
+            "item_id": "wrap-chicken",
+            "name": "Chicken Wrap",
+            "price": 600.0,
+            "currency": "PKR",
+            "descriptors": [],
+            "available": true
+          },
+          {
+            "item_id": "wrap-veg",
+            "name": "Veggie Wrap",
+            "price": 500.0,
+            "currency": "PKR",
+            "descriptors": [
+              "vegetarian"
+            ],
+            "available": true
+          },
+          {
+            "item_id": "wrap-hot-chicken",
+            "name": "Hot Chicken Wrap",
+            "price": 850.0,
+            "currency": "PKR",
+            "descriptors": [
+              "spicy"
+            ],
+            "available": true
+          }
+        ],
+        "cart": {
+          "lines": [],
+          "currency": "PKR",
+          "subtotal": 0.0,
+          "fees": [],
+          "total": 0.0
+        },
+        "checkout_available": false,
+        "action_pending": false,
+        "language": "en"
+      }
+    },
+    {
+      "request": {
+        "action_id": "phase0-submit",
+        "operation": "checkout.submit_demo_order",
+        "arguments": {
+          "confirmed": true,
+          "confirmation_token": "confirm_8_1"
+        },
+        "context_revision": 10
+      },
+      "result": {
+        "action_id": "phase0-submit",
+        "status": "success",
+        "verified_state": {
+          "demo_order_id": "DEMO-0001",
+          "demo": true,
+          "order": {
+            "lines": [
+              {
+                "item_id": "wrap-hot-chicken",
+                "name": "Hot Chicken Wrap",
+                "quantity": 1,
+                "unit_price": 850.0,
+                "line_total": 850.0
+              }
+            ],
+            "currency": "PKR",
+            "subtotal": 850.0,
+            "fees": [
+              {
+                "code": "service",
+                "label": "Service fee",
+                "amount": 50.0
+              }
+            ],
+            "total": 900.0
+          }
+        },
+        "error_code": null,
+        "error_message": null
+      },
+      "context": {
+        "schema_version": "1.0",
+        "session_id": "foodease-local-session",
+        "revision": 10,
+        "route": "confirmation",
+        "focus_item_id": "wrap-hot-chicken",
+        "valid_actions": [
+          "navigate",
+          "search_menu",
+          "filter_menu",
+          "select_item",
+          "get_item_details",
+          "get_cart",
+          "cart.add_item",
+          "cart.set_quantity",
+          "cart.remove_item",
+          "checkout.get_summary",
+          "checkout.submit_demo_order",
+          "undo_last_reversible_action",
+          "get_current_context"
+        ],
+        "valid_navigation_targets": [
+          "home",
+          "menu",
+          "back",
+          "cart",
+          "checkout",
+          "biryani",
+          "burgers",
+          "desserts",
+          "drinks",
+          "karahi",
+          "platters",
+          "rolls",
+          "sides",
+          "wraps"
+        ],
+        "filter_tags": [],
+        "search_query": "wrap",
+        "visible_items": [
+          {
+            "item_id": "wrap-chicken",
+            "name": "Chicken Wrap",
+            "price": 600.0,
+            "currency": "PKR",
+            "descriptors": [],
+            "available": true
+          },
+          {
+            "item_id": "wrap-veg",
+            "name": "Veggie Wrap",
+            "price": 500.0,
+            "currency": "PKR",
+            "descriptors": [
+              "vegetarian"
+            ],
+            "available": true
+          },
+          {
+            "item_id": "wrap-hot-chicken",
+            "name": "Hot Chicken Wrap",
+            "price": 850.0,
+            "currency": "PKR",
+            "descriptors": [
+              "spicy"
+            ],
+            "available": true
+          }
+        ],
+        "cart": {
+          "lines": [],
+          "currency": "PKR",
+          "subtotal": 0.0,
+          "fees": [],
+          "total": 0.0
+        },
+        "checkout_available": false,
+        "action_pending": false,
+        "language": "en"
+      }
+    }
+  ]
+}

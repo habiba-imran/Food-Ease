@@ -42,6 +42,8 @@ class Settings:
     rate_limit_window_seconds: int
     livekit_agent_dispatch: bool
     foodease_agent_name: str
+    website_base_url: str = "http://127.0.0.1:8080"
+    enable_legacy_api: bool = False
 
 
 def _require(name: str) -> str:
@@ -72,4 +74,6 @@ def load_settings() -> Settings:
         foodease_agent_name=(
             os.environ.get("FOODEASE_AGENT_NAME", "foodease").strip() or "foodease"
         ),
+        website_base_url=os.environ.get("FOODEASE_WEBSITE_URL", "http://127.0.0.1:8080"),
+        enable_legacy_api=_parse_bool("FOODEASE_LEGACY_DEV_API", False),
     )

@@ -1,0 +1,44 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "tags": {
+      "items": {
+        "maxLength": 64,
+        "minLength": 1,
+        "type": "string"
+      },
+      "maxItems": 16,
+      "title": "Tags",
+      "type": "array"
+    },
+    "category": {
+      "anyOf": [
+        {
+          "pattern": "^[a-z][a-z0-9_\\-]{1,63}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Category"
+    },
+    "max_price_pkr": {
+      "anyOf": [
+        {
+          "minimum": 0,
+          "multipleOf": 0.01,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Max Price Pkr"
+    }
+  },
+  "title": "FilterArgs",
+  "type": "object"
+}

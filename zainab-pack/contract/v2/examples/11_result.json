@@ -1,0 +1,99 @@
+{
+  "schema_version": "2.0",
+  "session_id": "contract-demo",
+  "event_id": "result-contract-11",
+  "turn_id": "contract-turn",
+  "timestamp": "2026-10-17T12:00:00Z",
+  "context_revision": 9,
+  "type": "app.action_result",
+  "reply_to": "request-contract-11",
+  "payload": {
+    "action_id": "contract-11",
+    "status": "success",
+    "verified_state": {
+      "snapshot": {
+        "schema_version": "2.0",
+        "session_id": "contract-demo",
+        "revision": 9,
+        "route": "item",
+        "focus_item_id": "wrap-veg",
+        "valid_actions": [
+          "navigate",
+          "search_menu",
+          "filter_menu",
+          "select_item",
+          "get_item_details",
+          "get_cart",
+          "cart.add_item",
+          "cart.set_quantity",
+          "cart.remove_item",
+          "checkout.get_summary",
+          "checkout.submit_demo_order",
+          "undo_last_reversible_action",
+          "get_current_context"
+        ],
+        "valid_navigation_targets": [
+          "home",
+          "menu",
+          "back",
+          "cart",
+          "checkout",
+          "biryani",
+          "burgers",
+          "desserts",
+          "drinks",
+          "karahi",
+          "platters",
+          "rolls",
+          "sides",
+          "wraps"
+        ],
+        "filter_tags": [
+          "vegetarian"
+        ],
+        "category": null,
+        "max_price_pkr": 800.0,
+        "search_query": "wrap",
+        "visible_items": [
+          {
+            "item_id": "wrap-veg",
+            "name": "Veggie Wrap",
+            "price": 500.0,
+            "currency": "PKR",
+            "descriptors": [
+              "vegetarian"
+            ],
+            "available": true
+          }
+        ],
+        "cart": {
+          "lines": [
+            {
+              "item_id": "wrap-hot-chicken",
+              "name": "Hot Chicken Wrap",
+              "quantity": 2,
+              "unit_price": 850.0,
+              "line_total": 1700.0
+            }
+          ],
+          "currency": "PKR",
+          "subtotal": 1700.0,
+          "fees": [
+            {
+              "code": "service",
+              "label": "Service fee",
+              "amount": 50.0
+            }
+          ],
+          "total": 1750.0
+        },
+        "checkout_available": true,
+        "action_pending": false,
+        "language": "en"
+      }
+    },
+    "error_code": null,
+    "error_message": null,
+    "operation": "get_current_context"
+  }
+}

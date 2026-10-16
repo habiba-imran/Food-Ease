@@ -16,7 +16,9 @@ logger = logging.getLogger(__name__)
 
 def app_transport_mode() -> str:
     raw = (os.environ.get("FOODEASE_APP_TRANSPORT") or "mock").strip().lower()
-    return raw if raw in {"mock", "livekit"} else "mock"
+    if raw not in {"mock", "livekit", "website"}:
+        raise ValueError("FOODEASE_APP_TRANSPORT must be mock, livekit or website")
+    return raw
 
 
 def create_dev_adapter(*, rtc_room: Any | None = None) -> AppAdapter:
@@ -26,6 +28,8 @@ def create_dev_adapter(*, rtc_room: Any | None = None) -> AppAdapter:
     - ``livekit``: LiveKitRpcAdapter over the job room (MockApp / Zainab seat).
     """
     mode = app_transport_mode()
+    if mode == "website":
+        raise RuntimeError("website transport requires the bound integrated startup/runtime")
     if mode == "livekit":
         if rtc_room is None:
             raise RuntimeError(
