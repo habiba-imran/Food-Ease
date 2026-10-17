@@ -1,0 +1,326 @@
+{
+  "generated_at_utc": "2026-10-17T17:40:28.537465+00:00",
+  "checks": [
+    {
+      "name": "installed-sdk",
+      "command": [
+        "C:\\HCI-PROJECT\\voice-agent\\.venv\\Scripts\\python.exe",
+        "../orchestration/tools/phase0_baseline.py",
+        "--inventory",
+        "--livekit-api"
+      ],
+      "cwd": "voice-agent",
+      "exit_code": 0,
+      "matched_inherited_baseline": false
+    },
+    {
+      "name": "worker-runtime-tests",
+      "command": [
+        "C:\\HCI-PROJECT\\voice-agent\\.venv\\Scripts\\python.exe",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_integrated_runtime.py",
+        "tests/test_integrated_rpc_worker.py",
+        "tests/test_integrated_startup.py",
+        "tests/test_livekit_room.py",
+        "tests/test_integrated_output.py",
+        "tests/test_integrated_opening.py",
+        "tests/test_integrated_conversation.py",
+        "tests/test_integrated_campaign.py",
+        "tests/test_integrated_recovery.py"
+      ],
+      "cwd": "voice-agent",
+      "exit_code": 0,
+      "matched_inherited_baseline": false
+    },
+    {
+      "name": "worker-runtime-lint",
+      "command": [
+        "C:\\HCI-PROJECT\\voice-agent\\.venv\\Scripts\\python.exe",
+        "-m",
+        "ruff",
+        "check",
+        "src/foodease_agent/integrated",
+        "src/foodease_agent/adapters/integrated.py",
+        "src/foodease_agent/adapters/integrated_startup.py",
+        "src/foodease_agent/worker.py",
+        "tests/test_integrated_runtime.py",
+        "tests/test_integrated_rpc_worker.py",
+        "tests/test_integrated_output.py",
+        "tests/test_integrated_opening.py",
+        "tests/test_integrated_conversation.py",
+        "tests/test_integrated_campaign.py",
+        "tests/test_integrated_recovery.py",
+        "src/foodease_agent/speech_text/verbalizer.py",
+        "tests/test_phase6_speech.py"
+      ],
+      "cwd": "voice-agent",
+      "exit_code": 0,
+      "matched_inherited_baseline": false
+    },
+    {
+      "name": "worker-runtime-types",
+      "command": [
+        "C:\\HCI-PROJECT\\voice-agent\\.venv\\Scripts\\python.exe",
+        "-m",
+        "pyright",
+        "src/foodease_agent/integrated",
+        "src/foodease_agent/adapters/integrated.py",
+        "src/foodease_agent/adapters/integrated_startup.py",
+        "src/foodease_agent/worker.py",
+        "tests/test_integrated_runtime.py",
+        "tests/test_integrated_rpc_worker.py",
+        "tests/test_integrated_output.py",
+        "tests/test_integrated_opening.py",
+        "tests/test_integrated_conversation.py",
+        "tests/test_integrated_campaign.py",
+        "tests/test_integrated_recovery.py",
+        "src/foodease_agent/speech_text/verbalizer.py",
+        "tests/test_phase6_speech.py"
+      ],
+      "cwd": "voice-agent",
+      "exit_code": 0,
+      "matched_inherited_baseline": false
+    },
+    {
+      "name": "frozen-contract",
+      "command": [
+        "C:\\HCI-PROJECT\\voice-agent\\.venv\\Scripts\\python.exe",
+        "tools/freeze_contract_v2.py",
+        "--check"
+      ],
+      "cwd": "voice-agent",
+      "exit_code": 0,
+      "matched_inherited_baseline": false
+    },
+    {
+      "name": "prompt-safety-dialogue",
+      "command": [
+        "C:\\HCI-PROJECT\\voice-agent\\.venv\\Scripts\\python.exe",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_phase4_engine.py",
+        "tests/test_phase4_acceptance.py",
+        "tests/test_phase6_dialogue.py",
+        "tests/test_phase8.py",
+        "tests/test_phase6_speech.py"
+      ],
+      "cwd": "voice-agent",
+      "exit_code": 0,
+      "matched_inherited_baseline": false
+    },
+    {
+      "name": "campaign-prepare",
+      "command": [
+        "C:\\HCI-PROJECT\\voice-agent\\.venv\\Scripts\\python.exe",
+        "../orchestration/tools/phase7_campaign.py",
+        "--output",
+        "C:\\HCI-PROJECT\\orchestration\\evidence\\final\\phase-08\\campaign-prepared"
+      ],
+      "cwd": "voice-agent",
+      "exit_code": 2,
+      "matched_inherited_baseline": false
+    },
+    {
+      "name": "campaign-types",
+      "command": [
+        "C:\\HCI-PROJECT\\voice-agent\\.venv\\Scripts\\python.exe",
+        "-m",
+        "pyright",
+        "../orchestration/tools/phase7_campaign.py",
+        "../orchestration/tools/phase7_cases.py"
+      ],
+      "cwd": "voice-agent",
+      "exit_code": 0,
+      "matched_inherited_baseline": false
+    },
+    {
+      "name": "website-tests",
+      "command": [
+        "C:\\HCI-PROJECT\\website\\.venv\\Scripts\\python.exe",
+        "-m",
+        "pytest",
+        "-q"
+      ],
+      "cwd": "website",
+      "exit_code": 0,
+      "matched_inherited_baseline": false
+    },
+    {
+      "name": "website-lint",
+      "command": [
+        "C:\\HCI-PROJECT\\website\\.venv\\Scripts\\python.exe",
+        "-m",
+        "ruff",
+        "check",
+        "src",
+        "tests"
+      ],
+      "cwd": "website",
+      "exit_code": 0,
+      "matched_inherited_baseline": false
+    },
+    {
+      "name": "orchestration-tests",
+      "command": [
+        "C:\\HCI-PROJECT\\orchestration\\.venv\\Scripts\\python.exe",
+        "-m",
+        "pytest",
+        "-q"
+      ],
+      "cwd": "orchestration",
+      "exit_code": 0,
+      "matched_inherited_baseline": false
+    },
+    {
+      "name": "orchestration-lint",
+      "command": [
+        "C:\\HCI-PROJECT\\orchestration\\.venv\\Scripts\\python.exe",
+        "-m",
+        "ruff",
+        "check",
+        "src",
+        "tests"
+      ],
+      "cwd": "orchestration",
+      "exit_code": 0,
+      "matched_inherited_baseline": false
+    },
+    {
+      "name": "orchestration-types",
+      "command": [
+        "C:\\HCI-PROJECT\\orchestration\\.venv\\Scripts\\python.exe",
+        "-m",
+        "pyright"
+      ],
+      "cwd": "orchestration",
+      "exit_code": 0,
+      "matched_inherited_baseline": false
+    },
+    {
+      "name": "website-shared-types",
+      "command": [
+        "C:\\HCI-PROJECT\\voice-agent\\.venv\\Scripts\\python.exe",
+        "-m",
+        "pyright",
+        "--project",
+        "../website"
+      ],
+      "cwd": "voice-agent",
+      "exit_code": 0,
+      "matched_inherited_baseline": false
+    },
+    {
+      "name": "agent-full-tests",
+      "command": [
+        "C:\\HCI-PROJECT\\voice-agent\\.venv\\Scripts\\python.exe",
+        "-m",
+        "pytest",
+        "-q"
+      ],
+      "cwd": "voice-agent",
+      "exit_code": 1,
+      "matched_inherited_baseline": true
+    },
+    {
+      "name": "agent-full-lint",
+      "command": [
+        "C:\\HCI-PROJECT\\voice-agent\\.venv\\Scripts\\python.exe",
+        "-m",
+        "ruff",
+        "check",
+        "."
+      ],
+      "cwd": "voice-agent",
+      "exit_code": 1,
+      "matched_inherited_baseline": true
+    },
+    {
+      "name": "agent-full-types",
+      "command": [
+        "C:\\HCI-PROJECT\\voice-agent\\.venv\\Scripts\\python.exe",
+        "-m",
+        "pyright"
+      ],
+      "cwd": "voice-agent",
+      "exit_code": 1,
+      "matched_inherited_baseline": true
+    },
+    {
+      "name": "javascript-tests",
+      "command": [
+        "node",
+        "--test",
+        "tests/*.test.cjs",
+        "tests/*.test.mjs"
+      ],
+      "cwd": "website",
+      "exit_code": 0,
+      "matched_inherited_baseline": false
+    },
+    {
+      "name": "browser-bundle-build",
+      "command": [
+        "node",
+        "tools/build-browser.mjs"
+      ],
+      "cwd": "website",
+      "exit_code": 0,
+      "matched_inherited_baseline": false
+    },
+    {
+      "name": "browser-integration",
+      "command": [
+        "node",
+        "tools/browser-test.mjs"
+      ],
+      "cwd": "website",
+      "exit_code": 1,
+      "matched_inherited_baseline": false
+    },
+    {
+      "name": "browser-fixture-types",
+      "command": [
+        "C:\\HCI-PROJECT\\voice-agent\\.venv\\Scripts\\python.exe",
+        "-m",
+        "pyright",
+        "../website/tests/browser_server.py"
+      ],
+      "cwd": "voice-agent",
+      "exit_code": 0,
+      "matched_inherited_baseline": false
+    },
+    {
+      "name": "verifier-lint",
+      "command": [
+        "C:\\HCI-PROJECT\\orchestration\\.venv\\Scripts\\python.exe",
+        "-m",
+        "ruff",
+        "check",
+        "tools/phase8_verify.py",
+        "tools/phase7_campaign.py",
+        "tools/phase7_cases.py"
+      ],
+      "cwd": "orchestration",
+      "exit_code": 0,
+      "matched_inherited_baseline": false
+    }
+  ],
+  "unexpected_failures": [
+    "campaign-prepare",
+    "browser-integration"
+  ],
+  "v1_files_checked": 92,
+  "v1_drift": [],
+  "restored_legacy_test_side_effects": [],
+  "dotenv_disabled": true,
+  "providers": "local fakes only",
+  "website_authority": "real SessionStore and domain",
+  "livekit_cloud": false,
+  "physical_microphone_or_provider_audibility": false,
+  "browser_media_lifecycle_passed": false,
+  "browser": "real Chromium; native synthetic capture and generated audio; fake RTC/lifecycle and local fake streaming LLM",
+  "browser_bundle_sha256": "3e25d8a45c35836a85882fe742f93afc7db94c71959663a79dc4323998eadece"
+}

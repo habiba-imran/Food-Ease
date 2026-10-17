@@ -8,6 +8,9 @@ Failed/uncertain teardown remains observable and blocks a replacement worker.
 from __future__ import annotations
 
 import asyncio
+import json
+import logging
+import os
 import secrets
 import time
 from collections.abc import Callable
@@ -20,6 +23,26 @@ from foodease_contract.startup import StartupBinding
 
 from foodease_session.config import Settings
 from foodease_session.mint import mint_token
+
+logger = logging.getLogger("foodease.session.lifecycle")
+
+
+def trace(record: Generation, stage: str, dispatch_id: str | None = None) -> None:
+    logger.info(
+        "foodease_lifecycle %s",
+        json.dumps(
+            {
+                "source": os.environ.get("FOODEASE_EVIDENCE_KIND", "runtime_unattested"),
+                "session_id": record.startup.binding.session_id,
+                "request_id": record.startup.request_id,
+                "generation": record.startup.generation,
+                "stage": stage,
+                "dispatch_id": dispatch_id,
+            },
+            ensure_ascii=True,
+            separators=(",", ":"),
+        ),
+    )
 
 
 class LifecycleError(Exception):
@@ -138,6 +161,7 @@ class AssistanceService:
         )
         record = Generation(owner, startup, f"foodease-v2-{secrets.token_hex(12)}", now, now)
         self.records[sid, request_id] = record
+        trace(record, "prepared")
         return record
 
     def _owned(
@@ -292,6 +316,7 @@ class AssistanceService:
                     self.remote_timeout,
                 )
                 record.dispatch_ids.add(did)
+                trace(record, "dispatched", did)
                 record.create_known = True
                 record.state = "waiting_worker"
             except Exception:
@@ -324,6 +349,7 @@ class AssistanceService:
         await self._seats(record, agent=True)
         if not record.cancelled:
             record.state, record.touched = "active", self.clock()
+            trace(record, "active")
         return self._view(record)
 
     async def _cleanup_locked(self, record: Generation) -> None:
@@ -361,6 +387,7 @@ class AssistanceService:
             record.room_deleted = False
         if record.dispatch_deleted and record.room_deleted:
             record.state = "ended"
+        trace(record, record.state)
 
     async def _stop(self, record: Generation, reason: str) -> None:
         record.cancelled = True

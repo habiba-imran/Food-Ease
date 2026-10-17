@@ -1,0 +1,7 @@
+{
+  "javascript_exit_code": 0,
+  "browser_exit_code": 0,
+  "rtc_and_providers": "local fakes",
+  "native_capture": "Chromium synthetic device",
+  "physical_device_or_provider_audio": false
+}

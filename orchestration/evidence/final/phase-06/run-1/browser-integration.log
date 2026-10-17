@@ -1,0 +1,174 @@
+
+Running 19 tests using 1 worker
+
+(node:15988) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok  1 tests\browser\integration.spec.mjs:30:1 › actual browser + website + worker: typed order, exact summary and demo receipt (11.1s)
+  ok  2 tests\browser\integration.spec.mjs:56:1 › manual filtering exactly matches authoritative IDs; search clear and availability (2.5s)
+  ok  3 tests\browser\integration.spec.mjs:86:1 › injected bound agent actions visibly render menu, item, cart and checkout (2.7s)
+  ok  4 tests\browser\integration.spec.mjs:102:1 › reply lost after a real commit reconciles once; rejected actions never announce success (2.6s)
+  ok  5 tests\browser\integration.spec.mjs:121:1 › typed assistance does not attach remote audio (2.3s)
+Cannot enable audio input when it's not set
+Cannot enable audio output when it's not set
+Cannot enable audio input when it's not set
+Cannot enable audio output when it's not set
+  ok  6 tests\browser\integration.spec.mjs:136:1 › voice audio attaches once and end stops fake media immediately; native captions are ignored (2.4s)
+  ok  7 tests\browser\integration.spec.mjs:165:1 › foreign RPC callers cannot forward actions (2.4s)
+  ok  8 tests\browser\integration.spec.mjs:175:1 › stale actions cannot change a newer view and reconnect republishes current context (2.7s)
+Exception in callback _ProactorBasePipeTransport._call_connection_lost(None)
+handle: <Handle _ProactorBasePipeTransport._call_connection_lost(None)>
+Traceback (most recent call last):
+  File "C:\Users\habiba\AppData\Roaming\uv\python\cpython-3.12-windows-x86_64-none\Lib\asyncio\events.py", line 88, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\habiba\AppData\Roaming\uv\python\cpython-3.12-windows-x86_64-none\Lib\asyncio\proactor_events.py", line 165, in _call_connection_lost
+    self._sock.shutdown(socket.SHUT_RDWR)
+ConnectionResetError: [WinError 10054] An existing connection was forcibly closed by the remote host
+Exception in callback _ProactorBasePipeTransport._call_connection_lost(None)
+handle: <Handle _ProactorBasePipeTransport._call_connection_lost(None)>
+Traceback (most recent call last):
+  File "C:\Users\habiba\AppData\Roaming\uv\python\cpython-3.12-windows-x86_64-none\Lib\asyncio\events.py", line 88, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\habiba\AppData\Roaming\uv\python\cpython-3.12-windows-x86_64-none\Lib\asyncio\proactor_events.py", line 165, in _call_connection_lost
+    self._sock.shutdown(socket.SHUT_RDWR)
+ConnectionResetError: [WinError 10054] An existing connection was forcibly closed by the remote host
+  ok  9 tests\browser\integration.spec.mjs:188:1 › unknown action survives reload, blocks resubmit and reconciles a delayed original outcome (2.3s)
+  ok 10 tests\browser\integration.spec.mjs:213:1 › manual changes reach worker-visible context; partial captions keep focus and replace (2.6s)
+(node:12064) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 11 tests\browser\opening.spec.mjs:25:1 › fresh visitor and direct manual never request media or a dispatch (1.2s)
+  x  12 tests\browser\opening.spec.mjs:34:1 › chooser rejects shopping, clarifies once, and manual ends actual capture and playback (6.0s)
+(node:13580) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  x  13 tests\browser\opening.spec.mjs:61:1 › voice manual voice and typing preserve cart/session; each generation greets once (6.0s)
+(node:22332) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Exception in callback _ProactorBasePipeTransport._call_connection_lost(None)
+handle: <Handle _ProactorBasePipeTransport._call_connection_lost(None)>
+Traceback (most recent call last):
+  File "C:\Users\habiba\AppData\Roaming\uv\python\cpython-3.12-windows-x86_64-none\Lib\asyncio\events.py", line 88, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\habiba\AppData\Roaming\uv\python\cpython-3.12-windows-x86_64-none\Lib\asyncio\proactor_events.py", line 165, in _call_connection_lost
+    self._sock.shutdown(socket.SHUT_RDWR)
+ConnectionResetError: [WinError 10054] An existing connection was forcibly closed by the remote host
+Exception in callback _ProactorBasePipeTransport._call_connection_lost(None)
+handle: <Handle _ProactorBasePipeTransport._call_connection_lost(None)>
+Traceback (most recent call last):
+  File "C:\Users\habiba\AppData\Roaming\uv\python\cpython-3.12-windows-x86_64-none\Lib\asyncio\events.py", line 88, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\habiba\AppData\Roaming\uv\python\cpython-3.12-windows-x86_64-none\Lib\asyncio\proactor_events.py", line 165, in _call_connection_lost
+    self._sock.shutdown(socket.SHUT_RDWR)
+ConnectionResetError: [WinError 10054] An existing connection was forcibly closed by the remote host
+  ok 14 tests\browser\opening.spec.mjs:83:3 › microphone denied never dispatches; late permission is stopped after manual (1.1s)
+  ok 15 tests\browser\opening.spec.mjs:83:3 › microphone missing never dispatches; late permission is stopped after manual (766ms)
+  ok 16 tests\browser\opening.spec.mjs:83:3 › microphone pending never dispatches; late permission is stopped after manual (1.2s)
+  ok 17 tests\browser\opening.spec.mjs:104:1 › return visit uses explicit activation fallback and never silently reopens microphone (4.6s)
+Exception in callback _ProactorBasePipeTransport._call_connection_lost(None)
+handle: <Handle _ProactorBasePipeTransport._call_connection_lost(None)>
+Traceback (most recent call last):
+  File "C:\Users\habiba\AppData\Roaming\uv\python\cpython-3.12-windows-x86_64-none\Lib\asyncio\events.py", line 88, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\habiba\AppData\Roaming\uv\python\cpython-3.12-windows-x86_64-none\Lib\asyncio\proactor_events.py", line 165, in _call_connection_lost
+    self._sock.shutdown(socket.SHUT_RDWR)
+ConnectionResetError: [WinError 10054] An existing connection was forcibly closed by the remote host
+Exception in callback _ProactorBasePipeTransport._call_connection_lost(None)
+handle: <Handle _ProactorBasePipeTransport._call_connection_lost(None)>
+Traceback (most recent call last):
+  File "C:\Users\habiba\AppData\Roaming\uv\python\cpython-3.12-windows-x86_64-none\Lib\asyncio\events.py", line 88, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\habiba\AppData\Roaming\uv\python\cpython-3.12-windows-x86_64-none\Lib\asyncio\proactor_events.py", line 165, in _call_connection_lost
+    self._sock.shutdown(socket.SHUT_RDWR)
+ConnectionResetError: [WinError 10054] An existing connection was forcibly closed by the remote host
+  ok 18 tests\browser\opening.spec.mjs:114:1 › autoplay blocked before readiness stops capture without a greeting (1.1s)
+  x  19 tests\browser\opening.spec.mjs:128:1 › manual during a committed cart request preserves its outcome and stops capture (5.9s)
+
+
+  1) tests\browser\opening.spec.mjs:34:1 › chooser rejects shopping, clarifies once, and manual ends actual capture and playback 
+
+    Error: expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  locator('html')
+    Expected: "choosing_mode"
+    Received: "error"
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveAttribute" locator('html') with timeout 5000ms
+      - waiting for locator('html')
+        13 × locator resolved to <html lang="en" data-theme="light" data-foodease-ready="true" data-foodease-revision="1" data-foodease-route="home" data-assistance-state="error">…</html>
+           - unexpected value "error"
+
+
+      35 |   await trackMedia(page);
+      36 |   await page.locator('[data-assist-choice]').click();
+    > 37 |   await expect(page.locator('html')).toHaveAttribute('data-assistance-state', 'choosing_mode');
+         |                                      ^
+      38 |   await expect(page.locator('[data-agent-transcript]')).toContainText('How would you like to order');
+      39 |   await input(page, 'add a wrap');
+      40 |   await expect(page.locator('[data-agent-transcript]')).toContainText('Say use voice');
+        at C:\HCI-PROJECT\website\tests\browser\opening.spec.mjs:37:38
+
+    Error Context: test-results\opening-chooser-rejects-sh-f9311-actual-capture-and-playback\error-context.md
+
+  2) tests\browser\opening.spec.mjs:61:1 › voice manual voice and typing preserve cart/session; each generation greets once 
+
+    Error: expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  locator('html')
+    Expected: "voice_active"
+    Received: "error"
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveAttribute" locator('html') with timeout 5000ms
+      - waiting for locator('html')
+        - locator resolved to <html lang="en" data-theme="light" data-foodease-ready="true" data-foodease-revision="1" data-foodease-route="home" data-assistance-state="connecting">…</html>
+        - unexpected value "connecting"
+        12 × locator resolved to <html lang="en" data-theme="light" data-foodease-ready="true" data-foodease-revision="1" data-foodease-route="home" data-assistance-state="error">…</html>
+           - unexpected value "error"
+
+
+      63 |   const sid = await page.evaluate(() => sessionStorage.getItem('foodease.shopping-session.v2'));
+      64 |   await page.locator('[data-assist-voice]').click();
+    > 65 |   await expect(page.locator('html')).toHaveAttribute('data-assistance-state', 'voice_active');
+         |                                      ^
+      66 |   await input(page, 'add a wrap');
+      67 |   await expect(page.locator('[data-cart-count]')).toHaveText('1');
+      68 |   await page.locator('[data-assist-manual]').click();
+        at C:\HCI-PROJECT\website\tests\browser\opening.spec.mjs:65:38
+
+    Error Context: test-results\opening-voice-manual-voice-fce9e-each-generation-greets-once\error-context.md
+
+  3) tests\browser\opening.spec.mjs:128:1 › manual during a committed cart request preserves its outcome and stops capture 
+
+    Error: expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  locator('html')
+    Expected: "voice_active"
+    Received: "error"
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveAttribute" locator('html') with timeout 5000ms
+      - waiting for locator('html')
+        - locator resolved to <html lang="en" data-theme="light" data-foodease-ready="true" data-foodease-revision="1" data-foodease-route="home" data-assistance-state="connecting">…</html>
+        - unexpected value "connecting"
+        12 × locator resolved to <html lang="en" data-theme="light" data-foodease-ready="true" data-foodease-revision="1" data-foodease-route="home" data-assistance-state="error">…</html>
+           - unexpected value "error"
+
+
+      140 |   });
+      141 |   await page.locator('[data-assist-voice]').click();
+    > 142 |   await expect(page.locator('html')).toHaveAttribute('data-assistance-state', 'voice_active');
+          |                                      ^
+      143 |   await input(page, 'add a wrap');
+      144 |   await blocked;
+      145 |   await page.locator('[data-assist-manual]').click();
+        at C:\HCI-PROJECT\website\tests\browser\opening.spec.mjs:142:38
+
+    Error Context: test-results\opening-manual-during-a-co-9f6b2-s-outcome-and-stops-capture\error-context.md
+
+  3 failed
+    tests\browser\opening.spec.mjs:34:1 › chooser rejects shopping, clarifies once, and manual ends actual capture and playback 
+    tests\browser\opening.spec.mjs:61:1 › voice manual voice and typing preserve cart/session; each generation greets once 
+    tests\browser\opening.spec.mjs:128:1 › manual during a committed cart request preserves its outcome and stops capture 
+  16 passed (1.1m)

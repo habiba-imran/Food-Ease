@@ -1,0 +1,18 @@
+foodease-website listening on http://127.0.0.1:63201
+INFO:     Started server process [22896]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:63201 (Press CTRL+C to quit)
+INFO:     127.0.0.1:63212 - "GET /healthz HTTP/1.1" 200 OK
+READY website port=63201; health only
+INFO:     127.0.0.1:63225 - "POST /api/v2/app/sessions HTTP/1.1" 201 Created
+READY session port=63202; health only
+OPEN http://127.0.0.1:63201; Ctrl+C stops this owned stack
+INFO:     127.0.0.1:63225 - "GET /api/v2/app/context HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63225 - "POST /api/v2/app/action HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63225 - "GET /api/v2/app/context HTTP/1.1" 200 OK
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [22896]
+{"mode": "offline_manual", "services": ["website", "session"], "real_http_authority": true, "cart_quantity": 1, "cart_total_pkr": 900, "shutdown_ports_released": true, "worker_launched": false, "providers": "none", "live_acceptance": false}

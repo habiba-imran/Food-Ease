@@ -1,162 +1,71 @@
-"""Bring-up helper for the FoodEase demo stack (orchestration glue only).
-
-Prints copy-paste commands for the full local stack. Does not spawn
-long-running processes (Windows-friendly).
-
-  uv run python tools/demo_up.py
-  uv run python tools/demo_up.py --check   # needs foodease-session running
-"""
+"""Print or launch the final real-website stack; manual mode is the safe default."""
 
 from __future__ import annotations
 
 import argparse
 import json
+import math
 from pathlib import Path
 
-import httpx
+from foodease_session.bringup import StackPlan, check_stack, powershell_commands, run_stack
 
-SESSION_DEFAULT = "http://127.0.0.1:8090"
-ROOM_DEFAULT = "foodease-demo"
-ROOT = Path(__file__).resolve().parents[1]
-ENV_EXAMPLE = ROOT / ".env.example"
-ENV_FILE = ROOT / ".env"
+ROOT = Path(__file__).resolve().parents[2]
 
 
-def print_stack(*, session_api: str, room: str) -> None:
-    env_hint = "OK" if ENV_FILE.is_file() else f"missing - copy {ENV_EXAMPLE.name}"
-    print(
-        f"""
-FoodEase demo stack (orchestration-owned glue)
-==============================================
-Env: orchestration/.env [{env_hint}]
-Ownership: docs/OWNERSHIP.md  (tokens/dispatch here; cart in app; brain in voice-agent)
-
-Terminals (start in order):
-"""
-    )
-    print(
-        f"""
-1) Session API  (this package)
-   cd orchestration
-   uv sync
-   # cp .env.example .env   # once - fill LIVEKIT_*
-   uv run foodease-session
-   # {session_api}  /docs
-
-2) Voice worker  (sibling voice-agent/)
-   cd voice-agent
-   uv run foodease-worker
-
-3) MockApp stand-in website  (optional DEV)
-   cd voice-agent
-   set DEV_MODE=true
-   uv run python -m mock_app
-   # GUI navigate / cart on :8765 - survives End assistance
-
-4) Harness user seat
-   cd voice-agent
-   uv run python harness/token_server.py
-   # http://127.0.0.1:8080 -> Start assistance
-
-Smoke (with session up):
-   uv run python tools/smoke_session.py
-   uv run python tools/smoke_assist.py
-
-3-seat LiveKit topology (app + user + agent):
-   uv run python tools/topology_up.py
-   uv run python tools/topology_up.py --check
-
-Integration checklist (MockApp today):
-   cd ../voice-agent && uv run python tools/run_integration.py
-
-Room default: {room}
-Docs: docs/BRINGUP.md | docs/TOPOLOGY.md | docs/API.md
-"""
-    )
-
-
-def check_stack(session_api: str) -> int:
-    base = session_api.rstrip("/")
-    try:
-        health = httpx.get(f"{base}/healthz", timeout=5.0)
-        health.raise_for_status()
-        print("PASS healthz:", health.json())
-    except Exception as exc:  # noqa: BLE001
-        print("FAIL healthz:", exc)
-        print("Start terminal 1 first: uv run foodease-session")
-        return 1
-
-    try:
-        sess = httpx.post(
-            f"{base}/v1/session",
-            json={"consent": True, "include_app_token": True, "room": ROOM_DEFAULT},
-            timeout=10.0,
-        )
-        sess.raise_for_status()
-        body = sess.json()
-        redacted = {k: v for k, v in body.items() if k not in {"user", "app"}}
-        if "user" in body:
-            redacted["user"] = {
-                **{k: v for k, v in body["user"].items() if k != "token"},
-                "token": "<redacted>",
-            }
-        if body.get("app"):
-            redacted["app"] = {
-                **{k: v for k, v in body["app"].items() if k != "token"},
-                "token": "<redacted>",
-            }
-        print("PASS /v1/session:", json.dumps(redacted, indent=2))
-    except Exception as exc:  # noqa: BLE001
-        print("FAIL /v1/session:", exc)
-        return 1
-
-    print("Stack glue OK. Start worker + MockApp + harness for a full demo.")
-    return 0
-
-
-def print_integrated_stack() -> None:
-    print("""FoodEase bound website lifecycle (Phase 3)
-1) cd website
-   uv sync --locked
-   uv run foodease-website
-2) cd orchestration
-   $env:FOODEASE_LEGACY_DEV_API='false'
-   $env:FOODEASE_WEBSITE_URL='http://127.0.0.1:8080'
-   uv sync --locked
-   uv run foodease-session
-3) cd voice-agent
-   $env:FOODEASE_APP_TRANSPORT='website'
-   $env:FOODEASE_SESSION_API='http://127.0.0.1:8090'
-   uv sync --locked
-   uv run foodease-worker
-The browser bridge is Phase 5; v2 conversation runtime is Phase 4.
-Until those are attached, integrated startup fails closed with
-integrated_runtime_unavailable. No mock fallback. Manual ordering stays independent.
-Use /v2/assist/start -> ready -> worker-ready; /v1 is disabled by default.
-""")
+def print_stack(*, session_api: str = "http://127.0.0.1:8090", room: str = "") -> None:
+    print(powershell_commands(StackPlan(ROOT)))
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="FoodEase demo stack bring-up")
-    parser.add_argument("--session-api", default=SESSION_DEFAULT)
-    parser.add_argument("--room", default=ROOM_DEFAULT)
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--mode", choices=["manual", "live"], default="manual")
     parser.add_argument(
-        "--integrated", action="store_true", help="Print bound website launch commands"
+        "--integrated",
+        action="store_true",
+        help="Compatibility alias; final path is always integrated",
+    )
+    parser.add_argument("--website-port", type=int, default=8080)
+    parser.add_argument("--session-port", type=int, default=8090)
+    parser.add_argument("--worker-port", type=int, default=8081)
+    parser.add_argument(
+        "--launch", action="store_true", help="Own foreground processes until Ctrl+C"
     )
     parser.add_argument(
-        "--check",
-        action="store_true",
-        help="Hit healthz + /v1/session (session API must be running)",
+        "--allow-live", action="store_true", help="Explicit Cloud/provider cost opt-in"
+    )
+    parser.add_argument(
+        "--check", action="store_true", help="Read health only; no token or dispatch"
+    )
+    parser.add_argument("--duration", type=float, help="Bound local smoke lifetime in seconds")
+    parser.add_argument(
+        "--startup-timeout", type=float, default=180,
+        help="Per-service cold-start deadline in seconds (default 180, maximum 600)",
     )
     args = parser.parse_args()
-    if args.integrated:
+    try:
+        if args.duration is not None and (
+            not math.isfinite(args.duration) or args.duration <= 0 or args.duration > 3600
+        ):
+            raise ValueError("Duration must be between 0 and 3600 seconds")
+        plan = StackPlan(ROOT, args.mode, args.website_port, args.session_port, args.worker_port)
+        if args.launch and args.check:
+            raise ValueError("Choose --launch or --check")
+        if args.launch:
+            raise SystemExit(
+                run_stack(
+                    plan,
+                    allow_live=args.allow_live,
+                    duration=args.duration,
+                    startup_timeout=args.startup_timeout,
+                )
+            )
         if args.check:
-            parser.error("--check is the legacy harness smoke; use Phase 3 verification for v2")
-        print_integrated_stack()
-        return
-    print_stack(session_api=args.session_api, room=args.room)
-    if args.check:
-        raise SystemExit(check_stack(args.session_api))
+            checks = check_stack(plan)
+            print(json.dumps({"health_only": True, "services": checks, "live_acceptance": False}))
+            raise SystemExit(0 if all(checks.values()) else 1)
+        print(powershell_commands(plan))
+    except (ValueError, RuntimeError) as error:
+        parser.exit(2, f"{error}\n")
 
 
 if __name__ == "__main__":

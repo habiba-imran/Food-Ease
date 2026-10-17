@@ -1,0 +1,176 @@
+
+Running 37 tests using 1 worker
+
+(node:7620) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok  1 tests\browser\conversation.spec.mjs:21:1 › read page, presented second item and add button have matching caption and visible effect (6.1s)
+  ok  2 tests\browser\conversation.spec.mjs:35:1 › manual context change requires clarification for an old ordinal without a select action (3.2s)
+  ok  3 tests\browser\conversation.spec.mjs:45:1 › next and previous deliver small actual windows with stable ordinal identity (3.7s)
+  ok  4 tests\browser\conversation.spec.mjs:56:1 › actual model/tool pipeline refines filters and completes ordered combined tools (3.4s)
+  ok  5 tests\browser\conversation.spec.mjs:70:1 › quantity correction sets the latest cart instead of adding again (2.8s)
+  ok  6 tests\browser\integration.spec.mjs:30:1 › actual browser + website + worker: typed order, exact summary and demo receipt (4.9s)
+  ok  7 tests\browser\integration.spec.mjs:56:1 › manual filtering exactly matches authoritative IDs; search clear and availability (5.4s)
+  ok  8 tests\browser\integration.spec.mjs:86:1 › injected bound agent actions visibly render menu, item, cart and checkout (4.2s)
+  ok  9 tests\browser\integration.spec.mjs:102:1 › reply lost after a real commit reconciles once; rejected actions never announce success (2.3s)
+  ok 10 tests\browser\integration.spec.mjs:121:1 › typed assistance does not attach remote audio (2.1s)
+Cannot enable audio input when it's not set
+Cannot enable audio output when it's not set
+Cannot enable audio input when it's not set
+Cannot enable audio output when it's not set
+  ok 11 tests\browser\integration.spec.mjs:136:1 › voice audio attaches once and end stops fake media immediately; native captions are ignored (2.1s)
+  ok 12 tests\browser\integration.spec.mjs:165:1 › foreign RPC callers cannot forward actions (2.2s)
+  ok 13 tests\browser\integration.spec.mjs:175:1 › stale actions cannot change a newer view and reconnect republishes current context (2.2s)
+  ok 14 tests\browser\integration.spec.mjs:191:1 › unknown action survives reload, blocks resubmit and reconciles a delayed original outcome (1.5s)
+  ok 15 tests\browser\integration.spec.mjs:216:1 › manual changes reach worker-visible context; partial captions keep focus and replace (2.2s)
+(node:24904) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 16 tests\browser\opening.spec.mjs:33:1 › fresh visitor and direct manual never request media or a dispatch (1.5s)
+Exception in callback _ProactorBasePipeTransport._call_connection_lost(None)
+handle: <Handle _ProactorBasePipeTransport._call_connection_lost(None)>
+Traceback (most recent call last):
+  File "C:\Users\habiba\AppData\Roaming\uv\python\cpython-3.12-windows-x86_64-none\Lib\asyncio\events.py", line 88, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\habiba\AppData\Roaming\uv\python\cpython-3.12-windows-x86_64-none\Lib\asyncio\proactor_events.py", line 165, in _call_connection_lost
+    self._sock.shutdown(socket.SHUT_RDWR)
+ConnectionResetError: [WinError 10054] An existing connection was forcibly closed by the remote host
+Cannot enable audio input when it's not set
+Cannot enable audio output when it's not set
+Cannot enable audio input when it's not set
+Cannot enable audio output when it's not set
+  ok 17 tests\browser\opening.spec.mjs:42:1 › chooser rejects shopping, clarifies once, and manual ends actual capture and playback (3.1s)
+Cannot enable audio input when it's not set
+Cannot enable audio output when it's not set
+Cannot enable audio input when it's not set
+Cannot enable audio output when it's not set
+Cannot enable audio input when it's not set
+Cannot enable audio output when it's not set
+  ok 18 tests\browser\opening.spec.mjs:73:1 › voice manual voice and typing preserve cart/session; each generation greets once (4.6s)
+  ok 19 tests\browser\opening.spec.mjs:95:3 › microphone denied never dispatches; late permission is stopped after manual (839ms)
+  ok 20 tests\browser\opening.spec.mjs:95:3 › microphone missing never dispatches; late permission is stopped after manual (873ms)
+  ok 21 tests\browser\opening.spec.mjs:95:3 › microphone pending never dispatches; late permission is stopped after manual (871ms)
+Opening failure: Cart is synced with the FoodEase app state.
+Media tracks: undefined
+  x  22 tests\browser\opening.spec.mjs:116:1 › return visit uses explicit activation fallback and never silently reopens microphone (7.7s)
+(node:17964) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 23 tests\browser\opening.spec.mjs:126:1 › autoplay blocked before readiness stops capture without a greeting (1.9s)
+Cannot enable audio input when it's not set
+Cannot enable audio output when it's not set
+Cannot enable audio input when it's not set
+Cannot enable audio output when it's not set
+  ok 24 tests\browser\opening.spec.mjs:140:1 › manual during a committed cart request preserves its outcome and stops capture (2.6s)
+Cannot enable audio output when it's not set
+  ok 25 tests\browser\opening.spec.mjs:166:1 › explicit typed audio preference never opens capture and can be switched off (2.3s)
+Cannot enable audio input when it's not set
+Cannot enable audio output when it's not set
+Cannot enable audio input when it's not set
+Cannot enable audio output when it's not set
+  ok 26 tests\browser\opening.spec.mjs:189:1 › spoken chooser voice choice opens shopping once; manual during greeting revokes it (2.5s)
+Cannot enable audio input when it's not set
+Cannot enable audio output when it's not set
+Cannot enable audio input when it's not set
+Cannot enable audio output when it's not set
+Opening failure: Assistance is already open in another tab. End it there first.
+Media tracks: [ { kind: 'audio', state: 'ended' } ]
+  x  27 tests\browser\opening.spec.mjs:201:1 › mode controls and typed input remain usable inside the preserved checkout dialog (7.9s)
+(node:12564) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Cannot enable audio input when it's not set
+Cannot enable audio output when it's not set
+Cannot enable audio input when it's not set
+Cannot enable audio output when it's not set
+Cannot enable audio input when it's not set
+Cannot enable audio output when it's not set
+  ok 28 tests\browser\recovery.spec.mjs:26:1 › both seats reconnect with fresh manual state and resume only the existing voice consent (5.6s)
+Cannot enable audio input when it's not set
+Cannot enable audio output when it's not set
+Cannot enable audio input when it's not set
+Cannot enable audio output when it's not set
+  ok 29 tests\browser\recovery.spec.mjs:42:1 › manual end during reconnect prevents old events or tracks from reviving assistance (2.5s)
+Cannot enable audio input when it's not set
+Cannot enable audio output when it's not set
+Cannot enable audio input when it's not set
+Cannot enable audio output when it's not set
+  ok 30 tests\browser\recovery.spec.mjs:51:41 › stt failure switches actual runtime to silent typing with the same cart (2.8s)
+Cannot enable audio input when it's not set
+Cannot enable audio output when it's not set
+Cannot enable audio input when it's not set
+Cannot enable audio output when it's not set
+  ok 31 tests\browser\recovery.spec.mjs:51:41 › tts failure switches actual runtime to silent typing with the same cart (3.0s)
+speech not done in time after interruption, cancelling the speech arbitrarily.
+  ok 32 tests\browser\recovery.spec.mjs:63:1 › actual SDK model stream failure leaves manual ordering available (2.7s)
+Cannot enable audio input when it's not set
+Cannot enable audio output when it's not set
+Cannot enable audio input when it's not set
+Cannot enable audio output when it's not set
+Cannot enable audio input when it's not set
+Cannot enable audio output when it's not set
+  ok 33 tests\browser\recovery.spec.mjs:70:1 › bound agent seat loss ends capture; backgrounding also requires a new gesture (4.0s)
+Cannot enable audio input when it's not set
+Cannot enable audio output when it's not set
+Cannot enable audio input when it's not set
+Cannot enable audio output when it's not set
+  ok 34 tests\browser\recovery.spec.mjs:85:1 › reload cleans up retained generation without capture and preserves cart (5.3s)
+  ok 35 tests\browser\recovery.spec.mjs:97:1 › lost checkout response renders its original receipt once, including after reload (2.0s)
+  ok 36 tests\browser\recovery.spec.mjs:114:1 › expired credentials stop captured media before seats can activate (1.2s)
+  ok 37 tests\browser\recovery.spec.mjs:121:1 › lost authority retention reports unavailable order state without replay (1.3s)
+
+
+  1) tests\browser\opening.spec.mjs:116:1 › return visit uses explicit activation fallback and never silently reopens microphone 
+
+    Error: expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  locator('html')
+    Expected: "awaiting_spoken_choice_consent"
+    Received: "manual"
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveAttribute" locator('html') with timeout 5000ms
+      - waiting for locator('html')
+        13 × locator resolved to <html lang="en" data-theme="light" data-foodease-ready="true" data-foodease-revision="1" data-foodease-route="home" data-assistance-state="manual">…</html>
+           - unexpected value "manual"
+
+
+      119 |   await page.locator('[data-assist-manual]').click();
+      120 |   await page.reload();
+    > 121 |   await expect(page.locator('html')).toHaveAttribute('data-assistance-state', 'awaiting_spoken_choice_consent');
+          |                                      ^
+      122 |   await page.evaluate(() => { navigator.mediaDevices.getUserMedia = () => { throw new Error('No new consent'); }; });
+      123 |   await page.locator('[data-assist-start]').click();
+      124 |   await expect(page.locator('[data-agent-transcript]')).toContainText('Welcome back');
+        at C:\HCI-PROJECT\website\tests\browser\opening.spec.mjs:121:38
+
+    Error Context: test-results\opening-return-visit-uses--4520e-silently-reopens-microphone\error-context.md
+
+  2) tests\browser\opening.spec.mjs:201:1 › mode controls and typed input remain usable inside the preserved checkout dialog 
+
+    Error: expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  locator('html')
+    Expected: "typed_active"
+    Received: "error"
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveAttribute" locator('html') with timeout 5000ms
+      - waiting for locator('html')
+        13 × locator resolved to <html lang="en" data-theme="light" data-foodease-ready="true" data-foodease-revision="3" data-assistance-state="error" data-foodease-route="checkout">…</html>
+           - unexpected value "error"
+
+
+      209 |   await expect(dialog).toBeVisible();
+      210 |   await dialog.locator('[data-assist-start]').click();
+    > 211 |   await expect(page.locator('html')).toHaveAttribute('data-assistance-state', 'typed_active');
+          |                                      ^
+      212 |   await expect(dialog.locator('[data-assistant-input]')).toBeVisible();
+      213 |   await expect(page.locator('html')).toHaveAttribute('data-foodease-route', 'checkout');
+      214 |   await expect(page.locator('[data-cart-count]')).toHaveText('1');
+        at C:\HCI-PROJECT\website\tests\browser\opening.spec.mjs:211:38
+
+    Error Context: test-results\opening-mode-controls-and--31c95-e-preserved-checkout-dialog\error-context.md
+
+  2 failed
+    tests\browser\opening.spec.mjs:116:1 › return visit uses explicit activation fallback and never silently reopens microphone 
+    tests\browser\opening.spec.mjs:201:1 › mode controls and typed input remain usable inside the preserved checkout dialog 
+  35 passed (2.1m)

@@ -1,0 +1,608 @@
+{
+  "schema_version": 1,
+  "kind": "not_run",
+  "human_observed": false,
+  "transport": "not_run",
+  "providers": "not_run",
+  "website": "real",
+  "environment_evidence": "",
+  "real_model_turns": 0,
+  "scenarios": [
+    {
+      "id": "O-01",
+      "scenario": "Open website; choose manual directly",
+      "expected": "Manual order works; no mic capture, dispatch or unsolicited audio",
+      "status": "not_run",
+      "evidence": "",
+      "observer": ""
+    },
+    {
+      "id": "O-02",
+      "scenario": "Enable spoken welcome; say nothing initially",
+      "expected": "One prompt asking voice/manual after readiness, without needing \u201chello\u201d",
+      "status": "not_run",
+      "evidence": "",
+      "observer": ""
+    },
+    {
+      "id": "O-03",
+      "scenario": "Say \u201cmanual please\u201d / \u201cI'll do it myself\u201d",
+      "expected": "Playback/tips stop, tracks end, dispatch cleanup reconciles, shopping remains intact",
+      "status": "not_run",
+      "evidence": "",
+      "observer": ""
+    },
+    {
+      "id": "O-04",
+      "scenario": "Say \u201cvoice\u201d; ask for spicy food under 1,000",
+      "expected": "Correct real filters, matching visible items and grounded concise reply",
+      "status": "not_run",
+      "evidence": "",
+      "observer": ""
+    },
+    {
+      "id": "O-05",
+      "scenario": "\u201cWhere am I?\u201d / \u201cRead this page\u201d",
+      "expected": "Current route/selection/results/actions, no fabricated page or exhaustive irrelevant dump",
+      "status": "not_run",
+      "evidence": "",
+      "observer": ""
+    },
+    {
+      "id": "O-06",
+      "scenario": "\u201cOpen the second one\u201d; \u201cpress add to cart\u201d",
+      "expected": "Exact presented item opens/adds through semantic operations; verified total spoken",
+      "status": "not_run",
+      "evidence": "",
+      "observer": ""
+    },
+    {
+      "id": "O-07",
+      "scenario": "\u201cAdd two\u201d; interrupt with \u201cactually make it one\u201d",
+      "expected": "Final quantity one with matching UI and no duplicated add",
+      "status": "not_run",
+      "evidence": "",
+      "observer": ""
+    },
+    {
+      "id": "O-08",
+      "scenario": "Change page/filter/item manually during reply",
+      "expected": "Obsolete guidance stops; current context wins; stale references clarify",
+      "status": "not_run",
+      "evidence": "",
+      "observer": ""
+    },
+    {
+      "id": "O-09",
+      "scenario": "Ask details/recommendations/comparison with unknown ingredients",
+      "expected": "Uses verified facts and states missing information plainly",
+      "status": "not_run",
+      "evidence": "",
+      "observer": ""
+    },
+    {
+      "id": "O-10",
+      "scenario": "\u201cRepeat\u201d, \u201cslower\u201d, \u201cback\u201d, \u201cundo\u201d, \u201cstop\u201d",
+      "expected": "Each supported control performs its real behavior; no unrelated mutation",
+      "status": "not_run",
+      "evidence": "",
+      "observer": ""
+    },
+    {
+      "id": "O-11",
+      "scenario": "Request checkout; silence, casual yes, correction or interrupted summary",
+      "expected": "No submission without explicit current-summary authorization",
+      "status": "not_run",
+      "evidence": "",
+      "observer": ""
+    },
+    {
+      "id": "O-12",
+      "scenario": "Confirm fully delivered current summary",
+      "expected": "Exactly one demo receipt, actual total and truthful simulated-order acknowledgment",
+      "status": "not_run",
+      "evidence": "",
+      "observer": ""
+    },
+    {
+      "id": "O-13",
+      "scenario": "Edit cart after summary or use token from another session",
+      "expected": "Confirmation invalidated/refused; fresh review required",
+      "status": "not_run",
+      "evidence": "",
+      "observer": ""
+    },
+    {
+      "id": "O-14",
+      "scenario": "Duplicate action/start request; simultaneous manual/voice edits",
+      "expected": "One effect/dispatch; deterministic result; no overwritten newer state",
+      "status": "not_run",
+      "evidence": "",
+      "observer": ""
+    },
+    {
+      "id": "O-15",
+      "scenario": "Commit order then drop response",
+      "expected": "Retrieve original outcome by ID; no new order/retry or invented failure",
+      "status": "not_run",
+      "evidence": "",
+      "observer": ""
+    },
+    {
+      "id": "O-16",
+      "scenario": "Mic denied, autoplay blocked, provider unavailable",
+      "expected": "Accurate state, actionable recovery, usable existing manual cart",
+      "status": "not_run",
+      "evidence": "",
+      "observer": ""
+    },
+    {
+      "id": "O-17",
+      "scenario": "Voice \u2192 typed \u2192 manual \u2192 voice",
+      "expected": "Same shopping session; correct microphone/audio state; brief resume",
+      "status": "not_run",
+      "evidence": "",
+      "observer": ""
+    },
+    {
+      "id": "O-18",
+      "scenario": "Disconnect/reconnect/reload/end during work",
+      "expected": "Latest supported state restored, no stale replay or late unsolicited speech",
+      "status": "not_run",
+      "evidence": "",
+      "observer": ""
+    },
+    {
+      "id": "O-19",
+      "scenario": "Two shoppers / tabs with distinct sessions",
+      "expected": "No shared cart, context, transcript, token or receipt leakage",
+      "status": "not_run",
+      "evidence": "",
+      "observer": ""
+    },
+    {
+      "id": "O-20",
+      "scenario": "Natural varied phrasing, noise and hesitations",
+      "expected": "Comfortable dialogue; uncertainty clarified; measured failures retained",
+      "status": "not_run",
+      "evidence": "",
+      "observer": ""
+    },
+    {
+      "id": "O-21",
+      "scenario": "Keyboard/screen reader with assistant active",
+      "expected": "Core order and mode exit accessible; no focus trap or announcement flood",
+      "status": "not_run",
+      "evidence": "",
+      "observer": ""
+    },
+    {
+      "id": "W01",
+      "scenario": "Open website with all agent services disconnected.",
+      "expected": "Home, menu, cart and demo checkout remain usable manually.",
+      "status": "not_run",
+      "evidence": "",
+      "observer": ""
+    },
+    {
+      "id": "W02",
+      "scenario": "Choose manual browsing at first visit.",
+      "expected": "No mic request/autoplay; user can immediately shop.",
+      "status": "not_run",
+      "evidence": "",
+      "observer": ""
+    },
+    {
+      "id": "W03",
+      "scenario": "Keyboard-only full demo order.",
+      "expected": "All essential controls work, focus remains visible/logical and confirmation is reachable.",
+      "status": "not_run",
+      "evidence": "",
+      "observer": ""
+    },
+    {
+      "id": "W04",
+      "scenario": "Search/filter vegetarian and price max 800, then clear.",
+      "expected": "Actual catalog results and count change; app context matches displayed filters/results.",
+      "status": "not_run",
+      "evidence": "",
+      "observer": ""
+    },
+    {
+      "id": "W05",
+      "scenario": "Select a product, edit a valid option if offered, add quantity two.",
+      "expected": "Correct item/options and calculated prices appear in one shared cart.",
+      "status": "not_run",
+      "evidence": "",
+      "observer": ""
+    },
+    {
+      "id": "W06",
+      "scenario": "Manually reduce quantity or remove a line.",
+      "expected": "Cart and total change accurately; user receives readable/accessibility feedback.",
+      "status": "not_run",
+      "evidence": "",
+      "observer": ""
+    },
+    {
+      "id": "W07",
+      "scenario": "Attempt empty cart checkout or invalid quantity/unavailable item.",
+      "expected": "Action refused with actionable error, no fake success.",
+      "status": "not_run",
+      "evidence": "",
+      "observer": ""
+    },
+    {
+      "id": "W08",
+      "scenario": "Complete valid manual checkout with explicit current-summary confirmation.",
+      "expected": "Exactly one **simulated** order is recorded/shown; no real payment claims.",
+      "status": "not_run",
+      "evidence": "",
+      "observer": ""
+    },
+    {
+      "id": "W09",
+      "scenario": "Trigger a page/item change while a mock agent is subscribed.",
+      "expected": "`app.context_updated` emits the latest route/item and a higher revision.",
+      "status": "not_run",
+      "evidence": "",
+      "observer": ""
+    },
+    {
+      "id": "W10",
+      "scenario": "Inject mock `agent.action_request` for `filter_menu`/`select_item`.",
+      "expected": "Real menu view/selection changes through shared operations; factual results are returned.",
+      "status": "not_run",
+      "evidence": "",
+      "observer": ""
+    },
+    {
+      "id": "W11",
+      "scenario": "Inject `cart.add_item` followed by `cart.set_quantity` absolute quantity=1.",
+      "expected": "One verified final line quantity=1, coherent cart total and correlated `app.action_result`s.",
+      "status": "not_run",
+      "evidence": "",
+      "observer": ""
+    },
+    {
+      "id": "W12",
+      "scenario": "Repeat the same mutating `action_id` / same request.",
+      "expected": "No duplicate add/submit effect; prior outcome can be reconciled.",
+      "status": "not_run",
+      "evidence": "",
+      "observer": ""
+    },
+    {
+      "id": "W13",
+      "scenario": "Inject a request using a stale `context_revision` or invalid `item_id`.",
+      "expected": "Safe refusal/revalidation with proper reason; newer UI state is not overwritten.",
+      "status": "not_run",
+      "evidence": "",
+      "observer": ""
+    },
+    {
+      "id": "W14",
+      "scenario": "Mock checkout request before explicit confirmation, then alter the cart.",
+      "expected": "`requires_confirmation`/rejection; old approval invalidated; updated summary required.",
+      "status": "not_run",
+      "evidence": "",
+      "observer": ""
+    },
+    {
+      "id": "W15",
+      "scenario": "Simulate `timeout/unknown` on a demo-order submission.",
+      "expected": "No automatic second order; pending/uncertain state can be reconciled by `action_id`.",
+      "status": "not_run",
+      "evidence": "",
+      "observer": ""
+    },
+    {
+      "id": "W16",
+      "scenario": "Mock `agent.status` for connect \u2192 listen \u2192 speak \u2192 pause \u2192 error.",
+      "expected": "UI displays correct product-facing states and remains keyboard accessible.",
+      "status": "not_run",
+      "evidence": "",
+      "observer": ""
+    },
+    {
+      "id": "W17",
+      "scenario": "Inject user interim/final transcript with same `turn_id`, then interrupted assistant text.",
+      "expected": "Partial is replaced rather than duplicated; unheard assistant continuation is not represented as delivered.",
+      "status": "not_run",
+      "evidence": "",
+      "observer": ""
+    },
+    {
+      "id": "W18",
+      "scenario": "Enter typed help/request while assistance UI is active.",
+      "expected": "Correct `app.text_input` envelope is emitted; no fake microphone/STT claim.",
+      "status": "not_run",
+      "evidence": "",
+      "observer": ""
+    },
+    {
+      "id": "W19",
+      "scenario": "Manual cart edit during a simulated agent response, then request `get_current_context`.",
+      "expected": "Fresh result reflects manual edit; no separate agent cart.",
+      "status": "not_run",
+      "evidence": "",
+      "observer": ""
+    },
+    {
+      "id": "W20",
+      "scenario": "Mock disconnect or denied microphone permission.",
+      "expected": "User can exit/pause the assistant and complete the **existing** cart manually.",
+      "status": "not_run",
+      "evidence": "",
+      "observer": ""
+    },
+    {
+      "id": "W21",
+      "scenario": "Switch from manual \u2192 simulated assisted \u2192 manual.",
+      "expected": "Navigation/cart progress retained; unsolicited assistant guidance stops after exit.",
+      "status": "not_run",
+      "evidence": "",
+      "observer": ""
+    },
+    {
+      "id": "W22",
+      "scenario": "Zoom/enlarge text, navigate with screen reader, trigger async cart updates.",
+      "expected": "Key content reflows; controls are named; status information is intelligible without announcement spam.",
+      "status": "not_run",
+      "evidence": "",
+      "observer": ""
+    },
+    {
+      "id": "T01",
+      "scenario": "Opt into voice; say nothing.",
+      "expected": "Agent speaks the welcome by itself once ready.",
+      "status": "not_run",
+      "evidence": "",
+      "observer": ""
+    },
+    {
+      "id": "T02",
+      "scenario": "Stay silent after the welcome.",
+      "expected": "Offers limited contextual help, then remains quiet/ready rather than looping.",
+      "status": "not_run",
+      "evidence": "",
+      "observer": ""
+    },
+    {
+      "id": "T03",
+      "scenario": "Interrupt the greeting with \u201cShow burgers.\u201d",
+      "expected": "Greeting stops; a current `filter_menu`/navigation request is emitted.",
+      "status": "not_run",
+      "evidence": "",
+      "observer": ""
+    },
+    {
+      "id": "T04",
+      "scenario": "Pause naturally while saying \u201cI want\u2026 maybe a spicy\u2026 burger.\u201d",
+      "expected": "Does not consistently cut off the unfinished thought.",
+      "status": "not_run",
+      "evidence": "",
+      "observer": ""
+    },
+    {
+      "id": "T05",
+      "scenario": "Ask \u201cVegetarian under eight hundred.\u201d",
+      "expected": "Valid structured filter request; speaks results supplied by mock app.",
+      "status": "not_run",
+      "evidence": "",
+      "observer": ""
+    },
+    {
+      "id": "T06",
+      "scenario": "After listing results say \u201cthe second one.\u201d",
+      "expected": "Uses the correct current result ID and requests item selection.",
+      "status": "not_run",
+      "evidence": "",
+      "observer": ""
+    },
+    {
+      "id": "T07",
+      "scenario": "Say \u201cAdd two\u201d then \u201cactually make it one.\u201d",
+      "expected": "Correct confirmed quantity=1, with no duplicate mutations.",
+      "status": "not_run",
+      "evidence": "",
+      "observer": ""
+    },
+    {
+      "id": "T08",
+      "scenario": "Return a failed add-to-cart result.",
+      "expected": "Assistant does not announce that the item was added.",
+      "status": "not_run",
+      "evidence": "",
+      "observer": ""
+    },
+    {
+      "id": "T09",
+      "scenario": "Ask \u201cWhere am I?\u201d after GUI navigates manually.",
+      "expected": "Describes the current new page, not stale conversation memory.",
+      "status": "not_run",
+      "evidence": "",
+      "observer": ""
+    },
+    {
+      "id": "T10",
+      "scenario": "Say \u201cStop\u201d, \u201cRepeat\u201d, \u201cGo back\u201d, and \u201cSlower.\u201d",
+      "expected": "Controls work in the applicable states without an unrelated LLM hallucination.",
+      "status": "not_run",
+      "evidence": "",
+      "observer": ""
+    },
+    {
+      "id": "T11",
+      "scenario": "Ask to checkout; remain silent when asked to confirm.",
+      "expected": "No order submitted.",
+      "status": "not_run",
+      "evidence": "",
+      "observer": ""
+    },
+    {
+      "id": "T12",
+      "scenario": "Explicitly confirm current checkout summary.",
+      "expected": "Only one authorized **demo** submission; speaks actual returned result.",
+      "status": "not_run",
+      "evidence": "",
+      "observer": ""
+    },
+    {
+      "id": "T13",
+      "scenario": "Interrupt checkout confirmation with a cart change.",
+      "expected": "Earlier confirmation invalidated; revised summary requested.",
+      "status": "not_run",
+      "evidence": "",
+      "observer": ""
+    },
+    {
+      "id": "T14",
+      "scenario": "Simulate a delayed/unknown action result.",
+      "expected": "Does not duplicate the action or falsely report success.",
+      "status": "not_run",
+      "evidence": "",
+      "observer": ""
+    },
+    {
+      "id": "T15",
+      "scenario": "Deny microphone permission or mute audio.",
+      "expected": "Text/normal browsing fallback, honest status.",
+      "status": "not_run",
+      "evidence": "",
+      "observer": ""
+    },
+    {
+      "id": "T16",
+      "scenario": "Type a menu request instead of speaking.",
+      "expected": "Same interpretation/action route works without microphone input.",
+      "status": "not_run",
+      "evidence": "",
+      "observer": ""
+    },
+    {
+      "id": "T17",
+      "scenario": "Cause Deepgram/LLM/TTS provider failure.",
+      "expected": "Graceful recoverable feedback where feasible; no misleading UI state.",
+      "status": "not_run",
+      "evidence": "",
+      "observer": ""
+    },
+    {
+      "id": "T18",
+      "scenario": "Speak with common regional pronunciation/noisy mic.",
+      "expected": "Recognition limitations logged; consequential uncertainty clarified.",
+      "status": "not_run",
+      "evidence": "",
+      "observer": ""
+    },
+    {
+      "id": "T19",
+      "scenario": "Say \u201cI'll browse myself.\u201d",
+      "expected": "Stops unsolicited voice guidance; confirmed app/cart state remains intact.",
+      "status": "not_run",
+      "evidence": "",
+      "observer": ""
+    },
+    {
+      "id": "T20",
+      "scenario": "Interrupt while a cart mutation is in flight.",
+      "expected": "Audio stops; final cart status is reconciled via matching action ID/result.",
+      "status": "not_run",
+      "evidence": "",
+      "observer": ""
+    }
+  ],
+  "devices": [
+    {
+      "id": "chrome_desktop",
+      "status": "not_run",
+      "evidence": "",
+      "observer": ""
+    },
+    {
+      "id": "edge_desktop",
+      "status": "not_run",
+      "evidence": "",
+      "observer": ""
+    },
+    {
+      "id": "phone",
+      "status": "not_run",
+      "evidence": "",
+      "observer": ""
+    }
+  ],
+  "accessibility": [
+    {
+      "id": "keyboard",
+      "status": "not_run",
+      "evidence": "",
+      "observer": ""
+    },
+    {
+      "id": "screen_reader",
+      "status": "not_run",
+      "evidence": "",
+      "observer": ""
+    }
+  ],
+  "faults": [
+    {
+      "id": "stt",
+      "status": "not_run",
+      "evidence": "",
+      "observer": ""
+    },
+    {
+      "id": "llm",
+      "status": "not_run",
+      "evidence": "",
+      "observer": ""
+    },
+    {
+      "id": "tts",
+      "status": "not_run",
+      "evidence": "",
+      "observer": ""
+    },
+    {
+      "id": "room",
+      "status": "not_run",
+      "evidence": "",
+      "observer": ""
+    },
+    {
+      "id": "http",
+      "status": "not_run",
+      "evidence": "",
+      "observer": ""
+    },
+    {
+      "id": "rpc_timeout",
+      "status": "not_run",
+      "evidence": "",
+      "observer": ""
+    },
+    {
+      "id": "dispatch",
+      "status": "not_run",
+      "evidence": "",
+      "observer": ""
+    },
+    {
+      "id": "app_seat",
+      "status": "not_run",
+      "evidence": "",
+      "observer": ""
+    },
+    {
+      "id": "credentials",
+      "status": "not_run",
+      "evidence": "",
+      "observer": ""
+    }
+  ],
+  "listeners": [],
+  "samples": []
+}

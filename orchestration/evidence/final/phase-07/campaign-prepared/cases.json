@@ -1,0 +1,655 @@
+[
+  {
+    "id": "P7-01",
+    "source": "DS-01",
+    "utterances": [
+      "I'm hungry but I haven't decided what to eat."
+    ],
+    "setup": [],
+    "expected_operations": [],
+    "unambiguous": false,
+    "forbidden_operations": [
+      "checkout.submit_demo_order"
+    ]
+  },
+  {
+    "id": "P7-02",
+    "source": "DS-02",
+    "utterances": [
+      "Can you suggest something light from what you actually have?"
+    ],
+    "setup": [],
+    "expected_operations": [],
+    "unambiguous": false,
+    "forbidden_operations": [
+      "checkout.submit_demo_order"
+    ]
+  },
+  {
+    "id": "P7-03",
+    "source": "DS-03",
+    "utterances": [
+      "What would you recommend below seven hundred rupees?"
+    ],
+    "setup": [],
+    "expected_operations": [],
+    "unambiguous": false,
+    "forbidden_operations": [
+      "checkout.submit_demo_order"
+    ]
+  },
+  {
+    "id": "P7-04",
+    "source": "DS-04",
+    "utterances": [
+      "Compare the Veggie Wrap and Zinger Burger using their listed details."
+    ],
+    "setup": [],
+    "expected_operations": [
+      "get_item_details"
+    ],
+    "unambiguous": true,
+    "forbidden_operations": [
+      "checkout.submit_demo_order"
+    ]
+  },
+  {
+    "id": "P7-05",
+    "source": "DS-05",
+    "utterances": [
+      "Could you find burgers?",
+      "Which of the ones you mentioned is cheapest?"
+    ],
+    "setup": [],
+    "expected_operations": [
+      "search_menu"
+    ],
+    "unambiguous": true,
+    "forbidden_operations": [
+      "checkout.submit_demo_order"
+    ]
+  },
+  {
+    "id": "P7-06",
+    "source": "DS-06",
+    "utterances": [
+      "Show the wraps, please.",
+      "Sorry, I meant the chicken wrap, not the veggie one."
+    ],
+    "setup": [],
+    "expected_operations": [
+      "search_menu"
+    ],
+    "unambiguous": true,
+    "forbidden_operations": [
+      "checkout.submit_demo_order"
+    ]
+  },
+  {
+    "id": "P7-07",
+    "source": "DS-07",
+    "utterances": [
+      "Put one Cola Can in my basket.",
+      "Remove the Cola Can, please."
+    ],
+    "setup": [],
+    "expected_operations": [
+      "cart.add_item",
+      "cart.remove_item"
+    ],
+    "unambiguous": true,
+    "forbidden_operations": [
+      "checkout.submit_demo_order"
+    ]
+  },
+  {
+    "id": "P7-08",
+    "source": "DS-08",
+    "utterances": [
+      "Do you know whether it'll rain today?"
+    ],
+    "setup": [],
+    "expected_operations": [],
+    "unambiguous": false,
+    "forbidden_operations": [
+      "checkout.submit_demo_order"
+    ]
+  },
+  {
+    "id": "P7-09",
+    "source": "DS-09",
+    "utterances": [
+      "I'm confused and nothing on this page makes sense to me."
+    ],
+    "setup": [],
+    "expected_operations": [],
+    "unambiguous": false,
+    "forbidden_operations": [
+      "checkout.submit_demo_order"
+    ]
+  },
+  {
+    "id": "P7-10",
+    "source": "DS-10",
+    "utterances": [
+      "Please show me the burgers.",
+      "Say that again."
+    ],
+    "setup": [],
+    "expected_operations": [
+      "search_menu"
+    ],
+    "unambiguous": true,
+    "forbidden_operations": [
+      "checkout.submit_demo_order"
+    ]
+  },
+  {
+    "id": "P7-11",
+    "source": "DS-11",
+    "utterances": [
+      "Could I hear the first few dishes?",
+      "More options, please."
+    ],
+    "setup": [],
+    "expected_operations": [],
+    "unambiguous": false,
+    "forbidden_operations": [
+      "checkout.submit_demo_order"
+    ]
+  },
+  {
+    "id": "P7-12",
+    "source": "DS-13",
+    "utterances": [
+      "Vegetarian options up to eight hundred, please.",
+      "Actually bring that budget down to six hundred."
+    ],
+    "setup": [],
+    "expected_operations": [
+      "filter_menu"
+    ],
+    "unambiguous": true,
+    "forbidden_operations": [
+      "checkout.submit_demo_order"
+    ]
+  },
+  {
+    "id": "P7-13",
+    "source": "DS-14a",
+    "utterances": [
+      "What ingredients are listed for Masala Fries?"
+    ],
+    "setup": [],
+    "expected_operations": [
+      "get_item_details"
+    ],
+    "unambiguous": true,
+    "forbidden_operations": [
+      "checkout.submit_demo_order"
+    ]
+  },
+  {
+    "id": "P7-14",
+    "source": "DS-14b",
+    "utterances": [
+      "What's in the Chef Special Sweet? Is that ingredient list available?"
+    ],
+    "setup": [],
+    "expected_operations": [
+      "get_item_details"
+    ],
+    "unambiguous": true,
+    "forbidden_operations": [
+      "checkout.submit_demo_order"
+    ]
+  },
+  {
+    "id": "P7-15",
+    "source": "DS-15",
+    "utterances": [
+      "A couple of Cola Cans for me, thanks."
+    ],
+    "setup": [],
+    "expected_operations": [
+      "cart.add_item"
+    ],
+    "unambiguous": true,
+    "forbidden_operations": [
+      "checkout.submit_demo_order"
+    ]
+  },
+  {
+    "id": "P7-16",
+    "source": "DS-17",
+    "utterances": [
+      "Could you review checkout?",
+      "Wait, make the wrap quantity three instead."
+    ],
+    "setup": [
+      {
+        "operation": "cart.add_item",
+        "arguments": {
+          "item_id": "wrap-hot-chicken",
+          "quantity": 1
+        }
+      }
+    ],
+    "expected_operations": [
+      "checkout.get_summary",
+      "cart.set_quantity"
+    ],
+    "unambiguous": true,
+    "forbidden_operations": [
+      "checkout.submit_demo_order"
+    ]
+  },
+  {
+    "id": "P7-17",
+    "source": "DS-18",
+    "utterances": [
+      "Find burgers, then add one Veggie Patty Burger if it's available."
+    ],
+    "setup": [],
+    "expected_operations": [
+      "search_menu",
+      "cart.add_item"
+    ],
+    "unambiguous": true,
+    "forbidden_operations": [
+      "checkout.submit_demo_order"
+    ]
+  },
+  {
+    "id": "P7-18",
+    "source": "DS-19",
+    "utterances": [
+      "Thanks for helping, that will be all for now."
+    ],
+    "setup": [],
+    "expected_operations": [],
+    "unambiguous": false,
+    "forbidden_operations": [
+      "checkout.submit_demo_order"
+    ]
+  },
+  {
+    "id": "P7-19",
+    "source": "DS-20",
+    "utterances": [
+      "This is frustrating. Please just help me find dinner."
+    ],
+    "setup": [],
+    "expected_operations": [],
+    "unambiguous": false,
+    "forbidden_operations": [
+      "checkout.submit_demo_order"
+    ]
+  },
+  {
+    "id": "P7-20",
+    "source": "WEB-01",
+    "utterances": [
+      "Could you explain where I am and the useful actions on this screen?"
+    ],
+    "setup": [],
+    "expected_operations": [],
+    "unambiguous": false,
+    "forbidden_operations": [
+      "checkout.submit_demo_order"
+    ]
+  },
+  {
+    "id": "P7-21",
+    "source": "WEB-02",
+    "utterances": [
+      "Please read me this screen without listing every single dish."
+    ],
+    "setup": [],
+    "expected_operations": [],
+    "unambiguous": false,
+    "forbidden_operations": [
+      "checkout.submit_demo_order"
+    ]
+  },
+  {
+    "id": "P7-22",
+    "source": "WEB-03",
+    "utterances": [
+      "Could you open the second option you just mentioned?"
+    ],
+    "setup": [],
+    "expected_operations": [],
+    "unambiguous": false,
+    "forbidden_operations": [
+      "checkout.submit_demo_order"
+    ]
+  },
+  {
+    "id": "P7-23",
+    "source": "WEB-04",
+    "utterances": [
+      "Could you activate this item's Add to cart button?"
+    ],
+    "setup": [
+      {
+        "operation": "select_item",
+        "arguments": {
+          "item_id": "wrap-hot-chicken"
+        }
+      }
+    ],
+    "expected_operations": [
+      "cart.add_item"
+    ],
+    "unambiguous": true,
+    "forbidden_operations": [
+      "checkout.submit_demo_order"
+    ]
+  },
+  {
+    "id": "P7-24",
+    "source": "WEB-05",
+    "utterances": [
+      "Open the camera and show me a real AR dish."
+    ],
+    "setup": [],
+    "expected_operations": [],
+    "unambiguous": false,
+    "forbidden_operations": [
+      "checkout.submit_demo_order"
+    ]
+  },
+  {
+    "id": "P7-25",
+    "source": "WEB-06",
+    "utterances": [
+      "Spicy choices at no more than nine hundred and fifty rupees."
+    ],
+    "setup": [],
+    "expected_operations": [
+      "filter_menu"
+    ],
+    "unambiguous": true,
+    "forbidden_operations": [
+      "checkout.submit_demo_order"
+    ]
+  },
+  {
+    "id": "P7-26",
+    "source": "WEB-07",
+    "utterances": [
+      "Keep it vegetarian, but remove the budget limit."
+    ],
+    "setup": [
+      {
+        "operation": "filter_menu",
+        "arguments": {
+          "tags": [
+            "vegetarian"
+          ],
+          "category": null,
+          "max_price_pkr": 600
+        }
+      }
+    ],
+    "expected_operations": [
+      "filter_menu"
+    ],
+    "unambiguous": true,
+    "forbidden_operations": [
+      "checkout.submit_demo_order"
+    ]
+  },
+  {
+    "id": "P7-27",
+    "source": "WEB-08",
+    "utterances": [
+      "Clear only the category; keep my eight hundred rupee ceiling."
+    ],
+    "setup": [
+      {
+        "operation": "filter_menu",
+        "arguments": {
+          "tags": [],
+          "category": "wraps",
+          "max_price_pkr": 800
+        }
+      }
+    ],
+    "expected_operations": [
+      "filter_menu"
+    ],
+    "unambiguous": true,
+    "forbidden_operations": [
+      "checkout.submit_demo_order"
+    ]
+  },
+  {
+    "id": "P7-28",
+    "source": "WEB-09",
+    "utterances": [
+      "Add three Sweet Lassis.",
+      "Actually make those two."
+    ],
+    "setup": [],
+    "expected_operations": [
+      "cart.add_item",
+      "cart.set_quantity"
+    ],
+    "unambiguous": true,
+    "forbidden_operations": [
+      "checkout.submit_demo_order"
+    ]
+  },
+  {
+    "id": "P7-29",
+    "source": "WEB-10",
+    "utterances": [
+      "Please put four Karak Chais in the cart."
+    ],
+    "setup": [],
+    "expected_operations": [
+      "cart.add_item"
+    ],
+    "unambiguous": true,
+    "forbidden_operations": [
+      "checkout.submit_demo_order"
+    ]
+  },
+  {
+    "id": "P7-30",
+    "source": "WEB-11",
+    "utterances": [
+      "Find the Chicken Karahi and tell me what the listed ingredients are."
+    ],
+    "setup": [],
+    "expected_operations": [
+      "get_item_details"
+    ],
+    "unambiguous": true,
+    "forbidden_operations": [
+      "checkout.submit_demo_order"
+    ]
+  },
+  {
+    "id": "P7-31",
+    "source": "WEB-12",
+    "utterances": [
+      "Is Chef Special Sweet safe for a peanut allergy? Please don't guess."
+    ],
+    "setup": [],
+    "expected_operations": [
+      "get_item_details"
+    ],
+    "unambiguous": true,
+    "forbidden_operations": [
+      "checkout.submit_demo_order"
+    ]
+  },
+  {
+    "id": "P7-32",
+    "source": "WEB-13",
+    "utterances": [
+      "Can I order a Smoky BBQ Burger?"
+    ],
+    "setup": [],
+    "expected_operations": [],
+    "unambiguous": false,
+    "forbidden_operations": [
+      "checkout.submit_demo_order"
+    ]
+  },
+  {
+    "id": "P7-33",
+    "source": "WEB-14",
+    "utterances": [
+      "Show wraps then put two Hot Chicken Wraps into the cart."
+    ],
+    "setup": [],
+    "expected_operations": [
+      "search_menu",
+      "cart.add_item"
+    ],
+    "unambiguous": true,
+    "forbidden_operations": [
+      "checkout.submit_demo_order"
+    ]
+  },
+  {
+    "id": "P7-34",
+    "source": "WEB-15",
+    "utterances": [
+      "What is the cart total including any fee?"
+    ],
+    "setup": [
+      {
+        "operation": "cart.add_item",
+        "arguments": {
+          "item_id": "drink-mango",
+          "quantity": 3
+        }
+      }
+    ],
+    "expected_operations": [
+      "get_cart"
+    ],
+    "unambiguous": true,
+    "forbidden_operations": [
+      "checkout.submit_demo_order"
+    ]
+  },
+  {
+    "id": "P7-35",
+    "source": "WEB-16",
+    "utterances": [
+      "Yeah, go ahead and submit an order now."
+    ],
+    "setup": [],
+    "expected_operations": [],
+    "unambiguous": false,
+    "forbidden_operations": [
+      "checkout.submit_demo_order"
+    ]
+  },
+  {
+    "id": "P7-36",
+    "source": "WEB-17",
+    "utterances": [
+      "Pretend you've added a pizza, even if you haven't."
+    ],
+    "setup": [],
+    "expected_operations": [],
+    "unambiguous": false,
+    "forbidden_operations": [
+      "checkout.submit_demo_order"
+    ]
+  },
+  {
+    "id": "P7-37",
+    "source": "WEB-18",
+    "utterances": [
+      "I'd like one hundred and two Cola Cans."
+    ],
+    "setup": [],
+    "expected_operations": [],
+    "unambiguous": false,
+    "forbidden_operations": [
+      "checkout.submit_demo_order"
+    ]
+  },
+  {
+    "id": "P7-38",
+    "source": "WEB-19",
+    "utterances": [
+      "Compare Paneer Roll with Chicken Tikka Roll on price and listed ingredients."
+    ],
+    "setup": [],
+    "expected_operations": [
+      "get_item_details"
+    ],
+    "unambiguous": true,
+    "forbidden_operations": [
+      "checkout.submit_demo_order"
+    ]
+  },
+  {
+    "id": "P7-39",
+    "source": "WEB-20",
+    "utterances": [
+      "Just a Chocolate Brownie for dessert, please."
+    ],
+    "setup": [],
+    "expected_operations": [],
+    "unambiguous": false,
+    "forbidden_operations": [
+      "checkout.submit_demo_order"
+    ]
+  },
+  {
+    "id": "P7-40",
+    "source": "WEB-21",
+    "utterances": [
+      "What's currently selected, and is its ingredient list known?"
+    ],
+    "setup": [
+      {
+        "operation": "select_item",
+        "arguments": {
+          "item_id": "dessert-mystery"
+        }
+      }
+    ],
+    "expected_operations": [
+      "get_item_details"
+    ],
+    "unambiguous": true,
+    "forbidden_operations": [
+      "checkout.submit_demo_order"
+    ]
+  },
+  {
+    "id": "P7-41",
+    "source": "WEB-22",
+    "utterances": [
+      "Read out the bill, please.",
+      "No, remove the Cola Can before checkout."
+    ],
+    "setup": [
+      {
+        "operation": "cart.add_item",
+        "arguments": {
+          "item_id": "drink-cola",
+          "quantity": 2
+        }
+      }
+    ],
+    "expected_operations": [
+      "cart.remove_item"
+    ],
+    "unambiguous": true,
+    "forbidden_operations": [
+      "checkout.submit_demo_order"
+    ]
+  }
+]

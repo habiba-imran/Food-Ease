@@ -1,5 +1,124 @@
 # STATUS
 
+**Final orchestration Phase 9 — 2026-10-18:** Delivery implementation is complete.
+The final helper launches the real website/session/integrated worker on distinct
+ports, loads worker configuration before CLI resolution, checks health without
+dispatch, and stops exact owned processes through private graceful-shutdown input.
+Manual mode needs no provider or worker. Recording is explicitly disabled in the
+integrated SDK start call; unused RemoteSession hosting is disabled. Redacted logs,
+the complete 63-case acceptance packet, percentile/coverage evaluation and the
+[final runbook](../../orchestration/docs/FINAL_RUNBOOK.md) are delivered. See the
+[Phase 9 evidence](../../orchestration/evidence/final/phase-09/report.md).
+Implementation gate: **passed**. [Final validation](../../orchestration/evidence/final/phase-09/final-validation.json)
+combines run 4 with the final browser rerun and strengthened receipt regression: 28 checks,
+zero unexpected failures: **102 focused worker tests, 108 safety/dialogue/speech
+checks, 39 website tests, 56 orchestration tests, 44 JavaScript tests and 40
+Chromium/local-fake tests passed**. Scoped lint/types, frozen v2 and all 92 preserved
+v1 files passed with zero drift. Full agent retains one inherited failure
+(367 passed), 39 lint issues and 27 type errors/2 warnings.
+The final lost-response receipt/reload assertions also passed three consecutive
+runs. Earlier failed startup/test observations remain preserved in the report.
+Configured-stack checks exposed and fixed a held-open stdin/native-import deadlock
+and the SDK's short VAD initialization budget. The final bounded startup verified
+all three service health endpoints, VAD runners and actual LiveKit Cloud worker
+registration, then cleanly drained/stopped the owned stack. No room, dispatch or
+conversation was started. [Redacted startup observation](../../orchestration/evidence/final/phase-09/live-startup.json).
+Activation/final live acceptance gate: **pending**. Human device/accessibility,
+provider conversation, listener judgments and audible timing are not established
+by these tests. At least 40 real-model turns / three listeners and 30 ordinary
+live attempts / 10 genuine interruptions remain required, with the O/W/T matrix
+and Chrome/Edge/phone walkthrough. **No implementation phases remain in the
+approved plan; final live acceptance remains open.** Earlier entries below are
+historical checkpoints, including statements that Phase 9 had not started.
+
+**Live acceptance update:** Habiba explicitly approved provider usage and beginning
+live acceptance. The actual stack was relaunched for a bounded 30-minute session
+and the actual website opened in Chrome. Computer Use's browser-URL safety guard
+then stopped desktop input before an assistance conversation started. See the
+[partial attempt](../../orchestration/evidence/final/phase-09/live-acceptance-1/environment.md).
+Approval persists; physical/provider conversation and human acceptance remain pending.
+
+**Final orchestration Phase 8 — 2026-10-17:** Recovery implementation is complete:
+public SDK provider-error handling preserves silent typing when speech fails and
+manual controls when the model fails. Reconnect blocks new work/audio until both
+browser seats and a fresh worker-acknowledged snapshot are ready, revokes old
+confirmation/references and never retries uncertain mutations. Original-ID lookup
+distinguishes pending, not-yet-seen and expired outcomes. Reload cleanup identity,
+duplicate-tab locking, credential/status deadlines, background/seat-loss shutdown
+and owned-write draining are implemented. See
+[recovery handoff](../../orchestration/docs/PHASE_08_RECOVERY.md) and
+[evidence](../../orchestration/evidence/final/phase-08/report.md).
+Implementation gate: **99 focused worker tests, 108 safety/dialogue/speech checks,
+44 JavaScript tests and 37 Chromium/local-fake tests passed**; website 39 and
+orchestration 36 tests, scoped lint/types and frozen contracts passed. Final verifier
+has zero unexpected failures and zero drift across 92 v1 files. Full agent retains
+one inherited failure (364 passed), 39 lint issues and 27 type errors/2 warnings.
+Live gate: **not evaluated**. There are zero vendor outage samples, audible barge-in
+measurements or human false-interruption judgments. Native synthetic capture and
+SDK provider-interface fakes are not physical/provider evidence. Phase 7's actual
+model/listener gate also stays open. **Phase 9 is the one planned phase remaining;
+it has not started.** Earlier entries below are historical checkpoints.
+
+**Final orchestration Phase 7 — 2026-10-17:** The live runtime now has semantic
+page/action context, verified details, completed-output item references, short-list
+next/previous, granular filter refinement and finite multi-step/duplicate guards.
+Actual prompt/tool descriptions and streaming speech shaping are wired; decimal
+speech preserves both fractional digits. Supported speech controls use real SDK
+options. See [conversation handoff](../../orchestration/docs/PHASE_07_GROUNDED_CONVERSATION.md)
+and [evidence](../../orchestration/evidence/final/phase-07/report.md).
+Implementation gate: 81 focused worker/campaign tests, 108 safety/dialogue/speech
+checks, 29 JavaScript tests and 27 actual-browser/local-fake tests passed. Website
+39 and orchestration 36 tests, scoped lint/types and frozen contracts passed.
+Full agent: 346 passed plus one inherited failure; 39 inherited lint issues and
+27 type errors/2 warnings remain. Live quality gate: **not evaluated**. The prepared
+campaign has 41 cases/50 planned turns, zero real-model turns and zero listeners;
+no Google key was loaded and no providers were called. At least 40 actual model
+turns and a three-listener live rating panel remain required, alongside prior
+activation checks. Phases 8 and 9 remain; neither has been started.
+
+**Final orchestration Phase 6 — 2026-10-17:** The existing website surface now
+offers explicit spoken-choice consent and direct manual/voice/typing. A deterministic
+chooser admits no shopping/model calls before a clear mode selection, clarifies
+once, then stays quiet. Manual stops/unpublishes capture and detaches playback;
+submitted actions retain their real outcome, while queued work is checked again
+before submission. Cart/route survive resumption, with brief return copy and no
+automatic microphone reopening. Typed audio is a separate explicit preference;
+mode controls remain usable inside shopping dialogs. See
+[mode handoff](../../orchestration/docs/PHASE_06_OPENING_MODES.md) and
+[verification report](../../orchestration/evidence/final/phase-06/report.md).
+Implementation gate: 60 focused worker tests, 29 JavaScript tests, 22 final browser
+tests, 39 website tests and 36 orchestration tests passed; scoped lint/types and
+frozen contracts passed. Native Chromium synthetic capture and generated media
+playback are verified, including real track ending and audio detachment. The full
+agent suite retains one inherited failure (324 passed), 39 lint issues and 27 type
+errors/2 warnings. Activation gate: physical devices, LiveKit Cloud and provider
+STT/TTS/audio remain unverified. Phase 7 has not started.
+
+**Final orchestration Phase 5 — 2026-10-17:** The website now connects its bound
+LiveKit seats, forwards the thirteen semantic operations to its real authority,
+renders one authoritative view and publishes synchronized context. Typed input
+enters the actual worker path; canonical captions/status, single audio attachment,
+post-render summary receipts and unknown-action recovery are wired. See
+[browser handoff](../../orchestration/docs/PHASE_05_BROWSER_INTEGRATION.md) and
+[verification report](../../orchestration/evidence/final/phase-05/report.md).
+Implementation gate: 10 real-browser/local-fake integration tests, 49 focused
+worker checks, 39 website tests and 24 JavaScript checks passed. Scoped lint/types
+passed. Full agent suite: 313 passed plus the same inherited mock-boundary failure;
+39 inherited lint issues and 27 type errors remain recorded. Cloud/provider/audio
+activation is unverified. Phase 6's opening spoken mode chooser has not started.
+
+**Final orchestration Phase 4 — 2026-10-17:** The actual integrated worker now
+attaches the v2 streaming conversation/action runtime. All thirteen tools share
+fresh-context validation, per-turn authorization, owned action tasks and delivered
+checkout consent. Controls, current-context reasoning and finite idle scheduling
+are implemented. See [runtime and limits](../../orchestration/docs/PHASE_04_LIVE_CONVERSATION_RUNTIME.md)
+and [verification report](../../orchestration/evidence/final/phase-04/report.md).
+Implementation gate: 46 focused checks passed; scoped lint/types passed. Full
+agent suite: 310 passed plus the one inherited mock-boundary failure; the existing
+39 lint issues and 27 type errors remain recorded. Activation gate is unverified.
+Browser wiring remains Phase 5; opening mode choice remains Phase 6. Neither has
+started. Historical completion notes below are preserved as dated records.
+
 **Final orchestration Phase 3 — 2026-10-17:** Bound assistance preparation,
 readiness, cancellation, role checks and retained teardown reconciliation are
 implemented. See [lifecycle and limits](../../orchestration/docs/PHASE_03_ASSISTANCE_LIFECYCLE.md)

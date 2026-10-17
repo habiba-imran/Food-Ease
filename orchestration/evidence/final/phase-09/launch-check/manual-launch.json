@@ -1,0 +1,14 @@
+{
+  "mode": "offline_manual",
+  "services": [
+    "website",
+    "session"
+  ],
+  "real_http_authority": true,
+  "cart_quantity": 1,
+  "cart_total_pkr": 900,
+  "shutdown_ports_released": true,
+  "worker_launched": false,
+  "providers": "none",
+  "live_acceptance": false
+}

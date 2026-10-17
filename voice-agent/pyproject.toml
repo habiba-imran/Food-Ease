@@ -23,6 +23,7 @@ foodease-worker = "foodease_agent.worker:main"
 
 [dependency-groups]
 dev = [
+    "foodease-website==0.1.0",
     "pytest>=8.3.0",
     "ruff>=0.11.0",
     "pyright>=1.1.400",
@@ -39,10 +40,11 @@ package = true
 
 [tool.uv.sources]
 foodease-contract = { path = "../contracts", editable = true }
+foodease-website = { path = "../website", editable = true }
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-pythonpath = ["src", ".", "mock_app"]
+pythonpath = ["src", ".", "mock_app", "../website/src"]
 asyncio_mode = "auto"
 asyncio_default_fixture_loop_scope = "function"
 
@@ -82,6 +84,7 @@ select = ["E", "F", "I", "UP", "B"]
 
 [tool.pyright]
 include = ["src", "tests"]
+extraPaths = ["../website/src", "../orchestration/tools"]
 pythonVersion = "3.12"
 typeCheckingMode = "basic"
 venvPath = "."

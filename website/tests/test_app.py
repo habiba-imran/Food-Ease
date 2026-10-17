@@ -32,7 +32,7 @@ def test_homepage_uses_ordering_design_language() -> None:
     assert response.status_code == 200
     assert "Start ordering" in response.text
     assert "Popular picks" in response.text
-    assert "Mock agent harness" in response.text
+    assert "FoodEase ordering assistance" in response.text
     assert "3D menu preview" in response.text
     assert "Phase 12 AR enhancement" in response.text
     assert "Phase 13 acceptance evidence" in response.text

@@ -1,0 +1,57 @@
+FoodEase final stack: live
+Ownership: docs/OWNERSHIP.md
+Each block uses a separate PowerShell terminal; foodease-session is the Session API.
+
+# website
+Set-Location -LiteralPath 'C:\HCI-PROJECT\website'
+$env:RECORD_AUDIO = 'false'
+$env:DEV_MODE = 'false'
+$env:ENABLE_MOCK_AGENT = 'false'
+$env:HOST = '127.0.0.1'
+$env:FOODEASE_LEGACY_DEV_API = 'false'
+$env:FOODEASE_AGENT_NAME = 'foodease'
+$env:PYTHONUNBUFFERED = '1'
+$env:LIVEKIT_AGENT_DISPATCH = 'true'
+$env:FOODEASE_EVIDENCE_KIND = 'live_requested'
+$env:PYTHON_DOTENV_DISABLED = '0'
+$env:PORT = '8080'
+$env:ORCHESTRATION_BASE_URL = 'http://127.0.0.1:8090'
+& 'C:\HCI-PROJECT\website\.venv\Scripts\python.exe' -m foodease_website.main
+
+# session
+Set-Location -LiteralPath 'C:\HCI-PROJECT\orchestration'
+$env:RECORD_AUDIO = 'false'
+$env:DEV_MODE = 'false'
+$env:ENABLE_MOCK_AGENT = 'false'
+$env:HOST = '127.0.0.1'
+$env:FOODEASE_LEGACY_DEV_API = 'false'
+$env:FOODEASE_AGENT_NAME = 'foodease'
+$env:PYTHONUNBUFFERED = '1'
+$env:LIVEKIT_AGENT_DISPATCH = 'true'
+$env:FOODEASE_EVIDENCE_KIND = 'live_requested'
+$env:PYTHON_DOTENV_DISABLED = '0'
+$env:PORT = '8090'
+$env:FOODEASE_WEBSITE_URL = 'http://127.0.0.1:8080'
+$env:CORS_ORIGINS = 'http://127.0.0.1:8080'
+& 'C:\HCI-PROJECT\orchestration\.venv\Scripts\python.exe' -m foodease_session.main
+
+# worker
+Set-Location -LiteralPath 'C:\HCI-PROJECT\voice-agent'
+$env:RECORD_AUDIO = 'false'
+$env:DEV_MODE = 'false'
+$env:ENABLE_MOCK_AGENT = 'false'
+$env:HOST = '127.0.0.1'
+$env:FOODEASE_LEGACY_DEV_API = 'false'
+$env:FOODEASE_AGENT_NAME = 'foodease'
+$env:PYTHONUNBUFFERED = '1'
+$env:LIVEKIT_AGENT_DISPATCH = 'true'
+$env:FOODEASE_EVIDENCE_KIND = 'live_requested'
+$env:PYTHON_DOTENV_DISABLED = '0'
+$env:PORT = '8081'
+$env:FOODEASE_APP_TRANSPORT = 'website'
+$env:FOODEASE_SESSION_API = 'http://127.0.0.1:8090'
+$env:FOODEASE_WORKER_PORT = '8081'
+& 'C:\HCI-PROJECT\voice-agent\.venv\Scripts\python.exe' -m foodease_agent.worker start --log-level info --drain-timeout 20
+
+Open http://127.0.0.1:8080
+Health checks do not start assistance.

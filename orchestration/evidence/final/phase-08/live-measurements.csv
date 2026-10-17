@@ -1,0 +1,1 @@
+sample_id,date_utc,browser_device,network,scenario,provider_component,mode,action_id,lookup_state,verified_write_count,user_onset_ms,audible_silence_ms,barge_in_stop_ms,sdk_false_interruption,resumed,relevance_judgment,pass_fail,notes

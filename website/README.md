@@ -2,9 +2,47 @@
 
 Python-first website/application seat for the accessible FoodEase ordering demo.
 
+**Final delivery:** Use the [final runbook](../orchestration/docs/FINAL_RUNBOOK.md)
+for the real website/session/worker stack and supported PowerShell commands.
+Phase 9 adds keyboard activation/exit and real browser session-isolation checks;
+human screen-reader, physical-device and live provider acceptance remain separate.
+No visual polish or animations are part of this orchestration delivery.
+
+**Final orchestration Phase 8:** The browser blocks new assistance work and audio
+during reconnect, waits for fresh worker-acknowledged state, keeps original pending
+action IDs and recovers cleanup identity after reload. Backgrounding/expired
+credentials stop locally and require a new gesture; duplicate tab ownership is
+guarded where browser Web Locks are supported. See
+[recovery handoff](../orchestration/docs/PHASE_08_RECOVERY.md) and
+[evidence](../orchestration/evidence/final/phase-08/report.md). No UI redesign is
+included. Cloud/provider failures and actual audible interruption timing still
+need live validation; Phase 9 is not implemented.
+
+**Final orchestration Phase 7:** Actual worker/browser tests now cover page reading,
+selection by presented position, semantic Add to cart, next/previous, manual-change
+clarification, filter refinement and quantity correction. The live worker has the
+semantic context and streaming prompt/tool wiring; the separate real-model and
+human listening quality gate is pending. See the
+[conversation handoff](../orchestration/docs/PHASE_07_GROUNDED_CONVERSATION.md).
+No UI polish or animation work is included.
+
+**Final orchestration Phase 6:** The existing assistant surface now offers explicit
+spoken-choice consent, direct manual/voice/typing, complete local media shutdown,
+brief same-session resumption and optional typed speech output without capture.
+See [mode handoff](../orchestration/docs/PHASE_06_OPENING_MODES.md) and
+[evidence](../orchestration/evidence/final/phase-06/report.md). Returning visits
+still require activation. No UI redesign or Phase 7 work is included.
+
 This folder is owned by Zainab's website work. It must not duplicate Habiba's
 voice brain or orchestration secrets. The website owns catalog display, cart
-state, checkout state, app context and the future app-seat integration boundary.
+state, checkout state, app context and the app-seat integration boundary.
+
+**Final orchestration Phase 5:** The page now imports the LiveKit bridge, the
+assistance controller and one authoritative renderer. Explicit typed/voice buttons
+connect the existing shopping session to the worker. See [browser/runtime handoff](../orchestration/docs/PHASE_05_BROWSER_INTEGRATION.md)
+and [verification report](../orchestration/evidence/final/phase-05/report.md).
+The opening spoken mode chooser remains Phase 6; live provider/audio activation
+is not claimed. The dated Phase 2/3 notes below are historical milestones.
 
 Final orchestration Phase 2 adds owner-scoped shopping sessions, the shared 2.0
 validator, atomic/idempotent operation handling and receipt lookup. See the
@@ -20,7 +58,7 @@ The page does not import it yet; LiveKit SDK/page wiring remains Phase 5. See th
 
 - Complete manual food-ordering journey.
 - Search, filters, categories, item details, cart, review and simulated checkout.
-- Consent-first mock assistant panel with typed fallback.
+- Consented typed/voice assistant panel connected to the configured session service and worker.
 - Semantic action API for Habiba's voice agent.
 - Versioned app context with revision, route, focused item, visible items and cart.
 - Idempotent action IDs, stale-context refusal and checkout confirmation tokens.

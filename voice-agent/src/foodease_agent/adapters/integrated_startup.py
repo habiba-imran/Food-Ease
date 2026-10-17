@@ -22,6 +22,9 @@ class IntegratedRoomGate:
         self.latest: ContextSnapshot | None = None
         self.events: list[Any] = []
         self.closed = False
+        self._event_listeners: list[Any] = []
+        self._close_listeners: list[Any] = []
+        self._seen_events: dict[tuple[str, str], None] = {}
         self._callback = self.receive
         self._disconnect_callback = lambda *args: self.close()
         self._participant_callback = self._participant_left
@@ -72,12 +75,23 @@ class IntegratedRoomGate:
             if sender is None or not self._bound(sender, role):
                 return
             assert_authorized(event, self.startup.binding, sender_identity=sender.identity)
+            event_key = (event.type, event.event_id)
+            if event_key in self._seen_events:
+                return
+            if len(self._seen_events) >= 4096:
+                self.close()
+                return
+            self._seen_events[event_key] = None
             if isinstance(event, ContextEvent):
                 if self.latest is None or event.payload.revision > self.latest.revision:
                     self.latest = event.payload
+                    for listener in tuple(self._event_listeners):
+                        listener(event)
             else:
                 self.events.append(event)
                 del self.events[:-64]
+                for listener in tuple(self._event_listeners):
+                    listener(event)
                 if isinstance(event, AppControlEvent) and (
                     event.payload.intent == "end"
                     or event.payload.intent == "switch_mode"
@@ -86,6 +100,16 @@ class IntegratedRoomGate:
                     self.close()
         except (ValueError, TypeError, AttributeError):
             return
+
+    def subscribe(self, on_event: Any, on_close: Any) -> None:
+        self._event_listeners.append(on_event)
+        self._close_listeners.append(on_close)
+
+    def unsubscribe(self, on_event: Any, on_close: Any) -> None:
+        if on_event in self._event_listeners:
+            self._event_listeners.remove(on_event)
+        if on_close in self._close_listeners:
+            self._close_listeners.remove(on_close)
 
     async def wait_ready(self, *, timeout: float = 15) -> ContextSnapshot:
         async with asyncio.timeout(timeout):
@@ -107,6 +131,8 @@ class IntegratedRoomGate:
             self.room.off("data_received", self._callback)
             self.room.off("disconnected", self._disconnect_callback)
             self.room.off("participant_disconnected", self._participant_callback)
+            for listener in tuple(self._close_listeners):
+                listener()
 
 
 async def report_worker_ready(
@@ -124,4 +150,18 @@ async def report_worker_ready(
             },
         )
         response.raise_for_status()
-        return response.json()
+        result = response.json()
+        if any(
+            result.get(key) != value
+            for key, value in {
+                "schema_version": "2.0",
+                "session_id": startup.binding.session_id,
+                "generation": startup.generation,
+                "request_id": startup.request_id,
+                "binding": startup.binding.model_dump(mode="json"),
+            }.items()
+        ):
+            raise ValueError("uncorrelated worker readiness acknowledgement")
+        if result.get("greeting_allowed") is True and result.get("state") != "active":
+            raise ValueError("inactive worker readiness acknowledgement")
+        return result

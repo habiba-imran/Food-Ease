@@ -1,0 +1,91 @@
+
+Running 21 tests using 1 worker
+
+(node:23004) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok  1 tests\browser\integration.spec.mjs:30:1 › actual browser + website + worker: typed order, exact summary and demo receipt (12.5s)
+  ok  2 tests\browser\integration.spec.mjs:56:1 › manual filtering exactly matches authoritative IDs; search clear and availability (2.6s)
+  ok  3 tests\browser\integration.spec.mjs:86:1 › injected bound agent actions visibly render menu, item, cart and checkout (2.7s)
+  ok  4 tests\browser\integration.spec.mjs:102:1 › reply lost after a real commit reconciles once; rejected actions never announce success (2.5s)
+  ok  5 tests\browser\integration.spec.mjs:121:1 › typed assistance does not attach remote audio (2.2s)
+Cannot enable audio input when it's not set
+Cannot enable audio output when it's not set
+Cannot enable audio input when it's not set
+Cannot enable audio output when it's not set
+  ok  6 tests\browser\integration.spec.mjs:136:1 › voice audio attaches once and end stops fake media immediately; native captions are ignored (2.3s)
+  ok  7 tests\browser\integration.spec.mjs:165:1 › foreign RPC callers cannot forward actions (2.1s)
+  ok  8 tests\browser\integration.spec.mjs:175:1 › stale actions cannot change a newer view and reconnect republishes current context (2.4s)
+  ok  9 tests\browser\integration.spec.mjs:188:1 › unknown action survives reload, blocks resubmit and reconciles a delayed original outcome (1.8s)
+  ok 10 tests\browser\integration.spec.mjs:213:1 › manual changes reach worker-visible context; partial captions keep focus and replace (2.5s)
+Exception in callback _ProactorBasePipeTransport._call_connection_lost(None)
+handle: <Handle _ProactorBasePipeTransport._call_connection_lost(None)>
+Traceback (most recent call last):
+  File "C:\Users\habiba\AppData\Roaming\uv\python\cpython-3.12-windows-x86_64-none\Lib\asyncio\events.py", line 88, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\habiba\AppData\Roaming\uv\python\cpython-3.12-windows-x86_64-none\Lib\asyncio\proactor_events.py", line 165, in _call_connection_lost
+    self._sock.shutdown(socket.SHUT_RDWR)
+ConnectionResetError: [WinError 10054] An existing connection was forcibly closed by the remote host
+(node:21880) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 11 tests\browser\opening.spec.mjs:33:1 › fresh visitor and direct manual never request media or a dispatch (1.6s)
+Cannot enable audio input when it's not set
+Cannot enable audio output when it's not set
+  ok 12 tests\browser\opening.spec.mjs:42:1 › chooser rejects shopping, clarifies once, and manual ends actual capture and playback (3.1s)
+Cannot enable audio input when it's not set
+Cannot enable audio output when it's not set
+Cannot enable audio input when it's not set
+Cannot enable audio output when it's not set
+Cannot enable audio input when it's not set
+Cannot enable audio output when it's not set
+  ok 13 tests\browser\opening.spec.mjs:69:1 › voice manual voice and typing preserve cart/session; each generation greets once (5.0s)
+  ok 14 tests\browser\opening.spec.mjs:91:3 › microphone denied never dispatches; late permission is stopped after manual (993ms)
+Exception in callback _ProactorBasePipeTransport._call_connection_lost(None)
+handle: <Handle _ProactorBasePipeTransport._call_connection_lost(None)>
+Traceback (most recent call last):
+  File "C:\Users\habiba\AppData\Roaming\uv\python\cpython-3.12-windows-x86_64-none\Lib\asyncio\events.py", line 88, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\habiba\AppData\Roaming\uv\python\cpython-3.12-windows-x86_64-none\Lib\asyncio\proactor_events.py", line 165, in _call_connection_lost
+    self._sock.shutdown(socket.SHUT_RDWR)
+ConnectionResetError: [WinError 10054] An existing connection was forcibly closed by the remote host
+Exception in callback _ProactorBasePipeTransport._call_connection_lost(None)
+handle: <Handle _ProactorBasePipeTransport._call_connection_lost(None)>
+Traceback (most recent call last):
+  File "C:\Users\habiba\AppData\Roaming\uv\python\cpython-3.12-windows-x86_64-none\Lib\asyncio\events.py", line 88, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\habiba\AppData\Roaming\uv\python\cpython-3.12-windows-x86_64-none\Lib\asyncio\proactor_events.py", line 165, in _call_connection_lost
+    self._sock.shutdown(socket.SHUT_RDWR)
+ConnectionResetError: [WinError 10054] An existing connection was forcibly closed by the remote host
+Exception in callback _ProactorBasePipeTransport._call_connection_lost(None)
+handle: <Handle _ProactorBasePipeTransport._call_connection_lost(None)>
+Traceback (most recent call last):
+  File "C:\Users\habiba\AppData\Roaming\uv\python\cpython-3.12-windows-x86_64-none\Lib\asyncio\events.py", line 88, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\habiba\AppData\Roaming\uv\python\cpython-3.12-windows-x86_64-none\Lib\asyncio\proactor_events.py", line 165, in _call_connection_lost
+    self._sock.shutdown(socket.SHUT_RDWR)
+ConnectionResetError: [WinError 10054] An existing connection was forcibly closed by the remote host
+  ok 15 tests\browser\opening.spec.mjs:91:3 › microphone missing never dispatches; late permission is stopped after manual (851ms)
+Exception in callback _ProactorBasePipeTransport._call_connection_lost(None)
+handle: <Handle _ProactorBasePipeTransport._call_connection_lost(None)>
+Traceback (most recent call last):
+  File "C:\Users\habiba\AppData\Roaming\uv\python\cpython-3.12-windows-x86_64-none\Lib\asyncio\events.py", line 88, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\habiba\AppData\Roaming\uv\python\cpython-3.12-windows-x86_64-none\Lib\asyncio\proactor_events.py", line 165, in _call_connection_lost
+    self._sock.shutdown(socket.SHUT_RDWR)
+ConnectionResetError: [WinError 10054] An existing connection was forcibly closed by the remote host
+  ok 16 tests\browser\opening.spec.mjs:91:3 › microphone pending never dispatches; late permission is stopped after manual (962ms)
+  ok 17 tests\browser\opening.spec.mjs:112:1 › return visit uses explicit activation fallback and never silently reopens microphone (5.6s)
+  ok 18 tests\browser\opening.spec.mjs:122:1 › autoplay blocked before readiness stops capture without a greeting (1.3s)
+Cannot enable audio input when it's not set
+Cannot enable audio output when it's not set
+Cannot enable audio input when it's not set
+Cannot enable audio output when it's not set
+  ok 19 tests\browser\opening.spec.mjs:136:1 › manual during a committed cart request preserves its outcome and stops capture (2.9s)
+Cannot enable audio output when it's not set
+  ok 20 tests\browser\opening.spec.mjs:162:1 › explicit typed audio preference never opens capture and can be switched off (2.5s)
+Cannot enable audio input when it's not set
+Cannot enable audio output when it's not set
+Cannot enable audio input when it's not set
+Cannot enable audio output when it's not set
+  ok 21 tests\browser\opening.spec.mjs:185:1 › spoken chooser voice choice opens shopping once; manual during greeting revokes it (2.8s)
+
+  21 passed (1.1m)

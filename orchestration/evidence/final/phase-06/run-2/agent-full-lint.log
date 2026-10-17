@@ -1,0 +1,552 @@
+E501 Line too long (101 > 100)
+   --> spikes\llm_spike.py:168:101
+    |
+166 |     ("search karahi", "search_menu", {"query": "karahi"}),
+167 |     ("add one dessert_01", "cart.add_item", {"item_id": "dessert_01", "quantity": 1}),
+168 |     ("set quantity of burger_01 to 3", "cart.set_quantity", {"item_id": "burger_01", "quantity": 3}),
+    |                                                                                                     ^
+169 |     ("remove burger_01", "cart.remove_item", {"item_id": "burger_01"}),
+170 |     ("open home", "navigate", {"target": "home"}),
+    |
+
+F401 [*] `sys` imported but unused
+  --> spikes\stt_spike.py:9:8
+   |
+ 8 | import json
+ 9 | import sys
+   |        ^^^
+10 | from pathlib import Path
+   |
+help: Remove unused import: `sys`
+  |
+8 | import json
+  - import sys
+9 | from pathlib import Path
+  |
+
+E501 Line too long (101 > 100)
+   --> spikes\tts_spike.py:251:101
+    |
+249 |                 purpose="emotion:laughter_tag",
+250 |             )
+251 |             emotion[laugh_key] = {**meta, "ok": True, "note": "literal [laughter] tag in transcript"}
+    |                                                                                                     ^
+252 |         except Exception as exc:  # noqa: BLE001
+253 |             emotion[laugh_key] = {"ok": False, "error": f"{type(exc).__name__}: {exc}"}
+    |
+
+E501 Line too long (107 > 100)
+   --> src\foodease_agent\adapters\mock.py:321:101
+    |
+319 |         )
+320 |         nav = ["home", "back", "cart", "checkout", "burgers", "wraps", "drinks", "desserts"]
+321 |         # Prefer semantic location for orientation ("where am I?") — category name over generic "category".
+    |                                                                                                     ^^^^^^^
+322 |         route = self._category if self._page == "category" and self._category else self._page
+323 |         return ContextSnapshot(
+    |
+
+E501 Line too long (106 > 100)
+  --> src\foodease_agent\fallback.py:31:101
+   |
+29 |     def choose_llm(self, *, primary_failed: bool) -> ProviderChoice:
+30 |         if primary_failed:
+31 |             choice = ProviderChoice("llm", self.llm_primary, self.llm_backup, self.llm_backup, "fallback")
+   |                                                                                                     ^^^^^^
+32 |         else:
+33 |             choice = ProviderChoice("llm", self.llm_primary, self.llm_backup, self.llm_primary, "primary")
+   |
+
+E501 Line too long (106 > 100)
+  --> src\foodease_agent\fallback.py:33:101
+   |
+31 |             choice = ProviderChoice("llm", self.llm_primary, self.llm_backup, self.llm_backup, "fallback")
+32 |         else:
+33 |             choice = ProviderChoice("llm", self.llm_primary, self.llm_backup, self.llm_primary, "primary")
+   |                                                                                                     ^^^^^^
+34 |         self.log.append(choice)
+35 |         return choice
+   |
+
+E501 Line too long (103 > 100)
+  --> src\foodease_agent\fallback.py:40:101
+   |
+38 |         if primary_failed:
+39 |             choice = ProviderChoice(
+40 |                 "tts", self.tts_primary_voice, self.tts_backup_voice, self.tts_backup_voice, "fallback"
+   |                                                                                                     ^^^
+41 |             )
+42 |         else:
+   |
+
+E501 Line too long (103 > 100)
+  --> src\foodease_agent\fallback.py:44:101
+   |
+42 |         else:
+43 |             choice = ProviderChoice(
+44 |                 "tts", self.tts_primary_voice, self.tts_backup_voice, self.tts_primary_voice, "primary"
+   |                                                                                                     ^^^
+45 |             )
+46 |         self.log.append(choice)
+   |
+
+E501 Line too long (106 > 100)
+  --> src\foodease_agent\fallback.py:51:101
+   |
+49 |     def choose_stt(self, *, primary_failed: bool) -> ProviderChoice:
+50 |         if primary_failed:
+51 |             choice = ProviderChoice("stt", self.stt_primary, self.stt_backup, self.stt_backup, "fallback")
+   |                                                                                                     ^^^^^^
+52 |         else:
+53 |             choice = ProviderChoice("stt", self.stt_primary, self.stt_backup, self.stt_primary, "primary")
+   |
+
+E501 Line too long (106 > 100)
+  --> src\foodease_agent\fallback.py:53:101
+   |
+51 |             choice = ProviderChoice("stt", self.stt_primary, self.stt_backup, self.stt_backup, "fallback")
+52 |         else:
+53 |             choice = ProviderChoice("stt", self.stt_primary, self.stt_backup, self.stt_primary, "primary")
+   |                                                                                                     ^^^^^^
+54 |         self.log.append(choice)
+55 |         return choice
+   |
+
+E501 Line too long (115 > 100)
+   --> src\foodease_agent\latency_report.py:126:101
+    |
+126 | def reliability_rate(rows: list[dict[str, Any]], *, exclude_dry_run: bool = True) -> tuple[int, int, float | None]:
+    |                                                                                                     ^^^^^^^^^^^^^^^
+127 |     total = 0
+128 |     ok = 0
+    |
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> src\foodease_agent\reconnect.py:3:1
+   |
+ 1 |   """Reconnect + pending-mutation discipline (VA-14 / Phase 8.4)."""
+ 2 |
+ 3 | / from __future__ import annotations
+ 4 | |
+ 5 | | from dataclasses import dataclass, field
+ 6 | |
+ 7 | | from foodease_agent.adapters.base import AppAdapter
+ 8 | | from foodease_agent.confirmation import ConfirmationMachine
+ 9 | | from foodease_agent.contract.enums import ActionResultStatus, Operation
+10 | | from foodease_agent.contract.models import ActionRequestPayload, ActionResultPayload, ContextSnapshot
+11 | | from foodease_agent.tiers import RiskTier, tier_for
+   | |___________________________________________________^
+help: Organize imports
+   |
+9  | from foodease_agent.contract.enums import ActionResultStatus, Operation
+   - from foodease_agent.contract.models import ActionRequestPayload, ActionResultPayload, ContextSnapshot
+10 + from foodease_agent.contract.models import (
+11 +     ActionRequestPayload,
+12 +     ActionResultPayload,
+13 +     ContextSnapshot,
+14 + )
+15 | from foodease_agent.tiers import RiskTier, tier_for
+   |
+
+E501 Line too long (101 > 100)
+  --> src\foodease_agent\reconnect.py:10:101
+   |
+ 8 | from foodease_agent.confirmation import ConfirmationMachine
+ 9 | from foodease_agent.contract.enums import ActionResultStatus, Operation
+10 | from foodease_agent.contract.models import ActionRequestPayload, ActionResultPayload, ContextSnapshot
+   |                                                                                                     ^
+11 | from foodease_agent.tiers import RiskTier, tier_for
+   |
+
+E501 Line too long (102 > 100)
+  --> src\foodease_agent\reconnect.py:74:101
+   |
+72 |             action_id=request.action_id,
+73 |             status=ActionResultStatus.REJECTED,
+74 |             error_message="I won’t resend that until we know what happened. Checking the cart first.",
+   |                                                                                                     ^^
+75 |         )
+76 |     return None
+   |
+
+E501 Line too long (102 > 100)
+  --> src\foodease_agent\recovery.py:75:101
+   |
+73 |     Va17Situation.TTS_DOWN: RecoveryResult(
+74 |         Va17Situation.TTS_DOWN,
+75 |         "I can’t speak right now, but the text reply is on screen. You can retry or browse manually.",
+   |                                                                                                     ^^
+76 |         ProductState.READY_LISTENING,
+77 |         offer_typed=True,
+   |
+
+E501 Line too long (106 > 100)
+   --> src\foodease_agent\recovery.py:98:101
+    |
+ 96 |     Va17Situation.CONNECTION_LOSS: RecoveryResult(
+ 97 |         Va17Situation.CONNECTION_LOSS,
+ 98 |         "Connection lost. Reconnecting from the latest menu and cart — I won’t replay uncertain actions.",
+    |                                                                                                     ^^^^^^
+ 99 |         ProductState.RECONNECTING,
+100 |     ),
+    |
+
+B010 [*] Do not call `setattr` with a constant attribute value. It is not any safer than normal property access.
+  --> tests\test_integrated_opening.py:79:5
+   |
+77 |     speech = Speech("opening still playing")
+78 |     session.handles.append(speech)
+79 |     setattr(session, "say", lambda *args, **kwargs: speech)
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+80 |     runtime = LiveConversationRuntime(IntegratedFoodEaseAgent(), session, adapter)
+81 |     await runtime.prepare()
+   |
+help: Replace `setattr` with assignment
+   |
+78 |     session.handles.append(speech)
+   -     setattr(session, "say", lambda *args, **kwargs: speech)
+79 +     session.say = lambda *args, **kwargs: speech
+80 |     runtime = LiveConversationRuntime(IntegratedFoodEaseAgent(), session, adapter)
+   |
+
+F401 [*] `json` imported but unused
+ --> tests\test_phase10.py:5:8
+  |
+3 | from __future__ import annotations
+4 |
+5 | import json
+  |        ^^^^
+6 | import subprocess
+7 | import sys
+  |
+help: Remove unused import: `json`
+  |
+4 |
+  - import json
+5 | import subprocess
+  |
+
+F401 [*] `foodease_agent.reconnect.ReconnectManager` imported but unused
+  --> tests\test_phase8.py:20:38
+   |
+18 | from foodease_agent.planner import ScriptedPlanner
+19 | from foodease_agent.product_state import ProductStateMachine
+20 | from foodease_agent.reconnect import ReconnectManager, guard_resubmit
+   |                                      ^^^^^^^^^^^^^^^^
+21 | from foodease_agent.recovery import ALL_VA17, Va17Situation, apply_recovery, recover
+   |
+help: Remove unused import: `foodease_agent.reconnect.ReconnectManager`
+   |
+19 | from foodease_agent.product_state import ProductStateMachine
+   - from foodease_agent.reconnect import ReconnectManager, guard_resubmit
+20 + from foodease_agent.reconnect import guard_resubmit
+21 | from foodease_agent.recovery import ALL_VA17, Va17Situation, apply_recovery, recover
+   |
+
+E501 Line too long (102 > 100)
+  --> tests\test_phase8.py:87:101
+   |
+85 |     assert engine.confirmation.state != ConfirmState.SUBMITTED
+86 |     assert not any(
+87 |         getattr(t, "operation", None) == Operation.CHECKOUT_SUBMIT_DEMO_ORDER for t in r2.tool_results
+   |                                                                                                     ^^
+88 |     )
+89 |     # silence must not flip to submitted via confirm path
+   |
+
+E501 Line too long (103 > 100)
+   --> tests\test_phase8.py:179:101
+    |
+177 |     r2 = await engine.handle_text("show burgers")
+178 |     assert "quota" in r2.assistant_text.lower() or "unavailable" in r2.assistant_text.lower()
+179 |     assert "cart is unchanged" in r2.assistant_text.lower() or "unchanged" in r2.assistant_text.lower()
+    |                                                                                                     ^^^
+
+E501 Line too long (101 > 100)
+   --> tests\test_phase8.py:255:101
+    |
+253 |     FAULTS.fail_llm = True
+254 |     ds22 = await engine.handle_text("hello")
+255 |     assert "unchanged" in ds22.assistant_text.lower() or "unavailable" in ds22.assistant_text.lower()
+    |                                                                                                     ^
+256 |     FAULTS.reset()
+    |
+
+E501 Line too long (134 > 100)
+   --> tests\test_phase8.py:271:101
+    |
+269 |     )
+270 |     ds23 = await eng.handle_text("add bbq")
+271 |     assert "rejected" in ds23.assistant_text.lower() or "stock" in ds23.assistant_text.lower() or "try" in ds23.assistant_text.lower()
+    |                                                                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+272 |
+273 |     app2 = MockAdapter(default_timeout_s=0.05)
+    |
+
+B007 Loop control variable `i` not used within loop body
+   --> tests\test_phase8.py:302:9
+    |
+300 |     stuck_error_listening = 0
+301 |
+302 |     for i in range(80):
+    |         ^
+303 |         FAULTS.reset()
+304 |         app = MockAdapter(default_timeout_s=0.05)
+    |
+help: Rename unused `i` to `_i`
+
+E501 Line too long (135 > 100)
+   --> tests\test_phase8.py:362:101
+    |
+360 | …
+361 | …
+362 | … or "will not" in r.assistant_text.lower() or "stopped" in r.assistant_text.lower()
+    |                                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> tests\test_phase9.py:3:1
+   |
+ 1 |   """Phase 9 — latency report math, campaign manifest, interruption fixtures."""
+ 2 |
+ 3 | / from __future__ import annotations
+ 4 | |
+ 5 | | import json
+ 6 | | import subprocess
+ 7 | | import sys
+ 8 | | from pathlib import Path
+ 9 | |
+10 | | from foodease_agent.latency_report import (
+11 | |     load_jsonl,
+12 | |     percentile,
+13 | |     summarize_metric,
+14 | |     reliability_rate,
+15 | | )
+   | |_^
+16 |
+17 |   ROOT = Path(__file__).resolve().parents[1]
+   |
+help: Organize imports
+   |
+12 |     percentile,
+13 +     reliability_rate,
+14 |     summarize_metric,
+   -     reliability_rate,
+15 | )
+   |
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> tools\generate_latency_report.py:3:1
+   |
+ 1 |   """Generate evidence/phase-9/latency_report.md from raw JSONL (V9.2)."""
+ 2 |
+ 3 | / from __future__ import annotations
+ 4 | |
+ 5 | | import argparse
+ 6 | | import json
+ 7 | | from pathlib import Path
+ 8 | |
+ 9 | | from foodease_agent.latency_report import (
+10 | |     load_jsonl,
+11 | |     markdown_report,
+12 | |     summarize_metric,
+13 | |     reliability_rate,
+14 | | )
+   | |_^
+15 |
+16 |   ROOT = Path(__file__).resolve().parents[1]
+   |
+help: Organize imports
+   |
+11 |     markdown_report,
+12 +     reliability_rate,
+13 |     summarize_metric,
+   -     reliability_rate,
+14 | )
+   |
+
+F401 [*] `dataclasses.field` imported but unused
+  --> tools\run_acceptance.py:11:44
+   |
+ 9 | import asyncio
+10 | import json
+11 | from dataclasses import asdict, dataclass, field
+   |                                            ^^^^^
+12 | from pathlib import Path
+   |
+help: Remove unused import: `dataclasses.field`
+   |
+10 | import json
+   - from dataclasses import asdict, dataclass, field
+11 + from dataclasses import asdict, dataclass
+12 | from pathlib import Path
+   |
+
+F541 [*] f-string without any placeholders
+   --> tools\run_acceptance.py:130:28
+    |
+128 |             "pass" if ok3 else "fail",
+129 |             "partial",
+130 |             _trace("T03", [f"USER: Show burgers.", f"ASSISTANT: {r3.assistant_text}", f"TOOLS: {len(r3.tool_results)}"]),
+    |                            ^^^^^^^^^^^^^^^^^^^^^^
+131 |             notes="Text-mode proxy; live barge-in of greeting audio is [HUMAN] 10.2.",
+132 |         )
+    |
+help: Remove extraneous `f` prefix
+    |
+129 |             "partial",
+    -             _trace("T03", [f"USER: Show burgers.", f"ASSISTANT: {r3.assistant_text}", f"TOOLS: {len(r3.tool_results)}"]),
+130 +             _trace("T03", ["USER: Show burgers.", f"ASSISTANT: {r3.assistant_text}", f"TOOLS: {len(r3.tool_results)}"]),
+131 |             notes="Text-mode proxy; live barge-in of greeting audio is [HUMAN] 10.2.",
+    |
+
+E501 Line too long (121 > 100)
+   --> tools\run_acceptance.py:130:101
+    |
+128 |             "pass" if ok3 else "fail",
+129 |             "partial",
+130 |             _trace("T03", [f"USER: Show burgers.", f"ASSISTANT: {r3.assistant_text}", f"TOOLS: {len(r3.tool_results)}"]),
+    |                                                                                                     ^^^^^^^^^^^^^^^^^^^^^
+131 |             notes="Text-mode proxy; live barge-in of greeting audio is [HUMAN] 10.2.",
+132 |         )
+    |
+
+F541 [*] f-string without any placeholders
+   --> tools\run_acceptance.py:160:28
+    |
+158 |             "pass" if ok5 else "fail",
+159 |             "automated",
+160 |             _trace("T05", [f"USER: Vegetarian under eight hundred.", f"ASSISTANT: {r5.assistant_text}"]),
+    |                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+161 |         )
+162 |     )
+    |
+help: Remove extraneous `f` prefix
+    |
+159 |             "automated",
+    -             _trace("T05", [f"USER: Vegetarian under eight hundred.", f"ASSISTANT: {r5.assistant_text}"]),
+160 +             _trace("T05", ["USER: Vegetarian under eight hundred.", f"ASSISTANT: {r5.assistant_text}"]),
+161 |         )
+    |
+
+E501 Line too long (105 > 100)
+   --> tools\run_acceptance.py:160:101
+    |
+158 |             "pass" if ok5 else "fail",
+159 |             "automated",
+160 |             _trace("T05", [f"USER: Vegetarian under eight hundred.", f"ASSISTANT: {r5.assistant_text}"]),
+    |                                                                                                     ^^^^^
+161 |         )
+162 |     )
+    |
+
+E501 Line too long (136 > 100)
+   --> tools\run_acceptance.py:166:101
+    |
+164 | …
+165 | …
+166 | …riptedPlanner({"show wraps": [ToolCall(Operation.SEARCH_MENU, {"query": "wrap"})]}))
+    |                                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+167 | …
+168 | …
+    |
+
+F541 [*] f-string without any placeholders
+   --> tools\run_acceptance.py:185:28
+    |
+183 |             "pass" if ok6 else "fail",
+184 |             "automated",
+185 |             _trace("T06", [f"USER: the second one", f"ASSISTANT: {r6.assistant_text}"]),
+    |                            ^^^^^^^^^^^^^^^^^^^^^^^
+186 |         )
+187 |     )
+    |
+help: Remove extraneous `f` prefix
+    |
+184 |             "automated",
+    -             _trace("T06", [f"USER: the second one", f"ASSISTANT: {r6.assistant_text}"]),
+185 +             _trace("T06", ["USER: the second one", f"ASSISTANT: {r6.assistant_text}"]),
+186 |         )
+    |
+
+E501 Line too long (102 > 100)
+   --> tools\run_acceptance.py:239:101
+    |
+237 |             "pass" if ok8 else "fail",
+238 |             "automated",
+239 |             _trace("T08", [f"ASSISTANT: {r8.assistant_text}", f"status={r8.tool_results[0].status}"]),
+    |                                                                                                     ^^
+240 |         )
+241 |     )
+    |
+
+E501 Line too long (108 > 100)
+   --> tools\run_acceptance.py:471:101
+    |
+469 |             "pass" if ok19 else "fail",
+470 |             "automated",
+471 |             _trace("T19", [f"ASSISTANT: {r19.assistant_text}", f"browsing_self={eng.prefs.browsing_self}"]),
+    |                                                                                                     ^^^^^^^^
+472 |         )
+473 |     )
+    |
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> tools\run_chaos.py:18:1
+   |
+16 |   sys.path.insert(0, str(ROOT / "src"))
+17 |
+18 | / from foodease_agent.adapters.mock import MockAdapter, ScenarioConfig, ScenarioMode  # noqa: E402
+19 | | from foodease_agent.contract.enums import ActionResultStatus, Operation, ProductState  # noqa: E402
+20 | | from foodease_agent.contract.models import ActionRequestPayload  # noqa: E402
+21 | | from foodease_agent.dialogue_planner import DialogueSuitePlanner  # noqa: E402
+22 | | from foodease_agent.engine import ConversationEngine  # noqa: E402
+23 | | from foodease_agent.faults import FAULTS  # noqa: E402
+24 | | from foodease_agent.reconnect import guard_resubmit  # noqa: E402
+   | |___________________________________________________^
+help: Organize imports
+   |
+25 |
+   -
+26 | UTTERANCES = (
+   |
+
+E501 Line too long (101 > 100)
+  --> tools\run_latency_campaign.py:55:101
+   |
+53 |     {"id": "B01", "utterance": "show burgers", "turn_kind": "barge_in", "interrupt_ms": 400},
+54 |     {"id": "B02", "utterance": "add 1 Cola Can", "turn_kind": "barge_in", "interrupt_ms": 500},
+55 |     {"id": "B03", "utterance": "vegetarian under 600", "turn_kind": "barge_in", "interrupt_ms": 600},
+   |                                                                                                     ^
+56 |     {"id": "B04", "utterance": "what do you recommend?", "turn_kind": "barge_in", "interrupt_ms": 450},
+57 |     {"id": "B05", "utterance": "show wraps", "turn_kind": "barge_in", "interrupt_ms": 550},
+   |
+
+E501 Line too long (103 > 100)
+  --> tools\run_latency_campaign.py:56:101
+   |
+54 |     {"id": "B02", "utterance": "add 1 Cola Can", "turn_kind": "barge_in", "interrupt_ms": 500},
+55 |     {"id": "B03", "utterance": "vegetarian under 600", "turn_kind": "barge_in", "interrupt_ms": 600},
+56 |     {"id": "B04", "utterance": "what do you recommend?", "turn_kind": "barge_in", "interrupt_ms": 450},
+   |                                                                                                     ^^^
+57 |     {"id": "B05", "utterance": "show wraps", "turn_kind": "barge_in", "interrupt_ms": 550},
+58 |     {"id": "B06", "utterance": "add 1 Veggie Wrap", "turn_kind": "barge_in", "interrupt_ms": 500},
+   |
+
+F401 [*] `sys` imported but unused
+  --> tools\secret_scan.py:11:8
+   |
+ 9 | import re
+10 | import subprocess
+11 | import sys
+   |        ^^^
+12 | from pathlib import Path
+   |
+help: Remove unused import: `sys`
+   |
+10 | import subprocess
+   - import sys
+11 | from pathlib import Path
+   |
+
+Found 40 errors.
+[*] 13 fixable with the `--fix` option (1 hidden fix can be enabled with the `--unsafe-fixes` option).

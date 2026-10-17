@@ -1,0 +1,14 @@
+c:\HCI-PROJECT\orchestration\tools\phase7_campaign.py
+  c:\HCI-PROJECT\orchestration\tools\phase7_campaign.py:18:6 - error: Import "phase7_cases" could not be resolved (reportMissingImports)
+  c:\HCI-PROJECT\orchestration\tools\phase7_campaign.py:91:38 - error: Argument of type "dict[str, str]" cannot be assigned to parameter "thinking_config" of type "NotGivenOr[ThinkingConfigOrDict]" in function "__init__"
+    Type "dict[str, str]" is not assignable to type "NotGivenOr[ThinkingConfigOrDict]"
+      "dict[str, str]" is not assignable to "ThinkingConfig"
+      "dict[str, str]" is not assignable to "ThinkingConfigDict"
+      "dict[str, str]" is not assignable to "NotGiven" (reportArgumentType)
+  c:\HCI-PROJECT\orchestration\tools\phase7_campaign.py:173:87 - error: Argument of type "Adapter" cannot be assigned to parameter "adapter" of type "IntegratedAppAdapter" in function "__init__"
+    "Adapter" is incompatible with protocol "IntegratedAppAdapter"
+      "publish_control" is an incompatible type
+        Type "(*args: Unknown) -> CoroutineType[Any, Any, None]" is not assignable to type "(intent: str, mode: str | None = None) -> CoroutineType[Any, Any, None]"
+          Missing keyword parameter "intent"
+          Missing keyword parameter "mode" (reportArgumentType)
+3 errors, 0 warnings, 0 informations

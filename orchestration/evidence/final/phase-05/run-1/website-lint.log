@@ -1,0 +1,12 @@
+E501 Line too long (101 > 100)
+  --> tests\test_domain.py:18:101
+   |
+16 |     }, context_revision=domain.revision)
+17 |     assert result["status"] == "success"
+18 |     assert all(row["available"] and row["price"] <= 800 for row in result["verified_state"]["items"])
+   |                                                                                                     ^
+19 |     assert all(row.available for row in domain.visible_items())
+20 |     assert domain.snapshot()["filter_tags"] == ["available"]
+   |
+
+Found 1 error.

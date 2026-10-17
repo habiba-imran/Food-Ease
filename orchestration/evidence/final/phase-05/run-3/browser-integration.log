@@ -1,0 +1,21 @@
+
+Running 10 tests using 1 worker
+
+(node:22384) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok  1 tests\browser\integration.spec.mjs:30:1 › actual browser + website + worker: typed order, exact summary and demo receipt (10.9s)
+  ok  2 tests\browser\integration.spec.mjs:56:1 › manual filtering exactly matches authoritative IDs; search clear and availability (2.9s)
+  ok  3 tests\browser\integration.spec.mjs:86:1 › injected bound agent actions visibly render menu, item, cart and checkout (2.8s)
+  ok  4 tests\browser\integration.spec.mjs:102:1 › reply lost after a real commit reconciles once; rejected actions never announce success (2.6s)
+  ok  5 tests\browser\integration.spec.mjs:121:1 › typed assistance does not attach remote audio (2.3s)
+Cannot enable audio input when it's not set
+Cannot enable audio output when it's not set
+Cannot enable audio input when it's not set
+Cannot enable audio output when it's not set
+  ok  6 tests\browser\integration.spec.mjs:136:1 › voice audio attaches once and end stops fake media immediately; native captions are ignored (2.4s)
+  ok  7 tests\browser\integration.spec.mjs:165:1 › foreign RPC callers cannot forward actions (2.2s)
+  ok  8 tests\browser\integration.spec.mjs:175:1 › stale actions cannot change a newer view and reconnect republishes current context (2.4s)
+  ok  9 tests\browser\integration.spec.mjs:188:1 › unknown action survives reload, blocks resubmit and reconciles a delayed original outcome (1.9s)
+  ok 10 tests\browser\integration.spec.mjs:213:1 › manual changes reach worker-visible context; partial captions keep focus and replace (2.5s)
+
+  10 passed (35.0s)

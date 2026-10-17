@@ -1,0 +1,12 @@
+c:\HCI-PROJECT\voice-agent\src\foodease_agent\integrated\broker.py
+  c:\HCI-PROJECT\voice-agent\src\foodease_agent\integrated\broker.py:63:75 - error: Argument of type "dict[Unknown, Unknown] | (() -> dict[Unknown, Unknown])" cannot be assigned to parameter "arguments" of type "dict[str, Any]" in function "action_request"
+    Type "dict[Unknown, Unknown] | (() -> dict[Unknown, Unknown])" is not assignable to type "dict[str, Any]"
+      "FunctionType" is not assignable to "dict[str, Any]" (reportArgumentType)
+c:\HCI-PROJECT\voice-agent\src\foodease_agent\integrated\runtime.py
+  c:\HCI-PROJECT\voice-agent\src\foodease_agent\integrated\runtime.py:573:59 - error: Argument of type "(...) -> object" cannot be assigned to parameter "arguments" of type "dict[Unknown, Unknown] | (() -> dict[Unknown, Unknown])" in function "run"
+    Type "(...) -> object" is not assignable to type "dict[Unknown, Unknown] | (() -> dict[Unknown, Unknown])"
+      "FunctionType" is not assignable to "dict[Unknown, Unknown]"
+      Type "(...) -> object" is not assignable to type "() -> dict[Unknown, Unknown]"
+        Function return type "object" is incompatible with type "dict[Unknown, Unknown]"
+          "object" is not assignable to "dict[Unknown, Unknown]" (reportArgumentType)
+2 errors, 0 warnings, 0 informations

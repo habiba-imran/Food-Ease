@@ -1,0 +1,29 @@
+                                                                               
+ Usage: python -m foodease_agent.worker start [OPTIONS]                        
+                                                                               
+┌─ Options ───────────────────────────────────────────────────────────────────┐
+│ --log-level            <trace|debug|info|warn|e  Set the log level          │
+│                        rror|critical>            [env var:                  │
+│                                                  LIVEKIT_LOG_LEVEL]         │
+│                                                  [default: INFO]            │
+│ --url                  <str>                     The WebSocket URL of your  │
+│                                                  LiveKit server or Cloud    │
+│                                                  project.                   │
+│                                                  [env var: LIVEKIT_URL]     │
+│ --api-key              <str>                     API key for authenticating │
+│                                                  with your LiveKit server   │
+│                                                  or Cloud project.          │
+│                                                  [env var: LIVEKIT_API_KEY] │
+│ --api-secret           <str>                     API secret for             │
+│                                                  authenticating with your   │
+│                                                  LiveKit server or Cloud    │
+│                                                  project.                   │
+│                                                  [env var:                  │
+│                                                  LIVEKIT_API_SECRET]        │
+│ --drain-timeout        <int>                     Time in seconds to wait    │
+│                                                  for jobs to finish before  │
+│                                                  shutting down.             │
+│ --help                                           Show this message and      │
+│                                                  exit.                      │
+└─────────────────────────────────────────────────────────────────────────────┘
+

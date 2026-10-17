@@ -1,10 +1,50 @@
 # FoodEase orchestration (sibling glue package)
 
+Final orchestration Phase 9 provides the current
+[delivery runbook](docs/FINAL_RUNBOOK.md), default real-website bring-up, explicit
+live opt-in, owned process shutdown, safe correlation logs and acceptance evaluation.
+See [evidence and outstanding live checks](evidence/final/phase-09/report.md).
+The offline implementation gate and the joint live acceptance gate remain distinct.
+Earlier entries below are historical checkpoints; use the final runbook for launch.
+
+Final orchestration Phase 8 adds runtime provider degradation, fresh-state reconnect
+barriers, original-ID outcome recovery and cleanup across background/reload/expiry.
+See [recovery behavior and limits](docs/PHASE_08_RECOVERY.md) and
+[verification](evidence/final/phase-08/report.md). Live vendor outages and audible
+interruption measurements remain open, alongside Phase 7's model/listener gate.
+Phase 9 is the one planned phase remaining and has not started. Earlier entries
+below are historical checkpoints.
+
+Final orchestration Phase 7 adds semantic page assistance, completed-output item
+references, filter refinements, finite multi-step/duplicate guards and streaming
+speech shaping. See the [conversation handoff](docs/PHASE_07_GROUNDED_CONVERSATION.md)
+and [verification](evidence/final/phase-07/report.md). The real-model campaign and
+human listening gate remain open. Phases 8 and 9 remain; no next-phase work is included.
+
+Final orchestration Phase 6 adds the consent-gated spoken mode chooser, explicit
+manual/voice/typed continuity and optional typed audio. See the
+[mode handoff](docs/PHASE_06_OPENING_MODES.md) and
+[verification](evidence/final/phase-06/report.md). Returning visits require explicit
+activation. Physical-device, Cloud and provider audio activation remain unverified.
+Phase 7 has not started. Earlier phase notes below are historical checkpoints.
+
+Final orchestration Phase 5 connects the browser app/user seats, shared renderer,
+typed/control transport and canonical worker output. See [browser handoff](docs/PHASE_05_BROWSER_INTEGRATION.md)
+and [verification](evidence/final/phase-05/report.md). The opening mode chooser
+remains Phase 6. Live provider/audio activation is unverified. Earlier phase notes
+below describe their state at completion.
+
+Final orchestration Phase 4 attaches the integrated live conversation/tool runtime.
+See [runtime, controls and delivery requirements](docs/PHASE_04_LIVE_CONVERSATION_RUNTIME.md)
+and [verification](evidence/final/phase-04/report.md). The browser bridge remains
+Phase 5; the opening mode-choice conversation remains Phase 6. No live activation
+is claimed. Historical phase notes below describe their state at completion.
+
 Final orchestration Phase 3: [bound lifecycle, endpoints and launch](docs/PHASE_03_ASSISTANCE_LIFECYCLE.md)
 and [verification](evidence/final/phase-03/report.md). `/v1/*` is disabled by default;
 the integrated path uses `/v2/*` with the existing shopping cookie/session.
-Use `tools/demo_up.py --integrated`. Phase 4 conversation runtime and Phase 5 page
-bridge are pending, so integrated startup currently fails closed without them.
+Use `tools/demo_up.py --integrated`. The worker now attaches Phase 4's runtime;
+the actual page requires Phase 5's bridge before integrated browser use.
 
 Final orchestration Phase 2 implements session-scoped shopping authority in the
 website. See [authority and limits](docs/PHASE_02_APPLICATION_AUTHORITY.md) and

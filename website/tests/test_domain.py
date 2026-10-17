@@ -9,6 +9,26 @@ def make_domain() -> FoodEaseDomain:
     return FoodEaseDomain(load_catalog(root / "zainab-pack" / "catalog-seed.json"))
 
 
+def test_available_filter_is_authoritative_and_budget_includes_boundary() -> None:
+    domain = make_domain()
+    result = domain.execute_action(
+        "available",
+        "filter_menu",
+        {
+            "tags": ["available"],
+            "category": None,
+            "max_price_pkr": 800.0,
+        },
+        context_revision=domain.revision,
+    )
+    assert result["status"] == "success"
+    assert all(
+        row["available"] and row["price"] <= 800 for row in result["verified_state"]["items"]
+    )
+    assert all(row.available for row in domain.visible_items())
+    assert domain.snapshot()["filter_tags"] == ["available"]
+
+
 def test_filter_menu_uses_real_catalog_tags_and_prices() -> None:
     domain = make_domain()
 

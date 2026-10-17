@@ -1,0 +1,144 @@
+
+Running 37 tests using 1 worker
+
+(node:17060) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok  1 tests\browser\conversation.spec.mjs:21:1 › read page, presented second item and add button have matching caption and visible effect (5.4s)
+  ok  2 tests\browser\conversation.spec.mjs:35:1 › manual context change requires clarification for an old ordinal without a select action (3.3s)
+  ok  3 tests\browser\conversation.spec.mjs:45:1 › next and previous deliver small actual windows with stable ordinal identity (3.9s)
+  ok  4 tests\browser\conversation.spec.mjs:56:1 › actual model/tool pipeline refines filters and completes ordered combined tools (4.9s)
+  ok  5 tests\browser\conversation.spec.mjs:70:1 › quantity correction sets the latest cart instead of adding again (3.0s)
+  ok  6 tests\browser\integration.spec.mjs:30:1 › actual browser + website + worker: typed order, exact summary and demo receipt (4.9s)
+  ok  7 tests\browser\integration.spec.mjs:56:1 › manual filtering exactly matches authoritative IDs; search clear and availability (2.6s)
+  ok  8 tests\browser\integration.spec.mjs:86:1 › injected bound agent actions visibly render menu, item, cart and checkout (2.6s)
+  ok  9 tests\browser\integration.spec.mjs:102:1 › reply lost after a real commit reconciles once; rejected actions never announce success (2.4s)
+  ok 10 tests\browser\integration.spec.mjs:121:1 › typed assistance does not attach remote audio (2.3s)
+Cannot enable audio input when it's not set
+Cannot enable audio output when it's not set
+Cannot enable audio input when it's not set
+Cannot enable audio output when it's not set
+  ok 11 tests\browser\integration.spec.mjs:136:1 › voice audio attaches once and end stops fake media immediately; native captions are ignored (2.2s)
+  ok 12 tests\browser\integration.spec.mjs:165:1 › foreign RPC callers cannot forward actions (2.1s)
+  ok 13 tests\browser\integration.spec.mjs:175:1 › stale actions cannot change a newer view and reconnect republishes current context (2.4s)
+  ok 14 tests\browser\integration.spec.mjs:191:1 › unknown action survives reload, blocks resubmit and reconciles a delayed original outcome (1.8s)
+  ok 15 tests\browser\integration.spec.mjs:216:1 › manual changes reach worker-visible context; partial captions keep focus and replace (2.4s)
+(node:18928) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 16 tests\browser\opening.spec.mjs:33:1 › fresh visitor and direct manual never request media or a dispatch (1.7s)
+Exception in callback _ProactorBasePipeTransport._call_connection_lost(None)
+handle: <Handle _ProactorBasePipeTransport._call_connection_lost(None)>
+Traceback (most recent call last):
+  File "C:\Users\habiba\AppData\Roaming\uv\python\cpython-3.12-windows-x86_64-none\Lib\asyncio\events.py", line 88, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\habiba\AppData\Roaming\uv\python\cpython-3.12-windows-x86_64-none\Lib\asyncio\proactor_events.py", line 165, in _call_connection_lost
+    self._sock.shutdown(socket.SHUT_RDWR)
+ConnectionResetError: [WinError 10054] An existing connection was forcibly closed by the remote host
+Exception in callback _ProactorBasePipeTransport._call_connection_lost(None)
+handle: <Handle _ProactorBasePipeTransport._call_connection_lost(None)>
+Traceback (most recent call last):
+  File "C:\Users\habiba\AppData\Roaming\uv\python\cpython-3.12-windows-x86_64-none\Lib\asyncio\events.py", line 88, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\habiba\AppData\Roaming\uv\python\cpython-3.12-windows-x86_64-none\Lib\asyncio\proactor_events.py", line 165, in _call_connection_lost
+    self._sock.shutdown(socket.SHUT_RDWR)
+ConnectionResetError: [WinError 10054] An existing connection was forcibly closed by the remote host
+Cannot enable audio input when it's not set
+Cannot enable audio output when it's not set
+Cannot enable audio input when it's not set
+Cannot enable audio output when it's not set
+  ok 17 tests\browser\opening.spec.mjs:42:1 › chooser rejects shopping, clarifies once, and manual ends actual capture and playback (3.2s)
+Cannot enable audio input when it's not set
+Cannot enable audio output when it's not set
+Cannot enable audio input when it's not set
+Cannot enable audio output when it's not set
+Cannot enable audio input when it's not set
+Cannot enable audio output when it's not set
+  ok 18 tests\browser\opening.spec.mjs:73:1 › voice manual voice and typing preserve cart/session; each generation greets once (5.0s)
+Exception in callback _ProactorBasePipeTransport._call_connection_lost(None)
+handle: <Handle _ProactorBasePipeTransport._call_connection_lost(None)>
+Traceback (most recent call last):
+  File "C:\Users\habiba\AppData\Roaming\uv\python\cpython-3.12-windows-x86_64-none\Lib\asyncio\events.py", line 88, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\habiba\AppData\Roaming\uv\python\cpython-3.12-windows-x86_64-none\Lib\asyncio\proactor_events.py", line 165, in _call_connection_lost
+    self._sock.shutdown(socket.SHUT_RDWR)
+ConnectionResetError: [WinError 10054] An existing connection was forcibly closed by the remote host
+Exception in callback _ProactorBasePipeTransport._call_connection_lost(None)
+handle: <Handle _ProactorBasePipeTransport._call_connection_lost(None)>
+Traceback (most recent call last):
+  File "C:\Users\habiba\AppData\Roaming\uv\python\cpython-3.12-windows-x86_64-none\Lib\asyncio\events.py", line 88, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\habiba\AppData\Roaming\uv\python\cpython-3.12-windows-x86_64-none\Lib\asyncio\proactor_events.py", line 165, in _call_connection_lost
+    self._sock.shutdown(socket.SHUT_RDWR)
+ConnectionResetError: [WinError 10054] An existing connection was forcibly closed by the remote host
+  ok 19 tests\browser\opening.spec.mjs:95:3 › microphone denied never dispatches; late permission is stopped after manual (1.0s)
+Exception in callback _ProactorBasePipeTransport._call_connection_lost(None)
+handle: <Handle _ProactorBasePipeTransport._call_connection_lost(None)>
+Traceback (most recent call last):
+  File "C:\Users\habiba\AppData\Roaming\uv\python\cpython-3.12-windows-x86_64-none\Lib\asyncio\events.py", line 88, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\habiba\AppData\Roaming\uv\python\cpython-3.12-windows-x86_64-none\Lib\asyncio\proactor_events.py", line 165, in _call_connection_lost
+    self._sock.shutdown(socket.SHUT_RDWR)
+ConnectionResetError: [WinError 10054] An existing connection was forcibly closed by the remote host
+  ok 20 tests\browser\opening.spec.mjs:95:3 › microphone missing never dispatches; late permission is stopped after manual (1.1s)
+  ok 21 tests\browser\opening.spec.mjs:95:3 › microphone pending never dispatches; late permission is stopped after manual (999ms)
+  ok 22 tests\browser\opening.spec.mjs:116:1 › return visit uses explicit activation fallback and never silently reopens microphone (6.2s)
+  ok 23 tests\browser\opening.spec.mjs:127:1 › autoplay blocked before readiness stops capture without a greeting (1.3s)
+Cannot enable audio input when it's not set
+Cannot enable audio output when it's not set
+Cannot enable audio input when it's not set
+Cannot enable audio output when it's not set
+  ok 24 tests\browser\opening.spec.mjs:141:1 › manual during a committed cart request preserves its outcome and stops capture (2.8s)
+Cannot enable audio output when it's not set
+  ok 25 tests\browser\opening.spec.mjs:167:1 › explicit typed audio preference never opens capture and can be switched off (2.6s)
+Cannot enable audio input when it's not set
+Cannot enable audio output when it's not set
+Cannot enable audio input when it's not set
+Cannot enable audio output when it's not set
+  ok 26 tests\browser\opening.spec.mjs:190:1 › spoken chooser voice choice opens shopping once; manual during greeting revokes it (2.7s)
+Cannot enable audio input when it's not set
+Cannot enable audio output when it's not set
+Cannot enable audio input when it's not set
+Cannot enable audio output when it's not set
+  ok 27 tests\browser\opening.spec.mjs:202:1 › mode controls and typed input remain usable inside the preserved checkout dialog (4.9s)
+(node:24184) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Cannot enable audio input when it's not set
+Cannot enable audio output when it's not set
+Cannot enable audio input when it's not set
+Cannot enable audio output when it's not set
+Cannot enable audio input when it's not set
+Cannot enable audio output when it's not set
+  ok 28 tests\browser\recovery.spec.mjs:26:1 › both seats reconnect with fresh manual state and resume only the existing voice consent (5.1s)
+Cannot enable audio input when it's not set
+Cannot enable audio output when it's not set
+Cannot enable audio input when it's not set
+Cannot enable audio output when it's not set
+  ok 29 tests\browser\recovery.spec.mjs:42:1 › manual end during reconnect prevents old events or tracks from reviving assistance (2.5s)
+Cannot enable audio input when it's not set
+Cannot enable audio output when it's not set
+Cannot enable audio input when it's not set
+Cannot enable audio output when it's not set
+  ok 30 tests\browser\recovery.spec.mjs:51:41 › stt failure switches actual runtime to silent typing with the same cart (3.0s)
+Cannot enable audio input when it's not set
+Cannot enable audio output when it's not set
+Cannot enable audio input when it's not set
+Cannot enable audio output when it's not set
+  ok 31 tests\browser\recovery.spec.mjs:51:41 › tts failure switches actual runtime to silent typing with the same cart (2.9s)
+speech not done in time after interruption, cancelling the speech arbitrarily.
+  ok 32 tests\browser\recovery.spec.mjs:63:1 › actual SDK model stream failure leaves manual ordering available (2.8s)
+Cannot enable audio input when it's not set
+Cannot enable audio output when it's not set
+Cannot enable audio input when it's not set
+Cannot enable audio output when it's not set
+Cannot enable audio input when it's not set
+Cannot enable audio output when it's not set
+  ok 33 tests\browser\recovery.spec.mjs:70:1 › bound agent seat loss ends capture; backgrounding also requires a new gesture (4.1s)
+Cannot enable audio input when it's not set
+Cannot enable audio output when it's not set
+Cannot enable audio input when it's not set
+Cannot enable audio output when it's not set
+  ok 34 tests\browser\recovery.spec.mjs:85:1 › reload cleans up retained generation without capture and preserves cart (5.2s)
+  ok 35 tests\browser\recovery.spec.mjs:97:1 › lost checkout response renders its original receipt once, including after reload (2.1s)
+  ok 36 tests\browser\recovery.spec.mjs:114:1 › expired credentials stop captured media before seats can activate (1.1s)
+  ok 37 tests\browser\recovery.spec.mjs:121:1 › lost authority retention reports unavailable order state without replay (1.3s)
+
+  37 passed (2.0m)

@@ -1,0 +1,35 @@
+E501 Line too long (103 > 100)
+   --> src\foodease_agent\integrated\runtime.py:553:101
+    |
+552 |     def say(self, text: str, *, on_complete=None) -> Any:
+553 |         if self.closed or self.mode not in {"voice", "typed", "choosing"} or self.paused or self.muted:
+    |                                                                                                     ^^^
+554 |             return None
+555 |         revision, epoch = self.snapshot.revision, self.epoch
+    |
+
+I001 [*] Import block is un-sorted or un-formatted
+ --> tests\test_integrated_opening.py:3:1
+  |
+1 |   """Phase 6 deterministic onboarding; no providers or microphone recordings."""
+2 |
+3 | / import pytest
+4 | |
+5 | | from test_integrated_runtime import Session, WebsiteAdapter
+6 | |
+7 | | from foodease_agent.integrated.agent import IntegratedFoodEaseAgent
+8 | | from foodease_agent.integrated.runtime import LiveConversationRuntime
+  | |_____________________________________________________________________^
+help: Organize imports
+  |
+4 |
+  - from test_integrated_runtime import Session, WebsiteAdapter
+  -
+5 | from foodease_agent.integrated.agent import IntegratedFoodEaseAgent
+6 | from foodease_agent.integrated.runtime import LiveConversationRuntime
+7 + from test_integrated_runtime import Session, WebsiteAdapter
+8 |
+  |
+
+Found 2 errors.
+[*] 1 fixable with the `--fix` option.

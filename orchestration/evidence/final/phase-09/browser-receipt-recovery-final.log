@@ -1,0 +1,14 @@
+
+Running 3 tests using 1 worker
+
+(node:24416) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 1 tests\browser\recovery.spec.mjs:97:1 › lost checkout response renders its original receipt once, including after reload (2.9s)
+(node:5248) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 2 tests\browser\recovery.spec.mjs:97:1 › lost checkout response renders its original receipt once, including after reload (2.9s)
+(node:18540) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 3 tests\browser\recovery.spec.mjs:97:1 › lost checkout response renders its original receipt once, including after reload (2.9s)
+
+  3 passed (15.2s)

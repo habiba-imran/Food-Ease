@@ -1,0 +1,44 @@
+...........................F.............................                [100%]
+================================== FAILURES ===================================
+___ test_production_rpc_adapter_real_authority_context_push_and_lost_reply ____
+
+    @pytest.mark.asyncio
+    async def test_production_rpc_adapter_real_authority_context_push_and_lost_reply():
+        room = Room()
+        gate = IntegratedRoomGate(room, room.startup)
+        adapter = IntegratedRpcAdapter(gate)
+        runtime = LiveConversationRuntime(IntegratedFoodEaseAgent(), Session(), adapter, gate=gate)
+        await runtime.prepare()
+        runtime._started = True  # Fake session is already usable; real startup tested below.
+        await runtime.select_mode("voice")
+        try:
+            room.lost = True
+            item = runtime.snapshot.visible_items[0].item_id
+            result = await call(runtime, "cart_add_item", item_id=item, quantity=2)
+            assert result["status"] == "success"
+            assert runtime.snapshot.cart.lines[0].quantity == 2
+            mutations = [
+                req
+                for method, req in room.calls
+                if method == "foodease.action.v2" and req["payload"]["operation"] == "cart.add_item"
+            ]
+            assert len(mutations) == 1 and not runtime.pending
+            assert any(method == "foodease.action_status.v2" for method, _ in room.calls)
+            context = await turn(runtime)
+            await room.website.manual("search_menu", {"query": "pizza"})
+            room.context("manual")
+            assert context.speech_handle.interrupted
+            assert runtime.snapshot.search_query == "pizza"
+            room.control("switch_mode", "typed", sender="app")
+            assert runtime.mode == "voice"
+            room.control("switch_mode", "typed")
+>           assert runtime.mode == "typed" and not runtime.session.input.enabled
+E           AssertionError: assert ('voice' == 'typed'
+E             
+E             - typed
+E             + voice)
+
+tests\test_integrated_rpc_worker.py:172: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_integrated_rpc_worker.py::test_production_rpc_adapter_real_authority_context_push_and_lost_reply
+1 failed, 56 passed in 13.82s

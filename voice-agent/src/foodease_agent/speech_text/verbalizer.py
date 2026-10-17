@@ -109,7 +109,9 @@ def speak_pkr(amount: int | float | Decimal | str) -> str:
     if cents == 0:
         words = number_words(whole)
     else:
-        words = f"{number_words(whole)} point {number_words(cents)}"
+        # Read both fractional digits: .05 must never become .5 in speech.
+        fraction = " ".join(_ONES[int(digit)] for digit in f"{cents:02d}")
+        words = f"{number_words(whole)} point {fraction}"
     unit = "rupee" if whole == 1 and cents == 0 else "rupees"
     return f"{words} {unit}"
 

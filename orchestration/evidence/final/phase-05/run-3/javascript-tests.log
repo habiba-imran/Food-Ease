@@ -1,0 +1,32 @@
+✔ one renderer ignores regressive context and only publishes accepted context (6.8231ms)
+✔ remote request identity/revision survives forwarding and render precedes context publish (74.2741ms)
+✔ uncorrelated and unknown responses cannot become success announcements or write retries (1.8048ms)
+✔ queued manual commands use the latest revision and an explicit replay retains its envelope (1.5119ms)
+✔ an unresolved action survives reload without persisting checkout tokens (2.0124ms)
+✔ verified mutation remains owned until failed view delivery is reconciled without resubmit (1.4997ms)
+✔ permission, join, registration, fresh context and playback precede activation (7.433ms)
+✔ manual selection during permission stops late media/seats and cannot become active (1.692ms)
+✔ manual selection during start stops late media/seats and cannot become active (0.655ms)
+✔ manual selection during join stops late media/seats and cannot become active (0.6902ms)
+✔ manual selection during register stops late media/seats and cannot become active (0.64ms)
+✔ manual selection during context stops late media/seats and cannot become active (0.5742ms)
+✔ manual selection during playback stops late media/seats and cannot become active (0.5948ms)
+✔ manual selection during ready stops late media/seats and cannot become active (0.7235ms)
+✔ manual selection during status stops late media/seats and cannot become active (0.6635ms)
+✔ server cleanup failure does not leave local microphone/audio active (1.4905ms)
+✔ permission denial never prepares or dispatches assistance (2.1339ms)
+✔ late cancelled permission cannot change a newer active generation's state (1.0324ms)
+✔ one session is created for concurrent requests; reload reattaches (8.6986ms)
+✔ a fresh tab creates its own handle (4.568ms)
+✔ expired attachment reports uncertainty and never replaces/retries a mutation (2.9166ms)
+✔ blocked storage still keeps one in-memory tab session (1.7367ms)
+✔ unknown transport failures do not trigger a mutation retry (1.7047ms)
+✔ mid-session expiry clears the saved handle and shows an honest status (1.9253ms)
+ℹ tests 24
+ℹ suites 0
+ℹ pass 24
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 344.4313

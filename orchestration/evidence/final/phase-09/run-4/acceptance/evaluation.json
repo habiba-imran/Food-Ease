@@ -1,0 +1,59 @@
+{
+  "live_gate": "pending",
+  "evidence_source": "operator attestations; not independently certified",
+  "complete": {
+    "scenarios": false,
+    "devices": false,
+    "accessibility": false,
+    "faults": false
+  },
+  "provenance_complete": false,
+  "audible_samples": 0,
+  "ordinary_attempts": 0,
+  "genuine_interruptions": 0,
+  "barge_in_p95_ms": null,
+  "scripted_completion_fraction": null,
+  "groups": {
+    "greeting_warm": {
+      "attempts": 0,
+      "measured": 0,
+      "p50_ms": null,
+      "p95_ms": null
+    },
+    "greeting_cold": {
+      "attempts": 0,
+      "measured": 0,
+      "p50_ms": null,
+      "p95_ms": null
+    },
+    "response_warm": {
+      "attempts": 0,
+      "measured": 0,
+      "p50_ms": null,
+      "p95_ms": null
+    },
+    "response_cold": {
+      "attempts": 0,
+      "measured": 0,
+      "p50_ms": null,
+      "p95_ms": null
+    },
+    "interruption_warm": {
+      "attempts": 0,
+      "measured": 0,
+      "p50_ms": null,
+      "p95_ms": null
+    },
+    "interruption_cold": {
+      "attempts": 0,
+      "measured": 0,
+      "p50_ms": null,
+      "p95_ms": null
+    }
+  },
+  "targets_passed": false,
+  "human_listeners": 0,
+  "quality_passed": false,
+  "real_model_turns": 0,
+  "waivers_retired": false
+}

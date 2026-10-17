@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{{ app_name }} | Accessible Food Ordering</title>
     <link rel="stylesheet" href="/static/css/app.css?v=phase15-no-horizontal-scroll" />
-    <script defer src="/static/js/app.js?v=phase15-no-horizontal-scroll"></script>
+    <script type="module" src="/static/js/app.js?v=orchestration-phase5"></script>
   </head>
-  <body>
+  <body data-orchestration-url="{{ orchestration_base_url }}">
     <a class="skip-link" href="#main">Skip to ordering preview</a>
     <header class="site-header" aria-label="FoodEase header">
       <div class="quick-pills" aria-label="Restaurant quick details">
@@ -221,7 +221,7 @@
               <button class="is-active" type="button" data-filter="all">All</button>
               <button type="button" data-filter="vegetarian">Vegetarian</button>
               <button type="button" data-filter="spicy">Spicy</button>
-              <button type="button" data-filter="budget">Under 800</button>
+              <button type="button" data-filter="budget">800 or less</button>
               <button type="button" data-filter="available">Available</button>
             </div>
           </div>
@@ -316,30 +316,36 @@
       <section id="assistant" class="assistant-section" aria-labelledby="assistant-title">
         <div class="assistant-copy">
           <p class="eyebrow">Consent-first guidance</p>
-          <h2 id="assistant-title">Mock agent harness for text, status, and semantic actions</h2>
+          <h2 id="assistant-title">FoodEase ordering assistance</h2>
+          <p>How would you like to order today — by voice, typing, or browse yourself?</p>
           <p>
-            This panel does not start a microphone or real voice service. It displays
-            product-facing agent states and injects contract-shaped demo actions into
-            the same cart and catalog used by manual ordering.
+            Typed guidance connects without a microphone. Voice assistance asks for
+            microphone permission after you start it. You can pause or end assistance
+            anytime; manual ordering uses the same menu and cart.
           </p>
         </div>
-        <div class="assistant-panel" aria-label="Mock assistant test harness">
+        <div class="assistant-panel" aria-label="FoodEase assistant">
           <div class="assistant-status" data-agent-state="off/awaiting_consent">
             <span data-agent-dot></span>
             <strong data-agent-status>off/awaiting_consent</strong>
           </div>
           <div class="assistant-controls" aria-label="Assistance controls">
+            <button type="button" data-assist-choice>Enable microphone and spoken welcome</button>
+            <button type="button" data-assist-manual>Browse myself</button>
             <button type="button" data-assist-start>Start typed guidance</button>
+            <button type="button" data-assist-voice>Start voice assistance</button>
             <button type="button" data-assist-pause>Pause</button>
             <button type="button" data-assist-end>End</button>
+            <button type="button" data-reconcile-action>Check pending changes</button>
+            <label><input type="checkbox" data-assist-typed-audio disabled> Read typed replies aloud (no microphone)</label>
           </div>
-          <div class="scenario-grid" aria-label="Mock agent action scenarios">
+          <div class="scenario-grid" aria-label="Suggested requests">
             <button type="button" data-scenario="filter-veg">Filter vegetarian under 800</button>
             <button type="button" data-scenario="add-wrap">Add hot chicken wrap</button>
             <button type="button" data-scenario="checkout-summary">Ask checkout summary</button>
           </div>
-          <div class="message-list" data-agent-transcript aria-live="polite" aria-label="Mock conversation transcript">
-            <p class="assistant-message">Demo mode ready. Start typed guidance to inject mock contract events.</p>
+          <div class="message-list" data-agent-transcript aria-live="polite" aria-label="Conversation transcript">
+            <p class="assistant-message">Choose an ordering mode. Spoken welcome enables listening for your voice/manual answer. Manual shopping is available immediately.</p>
           </div>
           <form class="assistant-form" data-assistant-form>
             <label for="assistant-text">Type a request</label>
@@ -539,7 +545,7 @@
           </section>
           <section class="receipt-panel" data-receipt-panel hidden>
             <p class="eyebrow">Demo order placed</p>
-            <h2 data-receipt-id>DEMO-0000</h2>
+            <h2 data-receipt-id style="overflow-wrap: anywhere">DEMO-0000</h2>
             <p data-receipt-summary>Your simulated receipt is ready.</p>
             <button class="button primary" type="button" data-receipt-close>Back to menu</button>
           </section>

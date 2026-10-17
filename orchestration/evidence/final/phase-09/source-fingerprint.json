@@ -1,0 +1,548 @@
+{
+  "generated_at_utc": "2026-10-17T21:00:44.2663053Z",
+  "branch": "codex/phase-9-delivery",
+  "base_head": "ca7bc59ad6a66baa73f0cb70c89e169911bdd335",
+  "scope": "Runtime text source, delivery tools, package locks and browser build configuration; includes uncommitted prior-phase work. Docs, tests, private configuration, audio, images and installed runtimes excluded.",
+  "files": [
+    {
+      "path": "contracts/pyproject.toml",
+      "sha256": "e69e272feeba9d60eee522bf3da2acc324f2fcd013ce0c748689785524ce1971"
+    },
+    {
+      "path": "contracts/src/foodease_contract/__init__.py",
+      "sha256": "6f4b919c9eef25d0774bde2cf415b8ee55dc06454d58fc4a188065b3617132fd"
+    },
+    {
+      "path": "contracts/src/foodease_contract/enums.py",
+      "sha256": "09fa00d3d0bdd92bd4b8df8a45f9b345f587bd4d199086f437f9ae5b3a46262f"
+    },
+    {
+      "path": "contracts/src/foodease_contract/models.py",
+      "sha256": "159da878535f0e4b7a0a2cc4c77b2d0d098d320404a92bd7e8654448e77b3f2c"
+    },
+    {
+      "path": "contracts/src/foodease_contract/projection.py",
+      "sha256": "dc9b42c3ee4aca667eb542008ecfa3a03bc87fc0d713da443bdde085cb2e7484"
+    },
+    {
+      "path": "contracts/src/foodease_contract/startup.py",
+      "sha256": "c826990eb24844681a15675fd35a40188a208654dfd3775081d026622c679fa5"
+    },
+    {
+      "path": "orchestration/pyproject.toml",
+      "sha256": "83a1701f707c4c1c434307755941a730d1c07c6cef9b16e10cb5180d2c8c618d"
+    },
+    {
+      "path": "orchestration/src/foodease_session/__init__.py",
+      "sha256": "528128e4d365a06d56a1dd7aef0377267ce7afc2c671e4be73488841a0bf1390"
+    },
+    {
+      "path": "orchestration/src/foodease_session/app.py",
+      "sha256": "010bde5343eb56ec5d92bfc4a503c05d04061029d2aa3a29162a240f3b7b525d"
+    },
+    {
+      "path": "orchestration/src/foodease_session/assist.py",
+      "sha256": "fdf0ce6a5a9a3c6db3aacee24f4151e3ff7f97ac62cee61dac195789a4f4b106"
+    },
+    {
+      "path": "orchestration/src/foodease_session/bringup.py",
+      "sha256": "4a766ff23ec1a225ecb9fe6d1602cf5cfc70b5abf0d921174de6bbebee2028fb"
+    },
+    {
+      "path": "orchestration/src/foodease_session/config.py",
+      "sha256": "caae92b755b965cbad8ea0e48852c7eb5a5662fedbb2b6c0a51ef9d09beb274f"
+    },
+    {
+      "path": "orchestration/src/foodease_session/lifecycle_api.py",
+      "sha256": "9ed0f63d63bad88cefbcfe32db181c99f2acd2b4e7a0f7cf0b872340b6ba1603"
+    },
+    {
+      "path": "orchestration/src/foodease_session/lifecycle.py",
+      "sha256": "95c0bf15236b80bce6c40931a8df0ac31309af18d12a26cf145409627ee6b166"
+    },
+    {
+      "path": "orchestration/src/foodease_session/main.py",
+      "sha256": "ff54c86d8096c986661a32c17cb9b774aac33e44cdbf9e0d537a50406a51ad87"
+    },
+    {
+      "path": "orchestration/src/foodease_session/mint.py",
+      "sha256": "81d145677403ad6ce74631b04752e450112161af5a035c98613f73877ff1be05"
+    },
+    {
+      "path": "orchestration/src/foodease_session/models.py",
+      "sha256": "e54310f369dd744b71f9d5bbd3d8a75e819f92d0fc360948dc0d3699f15478da"
+    },
+    {
+      "path": "orchestration/src/foodease_session/policy.py",
+      "sha256": "030c48c7445440fc5422646e9b5b56c5bb304d041129b9ccbfb16af0d0d23a83"
+    },
+    {
+      "path": "orchestration/src/foodease_session/rate_limit.py",
+      "sha256": "47512c233841bc1ae913fa40e4930c4ecb2f4ff28a75429755847a18dafe345f"
+    },
+    {
+      "path": "orchestration/tools/demo_up.py",
+      "sha256": "4b8a4e80b5d185e89ac2481a5e7bdfacdb15f043aca4e93cc3f57b41c0e8142d"
+    },
+    {
+      "path": "orchestration/tools/final_acceptance.py",
+      "sha256": "37913764624161c999d50350b876debd22a6ff28e8dca61f2ad6227b42aabe82"
+    },
+    {
+      "path": "orchestration/tools/launch_child.py",
+      "sha256": "28b12f4154bae234ff9e01fe4a1e4c434538d7728b58644999ce2f436d011d01"
+    },
+    {
+      "path": "orchestration/tools/manual_launch_smoke.py",
+      "sha256": "815bb6384015924ccf74d273a56cbf66a30b377c406a4def123a1039a08af2f3"
+    },
+    {
+      "path": "orchestration/tools/phase0_baseline.py",
+      "sha256": "3daeb6944795cf472ba7954ad56d409246d1a04b29d64896dd60af7d5eea2f62"
+    },
+    {
+      "path": "orchestration/tools/phase0_website_smoke.py",
+      "sha256": "4ba4ca58f8189a7bb789c90ea10b5ec542da03aafd2712372f3454b398ce6e80"
+    },
+    {
+      "path": "orchestration/tools/phase2_http_smoke.py",
+      "sha256": "83e38489556a025efeb83889418678bb660907f208736720dc55b98a2b3c7f93"
+    },
+    {
+      "path": "orchestration/tools/phase2_verify.py",
+      "sha256": "ea8462c908d022d8ee636319da70f7924ef0b5a0cb4a7b65443e7d1e6b859fa4"
+    },
+    {
+      "path": "orchestration/tools/phase3_http_smoke.py",
+      "sha256": "baac3144307d57489bea385c7e0ab2d63564f18c47d6dfdc1dbb1f9f26567465"
+    },
+    {
+      "path": "orchestration/tools/phase3_verify.py",
+      "sha256": "5f0456f29486ea9ff017a304c2f84ee39a0f1867f26bf3a650f35f66877e1449"
+    },
+    {
+      "path": "orchestration/tools/phase4_verify.py",
+      "sha256": "bbdbc724aed31412b0c5890e41b155a4a1fdcecca0b9afb66f77ebb889bd7b63"
+    },
+    {
+      "path": "orchestration/tools/phase5_verify.py",
+      "sha256": "5ba9bb58841f32ebbd81f1556a9c70cde1dee61d24d82af81164564b2375eab6"
+    },
+    {
+      "path": "orchestration/tools/phase6_verify.py",
+      "sha256": "3b940876ae3b650e92db05f37d2f2420c9df26649700713141a11bdc0766f98e"
+    },
+    {
+      "path": "orchestration/tools/phase7_campaign.py",
+      "sha256": "ccaad3eb10a109d9eaa3ab938f9c546f215c69b794d6a673cd03c3aae70c6e86"
+    },
+    {
+      "path": "orchestration/tools/phase7_cases.py",
+      "sha256": "242cb680e6dee0f3e03bb875e99de1e4e02225d07484c101c13481658d3e14bc"
+    },
+    {
+      "path": "orchestration/tools/phase7_verify.py",
+      "sha256": "3b71cd5d4546112bb7e8aba38fa2c85a091dfea3a6a091776439bb4546ee4f39"
+    },
+    {
+      "path": "orchestration/tools/phase8_verify.py",
+      "sha256": "db5d78e5d7bacf6574e3edd5ea537da932e1624cca2179823c3571345f386ec8"
+    },
+    {
+      "path": "orchestration/tools/phase9_verify.py",
+      "sha256": "6aea309cd4482b3fb4342d206c4ffd5928d6602fde365764327d047062157039"
+    },
+    {
+      "path": "orchestration/tools/secret_scan.py",
+      "sha256": "c6a5730c66913fecc5ef65493e8635bbb962b54b1c7e2e6cfb7b51d39c1b497b"
+    },
+    {
+      "path": "orchestration/tools/smoke_assist.py",
+      "sha256": "3cc6e225cb400dc96b55e9d6561f59756117a67d1bbe4c73c61f4739fd459590"
+    },
+    {
+      "path": "orchestration/tools/smoke_session.py",
+      "sha256": "89b1fdfa86b5f9e5973dcbf9e53f8fdd97cfb64951ade1a1b98511694be0a33d"
+    },
+    {
+      "path": "orchestration/tools/topology_up.py",
+      "sha256": "9b0fe2e18d3c0f349862d7a77a2f107587ce1254c8f7dda1f599ed80b0e6a407"
+    },
+    {
+      "path": "orchestration/uv.lock",
+      "sha256": "0c5604701f87f5ceebc62624cac2fa447c2c731e8d1f50bddec4cab6ca73ce6e"
+    },
+    {
+      "path": "voice-agent/pyproject.toml",
+      "sha256": "b7f11525e39dac6dafb9d2ed1c35c27465a800e15308cc724ef51abeeb174811"
+    },
+    {
+      "path": "voice-agent/src/foodease_agent/__init__.py",
+      "sha256": "03a52f8adae7dbc580b089ac216077e905a0721e7bf3e5c7b9d2c1eddd9f3b14"
+    },
+    {
+      "path": "voice-agent/src/foodease_agent/adapters/__init__.py",
+      "sha256": "72f4f67e2e214e3720291ad09093081a31a26aca540131ab7b2a5d993ccf7ce7"
+    },
+    {
+      "path": "voice-agent/src/foodease_agent/adapters/base.py",
+      "sha256": "f2faaf988defa9117a3bc9b35dca8f3698a5a6084c7a427bbaee529d2454751a"
+    },
+    {
+      "path": "voice-agent/src/foodease_agent/adapters/demo_cli.py",
+      "sha256": "40130a64e4a697f9c149b16b0deb2a2e73eff7ff670a8c0c79f4369934b3f2c0"
+    },
+    {
+      "path": "voice-agent/src/foodease_agent/adapters/dev_wiring.py",
+      "sha256": "d21d41a185f76775bd8922788d8128922042d1938dadf9d2e41461442360af45"
+    },
+    {
+      "path": "voice-agent/src/foodease_agent/adapters/integrated_startup.py",
+      "sha256": "029a159b291121d03126bc14080db58b093a27c348b01bc35eaa6a197cc34694"
+    },
+    {
+      "path": "voice-agent/src/foodease_agent/adapters/integrated.py",
+      "sha256": "a1a7e6687b14ce4097b8604ae4acd1c49bb3cd5e9c89b0a0854bfdf881f69399"
+    },
+    {
+      "path": "voice-agent/src/foodease_agent/adapters/livekit_room.py",
+      "sha256": "925ea82ddc63b936ef3d2bf32b6b09dce357b23c31076d71b6568bb2d660611f"
+    },
+    {
+      "path": "voice-agent/src/foodease_agent/adapters/livekit_rpc.py",
+      "sha256": "3d3b3cfbd08724d46b3ea246584ea89433f4358b4569fa1bc1cf5b7041666f13"
+    },
+    {
+      "path": "voice-agent/src/foodease_agent/adapters/mock_catalog.py",
+      "sha256": "4b1ea9b19ebe8ee9c322f9776ee8464839117fd78b8e8d58cbfe42e141895b51"
+    },
+    {
+      "path": "voice-agent/src/foodease_agent/adapters/mock.py",
+      "sha256": "9f26801bbb9ba8ce05af4b48cac1325d4cf6d3ae4abcc12ad4c4f91389f53d24"
+    },
+    {
+      "path": "voice-agent/src/foodease_agent/adapters/room_protocol.py",
+      "sha256": "7e3734f511e916be25fcb9b30880b88ae08dd20cc70fb4f800fffcc801ab79c9"
+    },
+    {
+      "path": "voice-agent/src/foodease_agent/adapters/transport.py",
+      "sha256": "f593f851361bb05e8b01a35ebed5291247b7b43bd11222061c869216e0dd4d5f"
+    },
+    {
+      "path": "voice-agent/src/foodease_agent/agent.py",
+      "sha256": "ebf839b09a620ba0c558d508ad8821c6331195b09cfd072b97ca7be038a22859"
+    },
+    {
+      "path": "voice-agent/src/foodease_agent/broker.py",
+      "sha256": "1401d49cf5ba51c8b29bab007f70bff31c675f47f8925d71e79288c638670962"
+    },
+    {
+      "path": "voice-agent/src/foodease_agent/cli.py",
+      "sha256": "9f73711c3487a9bf2e18eaaca9446a29bf0354044497b302d1b1567735c4913b"
+    },
+    {
+      "path": "voice-agent/src/foodease_agent/confidence.py",
+      "sha256": "7d831c8ac1407495cab4ec929f26b73ebb7c900417d4b13ef7e1b1eea792fd4d"
+    },
+    {
+      "path": "voice-agent/src/foodease_agent/config.py",
+      "sha256": "ca4228d084043869e2b402d5cc8d2edcec67cfa8890265720c2ef93e8b45bb74"
+    },
+    {
+      "path": "voice-agent/src/foodease_agent/confirmation.py",
+      "sha256": "e0ad3d2f3f50d8788f3f20b6ce70a0a458bd01a1b4a6fc117d5127fa6a6c9097"
+    },
+    {
+      "path": "voice-agent/src/foodease_agent/contract/__init__.py",
+      "sha256": "b4c97f20c9f8ba8bbdd8b378c03cd5f652a66373879b68e8275a738a2359e60f"
+    },
+    {
+      "path": "voice-agent/src/foodease_agent/contract/enums.py",
+      "sha256": "d4c39dc850d094cd11756ac3ffa978dba6657259c4782725e6abafd7a37ab66a"
+    },
+    {
+      "path": "voice-agent/src/foodease_agent/contract/export_schemas.py",
+      "sha256": "df7a7d34d4b27b1a4c80b1c3c18d3db5bcb5f1d6a2c407cc11e21a0ab47dfbc9"
+    },
+    {
+      "path": "voice-agent/src/foodease_agent/contract/models.py",
+      "sha256": "aed92c3f30ec73cee51b8c194444f752861cf22031236e0fb4fea33a44ffd41c"
+    },
+    {
+      "path": "voice-agent/src/foodease_agent/contract/v2/__init__.py",
+      "sha256": "600dd3fbea537dd21d8a74c922b64c587e19bbc728e01acfe39abe62da05be6d"
+    },
+    {
+      "path": "voice-agent/src/foodease_agent/contract/v2/models.py",
+      "sha256": "b50a3f0fc28743fe2966803817c2da0b3d549a2a45838c8c379b54ba86cbb17b"
+    },
+    {
+      "path": "voice-agent/src/foodease_agent/contract/v2/projection.py",
+      "sha256": "4b858d5ddf74548380ef21eab21d64ab115386a5b7d1a21b68b8a1bdeedd9811"
+    },
+    {
+      "path": "voice-agent/src/foodease_agent/contract/write_examples.py",
+      "sha256": "1c770e60aad5720d9593442b715f36022d002118fe827451e75aaa7cacf37b53"
+    },
+    {
+      "path": "voice-agent/src/foodease_agent/controls.py",
+      "sha256": "6e2cc368b95d8939927313b34c80eeeb2384c2df3ccf4b0f216182aad43349cb"
+    },
+    {
+      "path": "voice-agent/src/foodease_agent/dialogue_planner.py",
+      "sha256": "0344e77329f388363f1eb3a7c91e4a84da97dc919c2b8e98bc4b32e63ea70bd4"
+    },
+    {
+      "path": "voice-agent/src/foodease_agent/engine.py",
+      "sha256": "9805242a4ae5f7eb249c7287fc171b5f7b0710b27641aeac3e41f876de1c0ca6"
+    },
+    {
+      "path": "voice-agent/src/foodease_agent/events.py",
+      "sha256": "c7d308d9829f19a4c7ee94a4587546682d7807f806b5318cdcc639144be94fdb"
+    },
+    {
+      "path": "voice-agent/src/foodease_agent/fallback.py",
+      "sha256": "2e4be2f1ec6d2cc7d0cff8b7cf5d74f7d3244ba745a1bfee39a2dcbc7691ab60"
+    },
+    {
+      "path": "voice-agent/src/foodease_agent/faults.py",
+      "sha256": "784b797ee928663ef92ea1f4720aa06be5f74306eff10a6745d7212c7de78934"
+    },
+    {
+      "path": "voice-agent/src/foodease_agent/greeting.py",
+      "sha256": "345a84effac1a2a6b9d33133cc85ac7e8f5d4f3234b72d621da4a44c40a105c0"
+    },
+    {
+      "path": "voice-agent/src/foodease_agent/idle.py",
+      "sha256": "3a4f9769c6f28d2abf47ea65538ee0b6ce1dad1320a64160db83ffd1f32cfdcc"
+    },
+    {
+      "path": "voice-agent/src/foodease_agent/inbound.py",
+      "sha256": "af79238f0550c52e0b8dc9bbf28ca0d289951f2e19509d0ee7e0509daec4cf5a"
+    },
+    {
+      "path": "voice-agent/src/foodease_agent/integrated/__init__.py",
+      "sha256": "febd3597fb2d07d6bea1c45f656e70c772f13fbe88bafc6f1463102886bb7fb7"
+    },
+    {
+      "path": "voice-agent/src/foodease_agent/integrated/agent.py",
+      "sha256": "a81be5ee9919dfe22d279af0ffb953711b241ceb61fb396ff51fa03c0cd01f73"
+    },
+    {
+      "path": "voice-agent/src/foodease_agent/integrated/broker.py",
+      "sha256": "1ccda425824c81601d690db4986fedbbb25badcc22f32fd6e150c59647164a52"
+    },
+    {
+      "path": "voice-agent/src/foodease_agent/integrated/conversation.py",
+      "sha256": "3941fa46c54053f8829d3560ec930568cc2458b5ba0f49214e13a1759755b8d9"
+    },
+    {
+      "path": "voice-agent/src/foodease_agent/integrated/factory.py",
+      "sha256": "5b191a63cca4ea60d1db444964e833ee1f452750147e21751b2e8d6eff7a9275"
+    },
+    {
+      "path": "voice-agent/src/foodease_agent/integrated/output.py",
+      "sha256": "1affb04c696ca2237f78c677be581bd932bcf39c7f205ed6194312d8ae8ce292"
+    },
+    {
+      "path": "voice-agent/src/foodease_agent/integrated/policy.py",
+      "sha256": "a4e75aeb9ed832754e19f8556bc8da6ec9a634cb5e74facc7e4cf6527d5fa831"
+    },
+    {
+      "path": "voice-agent/src/foodease_agent/integrated/recovery.py",
+      "sha256": "bc3abef8d8c026a047d5310140073b131fbfc30cb3216217bcaa5ceb0061effa"
+    },
+    {
+      "path": "voice-agent/src/foodease_agent/integrated/runtime.py",
+      "sha256": "1d442405e31d0c57bc0ecf5814a63a7dd881e1570790cc9a6a1d44a395a845de"
+    },
+    {
+      "path": "voice-agent/src/foodease_agent/integration/__init__.py",
+      "sha256": "23d00559ea3b20342d81a90bd3dd5ee4f1fbfc2efbf6969b0b5a934b61a32629"
+    },
+    {
+      "path": "voice-agent/src/foodease_agent/integration/scenarios.py",
+      "sha256": "e7bf880065d79efbce29726c537a42db9d46cbac0ddb1a1dcc95085fc848d970"
+    },
+    {
+      "path": "voice-agent/src/foodease_agent/interruption.py",
+      "sha256": "8b4124111a8963c709c4e974df468c2098d89f97d581d7597f12bdb558b70689"
+    },
+    {
+      "path": "voice-agent/src/foodease_agent/latency_report.py",
+      "sha256": "d481e21fb5ea1db8f94df3994b5ef5c3a39e27231abed9ce37293bb859db3471"
+    },
+    {
+      "path": "voice-agent/src/foodease_agent/metrics.py",
+      "sha256": "9e2db9cf3c3ab3a554f0d1ca32fabef8917eaddfba958adade3b85a75b82a54c"
+    },
+    {
+      "path": "voice-agent/src/foodease_agent/planner.py",
+      "sha256": "4fb30c671c4f7cb27a8f6da120974ec1e0042065540b1bb970140b8781d5c577"
+    },
+    {
+      "path": "voice-agent/src/foodease_agent/preferences.py",
+      "sha256": "2ace77a4dc2429cf78c969563c079912a63e1d192bd34b987aea05a182fd7c41"
+    },
+    {
+      "path": "voice-agent/src/foodease_agent/product_state.py",
+      "sha256": "850126d83330cf4e64dafe055b7a7f0d7c19645240d152988be7f093542729d6"
+    },
+    {
+      "path": "voice-agent/src/foodease_agent/reconnect.py",
+      "sha256": "1442cc4b6265be989356a21f581ed7c69a935e76e25e79ded3bf32f2f254fc0c"
+    },
+    {
+      "path": "voice-agent/src/foodease_agent/recovery.py",
+      "sha256": "95518a1f53abfa4a5bb5490fe6e8a1c2dc90585e5fc8f1c153e0736591496a2c"
+    },
+    {
+      "path": "voice-agent/src/foodease_agent/reference.py",
+      "sha256": "5b0f2f8cd4f5c168420ddf8a90ad02c466df1d086f4cf37f66dae33a5e7c7e75"
+    },
+    {
+      "path": "voice-agent/src/foodease_agent/session.py",
+      "sha256": "dcd26d93d35e981dfcfda3446ad4cb7e72be371cd8fd6b79e6fc15c2f6e93b2f"
+    },
+    {
+      "path": "voice-agent/src/foodease_agent/speech_text/__init__.py",
+      "sha256": "6168b5e7f158f5926f039dc9bc54a880e9020fda3d01c210c247246b131ceba8"
+    },
+    {
+      "path": "voice-agent/src/foodease_agent/speech_text/chunking.py",
+      "sha256": "ed30188685d954581a58e7695faa50513141848d9359596eaae382b9e4c08a43"
+    },
+    {
+      "path": "voice-agent/src/foodease_agent/speech_text/delivery.py",
+      "sha256": "9764f66cd6ffa3416f5e04b2851364018d09dd4353bcdec3d507735308ed0f1e"
+    },
+    {
+      "path": "voice-agent/src/foodease_agent/speech_text/pronunciation.py",
+      "sha256": "5fb8f07267829ae40563a50d76a238b9ea055797e87d7109ac624522f8bb033c"
+    },
+    {
+      "path": "voice-agent/src/foodease_agent/speech_text/sanitizer.py",
+      "sha256": "6c362c5bb3e7cf528284ececbbb87bd8a3a4a929f7fa7f5ad17cea23c218faf3"
+    },
+    {
+      "path": "voice-agent/src/foodease_agent/speech_text/shaping.py",
+      "sha256": "ac68c5c82e7ebc9f8ffe7df85e4471a61891d6e515b2e19b40f533e27ab956f7"
+    },
+    {
+      "path": "voice-agent/src/foodease_agent/speech_text/verbalizer.py",
+      "sha256": "b93bc47aa37fe87777b16c0414e7ea3781c0e5dd6771129749da16c8db5ce571"
+    },
+    {
+      "path": "voice-agent/src/foodease_agent/speech_text/wait_feedback.py",
+      "sha256": "5457b7662bab66e637acd41b700783c2e6318455605edeaa66e4725b1e0492da"
+    },
+    {
+      "path": "voice-agent/src/foodease_agent/tiers.py",
+      "sha256": "ce27c3ae3e089f9cfe082ed455ab8288fa0391cb61d3cd1b0fc1b9b42b8f6276"
+    },
+    {
+      "path": "voice-agent/src/foodease_agent/turn_commit.py",
+      "sha256": "3911765a5fbf584059d7ebabdf528c3ef8388d31c9b70858d8ae08577be1075e"
+    },
+    {
+      "path": "voice-agent/src/foodease_agent/worker.py",
+      "sha256": "f6eff928cda15f7c7a568c234fbc91a78e2df9877af293e76f83e40451f36d3b"
+    },
+    {
+      "path": "voice-agent/uv.lock",
+      "sha256": "ad3a0460f5d6116728f6b5836ec5a56ac05b9eaa1c97a2edc6a1637a28f60af5"
+    },
+    {
+      "path": "website/package-lock.json",
+      "sha256": "70dc07e54dd0b5d6c1abc29bf86d665b64fc92bde75323297a2cfdcb446b3e85"
+    },
+    {
+      "path": "website/package.json",
+      "sha256": "6bca93c9c4cebc383813f769faeee98abcfa37348595763dbc748ea7d424384c"
+    },
+    {
+      "path": "website/playwright.config.mjs",
+      "sha256": "eeecec6d50d4a0368a830b0468c78eeba7bb5b714ecf69f3a9470054a66ba689"
+    },
+    {
+      "path": "website/pyproject.toml",
+      "sha256": "aef23d9e6ed567bd5baa91a1747afb7d23ff7efb2c0f6b11579514b9807d69f5"
+    },
+    {
+      "path": "website/src/foodease_website/__init__.py",
+      "sha256": "2854693b1e37449ea27cdc2961d2e6518620f7554f23677bca536626188a886a"
+    },
+    {
+      "path": "website/src/foodease_website/app.py",
+      "sha256": "4c27949aa9e0e225d79fb98d19cd337ef9831f8688814269880bd1430b32fbc2"
+    },
+    {
+      "path": "website/src/foodease_website/catalog.py",
+      "sha256": "5338deaf35b47e503de738f332ad04646c0ad260e5b1238a3379d84a3082399d"
+    },
+    {
+      "path": "website/src/foodease_website/config.py",
+      "sha256": "e98b43843dec35c602cd4e9c97d759e924910e8e8bcd997da14398592a2950b5"
+    },
+    {
+      "path": "website/src/foodease_website/domain.py",
+      "sha256": "fc0066f4d2126e1dc9deb2fcb68e5aebc163189ee091bdd5f613340cc2a871bf"
+    },
+    {
+      "path": "website/src/foodease_website/main.py",
+      "sha256": "f0aff482dbf547fbe225f24cf7f82c23d94d9f76d48c5e425227932cc0d55d53"
+    },
+    {
+      "path": "website/src/foodease_website/sessions.py",
+      "sha256": "8c9fccdb5e0fcd7fc1a4f9ccf6734120ccdd7a79cd8174b8ebef4c9f72d0a4e4"
+    },
+    {
+      "path": "website/static/css/app.css",
+      "sha256": "0e2203d2892525ca0c2c0189d8a856edf3d693ef70dd1f4903057ea0f6157484"
+    },
+    {
+      "path": "website/static/js/app.js",
+      "sha256": "abd432a1b9d3736f1be7ad8e3158063c3af71740170a0f78684915568d634877"
+    },
+    {
+      "path": "website/static/js/application.mjs",
+      "sha256": "40476394c0629a55606460c6855601f04be49cf6825c4541eef689644bc57a36"
+    },
+    {
+      "path": "website/static/js/assistance-controller.mjs",
+      "sha256": "0f1fa39ce6196b4ff1f0a3c18436f49e30c8a85717c8fc644f75c6962b6ffaec"
+    },
+    {
+      "path": "website/static/js/livekit-bridge.mjs",
+      "sha256": "0cd05c4c755b36793c829d27b157805c5634a2e91ffa659d7a62d945ea715db0"
+    },
+    {
+      "path": "website/static/js/tab-lease.mjs",
+      "sha256": "2a29e6a31a0dd49238c4a1a02ba284a4e7bd4f844126ea4c2eb81256d3d3c50e"
+    },
+    {
+      "path": "website/static/js/transcripts.mjs",
+      "sha256": "c3d0018832700f18194bbf693ba3b0e1be341527dbcbc88f080d8dfc59fa97ce"
+    },
+    {
+      "path": "website/static/vendor/livekit-client.2.15.4.mjs",
+      "sha256": "3e25d8a45c35836a85882fe742f93afc7db94c71959663a79dc4323998eadece"
+    },
+    {
+      "path": "website/templates/index.html",
+      "sha256": "eedb4346bcaa9351a75d5882636c95b3d9bbe282fc1e1bc12d65239499001fbd"
+    },
+    {
+      "path": "website/tools/browser-test.mjs",
+      "sha256": "b798e2f3b1853a93e6a561a0076da1bfeec2770ac69e605af83014773bbb25d2"
+    },
+    {
+      "path": "website/tools/build-browser.mjs",
+      "sha256": "35c05d4d8e33f75f085b47161ed29d3cd7eb620968b7231c515f1d0a5b33d4f6"
+    },
+    {
+      "path": "website/uv.lock",
+      "sha256": "12d58cad1c8b3a6cba83f9da83cf659a968e6fed06e62aa44dd2110d63c18d1a"
+    }
+  ]
+}

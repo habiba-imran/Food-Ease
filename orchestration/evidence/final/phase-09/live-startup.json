@@ -1,0 +1,30 @@
+{
+  "kind": "configured_live_cloud_startup_health_only",
+  "observed_local_date": "2026-10-18",
+  "observation_source": "Codex tool output from actual owned processes; redacted summary",
+  "command": ".\\orchestration\\.venv\\Scripts\\python.exe orchestration/tools/demo_up.py --mode live --launch --allow-live --duration 45 --startup-timeout 180",
+  "exit_code": 0,
+  "website_health_http_200": true,
+  "session_health_http_200": true,
+  "worker_health_http_200": true,
+  "silero_runners_initialized": true,
+  "worker_registered_with_configured_cloud": true,
+  "agent_name": "foodease",
+  "session_shutdown_complete": true,
+  "worker_drained_and_shut_down": true,
+  "website_shutdown_complete": true,
+  "forced_shutdown": false,
+  "post_shutdown_occupied_service_ports": [],
+  "room_or_dispatch_created_by_check": false,
+  "app_user_agent_room_seats_established": false,
+  "provider_conversation_started": false,
+  "physical_microphone_tested": false,
+  "audible_measurements": 0,
+  "live_acceptance": false,
+  "earlier_attempts": [
+    {"outcome": "failed", "exit_code": 1, "reason": "60-second startup deadline reached while stdin reader held a lock during NumPy import"},
+    {"outcome": "failed", "exit_code": 1, "reason": "180-second retry confirmed extending the deadline did not solve the stdin deadlock"},
+    {"outcome": "failed", "exit_code": 0, "reason": "Temporary os.set_blocking approach did not support website Python 3.11; SDK default VAD initialization also timed out; forced-stop warning means this was not a successful check"}
+  ],
+  "limitations": "Existing configured environment only. HTTP health precedes registration. No clean-machine, three-seat, STT/LLM/TTS, human device, accessibility or latency acceptance is inferred. Private configuration contents and account identifiers are excluded."
+}

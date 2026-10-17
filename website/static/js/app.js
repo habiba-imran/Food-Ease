@@ -1,4 +1,11 @@
+import { Application, newId } from "./application.mjs";
+import { AssistanceController } from "./assistance-controller.mjs";
+import { LiveKitSeats } from "./livekit-bridge.mjs";
+import { TranscriptView } from "./transcripts.mjs";
+import { acquireTabLease } from "./tab-lease.mjs";
+
 const root = document.documentElement;
+root.dataset.assistanceState = "awaiting_spoken_choice_consent";
 
 root.dataset.foodeaseReady = "true";
 
@@ -29,12 +36,19 @@ const detailPhoto = document.querySelector("[data-detail-photo]");
 const agentStatus = document.querySelector("[data-agent-status]");
 const agentStateShell = document.querySelector("[data-agent-state]");
 const agentTranscript = document.querySelector("[data-agent-transcript]");
+const transcriptHome = document.createComment("assistant-transcript-home");
+agentTranscript?.before(transcriptHome);
 const assistStart = document.querySelector("[data-assist-start]");
 const assistPause = document.querySelector("[data-assist-pause]");
 const assistEnd = document.querySelector("[data-assist-end]");
 const scenarioButtons = document.querySelectorAll("[data-scenario]");
 const assistantForm = document.querySelector("[data-assistant-form]");
 const assistantInput = document.querySelector("[data-assistant-input]");
+const assistantFormHome = document.createComment("assistant-form-home");
+assistantForm?.before(assistantFormHome);
+const assistanceControls = document.querySelector(".assistant-controls");
+const assistanceControlsHome = document.createComment("assistant-controls-home");
+assistanceControls?.before(assistanceControlsHome);
 const checkoutDialog = document.querySelector("[data-checkout-dialog]");
 const checkoutReview = document.querySelector("[data-checkout-review]");
 const receiptPanel = document.querySelector("[data-receipt-panel]");
@@ -144,9 +158,19 @@ async function shoppingFetch(url, options = {}) {
 }
 let selectedDetailItem = null;
 let assistanceActive = false;
+let assistanceIntent = 0;
 let currentPreviewItemId = "wrap-hot-chicken";
 let arRotation = 0;
 let latestAcceptanceReport = null;
+let applicationPromise = null;
+let catalogItems = new Map();
+let lastRenderedCart = null;
+let lastRenderedRoute = null;
+let lastRenderedFocus = null;
+const transcriptView = new TranscriptView(agentTranscript);
+let liveSeats = null;
+let assistanceController = null;
+let assistancePaused = false;
 const displayModes = new Set();
 const themeStorageKey = "foodease-theme";
 let activeTheme = "light";
@@ -158,7 +182,8 @@ try {
 }
 
 function money(amount) {
-  return `${Number(amount || 0).toFixed(0)} PKR`;
+  const value = Number(amount || 0);
+  return `${value.toFixed(Number.isInteger(value) ? 0 : 2)} PKR`;
 }
 
 function itemImageUrl(itemId) {
@@ -298,69 +323,151 @@ function setAgentStatus(status) {
 }
 
 function appendTranscript(kind, text) {
-  if (!agentTranscript) {
-    return;
+  const id = newId();
+  transcriptView.update({ kind, turnId: id, utteranceId: id, text, timestamp: new Date().toISOString() });
+}
+
+async function application() {
+  if (!applicationPromise) applicationPromise = (async () => {
+    const sessionId = await shoppingSession();
+    const catalog = await (await checkedResponse(await fetch("/api/catalog/items"))).json();
+    catalogItems = new Map(catalog.items.map((item) => [item.item_id, item]));
+    const transport = {
+      context: async () => (await shoppingFetch("/api/v2/app/context")).json(),
+      action: async (request) => (await shoppingFetch("/api/v2/app/action", {
+        method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(request),
+      })).json(),
+      lookup: async (actionId, eventId = newId()) => {
+        const result = await (await shoppingFetch(`/api/v2/app/actions/${encodeURIComponent(actionId)}`, {
+          headers: { "X-FoodEase-Event-Id": eventId },
+        })).json();
+        if (result.schema_version !== "2.0" || result.session_id !== sessionId || result.action_id !== actionId
+            || result.reply_to !== eventId || !["found", "pending", "not_seen", "expired"].includes(result.state)) throw new Error("The earlier action could not be verified.");
+        return result;
+      },
+    };
+    let storage = null;
+    try { storage = window.sessionStorage; } catch { /* Memory-only session. */ }
+    return new Application({ sessionId, transport, render: renderApplication, onError: setStatus, storage });
+  })();
+  return applicationPromise;
+}
+
+async function renderApplication(snapshot, result = null, request = null) {
+  appContext = snapshot;
+  const shoppingDialog = snapshot.route === "item" ? itemDialog
+    : ["checkout", "confirmation"].includes(snapshot.route) ? checkoutDialog : null;
+  const controlsDestination = shoppingDialog?.querySelector(".checkout-shell, .detail-copy")
+    || assistanceControlsHome.parentNode;
+  if (assistanceControls && assistanceControls.parentNode !== controlsDestination) {
+    const focused = assistanceControls.contains(document.activeElement) ? document.activeElement : null;
+    if (shoppingDialog) controlsDestination.append(assistanceControls);
+    else assistanceControlsHome.after(assistanceControls);
+    focused?.focus({ preventScroll: true });
   }
-  const message = document.createElement("p");
-  message.className = kind === "user" ? "user-message" : kind === "system" ? "harness-message" : "assistant-message";
-  message.textContent = text;
-  agentTranscript.append(message);
-  while (agentTranscript.children.length > 8) {
-    agentTranscript.firstElementChild?.remove();
+  const typedDialog = assistanceActive && liveSeats?.mode === "typed"
+    ? snapshot.route === "item" ? itemDialog : ["checkout", "confirmation"].includes(snapshot.route) ? checkoutDialog : null
+    : null;
+  const destination = typedDialog?.querySelector(".checkout-shell, .detail-copy") || assistantFormHome.parentNode;
+  if (agentTranscript && destination && agentTranscript.parentNode !== destination) {
+    if (typedDialog) destination.append(agentTranscript); else transcriptHome.after(agentTranscript);
   }
+  if (assistantForm && destination && assistantForm.parentNode !== destination) {
+    const focused = assistantForm.contains(document.activeElement) ? document.activeElement : null;
+    if (typedDialog) destination.append(assistantForm); else assistantFormHome.after(assistantForm);
+    focused?.focus({ preventScroll: true });
+  }
+  activeCategory = snapshot.category || "all";
+  activeFilter = snapshot.filter_tags[0] || (snapshot.max_price_pkr !== null ? "budget" : "all");
+  if (searchInput && searchInput !== document.activeElement) searchInput.value = snapshot.search_query || "";
+  for (const button of filterButtons) {
+    const filter = button.dataset.filter;
+    const active = snapshot.filter_tags.includes(filter) || filter === "budget" && snapshot.max_price_pkr !== null
+      || filter === "all" && snapshot.filter_tags.length === 0 && snapshot.max_price_pkr === null && !snapshot.category;
+    button.classList.toggle("is-active", active);
+    button.setAttribute("aria-pressed", String(active));
+  }
+  for (const button of categoryButtons) button.setAttribute("aria-pressed", String(button.dataset.categoryTrigger === snapshot.category));
+  const cartKey = JSON.stringify(snapshot.cart);
+  const cartChanged = cartKey !== lastRenderedCart;
+  if (cartChanged) {
+    const active = document.activeElement;
+    const label = active?.getAttribute("aria-label");
+    renderCart(snapshot.cart);
+    lastRenderedCart = cartKey;
+    if (label && active && !active.isConnected) {
+      Array.from(cartLines?.querySelectorAll("button") || []).find((b) => b.getAttribute("aria-label") === label)?.focus({ preventScroll: true });
+    }
+    pendingConfirmationToken = pendingSummaryRevision = null;
+  }
+  applyMenuState();
+  renderContractContext();
+  const routeChanged = lastRenderedRoute !== snapshot.route || lastRenderedFocus !== snapshot.focus_item_id;
+  if (snapshot.route !== "item" && itemDialog?.open) itemDialog.close();
+  if (!["checkout", "confirmation"].includes(snapshot.route) && checkoutDialog?.open) checkoutDialog.close();
+  if (snapshot.route === "item" && snapshot.focus_item_id) {
+    const detail = catalogItems.get(snapshot.focus_item_id);
+    if (detail && (routeChanged || result?.operation === "get_item_details")) {
+      const preview = Array.from(previewButtons).find((button) => button.dataset.previewItem === detail.item_id);
+      if (preview) paintPreview(preview);
+      renderItemDetails({ id: detail.item_id, name: detail.name, price: detail.unit_price_pkr,
+        category: detail.category, tags: detail.tags.join(" "), available: detail.available,
+        description: detail.description }, detail);
+      if (!itemDialog.open) itemDialog.showModal();
+    }
+  } else if (snapshot.route === "checkout") {
+    const summary = result?.status === "success" && result.operation === "checkout.get_summary" ? result : null;
+    if (summary) {
+      pendingConfirmationToken = summary.confirmation_token;
+      pendingSummaryRevision = summary.verified_state.summary_revision;
+    }
+    if (routeChanged || summary || cartChanged) renderCheckoutSummary(summary?.verified_state || snapshot.cart);
+    if (confirmOrderButton) confirmOrderButton.disabled = !pendingConfirmationToken;
+  } else if (snapshot.route === "confirmation" && result?.status === "success" && result.operation === "checkout.submit_demo_order") {
+    renderReceipt(result);
+    try { sessionStorage.setItem("foodease.last-order-action.v2", request.payload.action_id); } catch { /* Memory-only. */ }
+  }
+  if (routeChanged && ["home", "menu", "cart"].includes(snapshot.route)) {
+    document.querySelector(snapshot.route === "cart" ? "#cart-preview" : snapshot.route === "menu" ? "#popular" : "#main")?.scrollIntoView({ block: "start", behavior: "instant" });
+  }
+  lastRenderedRoute = snapshot.route;
+  lastRenderedFocus = snapshot.focus_item_id;
+  root.dataset.foodeaseRevision = String(snapshot.revision);
+  root.dataset.foodeaseRoute = snapshot.route;
+  updateContextSummary();
 }
 
 async function refreshContext() {
-  const response = await shoppingFetch("/api/app/context");
-  appContext = await response.json();
-  renderCart(appContext.cart);
-  renderContractContext();
-  updateContextSummary();
-  return appContext;
+  const app = await application();
+  const snapshot = await app.refresh();
+  if (snapshot.route === "confirmation") {
+    let actionId = null;
+    try { actionId = sessionStorage.getItem("foodease.last-order-action.v2"); } catch { /* Memory-only. */ }
+    if (actionId) {
+      const lookup = await app.transport.lookup(actionId);
+      const result = lookup.result;
+      if (lookup.state === "found" && result?.session_id === app.sessionId
+          && result.context_revision === snapshot.revision && result.payload.status === "success"
+          && result.payload.operation === "checkout.submit_demo_order") await app.accept(snapshot, { result });
+    }
+  }
+  return app.snapshot;
 }
 
-async function submitRawAction(actionId, operation, argumentsObject = {}, contextRevision = appContext?.revision) {
-  const response = await shoppingFetch("/api/app/action", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      action_id: actionId,
-      operation,
-      arguments: argumentsObject,
-      context_revision: contextRevision,
-    }),
-  });
-  return response.json();
+async function submitRawAction(actionId, operation, argumentsObject = {}, contextRevision = null) {
+  const app = await application();
+  return (await app.manual(operation, argumentsObject, actionId, contextRevision)).payload;
 }
 
 async function submitAction(operation, argumentsObject = {}) {
-  const result = await submitRawAction(nextActionId(operation), operation, argumentsObject);
-  if (result.status !== "success") {
-    setStatus(`Action was not completed: ${result.error_code || result.status}.`);
-    await refreshContext();
-    return result;
+  let result;
+  try { result = await submitRawAction(nextActionId(operation), operation, argumentsObject); }
+  catch (error) {
+    setStatus(error.message || "The outcome could not be verified. Use Check pending changes before trying again.");
+    return { status: "timeout_unknown", error_code: "timeout", verified_state: null };
   }
-  await refreshContext();
-  return result;
-}
-
-async function runMockAgentAction(operation, argumentsObject, successText) {
-  if (!assistanceActive) {
-    appendTranscript("system", "Start typed guidance first. No voice or agent session is active.");
-    return null;
-  }
-  setAgentStatus("waiting_for_action_result");
-  appendTranscript("system", `agent.action_request -> ${operation}`);
-  const result = await submitAction(operation, argumentsObject);
-  appendTranscript("system", `app.action_result -> ${result.status}`);
-  if (result.status === "success") {
-    setAgentStatus("assistant_speaking");
-    appendTranscript("assistant", successText);
-    setAgentStatus("idle");
-  } else {
-    setAgentStatus("error");
-    appendTranscript("assistant", `The app refused that action: ${result.error_code || result.status}. Manual ordering is still available.`);
-  }
+  if (result.status === "timeout_unknown") setStatus("The outcome is unknown. Use Check pending changes; no action has been sent again.");
+  else if (result.status !== "success") setStatus(`Action was not completed: ${result.error_code || result.status}.`);
   return result;
 }
 
@@ -525,6 +632,8 @@ function recordAcceptance(results, id, label, passed, trace, payload = {}) {
 }
 
 async function runAcceptanceSmoke() {
+  if (assistanceActive) { setStatus("End assistance before running the manual diagnostics."); return; }
+  appendTranscript("system", "Manual UI diagnostics do not verify the connected voice agent or audio playback.");
   const results = [];
   acceptanceLog?.replaceChildren();
   ["W01", "W04", "W09", "W16"].forEach((id) => setAcceptanceGroup(id, "Running"));
@@ -700,37 +809,15 @@ async function openItemDetails(card) {
   const item = itemFromCard(card);
   setStatus(`Opening details for ${item.name}.`);
   await submitAction("select_item", { item_id: item.id });
-  const details = await submitAction("get_item_details", { item_id: item.id });
-  renderItemDetails(item, details.verified_state || {});
-  itemDialog?.showModal();
-}
-
-function matchesFilter(item) {
-  if (activeFilter === "vegetarian") {
-    return item.tags.includes("vegetarian");
-  }
-  if (activeFilter === "spicy") {
-    return item.tags.includes("spicy");
-  }
-  if (activeFilter === "budget") {
-    return item.price < 800;
-  }
-  if (activeFilter === "available") {
-    return item.available;
-  }
-  return true;
 }
 
 function applyMenuState() {
-  const query = (searchInput?.value || "").trim().toLowerCase();
+  if (!appContext) return;
+  const visibleIds = new Set(appContext.visible_items.map((item) => item.item_id));
   let showing = 0;
 
   cards.forEach((card) => {
-    const item = itemFromCard(card);
-    const text = `${item.name} ${item.description} ${item.category} ${item.tags}`.toLowerCase();
-    const categoryMatches = activeCategory === "all" || item.category === activeCategory;
-    const searchMatches = !query || text.includes(query);
-    const shouldShow = categoryMatches && searchMatches && matchesFilter(item);
+    const shouldShow = visibleIds.has(card.dataset.id);
     card.classList.toggle("is-hidden", !shouldShow);
     if (shouldShow) {
       showing += 1;
@@ -752,7 +839,6 @@ function resetConfirmation() {
   if (checkoutButton) {
     checkoutButton.textContent = "Demo checkout";
   }
-  checkoutDialog?.close();
 }
 
 function renderCheckoutSummary(summary) {
@@ -789,7 +875,7 @@ function renderCheckoutSummary(summary) {
   if (receiptPanel) {
     receiptPanel.hidden = true;
   }
-  checkoutDialog?.showModal();
+  if (checkoutDialog && !checkoutDialog.open) checkoutDialog.showModal();
 }
 
 function renderReceipt(orderResult) {
@@ -807,7 +893,7 @@ function renderReceipt(orderResult) {
   if (receiptPanel) {
     receiptPanel.hidden = false;
   }
-  checkoutDialog?.showModal();
+  if (checkoutDialog && !checkoutDialog.open) checkoutDialog.showModal();
 }
 
 function renderCart(cart) {
@@ -860,15 +946,16 @@ function renderCart(cart) {
       decrease.setAttribute("aria-label", `Decrease ${line.name}`);
       decrease.addEventListener("click", async () => {
         resetConfirmation();
+        let result;
         if (line.quantity <= 1) {
-          await submitAction("cart.remove_item", { item_id: line.item_id });
+          result = await submitAction("cart.remove_item", { item_id: line.item_id });
         } else {
-          await submitAction("cart.set_quantity", {
+          result = await submitAction("cart.set_quantity", {
             item_id: line.item_id,
             quantity: line.quantity - 1,
           });
         }
-        setStatus(`${line.name} quantity updated.`);
+        if (result.status === "success") setStatus(`${line.name} quantity updated.`);
       });
 
       const increase = document.createElement("button");
@@ -877,11 +964,11 @@ function renderCart(cart) {
       increase.setAttribute("aria-label", `Increase ${line.name}`);
       increase.addEventListener("click", async () => {
         resetConfirmation();
-        await submitAction("cart.set_quantity", {
+        const result = await submitAction("cart.set_quantity", {
           item_id: line.item_id,
           quantity: line.quantity + 1,
         });
-        setStatus(`${line.name} quantity updated.`);
+        if (result.status === "success") setStatus(`${line.name} quantity updated.`);
       });
 
       const remove = document.createElement("button");
@@ -890,8 +977,8 @@ function renderCart(cart) {
       remove.setAttribute("aria-label", `Remove ${line.name} from cart`);
       remove.addEventListener("click", async () => {
         resetConfirmation();
-        await submitAction("cart.remove_item", { item_id: line.item_id });
-        setStatus(`${line.name} removed from cart.`);
+        const result = await submitAction("cart.remove_item", { item_id: line.item_id });
+        if (result.status === "success") setStatus(`${line.name} removed from cart.`);
       });
 
       controls.append(decrease, increase, remove);
@@ -909,10 +996,9 @@ cards.forEach((card) => {
     resetConfirmation();
     button.disabled = true;
     setStatus(`Adding ${item.name}...`);
-    await submitAction("select_item", { item_id: item.id });
-    await submitAction("cart.add_item", { item_id: item.id, quantity: 1 });
+    const result = await submitAction("cart.add_item", { item_id: item.id, quantity: 1 });
     button.disabled = !item.available;
-    setStatus(`${item.name} added. Cart total is ${cartTotal?.textContent || "updated"}.`);
+    if (result.status === "success") setStatus(`${item.name} added. Cart total is ${cartTotal?.textContent || "updated"}.`);
   });
   detailButton?.addEventListener("click", () => {
     openItemDetails(card);
@@ -938,26 +1024,23 @@ headerThemeButton?.addEventListener("click", () => {
 });
 
 clearMenuState?.addEventListener("click", async () => {
-  activeFilter = "all";
-  activeCategory = "all";
   if (searchInput) {
     searchInput.value = "";
   }
-  filterButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.filter === "all"));
-  applyMenuState();
-  await submitAction("filter_menu", { tags: [], max_price_pkr: null, category: null });
-  setStatus("All dishes are showing again.");
+  await submitAction("search_menu", { query: "" });
+  const result = await submitAction("filter_menu", { tags: [], max_price_pkr: null, category: null });
+  if (result.status === "success") setStatus("Filters and search are cleared. Showing the current menu page.");
 });
 
 detailCloseButtons.forEach((button) => {
   button.addEventListener("click", () => {
-    itemDialog?.close();
+    void submitAction("navigate", { target: "back" });
   });
 });
 
 itemDialog?.addEventListener("click", (event) => {
   if (event.target === itemDialog) {
-    itemDialog.close();
+    void submitAction("navigate", { target: "back" });
   }
 });
 
@@ -969,13 +1052,15 @@ detailAddButton?.addEventListener("click", async () => {
   resetConfirmation();
   detailAddButton.disabled = true;
   setStatus(`Adding ${quantity} ${selectedDetailItem.name}.`);
-  await submitAction("cart.add_item", {
+  const result = await submitAction("cart.add_item", {
     item_id: selectedDetailItem.id,
     quantity,
   });
   detailAddButton.disabled = !selectedDetailItem.available;
-  itemDialog?.close();
-  setStatus(`${selectedDetailItem.name} added from details. Cart total is ${cartTotal?.textContent || "updated"}.`);
+  if (result.status === "success") {
+    await submitAction("navigate", { target: "back" });
+    setStatus(`${selectedDetailItem.name} added from details. Cart total is ${cartTotal?.textContent || "updated"}.`);
+  }
 });
 
 detailArButton?.addEventListener("click", () => {
@@ -1030,36 +1115,29 @@ contextExportButton?.addEventListener("click", async () => {
 
 filterButtons.forEach((button) => {
   button.addEventListener("click", async () => {
-    activeFilter = button.dataset.filter || "all";
-    if (activeFilter === "all") {
-      activeCategory = "all";
-    }
-    filterButtons.forEach((candidate) => candidate.classList.toggle("is-active", candidate === button));
-    applyMenuState();
+    const filter = button.dataset.filter || "all";
     await submitAction("filter_menu", {
-      tags: ["vegetarian", "spicy"].includes(activeFilter) ? [activeFilter] : [],
-      max_price_pkr: activeFilter === "budget" ? 800 : null,
-      category: activeCategory === "all" ? null : activeCategory,
+      tags: ["vegetarian", "spicy", "available"].includes(filter) ? [filter] : [],
+      max_price_pkr: filter === "budget" ? 800 : null,
+      category: filter === "all" ? null : appContext?.category,
     });
   });
 });
 
 categoryButtons.forEach((button) => {
   button.addEventListener("click", async () => {
-    activeCategory = button.dataset.categoryTrigger || "all";
+    const category = button.dataset.categoryTrigger || null;
     document.querySelector("#popular")?.scrollIntoView({ behavior: "smooth", block: "start" });
-    applyMenuState();
     await submitAction("filter_menu", {
-      tags: ["vegetarian", "spicy"].includes(activeFilter) ? [activeFilter] : [],
-      max_price_pkr: activeFilter === "budget" ? 800 : null,
-      category: activeCategory,
+      tags: appContext?.filter_tags || [],
+      max_price_pkr: appContext?.max_price_pkr ?? null,
+      category,
     });
   });
 });
 
 let searchTimer = null;
 searchInput?.addEventListener("input", () => {
-  applyMenuState();
   window.clearTimeout(searchTimer);
   searchTimer = window.setTimeout(async () => {
     await submitAction("search_menu", { query: searchInput.value });
@@ -1073,7 +1151,6 @@ checkoutButton?.addEventListener("click", async () => {
     pendingConfirmationToken = summary.confirmation_token;
     pendingSummaryRevision = summary.verified_state.summary_revision;
     checkoutButton.textContent = "Demo checkout";
-    renderCheckoutSummary(summary.verified_state);
     setStatus(`Please review and confirm demo checkout total ${money(summary.verified_state.total)}.`);
   }
 });
@@ -1081,7 +1158,7 @@ checkoutButton?.addEventListener("click", async () => {
 confirmOrderButton?.addEventListener("click", async () => {
   if (!pendingConfirmationToken) {
     setStatus("Checkout confirmation expired. Please review the cart again.");
-    checkoutDialog?.close();
+    await submitAction("navigate", { target: "cart" });
     return;
   }
   setStatus("Submitting confirmed demo order...");
@@ -1093,43 +1170,179 @@ confirmOrderButton?.addEventListener("click", async () => {
   if (submit.status === "success") {
     pendingConfirmationToken = null;
     pendingSummaryRevision = null;
-    renderReceipt(submit);
     setStatus(`Demo order placed: ${submit.verified_state.demo_order_id}. Cart is now empty.`);
   }
 });
 
 checkoutCloseButtons.forEach((button) => {
   button.addEventListener("click", () => {
-    checkoutDialog?.close();
+    void submitAction("navigate", { target: button.matches("[data-receipt-close]") ? "menu" : "cart" });
   });
 });
 
 checkoutDialog?.addEventListener("click", (event) => {
   if (event.target === checkoutDialog) {
-    checkoutDialog.close();
+    void submitAction("navigate", { target: "cart" });
   }
 });
 
-assistStart?.addEventListener("click", () => {
-  assistanceActive = true;
-  setAgentStatus("connecting");
-  appendTranscript("system", "app.control -> start typed guidance");
-  setAgentStatus("idle");
-  appendTranscript("assistant", "Typed guidance is active in demo mode. No microphone has been opened.");
+async function controller() {
+  if (assistanceController) return assistanceController;
+  const app = await application();
+  if (assistanceController) return assistanceController;
+  const base = document.body.dataset.orchestrationUrl;
+  assistanceController = new AssistanceController({
+    storage: app.storage, sessionId: app.sessionId, acquireLease: () => acquireTabLease(app.sessionId),
+    api: async (name, body, signal) => {
+      const url = `${base}/v2/assist/${name === "status" ? `status/${encodeURIComponent(body.request_id)}` : name}`;
+      const response = await fetch(url, { method: name === "status" ? "GET" : "POST",
+        keepalive: name === "end",
+        credentials: "include", signal, headers: { "Content-Type": "application/json", "X-FoodEase-Session": app.sessionId },
+        ...(name === "status" ? {} : { body: JSON.stringify(body) }) });
+      if (!response.ok) throw new Error("Assistance is unavailable. Manual ordering is still available.");
+      return response.json();
+    },
+    acquireMedia: async (mode) => mode !== "typed" ? (() => {
+      if (!navigator.mediaDevices?.getUserMedia) throw new Error("No microphone is available. You can use typing or browse yourself.");
+      return navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+    })()
+      : { getTracks: () => [], getAudioTracks: () => [] },
+    connectSeats: async (prepared, media, signal, mode) => {
+      const sdk = await import("/static/vendor/livekit-client.2.15.4.mjs");
+      const seats = new LiveKitSeats({ prepared, application: app, sdk, media, mode, transcript: transcriptView,
+        onStatus: (status) => {
+          // Worker "listening" can arrive before the lifecycle's active ACK.
+          // Keep send/mode admission tied to that ACK, not an early audio label.
+          if (liveSeats !== seats || seats.closed) return;
+          if (status === "reconnecting") {
+            pendingConfirmationToken = pendingSummaryRevision = null;
+            if (confirmOrderButton) confirmOrderButton.disabled = true;
+            assistanceController.setPhase("reconnecting");
+          }
+          else if (status === "reconnected") assistanceController.modeChanged(seats.mode);
+          else if (status === "paused") assistanceController.setPhase("paused");
+          else if (/\s/.test(status)) setStatus(status);
+          else if (assistanceActive) setAgentStatus(status);
+        }, onControl: async (control) => {
+          if (liveSeats !== seats || seats.closed) return;
+          if (control.intent === "end" || control.intent === "switch_mode" && control.mode === "manual") {
+            assistanceIntent++;
+            assistanceActive = false;
+            await assistanceController.end();
+          } else if (control.intent === "switch_mode" && control.mode === "typed") {
+            seats.stopMicrophone();
+            seats.mode = "typed";
+            seats.paused = assistancePaused = false;
+            if (assistPause) assistPause.textContent = "Pause";
+            seats.closeAudio();
+            seats.typedAudio = false;
+            assistanceController.modeChanged("typed");
+          } else if (control.intent === "switch_mode" && control.mode === "voice") {
+            if (seats.mode === "choice") {
+              seats.mode = "voice";
+              assistanceController.modeChanged("voice");
+            } else if (seats.mode === "typed") {
+              // A spoken/typed control is not permission to silently reopen capture.
+              await assistanceController.end();
+              setStatus("Choose Start voice assistance to enable your microphone again.");
+            }
+          } else if (seats.mode === "typed" && ["mute", "unmute"].includes(control.intent)) {
+            try { await seats.setAudioPreference(control.intent === "unmute"); }
+            catch { setStatus("Audio playback is blocked. Typed replies remain available."); }
+            document.querySelector("[data-assist-typed-audio]").checked = seats.typedAudio;
+          } else if (["pause", "mute", "resume", "unmute"].includes(control.intent)) {
+            assistancePaused = ["pause", "mute"].includes(control.intent);
+            seats.paused = assistancePaused;
+            if (assistPause) assistPause.textContent = assistancePaused ? "Resume" : "Pause";
+            for (const track of media.getTracks()) track.enabled = !assistancePaused;
+            for (const { element } of seats.audio.values()) element.muted = assistancePaused;
+            if (assistancePaused) assistanceController.setPhase("paused");
+            else assistanceController.modeChanged(seats.mode);
+          }
+        } });
+      await seats.connect(signal);
+      liveSeats = seats;
+      return seats;
+    },
+    onState: (state) => {
+      assistanceActive = ["active", "paused", "voice_active", "typed_active"].includes(state.state);
+      root.dataset.assistanceState = state.modeState;
+      const typedAudio = document.querySelector("[data-assist-typed-audio]");
+      typedAudio.disabled = !assistanceActive || liveSeats?.mode !== "typed";
+      if (typedAudio.disabled) typedAudio.checked = false;
+      const send = assistantForm?.querySelector("button[type=submit]");
+      if (send) send.disabled = !assistanceActive;
+      setAgentStatus(state.modeState === "ended" ? "ended" : state.state === "active" ? "ready/listening" : state.state);
+      if (state.state === "active") {
+        try { sessionStorage.setItem("foodease.assistance-used.v2", app.sessionId); } catch { /* Optional resume copy only. */ }
+      }
+      if (state.serverCleanupPending) setStatus("Local assistance stopped. Server cleanup is pending; your cart is preserved.");
+      else if (state.detail) setStatus(state.detail);
+      if (app.snapshot) void renderApplication(app.snapshot).catch(() => setStatus("Could not refresh assistance controls. Your cart is preserved."));
+    },
+  });
+  try { assistanceController.hasActivated = sessionStorage.getItem("foodease.assistance-used.v2") === app.sessionId; } catch { /* No automatic activation. */ }
+  return assistanceController;
+}
+async function startAssistance(mode) {
+  const intent = ++assistanceIntent;
+  try {
+    const owner = await controller();
+    if (intent !== assistanceIntent) return;
+    if (owner.current && !owner.current.cancelled && owner.current.mode !== mode) await owner.end();
+    if (intent !== assistanceIntent) return;
+    if (assistancePaused && owner.current && !owner.current.cancelled && owner.current.mode === mode) {
+      await liveSeats.control("resume");
+      liveSeats.paused = false;
+      for (const track of liveSeats.media.getTracks()) track.enabled = true;
+      for (const { element } of liveSeats.audio.values()) element.muted = false;
+      owner.modeChanged(mode);
+    } else await owner.start({ mode });
+    assistancePaused = false;
+    if (assistPause) assistPause.textContent = "Pause";
+  } catch (error) {
+    if (intent !== assistanceIntent) return;
+    setAgentStatus("error");
+    setStatus(error.message || "Could not start assistance. Manual ordering is still available.");
+  }
+}
+assistStart?.addEventListener("click", () => { void startAssistance("typed"); });
+document.querySelector("[data-assist-voice]")?.addEventListener("click", () => { void startAssistance("voice"); });
+document.querySelector("[data-assist-choice]")?.addEventListener("click", () => { void startAssistance("choice"); });
+assistPause?.addEventListener("click", async () => {
+  if (!assistanceActive || !liveSeats) return;
+  try {
+    await liveSeats.control(assistancePaused ? "resume" : "pause");
+    assistancePaused = !assistancePaused;
+    liveSeats.paused = assistancePaused;
+    for (const track of liveSeats.media.getTracks()) track.enabled = !assistancePaused;
+    for (const { element } of liveSeats.audio.values()) element.muted = assistancePaused;
+    if (assistancePaused) assistanceController.setPhase("paused");
+    else assistanceController.modeChanged(liveSeats.mode);
+    assistPause.textContent = assistancePaused ? "Resume" : "Pause";
+    setAgentStatus(assistancePaused ? "muted/paused" : "ready/listening");
+  } catch { setStatus("The pause request could not be delivered. End assistance to stop locally."); }
 });
-
-assistPause?.addEventListener("click", () => {
+function chooseManual(ended = false) {
+  assistanceIntent++;
   assistanceActive = false;
-  setAgentStatus("muted/paused");
-  appendTranscript("system", "app.control -> pause");
-  appendTranscript("assistant", "Guidance is paused. Your cart and menu stay unchanged.");
-});
-
-assistEnd?.addEventListener("click", () => {
-  assistanceActive = false;
-  setAgentStatus("ended");
-  appendTranscript("system", "app.control -> end");
-  appendTranscript("assistant", "Assistance ended. Manual ordering remains available and the cart is preserved.");
+  root.dataset.assistanceState = ended ? "ended" : "manual";
+  setAgentStatus(ended ? "ended" : "manual");
+  void assistanceController?.end({ state: ended ? "ended" : "manual" });
+}
+assistEnd?.addEventListener("click", () => chooseManual(true));
+document.querySelector("[data-assist-manual]")?.addEventListener("click", () => chooseManual());
+document.querySelector("[data-assist-typed-audio]")?.addEventListener("change", async (event) => {
+  const seats = liveSeats;
+  if (!assistanceActive || seats?.mode !== "typed") { event.target.checked = false; return; }
+  try {
+    await seats.setAudioPreference(event.target.checked);
+    await seats.control(event.target.checked ? "unmute" : "mute");
+  } catch {
+    event.target.checked = false;
+    await seats.setAudioPreference(false);
+    setStatus("Audio could not be enabled. Typed replies remain available.");
+  }
 });
 
 scenarioButtons.forEach((button) => {
@@ -1139,46 +1352,62 @@ scenarioButtons.forEach((button) => {
       activeFilter = "vegetarian";
       activeCategory = "all";
       applyMenuState();
-      await runMockAgentAction(
-        "filter_menu",
-        { tags: ["vegetarian"], max_price_pkr: 800, category: null },
-        "Showing vegetarian items under 800 PKR.",
-      );
+      await liveSeats?.text("Show vegetarian food with a budget of 800 rupees.");
     }
     if (scenario === "add-wrap") {
-      await runMockAgentAction(
-        "cart.add_item",
-        { item_id: "wrap-hot-chicken", quantity: 1 },
-        "Hot Chicken Wrap added after the app verified availability and price.",
-      );
+      await liveSeats?.text("Add one Hot Chicken Wrap to my cart.");
     }
     if (scenario === "checkout-summary") {
-      const result = await runMockAgentAction(
-        "checkout.get_summary",
-        {},
-        "Checkout summary is ready. Confirm manually before placing a demo order.",
-      );
-      if (result?.confirmation_token) {
-        pendingConfirmationToken = result.confirmation_token;
-        pendingSummaryRevision = result.verified_state.summary_revision;
-        renderCheckoutSummary(result.verified_state);
-      }
+      await liveSeats?.text("Read my checkout summary.");
     }
   });
 });
 
-assistantForm?.addEventListener("submit", (event) => {
+assistantForm?.addEventListener("submit", async (event) => {
   event.preventDefault();
   const text = assistantInput?.value.trim();
   if (!text) {
     return;
   }
-  appendTranscript("user", text);
-  appendTranscript("system", `app.text_input -> "${text}"`);
-  appendTranscript("assistant", "Typed request captured for the future agent bridge. Use the demo action buttons to inject safe semantic actions now.");
-  if (assistantInput) {
-    assistantInput.value = "";
+  if (!assistanceActive || !liveSeats) { setStatus("Start typed guidance before sending your request."); return; }
+  try {
+    await liveSeats.text(text);
+    if (assistantInput) assistantInput.value = "";
+  } catch (error) { setStatus(error.message || "Your request could not be delivered. Please try again after reconnecting."); }
+});
+assistantInput?.addEventListener("focus", () => { if (assistanceActive) void liveSeats?.control("pause_tips"); });
+assistantInput?.addEventListener("blur", () => { if (assistanceActive) void liveSeats?.control("resume_tips"); });
+for (const dialog of [itemDialog, checkoutDialog]) dialog?.addEventListener("cancel", (event) => {
+  event.preventDefault();
+  void submitAction("navigate", { target: dialog === checkoutDialog ? "cart" : "back" });
+});
+document.addEventListener("click", (event) => {
+  if (event.target.closest("a[href='/']")) {
+    event.preventDefault();
+    void submitAction("navigate", { target: "home" });
+    return;
   }
+  const link = event.target.closest("a[href^='#']");
+  const target = { "#popular": "menu", "#categories": "menu", "#cart-preview": "cart" }[link?.getAttribute("href")];
+  if (target) { event.preventDefault(); void submitAction("navigate", { target }); }
+});
+window.addEventListener("pagehide", () => { assistanceIntent++; void assistanceController?.end(); });
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState !== "hidden") return;
+  assistanceIntent++;
+  void assistanceController?.end();
+});
+document.querySelector("[data-reconcile-action]")?.addEventListener("click", async () => {
+  try {
+    const app = await application();
+    for (const id of [...app.pending.keys()]) await app.reconcile(id);
+    if ([...app.outcomes.values()].includes("expired")) {
+      setStatus("The earlier outcome is no longer retained. We cannot verify whether it completed; no request has been sent again.");
+      return;
+    }
+    await app.refresh();
+    if (!app.pending.size) setStatus("Your cart is up to date. All earlier action outcomes have been checked.");
+  } catch { setStatus("The earlier outcome could not be checked. Please try checking again when connected."); }
 });
 
 contractTraceButtons.forEach((button) => {
@@ -1226,7 +1455,7 @@ contractTraceButtons.forEach((button) => {
   });
 });
 
-async function activatePreview(button) {
+function paintPreview(button) {
   const itemId = button.dataset.previewItem;
   currentPreviewItemId = itemId;
   previewButtons.forEach((candidate) => {
@@ -1264,8 +1493,11 @@ async function activatePreview(button) {
     if (arMiniPhoto) {
       arMiniPhoto.src = itemImageUrl(itemId);
     }
-    await submitAction("select_item", { item_id: button.dataset.previewItem });
-    setStatus(`${button.dataset.previewName} selected in the 3D preview.`);
+}
+
+async function activatePreview(button) {
+  const result = await submitAction("select_item", { item_id: button.dataset.previewItem });
+  if (result.status === "success") setStatus(`${button.dataset.previewName} selected in the 3D preview.`);
 }
 
 previewButtons.forEach((button) => {
@@ -1302,7 +1534,11 @@ if (previewButtons.length) {
   });
 }
 
-refreshContext().catch((error) => {
+refreshContext().then(async () => {
+  // Reload recovers cleanup identity only; capture/dispatch require another gesture.
+  const owner = await controller();
+  await owner.recover();
+}).catch((error) => {
   setStatus(error.message || "Could not sync with the app state. Please refresh the page.");
 });
 applyTheme();

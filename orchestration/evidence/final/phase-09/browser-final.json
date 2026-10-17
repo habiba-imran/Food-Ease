@@ -1,0 +1,14 @@
+{
+  "name": "browser-integration",
+  "command": [
+    "node",
+    "tools/browser-test.mjs"
+  ],
+  "cwd": "website",
+  "exit_code": 0,
+  "expected_exit": 0,
+  "matched_inherited_baseline": false,
+  "log": "browser-final.log",
+  "source_test_sha256": "5ee219d3d78c22c562c5d5bf89d9b4874acf3a5cfd862b65b902f7181d08916e",
+  "provenance": "Real Chromium, real website domain, local fake RTC/lifecycle/providers and native synthetic media; no human or provider audio acceptance"
+}

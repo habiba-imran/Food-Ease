@@ -1,0 +1,37 @@
+✔ manual shutdown rejects queued assistance work while retaining the submitted outcome (81.4647ms)
+✔ one renderer ignores regressive context and only publishes accepted context (1.5666ms)
+✔ remote request identity/revision survives forwarding and render precedes context publish (0.7885ms)
+✔ uncorrelated and unknown responses cannot become success announcements or write retries (1.5324ms)
+✔ queued manual commands use the latest revision and an explicit replay retains its envelope (1.4132ms)
+✔ an unresolved action survives reload without persisting checkout tokens (1.7459ms)
+✔ verified mutation remains owned until failed view delivery is reconciled without resubmit (4.4545ms)
+✔ permission, join, registration, fresh context and playback precede activation (40.3445ms)
+✔ manual selection during permission stops late media/seats and cannot become active (1.464ms)
+✔ manual selection during start stops late media/seats and cannot become active (0.6508ms)
+✔ manual selection during join stops late media/seats and cannot become active (0.5444ms)
+✔ manual selection during register stops late media/seats and cannot become active (15.5649ms)
+✔ manual selection during context stops late media/seats and cannot become active (0.6327ms)
+✔ manual selection during playback stops late media/seats and cannot become active (0.7608ms)
+✔ manual selection during ready stops late media/seats and cannot become active (1.0479ms)
+✔ manual selection during status stops late media/seats and cannot become active (1.0083ms)
+✔ server cleanup failure does not leave local microphone/audio active (2.7104ms)
+✔ permission denial never prepares or dispatches assistance (0.7221ms)
+✔ late cancelled permission cannot change a newer active generation's state (1.4706ms)
+✔ fresh/manual requires no media or dispatch; chooser waits for explicit start (20.0838ms)
+✔ chooser and resumed direct mode have distinct activation; double start is shared (6.9145ms)
+✔ autoplay rejection ends resources and never activates (1.4605ms)
+✔ paused, reconnecting and ended states cannot create another dispatch (0.8504ms)
+✔ one session is created for concurrent requests; reload reattaches (10.6839ms)
+✔ a fresh tab creates its own handle (2.8811ms)
+✔ expired attachment reports uncertainty and never replaces/retries a mutation (2.3397ms)
+✔ blocked storage still keeps one in-memory tab session (1.6532ms)
+✔ unknown transport failures do not trigger a mutation retry (9.9256ms)
+✔ mid-session expiry clears the saved handle and shows an honest status (1.8626ms)
+ℹ tests 29
+ℹ suites 0
+ℹ pass 29
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 282.6707

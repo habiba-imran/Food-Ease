@@ -1,0 +1,20 @@
+B010 [*] Do not call `setattr` with a constant attribute value. It is not any safer than normal property access.
+  --> tests\test_integrated_opening.py:79:5
+   |
+77 |     speech = Speech("opening still playing")
+78 |     session.handles.append(speech)
+79 |     setattr(session, "say", lambda *args, **kwargs: speech)
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+80 |     runtime = LiveConversationRuntime(IntegratedFoodEaseAgent(), session, adapter)
+81 |     await runtime.prepare()
+   |
+help: Replace `setattr` with assignment
+   |
+78 |     session.handles.append(speech)
+   -     setattr(session, "say", lambda *args, **kwargs: speech)
+79 +     session.say = lambda *args, **kwargs: speech
+80 |     runtime = LiveConversationRuntime(IntegratedFoodEaseAgent(), session, adapter)
+   |
+
+Found 1 error.
+[*] 1 fixable with the `--fix` option.

@@ -1,0 +1,26 @@
+✔ permission, join, registration, fresh context and playback precede activation (6.1115ms)
+✔ manual selection during permission stops late media/seats and cannot become active (1.7851ms)
+✔ manual selection during start stops late media/seats and cannot become active (0.7597ms)
+✔ manual selection during join stops late media/seats and cannot become active (0.7301ms)
+✔ manual selection during register stops late media/seats and cannot become active (1.0528ms)
+✔ manual selection during context stops late media/seats and cannot become active (0.5702ms)
+✔ manual selection during playback stops late media/seats and cannot become active (0.9393ms)
+✔ manual selection during ready stops late media/seats and cannot become active (0.8605ms)
+✔ manual selection during status stops late media/seats and cannot become active (0.9923ms)
+✔ server cleanup failure does not leave local microphone/audio active (1.2658ms)
+✔ permission denial never prepares or dispatches assistance (0.8666ms)
+✔ late cancelled permission cannot change a newer active generation's state (1.6635ms)
+✔ one session is created for concurrent requests; reload reattaches (14.5129ms)
+✔ a fresh tab creates its own handle (4.3443ms)
+✔ expired attachment reports uncertainty and never replaces/retries a mutation (2.5768ms)
+✔ blocked storage still keeps one in-memory tab session (1.9642ms)
+✔ unknown transport failures do not trigger a mutation retry (2.4341ms)
+✔ mid-session expiry clears the saved handle and shows an honest status (2.0447ms)
+ℹ tests 18
+ℹ suites 0
+ℹ pass 18
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 262.7362

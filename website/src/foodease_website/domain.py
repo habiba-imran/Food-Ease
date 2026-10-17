@@ -165,6 +165,9 @@ class FoodEaseDomain:
             ]
         if self.filter_tags:
             tags = set(self.filter_tags)
+            if "available" in tags:
+                items = [item for item in items if item.available]
+                tags.remove("available")
             items = [item for item in items if tags.issubset(set(item.tags))]
         if self.max_price_pkr is not None:
             items = [item for item in items if item.unit_price_pkr <= self.max_price_pkr]
@@ -221,7 +224,7 @@ class FoodEaseDomain:
                 },
             )
         if operation == "filter_menu":
-            known_tags = {tag for item in self.catalog.items for tag in item.tags}
+            known_tags = {tag for item in self.catalog.items for tag in item.tags} | {"available"}
             if (
                 not set(args["tags"]).issubset(known_tags)
                 or args["category"] is not None

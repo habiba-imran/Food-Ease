@@ -2,10 +2,13 @@
 
 from __future__ import annotations
 
+import asyncio
 import json
 import logging
 import os
+from pathlib import Path
 
+from dotenv import load_dotenv
 from foodease_contract.startup import StartupBinding
 from livekit.agents import (
     AgentSession,
@@ -58,7 +61,10 @@ async def entrypoint(ctx: JobContext) -> None:
     transport = app_transport_mode()
     raw = str(getattr(ctx.job, "metadata", "") or "")
     if transport == "website":
-        await run_integrated_job(ctx, StartupBinding.model_validate_json(raw))
+        from foodease_agent.integrated.factory import create_integrated_runtime
+
+        await run_integrated_job(ctx, StartupBinding.model_validate_json(raw),
+                                 runtime_factory=create_integrated_runtime)
         return
     if '"2.0"' in raw:
         raise RuntimeError("integrated dispatch requires FOODEASE_APP_TRANSPORT=website")
@@ -163,29 +169,44 @@ async def run_integrated_job(ctx, startup: StartupBinding, *, runtime_factory=No
         snapshot = await gate.wait_ready(timeout=15)
         if runtime_factory is not None:
             runtime = await runtime_factory(ctx, startup, gate)
+        if gate.latest is None:
+            raise RuntimeError("integrated context unavailable")
         response = await report_worker_ready(
             os.environ.get("FOODEASE_SESSION_API", "http://127.0.0.1:8090"),
             startup,
-            snapshot.revision,
+            max(snapshot.revision, gate.latest.revision),
             runtime_ready=runtime is not None,
         )
         if response.get("greeting_allowed") is not True or gate.closed or runtime is None:
             raise RuntimeError("integrated runtime unavailable or generation ended")
         # The server verifies consent, app/user/worker roles and browser readiness.
         await runtime.start()
+    except asyncio.CancelledError:
+        await cleanup()
+        ctx.shutdown("integrated_startup_cancelled")
+        raise
     except Exception:
         await cleanup()
         ctx.shutdown("integrated_startup_failed")
 
 
 def main() -> None:
+    load_dotenv(Path(__file__).resolve().parents[2] / ".env", override=False)
     agent_name = (os.environ.get("FOODEASE_AGENT_NAME") or "foodease").strip() or "foodease"
+    options = {}
+    if port := os.environ.get("FOODEASE_WORKER_PORT"):
+        parsed = int(port)
+        if not 1 <= parsed <= 65535:
+            raise ValueError("FOODEASE_WORKER_PORT must be between 1 and 65535")
+        options.update(port=parsed, host="127.0.0.1")
     cli.run_app(
         WorkerOptions(
             entrypoint_fnc=entrypoint,
             prewarm_fnc=prewarm,
             request_fnc=accept_job,
             agent_name=agent_name,
+            initialize_process_timeout=60,
+            **options,
         )
     )
 

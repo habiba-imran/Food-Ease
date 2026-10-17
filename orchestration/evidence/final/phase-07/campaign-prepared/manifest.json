@@ -1,0 +1,12 @@
+{
+  "status": "prepared_not_run",
+  "cases": 41,
+  "planned_user_turns": 50,
+  "real_model_turns": 0,
+  "human_listeners": 0,
+  "minimum_real_model_turns": 40,
+  "minimum_listeners": 3,
+  "required_median_rating": 4,
+  "model_quality_gate": "not_evaluated",
+  "physical_audio_gate": "not_evaluated"
+}

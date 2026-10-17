@@ -203,6 +203,7 @@ def create_app(
             "index.html",
             {
                 "app_name": cfg.app_name,
+                "orchestration_base_url": cfg.orchestration_base_url.rstrip("/"),
                 "catalog_summary": catalog.summary(),
                 "category_cards": _category_cards(catalog),
                 "featured_items": _featured_items(catalog),

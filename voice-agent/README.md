@@ -1,8 +1,14 @@
 # FoodEase Voice Agent
 
-Standalone LiveKit voice agent for an accessible food-ordering demo. Built against a **mock app**; the real website replaces only the RPC side.
+LiveKit voice agent for the accessible FoodEase ordering demo. The final website
+uses the integrated v2 runtime and the website's authoritative cart. Start with
+the [final delivery runbook](../orchestration/docs/FINAL_RUNBOOK.md). Standalone
+MockApp/handover notes below are retained for development and historical evidence.
 
-**Owner (agent):** Habiba · **Website (later):** Zainab  
+The integrated session explicitly disables SDK recording and remote session hosting;
+all thirteen website operations remain behind the bound action/confirmation gates.
+
+**Owner (agent):** Habiba · **Website:** Zainab
 **Handover docs:** [`docs/handover/`](docs/handover/) — start with [`INTEGRATION_NOTE.md`](docs/handover/INTEGRATION_NOTE.md) and [`FRONTEND_QUICKSTART.md`](docs/handover/FRONTEND_QUICKSTART.md).
 
 ## Quick start (clean checkout)

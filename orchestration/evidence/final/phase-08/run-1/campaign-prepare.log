@@ -1,0 +1,5 @@
+usage: phase7_campaign.py [-h] --output OUTPUT [--live]
+                          [--allow-provider-cost] [--model MODEL]
+                          [--thinking-level THINKING_LEVEL]
+                          [--max-provider-requests MAX_PROVIDER_REQUESTS]
+phase7_campaign.py: error: Output must be a new run directory inside Phase 7 evidence.
