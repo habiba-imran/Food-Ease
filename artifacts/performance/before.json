@@ -1,0 +1,113 @@
+{
+  "profile": "Desktop 1440px, cold/warm browser cache, 80ms latency and 8Mbps download",
+  "cold": {
+    "lcp": 7788,
+    "images": [
+      {
+        "url": "img/editorial/chicken-burger-hero.webp",
+        "bytes": 564844,
+        "transfer": 565144,
+        "ms": 1269
+      },
+      {
+        "url": "img/optimized/zinger-classic-640.webp",
+        "bytes": 38424,
+        "transfer": 38724,
+        "ms": 399
+      },
+      {
+        "url": "img/catalog/wrap-hot-chicken-960.webp",
+        "bytes": 187590,
+        "transfer": 187890,
+        "ms": 832
+      },
+      {
+        "url": "img/textures/paper-fibre.svg",
+        "bytes": 16016,
+        "transfer": 16316,
+        "ms": 117
+      },
+      {
+        "url": "img/catalog/wrap-hot-chicken-640.webp",
+        "bytes": 87636,
+        "transfer": 87936,
+        "ms": 447
+      },
+      {
+        "url": "img/catalog/zinger-classic-640.webp",
+        "bytes": 83624,
+        "transfer": 83924,
+        "ms": 431
+      },
+      {
+        "url": "img/catalog/biryani-chicken-640.webp",
+        "bytes": 91308,
+        "transfer": 91608,
+        "ms": 462
+      },
+      {
+        "url": "img/catalog/dessert-gulab-640.webp",
+        "bytes": 73186,
+        "transfer": 73486,
+        "ms": 400
+      }
+    ],
+    "headerTop": 24,
+    "overflow": false
+  },
+  "warm": {
+    "lcp": 584,
+    "images": [
+      {
+        "url": "img/editorial/chicken-burger-hero.webp",
+        "bytes": 564844,
+        "transfer": 0,
+        "ms": 0
+      },
+      {
+        "url": "img/optimized/zinger-classic-640.webp",
+        "bytes": 38424,
+        "transfer": 0,
+        "ms": 0
+      },
+      {
+        "url": "img/catalog/wrap-hot-chicken-960.webp",
+        "bytes": 187590,
+        "transfer": 0,
+        "ms": 0
+      },
+      {
+        "url": "img/catalog/wrap-hot-chicken-640.webp",
+        "bytes": 87636,
+        "transfer": 0,
+        "ms": 0
+      },
+      {
+        "url": "img/catalog/zinger-classic-640.webp",
+        "bytes": 83624,
+        "transfer": 0,
+        "ms": 0
+      },
+      {
+        "url": "img/catalog/biryani-chicken-640.webp",
+        "bytes": 91308,
+        "transfer": 0,
+        "ms": 0
+      },
+      {
+        "url": "img/catalog/dessert-gulab-640.webp",
+        "bytes": 73186,
+        "transfer": 0,
+        "ms": 0
+      },
+      {
+        "url": "img/textures/paper-fibre.svg",
+        "bytes": 16016,
+        "transfer": 0,
+        "ms": 0
+      }
+    ],
+    "headerTop": 24,
+    "overflow": false
+  }
+}

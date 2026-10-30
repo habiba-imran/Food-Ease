@@ -1,0 +1,197 @@
+{
+  "profile": "Desktop 1440px, cold/warm browser cache, 80ms latency and 8Mbps download",
+  "cold": {
+    "lcp": 1376,
+    "images": [
+      {
+        "url": "img/editorial/fast-v7/chicken-burger-hero-768.webp",
+        "bytes": 168582,
+        "transfer": 168882,
+        "ms": 633
+      },
+      {
+        "url": "img/textures/paper-fibre.svg",
+        "bytes": 16016,
+        "transfer": 16316,
+        "ms": 522
+      },
+      {
+        "url": "img/catalog-v7/wrap-hot-chicken-160.webp",
+        "bytes": 7346,
+        "transfer": 7646,
+        "ms": 508
+      },
+      {
+        "url": "img/catalog-v7/wrap-hot-chicken-480.webp",
+        "bytes": 41078,
+        "transfer": 41378,
+        "ms": 264
+      },
+      {
+        "url": "img/catalog-v7/zinger-classic-480.webp",
+        "bytes": 40628,
+        "transfer": 40928,
+        "ms": 263
+      },
+      {
+        "url": "img/catalog-v7/biryani-chicken-480.webp",
+        "bytes": 43004,
+        "transfer": 43304,
+        "ms": 262
+      },
+      {
+        "url": "img/catalog-v7/dessert-gulab-480.webp",
+        "bytes": 33288,
+        "transfer": 33588,
+        "ms": 274
+      },
+      {
+        "url": "img/catalog-v7/biryani-chicken-160.webp",
+        "bytes": 6924,
+        "transfer": 7224,
+        "ms": 185
+      },
+      {
+        "url": "img/catalog-v7/zinger-classic-160.webp",
+        "bytes": 7090,
+        "transfer": 7390,
+        "ms": 201
+      },
+      {
+        "url": "img/catalog-v7/dessert-gulab-160.webp",
+        "bytes": 6032,
+        "transfer": 6332,
+        "ms": 295
+      },
+      {
+        "url": "img/catalog-v7/drink-mango-160.webp",
+        "bytes": 4182,
+        "transfer": 4482,
+        "ms": 363
+      },
+      {
+        "url": "img/catalog-v7/karahi-chicken-160.webp",
+        "bytes": 6842,
+        "transfer": 7142,
+        "ms": 386
+      },
+      {
+        "url": "img/catalog-v7/platter-family-160.webp",
+        "bytes": 8584,
+        "transfer": 8884,
+        "ms": 386
+      },
+      {
+        "url": "img/catalog-v7/roll-seekh-160.webp",
+        "bytes": 7474,
+        "transfer": 7774,
+        "ms": 394
+      },
+      {
+        "url": "img/catalog-v7/side-fries-160.webp",
+        "bytes": 5722,
+        "transfer": 6022,
+        "ms": 394
+      }
+    ],
+    "headerTop": 0,
+    "overflow": false
+  },
+  "warm": {
+    "lcp": 356,
+    "images": [
+      {
+        "url": "img/editorial/fast-v7/chicken-burger-hero-768.webp",
+        "bytes": 168582,
+        "transfer": 0,
+        "ms": 0
+      },
+      {
+        "url": "img/textures/paper-fibre.svg",
+        "bytes": 16016,
+        "transfer": 0,
+        "ms": 0
+      },
+      {
+        "url": "img/catalog-v7/wrap-hot-chicken-480.webp",
+        "bytes": 41078,
+        "transfer": 0,
+        "ms": 0
+      },
+      {
+        "url": "img/catalog-v7/zinger-classic-480.webp",
+        "bytes": 40628,
+        "transfer": 0,
+        "ms": 0
+      },
+      {
+        "url": "img/catalog-v7/biryani-chicken-480.webp",
+        "bytes": 43004,
+        "transfer": 0,
+        "ms": 0
+      },
+      {
+        "url": "img/catalog-v7/dessert-gulab-480.webp",
+        "bytes": 33288,
+        "transfer": 0,
+        "ms": 0
+      },
+      {
+        "url": "img/catalog-v7/biryani-chicken-160.webp",
+        "bytes": 6924,
+        "transfer": 0,
+        "ms": 0
+      },
+      {
+        "url": "img/catalog-v7/zinger-classic-160.webp",
+        "bytes": 7090,
+        "transfer": 0,
+        "ms": 0
+      },
+      {
+        "url": "img/catalog-v7/dessert-gulab-160.webp",
+        "bytes": 6032,
+        "transfer": 0,
+        "ms": 0
+      },
+      {
+        "url": "img/catalog-v7/drink-mango-160.webp",
+        "bytes": 4182,
+        "transfer": 0,
+        "ms": 0
+      },
+      {
+        "url": "img/catalog-v7/wrap-hot-chicken-160.webp",
+        "bytes": 7346,
+        "transfer": 0,
+        "ms": 0
+      },
+      {
+        "url": "img/catalog-v7/karahi-chicken-160.webp",
+        "bytes": 6842,
+        "transfer": 0,
+        "ms": 0
+      },
+      {
+        "url": "img/catalog-v7/platter-family-160.webp",
+        "bytes": 8584,
+        "transfer": 0,
+        "ms": 0
+      },
+      {
+        "url": "img/catalog-v7/roll-seekh-160.webp",
+        "bytes": 7474,
+        "transfer": 0,
+        "ms": 0
+      },
+      {
+        "url": "img/catalog-v7/side-fries-160.webp",
+        "bytes": 5722,
+        "transfer": 0,
+        "ms": 0
+      }
+    ],
+    "headerTop": 0,
+    "overflow": false
+  }
+}

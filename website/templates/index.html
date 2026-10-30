@@ -3,34 +3,29 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{{ app_name }} | Accessible Food Ordering</title>
-    <link rel="stylesheet" href="/static/css/app.css?v=phase15-no-horizontal-scroll" />
-    <script type="module" src="/static/js/app.js?v=orchestration-phase5"></script>
+    <title>{{ app_name }} | Good food. Your way.</title>
+    <meta name="description" content="Explore your local favourites, build your order, and choose voice or touch with FoodEase." />
+    <link rel="preload" href="/static/fonts/bebas-neue-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/static/fonts/dm-sans-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" as="image" href="/static/img/editorial/fast-v7/chicken-burger-hero-768.webp" imagesrcset="/static/img/editorial/fast-v7/chicken-burger-hero-480.webp 480w, /static/img/editorial/fast-v7/chicken-burger-hero-768.webp 768w, /static/img/editorial/fast-v7/chicken-burger-hero-1024.webp 1024w" imagesizes="(max-width: 700px) 100vw, (max-width: 900px) 68vw, 640px" fetchpriority="high" />
+    <link rel="stylesheet" href="/static/vendor/food-experience.css?v=delivery-7" />
+    <script type="module" src="/static/js/app.js?v=delivery-7"></script>
+    <script type="module" src="/static/js/experience.mjs?v=delivery-7"></script>
+    <script type="module" src="/static/js/studio-loader.mjs?v=delivery-7"></script>
   </head>
-  <body data-orchestration-url="{{ orchestration_base_url }}">
+  <body data-experience="immersive" data-orchestration-url="{{ orchestration_base_url }}">
     <a class="skip-link" href="#main">Skip to ordering preview</a>
     <header class="site-header" aria-label="FoodEase header">
-      <div class="quick-pills" aria-label="Restaurant quick details">
-        <span class="utility-pill"><b>Delivery</b> Ali Abad</span>
-        <span class="utility-pill"><b>Call</b> 042 111 634 111</span>
-      </div>
       <a class="brand-mark" href="/" aria-label="FoodEase home">
-        <span class="brand-icon" aria-hidden="true">FE</span>
-        <span>
-          <strong>{{ app_name }}</strong>
-          <small>Accessible food ordering</small>
-        </span>
+        <span class="brand-icon" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none"><path d="M9 5v8m5-8v8M7 5v6a5 5 0 0 0 10 0V5M12 16v11M24 5c-4 3-5 7-5 11h5m0-11v22" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        <span><strong>Food<span class="brand-ease">Ease</span><span class="brand-period">.</span></strong><small>Good food. Your way.</small></span>
       </a>
       <nav class="main-nav" aria-label="Primary navigation">
-        <a href="#popular">Menu</a>
-        <a href="#categories">Categories</a>
-        <a href="#ar-preview">AR</a>
-        <a href="#assistant">Guide</a>
-        <a href="#evidence">Evidence</a>
+        <a href="#popular" class="is-current">Our menu</a><a href="#ar-preview">The preview table</a><a href="#assistant">Order your way</a>
       </nav>
       <div class="header-actions">
         <a class="cart-button" href="#cart-preview" aria-label="Open cart preview">
-          <span aria-hidden="true">Cart</span>
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 7h14l1 14H4L5 7Zm3 0V5a4 4 0 0 1 8 0v2" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg><span>Your order</span>
           <strong data-cart-count>0</strong>
         </a>
         <button class="icon-button" type="button" data-header-theme aria-label="Switch to dark mode"></button>
@@ -39,155 +34,75 @@
 
     <main id="main" class="shell">
       <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-coordinate" aria-hidden="true">FE—001<br />ORDERING / PKR</div>
+        <div class="hero-rule" aria-hidden="true"><span>CRAVING SOMETHING GOOD?</span><i></i><span>SCROLL TO EXPLORE ↓</span></div>
         <div class="hero-copy">
-          <p class="eyebrow">The menu everyone can use</p>
-          <h1 id="hero-title">
-            <span>Food</span>
-            <span>Ease</span>
-            <em data-preview-style>Hot wrap</em>
-          </h1>
-          <p data-preview-copy>
-            Hot chicken wrap with mayo, built for touch ordering now and voice guidance next.
-          </p>
+          <p class="eyebrow">FOODEASE — THE FLAVOUR EDITION<br /><span>VOL. 01 / MADE FOR YOUR APPETITE</span></p>
+          <h1 id="hero-title">FULL OF FLAVOUR</h1>
+          <p class="hero-description">Local favourites. Big cravings. A different way to order. Find your next great bite—by touch, type, or voice.</p>
           <div class="hero-actions" aria-label="Ordering actions">
-            <a class="button primary" href="#popular">Start ordering</a>
-            <button class="button ar" type="button" data-open-ar>View on table</button>
-            <a class="button ghost" href="#assistant">Try guided mode</a>
+            <a class="button primary" href="#popular">Start ordering <span aria-hidden="true">↗</span></a>
+            <button class="button ar" type="button" data-open-ar>Explore the preview table</button>
+            <a class="button ghost" href="#assistant">Order with a little help</a>
           </div>
-          <dl class="trust-strip" aria-label="FoodEase readiness">
-            <div>
-              <dt>Menu items</dt>
-              <dd>{{ catalog_summary.item_count }}</dd>
-            </div>
-            <div>
-              <dt>Live categories</dt>
-              <dd>{{ catalog_summary.category_count }}</dd>
-            </div>
-            <div>
-              <dt>Demo checkout</dt>
-              <dd>No payment</dd>
-            </div>
-          </dl>
+          <div class="hero-footnote"><span>CATALOG / {{ catalog_summary.item_count }} ITEMS</span><span>YOUR ORDER. YOUR CONTROL.</span></div>
         </div>
 
-        <div class="hero-showcase" data-immersive-stage data-preview-tone="wraps" aria-label="Interactive dish preview concept">
-          <button class="hero-arrow hero-arrow-left" type="button" data-hero-prev aria-label="Previous dish preview">&lsaquo;</button>
-          <button class="hero-arrow hero-arrow-right" type="button" data-hero-next aria-label="Next dish preview">&rsaquo;</button>
-          <p class="hero-note" data-preview-note>A wrap that does not hide from the camera. Clear, readable, order-ready.</p>
-          <div class="showcase-caption">
-            <span>3D menu preview</span>
-            <strong data-preview-title>Hot Chicken Wrap</strong>
+        <div class="food-studio" data-food-studio data-scene-mode="campaign">
+          <svg class="editorial-orbits" viewBox="0 0 1200 700" aria-hidden="true"><ellipse cx="600" cy="350" rx="520" ry="90" transform="rotate(-13 600 350)"/><ellipse cx="600" cy="350" rx="310" ry="245" transform="rotate(58 600 350)"/><circle cx="1050" cy="244" r="4"/><circle cx="210" cy="482" r="3"/></svg>
+          <span class="scene-crosshair crosshair-one" aria-hidden="true">+</span><span class="scene-crosshair crosshair-two" aria-hidden="true">+</span>
+          <div class="scene-switch" role="group" aria-label="Hero viewing mode"><button type="button" data-scene-view="campaign" aria-pressed="true">01 / CAMPAIGN</button><button type="button" data-scene-view="inspect" aria-pressed="false">02 / INSPECT 3D</button><button type="button" data-campaign-pause aria-pressed="false" aria-label="Pause hero motion">Ⅱ</button></div>
+          <div class="studio-topline"><span>FE / OBJECT STUDY 001</span><span>ROTATE / SEPARATE / EXPLORE</span></div>
+          <div class="studio-viewport" data-studio-viewport>
+            <div class="campaign-product"><img class="hero-product" src="/static/img/editorial/fast-v7/chicken-burger-hero-768.webp" srcset="/static/img/editorial/fast-v7/chicken-burger-hero-480.webp 480w, /static/img/editorial/fast-v7/chicken-burger-hero-768.webp 768w, /static/img/editorial/fast-v7/chicken-burger-hero-1024.webp 1024w" sizes="(max-width: 700px) 100vw, (max-width: 900px) 68vw, 640px" decoding="async" alt="Crispy chicken burger, studio artwork" width="1536" height="1536" fetchpriority="high" /><span class="product-ground-shadow" aria-hidden="true"></span></div>
+            <canvas data-food-canvas tabindex="0" role="group" aria-label="Interactive 3D illustrated burger. Drag horizontally or use left and right arrow keys to rotate." aria-describedby="studio-help"></canvas>
+            <img class="studio-fallback" data-fallback-src="/static/img/catalog-v7/zinger-classic-640.webp" alt="Burger illustration fallback" />
+            <span class="ingredient-label ingredient-label-one" aria-hidden="true">GOLDEN ON TOP <b>↗</b></span>
+            <span class="ingredient-label ingredient-label-two" aria-hidden="true"><b>↖</b> LAYERS OF GOOD</span>
           </div>
-          <div class="plate-scene" aria-hidden="true">
-            <span class="leaf leaf-one"></span>
-            <span class="leaf leaf-two"></span>
-            <div class="plate">
-              <span class="food-piece piece-one"></span>
-              <span class="food-piece piece-two"></span>
-              <span class="food-piece piece-three"></span>
-              <span class="food-piece piece-four"></span>
-            </div>
-            <span
-              class="hero-food-photo item-wrap-hot-chicken"
-              style="background-image: url('/static/img/items/wrap-hot-chicken.png')"
-              data-preview-photo
-              role="img"
-              aria-label="Hot Chicken Wrap preview photo"
-            ></span>
-            <span class="chopstick stick-one"></span>
-            <span class="chopstick stick-two"></span>
-          </div>
-          <div class="hero-ticket">
-            <span>Selected preview</span>
-            <strong data-preview-price-label>850 PKR</strong>
-            <small>AR-safe: no camera starts yet</small>
-          </div>
-          <div class="hero-dots" aria-label="Dish preview carousel position">
-            <button class="is-active" type="button" data-preview-item="wrap-hot-chicken" data-preview-name="Hot Chicken Wrap" data-preview-price="850 PKR" data-preview-tone="wraps" data-preview-style="Hot wrap" data-preview-copy="Hot chicken wrap with mayo, built for touch ordering now and voice guidance next." data-preview-note="A wrap that does not hide from the camera. Clear, readable, order-ready." aria-label="Show Hot Chicken Wrap"></button>
-            <button type="button" data-preview-item="zinger-classic" data-preview-name="Zinger Burger" data-preview-price="650 PKR" data-preview-tone="burgers" data-preview-style="Zinger" data-preview-copy="Classic spicy chicken with a bold crunch and a clean one-tap path to cart." data-preview-note="Crisp chicken, big contrast, no blurry product crop." aria-label="Show Zinger Burger"></button>
-            <button type="button" data-preview-item="biryani-chicken" data-preview-name="Chicken Biryani" data-preview-price="550 PKR" data-preview-tone="biryani" data-preview-style="Biryani" data-preview-copy="Basmati chicken biryani previewed clearly before the order is placed." data-preview-note="A rice bowl preview that stays readable for manual and assisted browsing." aria-label="Show Chicken Biryani"></button>
-            <button type="button" data-preview-item="dessert-gulab" data-preview-name="Gulab Jamun" data-preview-price="250 PKR" data-preview-tone="desserts" data-preview-style="Sweet" data-preview-copy="Warm gulab jamun, previewed as a dessert moment instead of another plain card." data-preview-note="Dessert stays sharp, simple, and ready for AR later." aria-label="Show Gulab Jamun"></button>
+          <div class="studio-control-deck">
+            <div class="studio-title"><strong>ILLUSTRATED 3D / BURGER STUDY</strong><p id="studio-help" data-studio-status aria-live="polite">Drag to rotate · a stylized food illustration</p></div>
+            <div class="studio-orbit-controls"><button type="button" data-studio-turn="-1" aria-label="Rotate 3D burger left">↶</button><button type="button" data-studio-pause aria-pressed="false" aria-label="Pause 3D animation">Ⅱ</button><button type="button" data-studio-turn="1" aria-label="Rotate 3D burger right">↷</button></div>
+            <label class="studio-spread"><span>LAYER SEPARATION <b data-spread-value>35%</b></span><input type="range" min="0" max="100" value="35" data-studio-spread aria-label="Ingredient layer spacing" /></label>
+            <button class="studio-explode" type="button" data-studio-explode aria-pressed="false">Explore the layers <span aria-hidden="true">↗</span></button>
           </div>
         </div>
-        <div class="hero-food-rail" aria-label="Dish preview carousel">
-          <button class="is-active" type="button" data-hero-slide data-preview-item="wrap-hot-chicken" data-preview-name="Hot Chicken Wrap" data-preview-price="850 PKR" data-preview-tone="wraps" data-preview-style="Hot wrap" data-preview-copy="Hot chicken wrap with mayo, built for touch ordering now and voice guidance next." data-preview-note="A wrap that does not hide from the camera. Clear, readable, order-ready.">
-            <img src="/static/img/items/wrap-hot-chicken.png" alt="" />
-            <span>Hot wrap</span>
-          </button>
-          <button type="button" data-hero-slide data-preview-item="zinger-classic" data-preview-name="Zinger Burger" data-preview-price="650 PKR" data-preview-tone="burgers" data-preview-style="Zinger" data-preview-copy="Classic spicy chicken with a bold crunch and a clean one-tap path to cart." data-preview-note="Crisp chicken, big contrast, no blurry product crop.">
-            <img src="/static/img/items/zinger-classic.png" alt="" />
-            <span>Zinger</span>
-          </button>
-          <button type="button" data-hero-slide data-preview-item="biryani-chicken" data-preview-name="Chicken Biryani" data-preview-price="550 PKR" data-preview-tone="biryani" data-preview-style="Biryani" data-preview-copy="Basmati chicken biryani previewed clearly before the order is placed." data-preview-note="A rice bowl preview that stays readable for manual and assisted browsing.">
-            <img src="/static/img/items/biryani-chicken.png" alt="" />
-            <span>Biryani</span>
-          </button>
-          <button type="button" data-hero-slide data-preview-item="dessert-gulab" data-preview-name="Gulab Jamun" data-preview-price="250 PKR" data-preview-tone="desserts" data-preview-style="Sweet" data-preview-copy="Warm gulab jamun, previewed as a dessert moment instead of another plain card." data-preview-note="Dessert stays sharp, simple, and ready for AR later.">
-            <img src="/static/img/items/dessert-gulab.png" alt="" />
-            <span>Sweet</span>
-          </button>
+      </section>
+      <div class="flavour-marquee" aria-hidden="true"><div><span>BIG FLAVOUR</span><i>✳</i><span>ZERO FUSS</span><i>✳</i><span>YOUR KIND OF GOOD</span><i>✳</i><span>BIG FLAVOUR</span><i>✳</i><span>ZERO FUSS</span><i>✳</i><span>YOUR KIND OF GOOD</span><i>✳</i></div></div>
+      <section class="spotlight-gallery" aria-labelledby="rotation-title">
+        <div class="spotlight-intro"><div><p class="eyebrow">[01] / THE DAILY ROTATION</p><h2 id="rotation-title">YOUR NEXT<br /><em>GREAT BITE.</em></h2></div><p>Four good places to start. Explore a dish, take a closer look, and make it your order.</p></div>
+        <div class="spotlight-selection">
+          <!-- Dedicated output hooks keep preview updates out of the card buttons. -->
+          <span hidden data-preview-style></span><span hidden data-preview-copy></span>
+          <div class="hero-showcase" data-immersive-stage data-preview-tone="wraps" aria-label="Selected featured dish">
+            <div class="plate-scene" aria-hidden="true"><span class="hero-food-photo item-wrap-hot-chicken" style="background-image:url('/static/img/catalog-v7/wrap-hot-chicken-160.webp')" data-preview-photo></span></div>
+            <div class="showcase-caption"><span>CURRENTLY IN FOCUS</span><strong data-preview-title>Hot Chicken Wrap</strong></div>
+            <p class="hero-note" data-preview-note>Your next favourite, wrapped up.</p>
+            <div class="hero-ticket"><strong data-preview-price-label>850 PKR</strong></div>
+            <div class="preview-navigation"><button class="hero-arrow hero-arrow-left" type="button" data-hero-prev aria-label="Previous dish preview">←</button><button class="hero-arrow hero-arrow-right" type="button" data-hero-next aria-label="Next dish preview">→</button></div>
+          </div>
+          <div class="hero-food-rail" aria-label="Dish preview carousel">
+<button class="is-active" type="button" data-hero-slide data-preview-item="wrap-hot-chicken" data-preview-name="Hot Chicken Wrap" data-preview-price="850 PKR" data-preview-tone="wraps" data-preview-style="Hot wrap" data-preview-copy="Grilled, golden, and filled with chicken. A wrap worth making room for." data-preview-note="Your next favourite, wrapped up."><span class="preview-card-index">01 / WRAPS<i aria-hidden="true">↗</i></span><span class="preview-image-stage"><span class="image-orbit" aria-hidden="true"></span><img src="/static/img/catalog-v7/wrap-hot-chicken-320.webp" srcset="/static/img/catalog-v7/wrap-hot-chicken-320.webp 320w, /static/img/catalog-v7/wrap-hot-chicken-480.webp 480w, /static/img/catalog-v7/wrap-hot-chicken-640.webp 640w" sizes="(max-width: 700px) 46vw, (max-width: 900px) 47vw, 23vw" alt="" width="900" height="700" loading="lazy" decoding="async" /></span><span class="preview-card-caption"><strong>HOT CHICKEN WRAP</strong><span><small>PREVIEW DISH</small><b>850 PKR</b></span></span></button>
+<button type="button" data-hero-slide data-preview-item="zinger-classic" data-preview-name="Zinger Burger" data-preview-price="650 PKR" data-preview-tone="burgers" data-preview-style="Zinger" data-preview-copy="A little spice. A lot of crunch. Meet the classic chicken zinger." data-preview-note="Big crunch energy."><span class="preview-card-index">02 / BURGERS<i aria-hidden="true">↗</i></span><span class="preview-image-stage"><span class="image-orbit" aria-hidden="true"></span><img src="/static/img/catalog-v7/zinger-classic-320.webp" srcset="/static/img/catalog-v7/zinger-classic-320.webp 320w, /static/img/catalog-v7/zinger-classic-480.webp 480w, /static/img/catalog-v7/zinger-classic-640.webp 640w" sizes="(max-width: 700px) 46vw, (max-width: 900px) 47vw, 23vw" alt="" width="900" height="700" loading="lazy" decoding="async" /></span><span class="preview-card-caption"><strong>ZINGER BURGER</strong><span><small>PREVIEW DISH</small><b>650 PKR</b></span></span></button>
+<button type="button" data-hero-slide data-preview-item="biryani-chicken" data-preview-name="Chicken Biryani" data-preview-price="550 PKR" data-preview-tone="biryani" data-preview-style="Biryani" data-preview-copy="Fragrant basmati rice and chicken, layered with the flavours you love." data-preview-note="Comfort, by the spoonful."><span class="preview-card-index">03 / BIRYANI<i aria-hidden="true">↗</i></span><span class="preview-image-stage"><span class="image-orbit" aria-hidden="true"></span><img src="/static/img/catalog-v7/biryani-chicken-320.webp" srcset="/static/img/catalog-v7/biryani-chicken-320.webp 320w, /static/img/catalog-v7/biryani-chicken-480.webp 480w, /static/img/catalog-v7/biryani-chicken-640.webp 640w" sizes="(max-width: 700px) 46vw, (max-width: 900px) 47vw, 23vw" alt="" width="900" height="700" loading="lazy" decoding="async" /></span><span class="preview-card-caption"><strong>CHICKEN BIRYANI</strong><span><small>PREVIEW DISH</small><b>550 PKR</b></span></span></button>
+<button type="button" data-hero-slide data-preview-item="dessert-gulab" data-preview-name="Gulab Jamun" data-preview-price="250 PKR" data-preview-tone="desserts" data-preview-style="Sweet" data-preview-copy="Soft, syrup-soaked gulab jamun. There is always room for something sweet." data-preview-note="Save the sweetest bite for last."><span class="preview-card-index">04 / DESSERTS<i aria-hidden="true">↗</i></span><span class="preview-image-stage"><span class="image-orbit" aria-hidden="true"></span><img src="/static/img/catalog-v7/dessert-gulab-320.webp" srcset="/static/img/catalog-v7/dessert-gulab-320.webp 320w, /static/img/catalog-v7/dessert-gulab-480.webp 480w, /static/img/catalog-v7/dessert-gulab-640.webp 640w" sizes="(max-width: 700px) 46vw, (max-width: 900px) 47vw, 23vw" alt="" width="900" height="700" loading="lazy" decoding="async" /></span><span class="preview-card-caption"><strong>GULAB JAMUN</strong><span><small>PREVIEW DISH</small><b>250 PKR</b></span></span></button>
+          </div>
         </div>
       </section>
 
-      <section class="feature-band" aria-label="FoodEase interaction promises">
-        <article>
-          <span aria-hidden="true">01</span>
-          <h2>Manual first</h2>
-          <p>Every ordering path works with ordinary clicks, keyboard focus, and clear cart feedback.</p>
-        </article>
-        <article>
-          <span aria-hidden="true">02</span>
-          <h2>Voice ready</h2>
-          <p>The website keeps the agent contract stable so guided ordering can sit beside the UI.</p>
-        </article>
-        <article>
-          <span aria-hidden="true">03</span>
-          <h2>AR planned</h2>
-          <p>Dish previews are progressive enhancements, never the only way to understand the food.</p>
-        </article>
-      </section>
-
-      <section id="ar-preview" class="ar-runway" aria-labelledby="ar-title">
-        <div class="ar-copy">
-          <p class="eyebrow">Phase 12 AR enhancement</p>
-          <h2 id="ar-title">Bring the selected dish onto the table</h2>
-          <p>
-            FoodEase keeps AR optional: the selected dish can open as a tabletop preview,
-            while the normal menu, cart and checkout stay fully usable.
-          </p>
-          <div class="ar-action-row">
-            <button class="button primary" type="button" data-open-ar>Open AR preview</button>
-            <span data-ar-inline-status aria-live="polite">Fallback preview is ready.</span>
-          </div>
-        </div>
-        <div class="ar-stage-card" aria-hidden="true">
-          <span class="ar-floor"></span>
-          <span class="ar-scan-ring ring-one"></span>
-          <span class="ar-scan-ring ring-two"></span>
-          <img src="/static/img/items/wrap-hot-chicken.png" alt="" data-ar-mini-photo />
-          <span class="ar-pin">AR</span>
-        </div>
-      </section>
-
-      <section class="access-deck" aria-labelledby="access-title">
-        <div>
-          <p class="eyebrow">Interaction comfort</p>
-          <h2 id="access-title">Tune the ordering view</h2>
-          <p data-context-summary aria-live="polite">Showing all dishes. Cart is empty.</p>
-        </div>
-        <div class="access-actions" aria-label="Display preference controls">
-          <button type="button" data-access-toggle="large">Larger text</button>
-          <button type="button" data-access-toggle="contrast">High contrast</button>
-          <button type="button" data-access-toggle="motion">Calm motion</button>
-        </div>
+      <section class="feature-band" aria-label="Ways to enjoy FoodEase">
+        <article><span aria-hidden="true">01 /</span><div><h2>Find your flavour</h2><p>Local favourites. Something for every craving.</p></div></article>
+        <article><span aria-hidden="true">02 /</span><div><h2>Make it your order</h2><p>A clear cart, from first pick to final total.</p></div></article>
+        <article><span aria-hidden="true">03 /</span><div><h2>Go at your own pace</h2><p>Touch, type, or talk. You’re in control.</p></div></article>
       </section>
 
       <section id="categories" class="section-block" aria-labelledby="categories-title">
         <div class="section-heading">
-          <p class="eyebrow">Explore quickly</p>
-          <h2 id="categories-title">A menu map built from the real FoodEase catalog</h2>
+          <p class="eyebrow">[01] / FIND YOUR FREQUENCY</p>
+          <h2 id="categories-title">TUNE INTO YOUR CRAVINGS.</h2>
         </div>
         <div class="category-rail">
+          {% set category_images = {'biryani':'biryani-chicken', 'burgers':'zinger-classic', 'desserts':'dessert-gulab', 'drinks':'drink-mango', 'karahi':'karahi-chicken', 'platters':'platter-family', 'rolls':'roll-seekh', 'sides':'side-fries', 'wraps':'wrap-hot-chicken'} %}
           {% for category in category_cards %}
           <button
             class="category-card"
@@ -195,10 +110,10 @@
             data-category-trigger="{{ category.id }}"
             aria-label="Filter menu by {{ category.label }}"
           >
-            <span class="category-photo sprite-{{ category.id }}" aria-hidden="true"></span>
+            <img class="category-photo" src="/static/img/catalog-v7/{{ category_images[category.id] }}-160.webp" alt="" width="90" height="70" loading="lazy" decoding="async" />
             <span class="category-copy">
               <strong>{{ category.label }}</strong>
-              <small>{{ category.available }} available - {{ category.sample }}</small>
+              <small>{{ category.available }} to explore</small>
             </span>
           </button>
           {% endfor %}
@@ -208,8 +123,8 @@
       <section id="popular" class="ordering-layout" aria-labelledby="popular-title">
         <div class="menu-board">
           <div class="section-heading compact">
-            <p class="eyebrow">Popular picks</p>
-            <h2 id="popular-title">Browse the menu like a premium ordering counter</h2>
+            <p class="eyebrow">[02] / POPULAR PICKS & THE FULL CATALOG</p>
+            <h2 id="popular-title">THE MENU<span class="tomato-dot">.</span></h2>
           </div>
 
           <div class="menu-toolbar" aria-label="Menu controls">
@@ -246,12 +161,15 @@
               data-available="{{ 'true' if item.available else 'false' }}"
               data-description="{{ item.description }}"
             >
-              <div class="menu-art tone-{{ item.category_id }}">
+              <div class="menu-art tone-{{ item.category_id }}"><span class="catalog-item-index" aria-hidden="true">{{ "%02d"|format(loop.index) }} / {{ item.category }}</span><span class="image-orbit" aria-hidden="true"></span>
                 <img
                   class="food-photo"
-                  src="/static/img/items/{{ item.item_id }}.png"
+                  width="900" height="700"
+                  src="/static/img/catalog-v7/{{ item.item_id }}-640.webp"
+                  srcset="/static/img/catalog-v7/{{ item.item_id }}-160.webp 160w, /static/img/catalog-v7/{{ item.item_id }}-320.webp 320w, /static/img/catalog-v7/{{ item.item_id }}-480.webp 480w, /static/img/catalog-v7/{{ item.item_id }}-640.webp 640w"
+                  sizes="(max-width: 360px) calc(100vw - 24px), (max-width: 700px) calc((100vw - 44px) / 2), (max-width: 1180px) calc((100vw - 350px) / 2), calc((min(100vw, 1708px) - 406px) / 3)"
                   alt="{{ item.name }} food photo"
-                  loading="lazy"
+                  loading="lazy" decoding="async"
                 />
               </div>
               <div class="menu-card-body">
@@ -289,11 +207,11 @@
 
         <aside id="cart-preview" class="cart-preview" aria-labelledby="cart-title">
           <p class="eyebrow">Order summary</p>
-          <h2 id="cart-title">Cart preview</h2>
+          <h2 id="cart-title">YOUR ORDER<span class="tomato-dot">.</span></h2><p class="cart-intro">A little of what you love.</p>
           <div class="cart-lines" data-cart-lines aria-live="polite">
-            <p class="empty-cart">Your cart is empty. Add a dish to preview checkout.</p>
+            <p class="empty-cart">Your next great meal starts here. Add something that catches your eye.</p>
           </div>
-          <p class="order-status" data-order-status aria-live="polite">Cart is synced with the FoodEase app state.</p>
+          <p class="order-status" data-order-status aria-live="polite">Ready when you are. Your total updates as you go.</p>
           <div class="fee-line">
             <span>Subtotal</span>
             <strong data-cart-subtotal>0 PKR</strong>
@@ -309,13 +227,48 @@
           <button class="button primary full" type="button" data-checkout-button disabled>
             Demo checkout
           </button>
-          <a class="api-link" href="/api/catalog/items">Inspect catalog API</a>
+          <p class="checkout-disclaimer">A demo with real choices. No payment collected.</p>
         </aside>
       </section>
 
+      <section id="ar-preview" class="ar-runway" aria-labelledby="ar-title">
+        <div class="ar-copy">
+          <p class="eyebrow">[03] / TAKE A CLOSER LOOK</p>
+          <h2 id="ar-title">A DIFFERENT<br /><em>PERSPECTIVE.</em></h2>
+          <p>
+            Explore your selected dish in our interactive tabletop preview. Rotate the photograph for another perspective, then come back to your order. No camera needed.
+          </p>
+          <div class="ar-action-row">
+            <button class="button primary" type="button" data-open-ar>Take a closer look <span aria-hidden="true">↗</span></button>
+            <span data-ar-inline-status aria-live="polite">Fallback preview is ready.</span>
+          </div>
+        </div>
+        <div class="ar-stage-card" aria-hidden="true">
+          <span class="ar-floor"></span>
+          <span class="ar-scan-ring ring-one"></span>
+          <span class="ar-scan-ring ring-two"></span>
+          <img src="/static/img/catalog-v7/wrap-hot-chicken-480.webp" alt="" loading="lazy" decoding="async" data-ar-mini-photo />
+          <span class="ar-pin">AR</span>
+        </div>
+      </section>
+
+      <section class="access-deck" aria-labelledby="access-title">
+        <div>
+          <p class="eyebrow">[04] / COMFORT CONTROLS</p>
+          <h2 id="access-title">Your comfort comes first.</h2>
+          <p data-context-summary aria-live="polite">Showing all dishes. Cart is empty.</p>
+        </div>
+        <div class="access-actions" aria-label="Display preference controls">
+          <button type="button" data-access-toggle="large">Larger text</button>
+          <button type="button" data-access-toggle="contrast">High contrast</button>
+          <button type="button" data-access-toggle="motion">Calm motion</button>
+        </div>
+      </section>
+
+
       <section id="assistant" class="assistant-section" aria-labelledby="assistant-title">
-        <div class="assistant-copy">
-          <p class="eyebrow">Consent-first guidance</p>
+        <div class="assistant-copy"><div class="voice-sculpture" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><span>YOUR ORDER.<br />YOUR WAY.</span></div>
+          <p class="eyebrow">[05] / CONSENT-FIRST GUIDANCE</p>
           <h2 id="assistant-title">FoodEase ordering assistance</h2>
           <p>How would you like to order today — by voice, typing, or browse yourself?</p>
           <p>
@@ -357,6 +310,7 @@
         </div>
       </section>
 
+      <details class="project-details" id="project-details"><summary><span>Behind the experience</span><span>HCI project · interaction &amp; test evidence <b aria-hidden="true">+</b></span></summary>
       <section class="contract-cockpit" aria-labelledby="contract-title">
         <div class="contract-copy">
           <p class="eyebrow">Agent readiness</p>
@@ -410,7 +364,7 @@
 
       <section id="evidence" class="evidence-section" aria-labelledby="evidence-title">
         <div class="evidence-copy">
-          <p class="eyebrow">Phase 13 acceptance evidence</p>
+          <p class="eyebrow">Project acceptance evidence</p>
           <h2 id="evidence-title">A test runway for the final handover</h2>
           <p>
             The smoke runner injects contract-shaped app events, verifies shared
@@ -440,13 +394,17 @@
         </div>
       </section>
 
+      </details>
+      <footer class="site-footer"><a class="footer-wordmark" href="#main">FoodEase<span>.</span></a><p>Good food. Your way.<br /><span>Designed with everyone at the table.</span></p><a href="#popular">Back to the menu ↗</a></footer>
+      <a class="mobile-cart-link" href="#cart-preview"><span>Your order</span><span data-mobile-cart-total>View bag ↗</span></a>
+
       <dialog class="item-dialog" data-item-dialog aria-labelledby="item-dialog-title">
         <div class="detail-shell">
-          <div class="detail-visual" aria-hidden="true">
+          <div class="detail-visual" aria-hidden="true"><span class="detail-visual-label">A CLOSER LOOK <b>↗</b></span>
             <span class="detail-plate"></span>
             <span
               class="detail-food-photo item-wrap-hot-chicken"
-              style="background-image: url('/static/img/items/wrap-hot-chicken.png')"
+
               data-detail-photo
             ></span>
             <span class="detail-chip chip-one"></span>
@@ -502,7 +460,7 @@
           <div class="ar-tabletop" aria-label="Tabletop dish fallback preview">
             <span class="ar-grid"></span>
             <span class="ar-shadow"></span>
-            <img src="/static/img/items/wrap-hot-chicken.png" alt="Selected dish preview" data-ar-photo />
+            <img alt="Selected dish preview" data-ar-photo />
             <span class="ar-depth-label">table scale preview</span>
           </div>
           <div class="ar-dialog-actions">
@@ -517,11 +475,11 @@
         <div class="checkout-shell">
           <button class="dialog-close" type="button" data-checkout-close aria-label="Close checkout review">Close</button>
           <section data-checkout-review>
-            <p class="eyebrow">Demo checkout review</p>
+            <div class="checkout-progress" aria-label="Order steps"><span>01 · Pick your favourites</span><strong>02 · Review &amp; confirm</strong></div>
+            <p class="eyebrow">Your good-food moment</p>
             <h2 id="checkout-dialog-title">Confirm your FoodEase order</h2>
             <p class="checkout-note">
-              No payment is collected. This simulated checkout is bound to the current cart summary,
-              so cart edits require a fresh review.
+              Check your picks and total before confirming. This is a demo order—no payment is collected. If you edit your bag, we’ll refresh the review.
             </p>
             <div class="checkout-lines" data-checkout-lines></div>
             <dl class="checkout-totals">
@@ -543,7 +501,7 @@
               <button class="button ghost" type="button" data-edit-cart>Edit cart first</button>
             </div>
           </section>
-          <section class="receipt-panel" data-receipt-panel hidden>
+          <section class="receipt-panel" data-receipt-panel hidden><span class="receipt-check" aria-hidden="true">✓</span>
             <p class="eyebrow">Demo order placed</p>
             <h2 data-receipt-id style="overflow-wrap: anywhere">DEMO-0000</h2>
             <p data-receipt-summary>Your simulated receipt is ready.</p>

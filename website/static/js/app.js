@@ -186,8 +186,8 @@ function money(amount) {
   return `${value.toFixed(Number.isInteger(value) ? 0 : 2)} PKR`;
 }
 
-function itemImageUrl(itemId) {
-  return `/static/img/items/${itemId}.png`;
+function itemImageUrl(itemId, size = 640) {
+  return `/static/img/catalog-v7/${itemId}-${size}.webp`;
 }
 
 function itemById(itemId) {
@@ -499,7 +499,7 @@ function renderItemDetails(item, details = {}) {
   }
   if (detailPhoto) {
     detailPhoto.className = `detail-food-photo item-${item.id}`;
-    detailPhoto.style.backgroundImage = `url("${itemImageUrl(item.id)}")`;
+    detailPhoto.style.backgroundImage = `url("${itemImageUrl(item.id, 960)}")`;
   }
   if (detailAvailability) {
     detailAvailability.textContent = item.available ? "Available now" : "Sold out today";
@@ -562,7 +562,7 @@ async function openArPreview(itemId = null) {
     arPhoto.style.transform = "translate(-50%, -50%) rotateX(58deg) rotateZ(0deg)";
   }
   if (arMiniPhoto) {
-    arMiniPhoto.src = itemImageUrl(item.id);
+    arMiniPhoto.src = itemImageUrl(item.id, 480);
   }
   if (arSupportMessage) {
     arSupportMessage.textContent = "Checking AR support without opening the camera...";
@@ -1487,11 +1487,11 @@ function paintPreview(button) {
         ? "hero-food-photo"
         : "immersive-food-photo";
       previewPhoto.className = `${photoBaseClass} item-${button.dataset.previewItem}`;
-      previewPhoto.style.backgroundImage = `url("${itemImageUrl(button.dataset.previewItem)}")`;
+      previewPhoto.style.backgroundImage = `url("${itemImageUrl(button.dataset.previewItem, 160)}")`;
       previewPhoto.setAttribute("aria-label", `${name} preview photo`);
     }
     if (arMiniPhoto) {
-      arMiniPhoto.src = itemImageUrl(itemId);
+      arMiniPhoto.src = itemImageUrl(itemId, 480);
     }
 }
 

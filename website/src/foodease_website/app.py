@@ -8,12 +8,12 @@ from pathlib import Path
 
 from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse, JSONResponse
-from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from foodease_contract.models import MAX_WIRE_BYTES, ActionRequest, ActionRequestEvent, Id, Revision
 from pydantic import BaseModel, ConfigDict, ValidationError
 from starlette.concurrency import run_in_threadpool
 
+from foodease_website.assets import PublicAssetFiles
 from foodease_website.catalog import CatalogSeed, load_catalog
 from foodease_website.config import Settings, load_settings
 from foodease_website.sessions import SessionError, SessionStore, timestamp
@@ -191,7 +191,7 @@ def create_app(
 
     app.mount(
         "/static",
-        StaticFiles(directory=str(package_root / "static")),
+        PublicAssetFiles(directory=str(package_root / "static")),
         name="static",
     )
 

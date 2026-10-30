@@ -1,0 +1,123 @@
+/* Material finish: background textures never intercept input or cover the text. */
+:root {
+  --paper-fibre: url('/static/img/textures/paper-fibre.svg');
+  --woven-linen: url('/static/img/textures/woven-linen.svg');
+  --paint-grain: url('/static/img/textures/paint-grain.svg');
+}
+:root body[data-experience] {
+  background-color: var(--cream);
+  background-image: var(--paper-fibre), radial-gradient(ellipse at 5% 0%, #d0ab6e17, transparent 48%), radial-gradient(ellipse at 100% 25%, #d8bda31c, transparent 40%);
+  background-size: 256px 256px, 100% 1500px, 100% 2400px;
+}
+:root body[data-experience] .site-header {
+  background-color: var(--cream);
+  background-image: var(--paper-fibre), linear-gradient(#fff4, #f5d8a20a);
+  box-shadow: 0 1px 0 #fff5, 0 7px 26px #49331e06;
+}
+:root body[data-experience] .hero-copy .eyebrow {
+  display: inline-block;
+  padding: 9px 12px;
+  border: 1px solid color-mix(in srgb, var(--ink) 35%, transparent);
+  border-radius: 3px;
+  background: var(--paper-fibre), var(--paper);
+  box-shadow: 2px 2px 0 color-mix(in srgb, var(--ink) 8%, transparent);
+  transform: rotate(-1.5deg);
+}
+:root body[data-experience] .food-studio {
+  background-color: #e9845a;
+  background-image: var(--paint-grain), radial-gradient(ellipse at 22% 5%, #ffe4ad88, transparent 60%), linear-gradient(135deg, #efa174, #d66f49 72%, #c96543);
+  background-size: 192px 192px, 100% 100%, 100% 100%;
+  border: 1px solid #b75b3440;
+  box-shadow: inset 0 1px 0 #ffe9bfbb, inset 1px 0 0 #ffe5b54d, 0 7px 0 -2px #d8b99a4d, 0 25px 50px #8f4a2521;
+}
+:root body[data-experience] .studio-backword { color: #6c351d1f; text-shadow: 0 1px 0 #ffd8a226; }
+:root body[data-experience] .studio-control-deck {
+  background-color: #f9efd6;
+  background-image: var(--paper-fibre), linear-gradient(#fffae860, #ead8a51a);
+  border-top: 1px dashed #a56a3d77;
+  box-shadow: inset 0 2px 0 #fff8;
+}
+:root body[data-experience] .studio-orbit-controls button {
+  background-image: linear-gradient(#fff7, #cfb77f0f);
+  box-shadow: inset 0 1px 0 #fff9, 0 2px 3px #67481f15;
+}
+:root body[data-experience] .ingredient-label {
+  background-image: var(--paper-fibre);
+  box-shadow: 1px 1px 0 #b27d2c40, 1px 7px 12px #603b2725;
+  border: 1px solid #8d652b25;
+}
+:root body[data-experience] .flavour-marquee {
+  background: var(--paper-fibre), color-mix(in srgb, var(--gold) 13%, var(--cream));
+  border-block: 1px dashed color-mix(in srgb, var(--ink) 55%, transparent);
+}
+:root body[data-experience] .hero-showcase,
+:root body[data-experience] .detail-visual,
+:root body[data-experience] .ar-runway,
+:root body[data-experience] .ar-tabletop {
+  background-color: var(--spotlight);
+  background-image: var(--paint-grain), radial-gradient(ellipse at 20% 0%, #fff6, transparent 65%);
+  background-size: 192px 192px, 100% 100%;
+  box-shadow: inset 0 1px 0 #fff6, inset 0 0 50px #344a1a08;
+}
+:root body[data-experience] .hero-food-rail button.is-active {
+  background-image: var(--paper-fibre);
+  box-shadow: 2px 3px 0 #83634210;
+}
+:root body[data-experience] .feature-band { border-block-style: dashed; }
+:root body[data-experience] .category-card {
+  background-image: var(--paper-fibre), linear-gradient(#fff5, #e8d4a20b);
+  box-shadow: inset 0 1px 0 #fffa, 0 3px 0 -1px var(--line), 0 9px 18px #5b432d09;
+}
+:root body[data-experience] .menu-card {
+  background-color: var(--paper);
+  background-image: var(--paper-fibre);
+  box-shadow: inset 0 1px 0 #fff9, 0 2px 0 var(--line), 0 8px 20px #5e422b0c;
+}
+:root body[data-experience] .menu-card-body { background-image: var(--paper-fibre); }
+:root body[data-experience] .menu-art { border-bottom: 1px solid #8f654022; }
+:root body[data-experience] .card-action-row { border-top-style: dashed; }
+:root body[data-experience] .cart-preview,
+:root body[data-experience] .checkout-shell,
+:root body[data-experience] .detail-copy {
+  background-color: var(--paper);
+  background-image: var(--paper-fibre);
+}
+:root body[data-experience] .cart-preview { border-style: solid; box-shadow: 0 3px 0 -1px var(--line), 0 16px 35px #4b352111; }
+:root body[data-experience] .fee-line,
+:root body[data-experience] .total-line,
+:root body[data-experience] .checkout-progress { border-color: color-mix(in srgb, var(--ink) 28%, transparent); border-top-style: dashed; }
+:root body[data-experience] .checkout-progress { border-bottom-style: dashed; }
+:root body[data-experience] .empty-cart,
+:root body[data-experience] .cart-line,
+:root body[data-experience] .detail-facts div,
+:root body[data-experience] .checkout-line,
+:root body[data-experience] .checkout-totals div { background-image: var(--paper-fibre); }
+:root body[data-experience] .assistant-section,
+:root body[data-experience] dialog .assistant-controls,
+:root body[data-experience] dialog .message-list,
+:root body[data-experience] dialog .assistant-form {
+  background-color: #173f32;
+  background-image: var(--woven-linen), radial-gradient(ellipse at 10% 0%, #5c84594d, transparent 70%);
+  background-size: 32px 32px, 100% 100%;
+  border: 1px solid #90ad7d33;
+  box-shadow: inset 0 1px 0 #b8ce9e35, inset 0 -1px 0 #051c1266, 0 10px 30px #122e1410;
+}
+:root body[data-experience] .assistant-panel {
+  background-image: var(--woven-linen), linear-gradient(#ffffff08, #001a1515);
+  box-shadow: inset 0 1px 0 #fff2, 0 12px 24px #001a151c;
+}
+:root body[data-experience] .voice-sculpture i { background-image: var(--paper-fibre), linear-gradient(100deg, #f9da89, #cc883f); }
+:root body[data-experience] .voice-sculpture i:nth-child(2),
+:root body[data-experience] .voice-sculpture i:nth-child(4) { background-image: var(--paper-fibre), linear-gradient(100deg, #f69b7c, #bc4d36); }
+:root body[data-experience] .button.primary {
+  background-image: var(--paper-fibre), linear-gradient(#ffffff0b, #54200815);
+  border-top-color: color-mix(in srgb, var(--red) 70%, white);
+}
+:root body[data-experience] .button.ghost,
+:root body[data-experience] .access-actions button { background-image: var(--paper-fibre); }
+:root body[data-experience] .site-footer { background-image: var(--paper-fibre); border-top-style: dashed; }
+/* High-contrast mode uses clear solid surfaces instead of decorative materials. */
+:root[data-high-contrast=true] body[data-experience],
+:root[data-high-contrast=true] body[data-experience] :is(.site-header, .hero-copy .eyebrow, .menu-card, .menu-card-body, .category-card, .cart-preview, .detail-copy, .detail-facts div, .checkout-shell, .checkout-line, .checkout-totals div, .ar-runway, .ar-tabletop, .hero-showcase, .assistant-section, .assistant-panel, .button, .access-actions button) { background-image: none; }
+
+:root body[data-experience] .hero-actions .button.ghost { background-image: none; }

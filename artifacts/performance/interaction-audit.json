@@ -1,0 +1,19 @@
+{
+  "initial": {
+    "hiddenPreviewFetched": false,
+    "hero": {
+      "src": "http://127.0.0.1:8193/static/img/editorial/fast-v7/chicken-burger-hero-768.webp",
+      "complete": true,
+      "width": 640
+    },
+    "navbarTop": 0
+  },
+  "scrolling": {
+    "navbarTop": 0,
+    "textOpacity": "1"
+  },
+  "mobile": {
+    "navbarTop": 0,
+    "overflow": false
+  }
+}

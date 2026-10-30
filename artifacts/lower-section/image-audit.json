@@ -1,0 +1,32 @@
+{
+  "errors": [],
+  "missing": [],
+  "broken": [],
+  "responsive": [
+    {
+      "width": 320,
+      "overflow": false,
+      "photos": true
+    },
+    {
+      "width": 375,
+      "overflow": false,
+      "photos": true
+    },
+    {
+      "width": 768,
+      "overflow": false,
+      "photos": true
+    },
+    {
+      "width": 1024,
+      "overflow": false,
+      "photos": true
+    },
+    {
+      "width": 1440,
+      "overflow": false,
+      "photos": true
+    }
+  ]
+}

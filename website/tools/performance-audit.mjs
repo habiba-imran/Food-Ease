@@ -1,0 +1,18 @@
+import { chromium } from 'playwright';
+import { writeFile } from 'node:fs/promises';
+const label=process.argv[2]||'before';
+const browser=await chromium.launch();
+const context=await browser.newContext({viewport:{width:1440,height:1000}});
+const page=await context.newPage(); const cdp=await context.newCDPSession(page);
+await cdp.send('Network.enable');
+await cdp.send('Network.emulateNetworkConditions',{offline:false,latency:80,downloadThroughput:1000000,uploadThroughput:500000});
+await page.addInitScript(()=>{new PerformanceObserver(list=>{window.lastLCP=list.getEntries().at(-1)?.startTime}).observe({type:'largest-contentful-paint',buffered:true})});
+const collect=()=>page.evaluate(()=>({lcp:Math.round(window.lastLCP||0),images:performance.getEntriesByType('resource').filter(r=>r.initiatorType==='img'||r.name.includes('/img/')).map(r=>({url:r.name.split('/static/')[1],bytes:r.encodedBodySize,transfer:r.transferSize,ms:Math.round(r.duration)})),headerTop:document.querySelector('.site-header').getBoundingClientRect().top,overflow:document.documentElement.scrollWidth>innerWidth}));
+await page.goto('http://127.0.0.1:8193/?design='+label,{waitUntil:'networkidle'});
+await page.evaluate(()=>scrollTo({top:0,behavior:'instant'}));
+const cold=await collect();
+await page.reload({waitUntil:'networkidle'}); const warm=await collect();
+const result={profile:'Desktop 1440px, cold/warm browser cache, 80ms latency and 8Mbps download',cold,warm};
+await writeFile('../artifacts/performance/'+label+'.json',JSON.stringify(result,null,2));
+console.log(JSON.stringify({label,cold:{lcp:cold.lcp,requests:cold.images.length,bytes:cold.images.reduce((n,r)=>n+r.transfer,0)},warm:{lcp:warm.lcp,requests:warm.images.length,bytes:warm.images.reduce((n,r)=>n+r.transfer,0)}}));
+await browser.close();

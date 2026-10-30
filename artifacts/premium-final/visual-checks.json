@@ -1,0 +1,31 @@
+{
+  "pageErrors": [],
+  "layouts": [
+    {
+      "width": 320,
+      "scrollWidth": 320,
+      "inputWidth": 174
+    },
+    {
+      "width": 375,
+      "scrollWidth": 375,
+      "inputWidth": 221
+    },
+    {
+      "width": 768,
+      "scrollWidth": 768,
+      "inputWidth": 558.40625
+    },
+    {
+      "width": 1000,
+      "scrollWidth": 1000,
+      "inputWidth": 417.609375
+    },
+    {
+      "width": 1440,
+      "scrollWidth": 1440,
+      "inputWidth": 648.015625
+    }
+  ],
+  "brokenImages": []
+}

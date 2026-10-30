@@ -1,0 +1,7 @@
+/* Preserve the existing app foundation, then apply the FoodEase design system. */
+@import './app.css';
+@import './redesign.css';
+@import './immersive.css';
+@import './editorial.css';
+@import './catalog.css';
+@import './delivery.css';
