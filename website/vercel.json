@@ -1,0 +1,8 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "functions": {
+    "src/foodease_website/app.py": {
+      "includeFiles": "{templates/**,static/**,../zainab-pack/catalog-seed.json}"
+    }
+  }
+}

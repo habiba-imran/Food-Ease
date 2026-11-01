@@ -26,11 +26,28 @@ def _parse_bool(name: str, default: bool) -> bool:
 
 
 def _resolve_path(raw: str) -> Path:
-    root = Path(__file__).resolve().parents[2]
     path = Path(raw)
     if not path.is_absolute():
+        working_root = Path.cwd()
+        module_root = Path(__file__).resolve().parents[2]
+        root = working_root if (working_root / "pyproject.toml").is_file() else module_root
         path = root / path
     return path.resolve()
+
+
+def _catalog_seed_path() -> Path:
+    configured = os.environ.get("CATALOG_SEED_PATH")
+    if configured and configured.strip():
+        return _resolve_path(configured.strip())
+
+    module_root = Path(__file__).resolve().parents[2]
+    working_root = Path.cwd()
+    candidates = (
+        module_root.parent / "zainab-pack" / "catalog-seed.json",
+        module_root / "zainab-pack" / "catalog-seed.json",
+        working_root / "zainab-pack" / "catalog-seed.json",
+    )
+    return next((path.resolve() for path in candidates if path.is_file()), candidates[0].resolve())
 
 
 @dataclass(frozen=True)
@@ -50,9 +67,7 @@ def load_settings() -> Settings:
     port = int(os.environ.get("PORT", "8080"))
     if port < 1 or port > 65535:
         raise ConfigError("PORT must be between 1 and 65535")
-    catalog_seed_path = _resolve_path(
-        os.environ.get("CATALOG_SEED_PATH", "../zainab-pack/catalog-seed.json")
-    )
+    catalog_seed_path = _catalog_seed_path()
     if not catalog_seed_path.is_file():
         raise ConfigError(f"catalog seed not found: {catalog_seed_path}")
     return Settings(
