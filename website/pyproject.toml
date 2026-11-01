@@ -44,3 +44,5 @@ src = ["src", "tests"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B"]
+[tool.vercel]
+entrypoint = "foodease_website.app:app"
