@@ -10,6 +10,7 @@ root.dataset.assistanceState = "awaiting_spoken_choice_consent";
 root.dataset.foodeaseReady = "true";
 
 const cards = Array.from(document.querySelectorAll("[data-menu-item]"));
+const menuCategoryGroups = Array.from(document.querySelectorAll("[data-menu-category-group]"));
 const searchInput = document.querySelector("#menu-search");
 const filterButtons = Array.from(document.querySelectorAll("[data-filter]"));
 const categoryButtons = Array.from(document.querySelectorAll("[data-category-trigger]"));
@@ -36,19 +37,13 @@ const detailPhoto = document.querySelector("[data-detail-photo]");
 const agentStatus = document.querySelector("[data-agent-status]");
 const agentStateShell = document.querySelector("[data-agent-state]");
 const agentTranscript = document.querySelector("[data-agent-transcript]");
-const transcriptHome = document.createComment("assistant-transcript-home");
-agentTranscript?.before(transcriptHome);
 const assistStart = document.querySelector("[data-assist-start]");
 const assistPause = document.querySelector("[data-assist-pause]");
 const assistEnd = document.querySelector("[data-assist-end]");
 const scenarioButtons = document.querySelectorAll("[data-scenario]");
 const assistantForm = document.querySelector("[data-assistant-form]");
 const assistantInput = document.querySelector("[data-assistant-input]");
-const assistantFormHome = document.createComment("assistant-form-home");
-assistantForm?.before(assistantFormHome);
-const assistanceControls = document.querySelector(".assistant-controls");
-const assistanceControlsHome = document.createComment("assistant-controls-home");
-assistanceControls?.before(assistanceControlsHome);
+const demoDetails = document.querySelector("#project-details");
 const checkoutDialog = document.querySelector("[data-checkout-dialog]");
 const checkoutReview = document.querySelector("[data-checkout-review]");
 const receiptPanel = document.querySelector("[data-receipt-panel]");
@@ -97,7 +92,6 @@ const arMiniPhoto = document.querySelector("[data-ar-mini-photo]");
 const arInlineStatus = document.querySelector("[data-ar-inline-status]");
 const arSpinLeft = document.querySelector("[data-ar-spin-left]");
 const arSpinRight = document.querySelector("[data-ar-spin-right]");
-const detailArButton = document.querySelector("[data-detail-ar]");
 const acceptanceRunButton = document.querySelector("[data-run-acceptance]");
 const acceptanceExportButton = document.querySelector("[data-export-acceptance]");
 const contextExportButton = document.querySelector("[data-export-context]");
@@ -355,28 +349,6 @@ async function application() {
 
 async function renderApplication(snapshot, result = null, request = null) {
   appContext = snapshot;
-  const shoppingDialog = snapshot.route === "item" ? itemDialog
-    : ["checkout", "confirmation"].includes(snapshot.route) ? checkoutDialog : null;
-  const controlsDestination = shoppingDialog?.querySelector(".checkout-shell, .detail-copy")
-    || assistanceControlsHome.parentNode;
-  if (assistanceControls && assistanceControls.parentNode !== controlsDestination) {
-    const focused = assistanceControls.contains(document.activeElement) ? document.activeElement : null;
-    if (shoppingDialog) controlsDestination.append(assistanceControls);
-    else assistanceControlsHome.after(assistanceControls);
-    focused?.focus({ preventScroll: true });
-  }
-  const typedDialog = assistanceActive && liveSeats?.mode === "typed"
-    ? snapshot.route === "item" ? itemDialog : ["checkout", "confirmation"].includes(snapshot.route) ? checkoutDialog : null
-    : null;
-  const destination = typedDialog?.querySelector(".checkout-shell, .detail-copy") || assistantFormHome.parentNode;
-  if (agentTranscript && destination && agentTranscript.parentNode !== destination) {
-    if (typedDialog) destination.append(agentTranscript); else transcriptHome.after(agentTranscript);
-  }
-  if (assistantForm && destination && assistantForm.parentNode !== destination) {
-    const focused = assistantForm.contains(document.activeElement) ? document.activeElement : null;
-    if (typedDialog) destination.append(assistantForm); else assistantFormHome.after(assistantForm);
-    focused?.focus({ preventScroll: true });
-  }
   activeCategory = snapshot.category || "all";
   activeFilter = snapshot.filter_tags[0] || (snapshot.max_price_pkr !== null ? "budget" : "all");
   if (searchInput && searchInput !== document.activeElement) searchInput.value = snapshot.search_query || "";
@@ -824,6 +796,17 @@ function applyMenuState() {
     }
   });
 
+  menuCategoryGroups.forEach((group) => {
+    const groupCount = Array.from(group.querySelectorAll("[data-menu-item]")).filter(
+      (card) => !card.classList.contains("is-hidden"),
+    ).length;
+    group.hidden = groupCount === 0;
+    const count = group.querySelector("[data-category-count]");
+    if (count) {
+      count.textContent = `${groupCount} ${groupCount === 1 ? "ITEM" : "ITEMS"}`;
+    }
+  });
+
   if (visibleCount) {
     visibleCount.textContent = String(showing);
   }
@@ -1063,13 +1046,15 @@ detailAddButton?.addEventListener("click", async () => {
   }
 });
 
-detailArButton?.addEventListener("click", () => {
-  openArPreview(selectedDetailItem?.id);
-});
-
 arOpenButtons.forEach((button) => {
   button.addEventListener("click", () => {
     openArPreview();
+  });
+});
+
+document.querySelectorAll('a[href="#assistant"], a[href="#ar-preview"]').forEach((link) => {
+  link.addEventListener("click", () => {
+    if (demoDetails) demoDetails.open = true;
   });
 });
 
@@ -1497,7 +1482,10 @@ function paintPreview(button) {
 
 async function activatePreview(button) {
   const result = await submitAction("select_item", { item_id: button.dataset.previewItem });
-  if (result.status === "success") setStatus(`${button.dataset.previewName} selected in the 3D preview.`);
+  if (result.status === "success") {
+    paintPreview(button);
+    setStatus(`${button.dataset.previewName} selected from popular items.`);
+  }
 }
 
 previewButtons.forEach((button) => {

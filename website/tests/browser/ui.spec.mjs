@@ -39,28 +39,28 @@ test('dark mobile browsing preserves filters, selection, and checkout', async ({
   await expect(page.locator('[data-cart-count]')).toHaveText('1');
   await page.locator('[data-checkout-button]').click();
   await expect(page.locator('[data-confirm-order]')).toBeVisible();
+  await expect(page.locator('[data-checkout-dialog] .assistant-controls')).toHaveCount(0);
+  await expect(page.locator('[data-checkout-dialog] [data-assistant-form]')).toHaveCount(0);
   await expect(page.locator('.mobile-cart-link')).toBeHidden();
   await page.keyboard.press('Escape');
   await expect(page.locator('[data-checkout-dialog]')).not.toBeVisible();
 });
 
-test('preview works by keyboard and respects reduced motion without starting assistance', async ({ page }) => {
+test('popular item picks open focused details without exposing demo controls', async ({ page }) => {
   let starts = 0;
   page.on('request', request => { if (request.url().endsWith('/v2/assist/start')) starts++; });
   await page.emulateMedia({ reducedMotion: 'reduce' });
-  await page.locator('[data-hero-next]').focus();
-  await page.keyboard.press('Enter');
-  await expect(page.locator('[data-preview-title]')).toHaveText('Zinger Burger');
-  // Updating the summary must preserve every preview card and its photograph.
-  await expect(page.locator('.hero-food-rail button img')).toHaveCount(4);
-  await expect(page.locator('.hero-food-rail button').first()).toContainText('HOT CHICKEN WRAP');
-  await expect(page.locator('[data-hero-slide].is-active')).toHaveAttribute('aria-pressed', 'true');
-  // Selecting a dish retains the existing application behavior: open its details.
+  await page.locator('[data-preview-item="zinger-classic"]').click();
+  await expect(page.locator('[data-detail-name]')).toHaveText('Zinger Burger');
+  await expect(page.locator('.hero-food-rail button')).toHaveCount(4);
   await expect(page.locator('[data-item-dialog]')).toBeVisible();
+  await expect(page.locator('[data-item-dialog] .assistant-controls')).toHaveCount(0);
+  await expect(page.locator('[data-item-dialog] [data-assistant-form]')).toHaveCount(0);
   await page.keyboard.press('Escape');
-  await page.locator('[data-immersive-stage]').hover();
-  expect(await page.locator('.plate-scene').evaluate(el => getComputedStyle(el).transform)).toBe('none');
-  await expect(page.locator('html')).toHaveAttribute('data-assistance-state', 'awaiting_spoken_choice_consent');
+  await expect(page.locator('#assistant')).toBeHidden();
+  await page.locator('.main-nav a[href="#assistant"]').click();
+  await expect(page.locator('#project-details')).toHaveAttribute('open', '');
+  await expect(page.locator('#assistant')).toBeVisible();
   expect(starts).toBe(0);
 });
 
@@ -91,6 +91,7 @@ test('desktop navigation and checkout remain reachable while browsing a long men
 });
 
 test('lower-page copy reveals on scroll and motion preferences keep it readable', async ({ page }) => {
+  await page.locator('#project-details > summary').click();
   const heading = page.locator('#ar-title');
   await expect(heading).toHaveCSS('opacity', '0');
   await heading.scrollIntoViewIfNeeded();

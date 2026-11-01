@@ -4,13 +4,13 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{{ app_name }} | Good food. Your way.</title>
-    <meta name="description" content="Explore your local favourites, build your order, and choose voice or touch with FoodEase." />
+    <meta name="description" content="Explore local favourites, browse the menu, and build your FoodEase order." />
     <link rel="preload" href="/static/fonts/bebas-neue-latin.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/static/fonts/dm-sans-latin.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" as="image" href="/static/img/editorial/fast-v7/chicken-burger-hero-768.webp" imagesrcset="/static/img/editorial/fast-v7/chicken-burger-hero-480.webp 480w, /static/img/editorial/fast-v7/chicken-burger-hero-768.webp 768w, /static/img/editorial/fast-v7/chicken-burger-hero-1024.webp 1024w" imagesizes="(max-width: 700px) 100vw, (max-width: 900px) 68vw, 640px" fetchpriority="high" />
-    <link rel="stylesheet" href="/static/vendor/food-experience.css?v=delivery-7" />
-    <script type="module" src="/static/js/app.js?v=delivery-7"></script>
-    <script type="module" src="/static/js/experience.mjs?v=delivery-7"></script>
+    <link rel="stylesheet" href="/static/vendor/food-experience.css?v=delivery-11" />
+    <script type="module" src="/static/js/app.js?v=delivery-8"></script>
+    <script type="module" src="/static/js/experience.mjs?v=delivery-9"></script>
     <script type="module" src="/static/js/studio-loader.mjs?v=delivery-7"></script>
   </head>
   <body data-experience="immersive" data-orchestration-url="{{ orchestration_base_url }}">
@@ -39,11 +39,10 @@
         <div class="hero-copy">
           <p class="eyebrow">FOODEASE — THE FLAVOUR EDITION<br /><span>VOL. 01 / MADE FOR YOUR APPETITE</span></p>
           <h1 id="hero-title">FULL OF FLAVOUR</h1>
-          <p class="hero-description">Local favourites. Big cravings. A different way to order. Find your next great bite—by touch, type, or voice.</p>
+          <p class="hero-description">Local favourites. Big cravings. Find your next great bite, then build your order at your own pace.</p>
           <div class="hero-actions" aria-label="Ordering actions">
             <a class="button primary" href="#popular">Start ordering <span aria-hidden="true">↗</span></a>
-            <button class="button ar" type="button" data-open-ar>Explore the preview table</button>
-            <a class="button ghost" href="#assistant">Order with a little help</a>
+            <a class="button ghost" href="#categories">Browse by category</a>
           </div>
           <div class="hero-footnote"><span>CATALOG / {{ catalog_summary.item_count }} ITEMS</span><span>YOUR ORDER. YOUR CONTROL.</span></div>
         </div>
@@ -68,24 +67,20 @@
           </div>
         </div>
       </section>
-      <div class="flavour-marquee" aria-hidden="true"><div><span>BIG FLAVOUR</span><i>✳</i><span>ZERO FUSS</span><i>✳</i><span>YOUR KIND OF GOOD</span><i>✳</i><span>BIG FLAVOUR</span><i>✳</i><span>ZERO FUSS</span><i>✳</i><span>YOUR KIND OF GOOD</span><i>✳</i></div></div>
-      <section class="spotlight-gallery" aria-labelledby="rotation-title">
-        <div class="spotlight-intro"><div><p class="eyebrow">[01] / THE DAILY ROTATION</p><h2 id="rotation-title">YOUR NEXT<br /><em>GREAT BITE.</em></h2></div><p>Four good places to start. Explore a dish, take a closer look, and make it your order.</p></div>
+      <div class="flavour-marquee" aria-hidden="true">
+        <div class="flavour-marquee-track">
+          <div class="flavour-marquee-group"><span>BIG FLAVOUR</span><i>✳</i><span>ZERO FUSS</span><i>✳</i><span>GOOD FOOD, YOUR WAY</span><i>✳</i><span>MADE FRESH</span><i>✳</i><span>FIND YOUR FAVOURITE</span><i>✳</i><span>ORDER YOUR WAY</span><i>✳</i></div>
+          <div class="flavour-marquee-group"><span>BIG FLAVOUR</span><i>✳</i><span>ZERO FUSS</span><i>✳</i><span>GOOD FOOD, YOUR WAY</span><i>✳</i><span>MADE FRESH</span><i>✳</i><span>FIND YOUR FAVOURITE</span><i>✳</i><span>ORDER YOUR WAY</span><i>✳</i></div>
+        </div>
+      </div>
+      <section class="spotlight-gallery" aria-labelledby="featured-title">
+        <div class="spotlight-intro"><div><p class="eyebrow">[01] / POPULAR PICKS</p><h2 id="featured-title">OUR POPULAR <br /><em>ITEMS.</em></h2></div><p>Four favourites to get you started. Find a new go-to, explore the menu, and make it your order.</p></div>
         <div class="spotlight-selection">
-          <!-- Dedicated output hooks keep preview updates out of the card buttons. -->
-          <span hidden data-preview-style></span><span hidden data-preview-copy></span>
-          <div class="hero-showcase" data-immersive-stage data-preview-tone="wraps" aria-label="Selected featured dish">
-            <div class="plate-scene" aria-hidden="true"><span class="hero-food-photo item-wrap-hot-chicken" style="background-image:url('/static/img/catalog-v7/wrap-hot-chicken-160.webp')" data-preview-photo></span></div>
-            <div class="showcase-caption"><span>CURRENTLY IN FOCUS</span><strong data-preview-title>Hot Chicken Wrap</strong></div>
-            <p class="hero-note" data-preview-note>Your next favourite, wrapped up.</p>
-            <div class="hero-ticket"><strong data-preview-price-label>850 PKR</strong></div>
-            <div class="preview-navigation"><button class="hero-arrow hero-arrow-left" type="button" data-hero-prev aria-label="Previous dish preview">←</button><button class="hero-arrow hero-arrow-right" type="button" data-hero-next aria-label="Next dish preview">→</button></div>
-          </div>
-          <div class="hero-food-rail" aria-label="Dish preview carousel">
-<button class="is-active" type="button" data-hero-slide data-preview-item="wrap-hot-chicken" data-preview-name="Hot Chicken Wrap" data-preview-price="850 PKR" data-preview-tone="wraps" data-preview-style="Hot wrap" data-preview-copy="Grilled, golden, and filled with chicken. A wrap worth making room for." data-preview-note="Your next favourite, wrapped up."><span class="preview-card-index">01 / WRAPS<i aria-hidden="true">↗</i></span><span class="preview-image-stage"><span class="image-orbit" aria-hidden="true"></span><img src="/static/img/catalog-v7/wrap-hot-chicken-320.webp" srcset="/static/img/catalog-v7/wrap-hot-chicken-320.webp 320w, /static/img/catalog-v7/wrap-hot-chicken-480.webp 480w, /static/img/catalog-v7/wrap-hot-chicken-640.webp 640w" sizes="(max-width: 700px) 46vw, (max-width: 900px) 47vw, 23vw" alt="" width="900" height="700" loading="lazy" decoding="async" /></span><span class="preview-card-caption"><strong>HOT CHICKEN WRAP</strong><span><small>PREVIEW DISH</small><b>850 PKR</b></span></span></button>
-<button type="button" data-hero-slide data-preview-item="zinger-classic" data-preview-name="Zinger Burger" data-preview-price="650 PKR" data-preview-tone="burgers" data-preview-style="Zinger" data-preview-copy="A little spice. A lot of crunch. Meet the classic chicken zinger." data-preview-note="Big crunch energy."><span class="preview-card-index">02 / BURGERS<i aria-hidden="true">↗</i></span><span class="preview-image-stage"><span class="image-orbit" aria-hidden="true"></span><img src="/static/img/catalog-v7/zinger-classic-320.webp" srcset="/static/img/catalog-v7/zinger-classic-320.webp 320w, /static/img/catalog-v7/zinger-classic-480.webp 480w, /static/img/catalog-v7/zinger-classic-640.webp 640w" sizes="(max-width: 700px) 46vw, (max-width: 900px) 47vw, 23vw" alt="" width="900" height="700" loading="lazy" decoding="async" /></span><span class="preview-card-caption"><strong>ZINGER BURGER</strong><span><small>PREVIEW DISH</small><b>650 PKR</b></span></span></button>
-<button type="button" data-hero-slide data-preview-item="biryani-chicken" data-preview-name="Chicken Biryani" data-preview-price="550 PKR" data-preview-tone="biryani" data-preview-style="Biryani" data-preview-copy="Fragrant basmati rice and chicken, layered with the flavours you love." data-preview-note="Comfort, by the spoonful."><span class="preview-card-index">03 / BIRYANI<i aria-hidden="true">↗</i></span><span class="preview-image-stage"><span class="image-orbit" aria-hidden="true"></span><img src="/static/img/catalog-v7/biryani-chicken-320.webp" srcset="/static/img/catalog-v7/biryani-chicken-320.webp 320w, /static/img/catalog-v7/biryani-chicken-480.webp 480w, /static/img/catalog-v7/biryani-chicken-640.webp 640w" sizes="(max-width: 700px) 46vw, (max-width: 900px) 47vw, 23vw" alt="" width="900" height="700" loading="lazy" decoding="async" /></span><span class="preview-card-caption"><strong>CHICKEN BIRYANI</strong><span><small>PREVIEW DISH</small><b>550 PKR</b></span></span></button>
-<button type="button" data-hero-slide data-preview-item="dessert-gulab" data-preview-name="Gulab Jamun" data-preview-price="250 PKR" data-preview-tone="desserts" data-preview-style="Sweet" data-preview-copy="Soft, syrup-soaked gulab jamun. There is always room for something sweet." data-preview-note="Save the sweetest bite for last."><span class="preview-card-index">04 / DESSERTS<i aria-hidden="true">↗</i></span><span class="preview-image-stage"><span class="image-orbit" aria-hidden="true"></span><img src="/static/img/catalog-v7/dessert-gulab-320.webp" srcset="/static/img/catalog-v7/dessert-gulab-320.webp 320w, /static/img/catalog-v7/dessert-gulab-480.webp 480w, /static/img/catalog-v7/dessert-gulab-640.webp 640w" sizes="(max-width: 700px) 46vw, (max-width: 900px) 47vw, 23vw" alt="" width="900" height="700" loading="lazy" decoding="async" /></span><span class="preview-card-caption"><strong>GULAB JAMUN</strong><span><small>PREVIEW DISH</small><b>250 PKR</b></span></span></button>
+          <div class="hero-food-rail" aria-label="Our popular items">
+<button class="is-active" type="button" data-hero-slide data-preview-item="wrap-hot-chicken" data-preview-name="Hot Chicken Wrap" data-preview-price="850 PKR" data-preview-tone="wraps" data-preview-style="Hot wrap" data-preview-copy="Grilled, golden, and filled with chicken. A wrap worth making room for." data-preview-note="Your next favourite, wrapped up."><span class="preview-card-index">01 / WRAPS<i aria-hidden="true">↗</i></span><span class="preview-image-stage"><span class="image-orbit" aria-hidden="true"></span><img src="/static/img/catalog-v7/wrap-hot-chicken-320.webp" srcset="/static/img/catalog-v7/wrap-hot-chicken-320.webp 320w, /static/img/catalog-v7/wrap-hot-chicken-480.webp 480w, /static/img/catalog-v7/wrap-hot-chicken-640.webp 640w" sizes="(max-width: 700px) 46vw, (max-width: 900px) 47vw, 23vw" alt="" width="900" height="700" loading="lazy" decoding="async" /></span><span class="preview-card-caption"><strong>HOT CHICKEN WRAP</strong><span><small>POPULAR PICK</small><b>850 PKR</b></span></span></button>
+<button type="button" data-hero-slide data-preview-item="zinger-classic" data-preview-name="Zinger Burger" data-preview-price="650 PKR" data-preview-tone="burgers" data-preview-style="Zinger" data-preview-copy="A little spice. A lot of crunch. Meet the classic chicken zinger." data-preview-note="Big crunch energy."><span class="preview-card-index">02 / BURGERS<i aria-hidden="true">↗</i></span><span class="preview-image-stage"><span class="image-orbit" aria-hidden="true"></span><img src="/static/img/catalog-v7/zinger-classic-320.webp" srcset="/static/img/catalog-v7/zinger-classic-320.webp 320w, /static/img/catalog-v7/zinger-classic-480.webp 480w, /static/img/catalog-v7/zinger-classic-640.webp 640w" sizes="(max-width: 700px) 46vw, (max-width: 900px) 47vw, 23vw" alt="" width="900" height="700" loading="lazy" decoding="async" /></span><span class="preview-card-caption"><strong>ZINGER BURGER</strong><span><small>POPULAR PICK</small><b>650 PKR</b></span></span></button>
+<button type="button" data-hero-slide data-preview-item="biryani-chicken" data-preview-name="Chicken Biryani" data-preview-price="550 PKR" data-preview-tone="biryani" data-preview-style="Biryani" data-preview-copy="Fragrant basmati rice and chicken, layered with the flavours you love." data-preview-note="Comfort, by the spoonful."><span class="preview-card-index">03 / BIRYANI<i aria-hidden="true">↗</i></span><span class="preview-image-stage"><span class="image-orbit" aria-hidden="true"></span><img src="/static/img/catalog-v7/biryani-chicken-320.webp" srcset="/static/img/catalog-v7/biryani-chicken-320.webp 320w, /static/img/catalog-v7/biryani-chicken-480.webp 480w, /static/img/catalog-v7/biryani-chicken-640.webp 640w" sizes="(max-width: 700px) 46vw, (max-width: 900px) 47vw, 23vw" alt="" width="900" height="700" loading="lazy" decoding="async" /></span><span class="preview-card-caption"><strong>CHICKEN BIRYANI</strong><span><small>POPULAR PICK</small><b>550 PKR</b></span></span></button>
+<button type="button" data-hero-slide data-preview-item="dessert-gulab" data-preview-name="Gulab Jamun" data-preview-price="250 PKR" data-preview-tone="desserts" data-preview-style="Sweet" data-preview-copy="Soft, syrup-soaked gulab jamun. There is always room for something sweet." data-preview-note="Save the sweetest bite for last."><span class="preview-card-index">04 / DESSERTS<i aria-hidden="true">↗</i></span><span class="preview-image-stage"><span class="image-orbit" aria-hidden="true"></span><img src="/static/img/catalog-v7/dessert-gulab-320.webp" srcset="/static/img/catalog-v7/dessert-gulab-320.webp 320w, /static/img/catalog-v7/dessert-gulab-480.webp 480w, /static/img/catalog-v7/dessert-gulab-640.webp 640w" sizes="(max-width: 700px) 46vw, (max-width: 900px) 47vw, 23vw" alt="" width="900" height="700" loading="lazy" decoding="async" /></span><span class="preview-card-caption"><strong>GULAB JAMUN</strong><span><small>POPULAR PICK</small><b>250 PKR</b></span></span></button>
           </div>
         </div>
       </section>
@@ -93,7 +88,7 @@
       <section class="feature-band" aria-label="Ways to enjoy FoodEase">
         <article><span aria-hidden="true">01 /</span><div><h2>Find your flavour</h2><p>Local favourites. Something for every craving.</p></div></article>
         <article><span aria-hidden="true">02 /</span><div><h2>Make it your order</h2><p>A clear cart, from first pick to final total.</p></div></article>
-        <article><span aria-hidden="true">03 /</span><div><h2>Go at your own pace</h2><p>Touch, type, or talk. You’re in control.</p></div></article>
+        <article><span aria-hidden="true">03 /</span><div><h2>Go at your own pace</h2><p>Browse, filter, and adjust your order whenever you like.</p></div></article>
       </section>
 
       <section id="categories" class="section-block" aria-labelledby="categories-title">
@@ -148,8 +143,17 @@
             <button type="button" data-clear-menu-state>Show all dishes</button>
           </div>
 
-          <div class="menu-grid">
-            {% for item in menu_items %}
+          {% for category in category_cards %}
+          {% set category_items = menu_items|selectattr("category_id", "equalto", category.id)|list %}
+          {% if category_items %}
+          <section class="menu-category-group" data-menu-category-group="{{ category.id }}" aria-labelledby="menu-category-{{ category.id }}">
+            <div class="menu-category-heading">
+              <span class="eyebrow">[{{ "%02d"|format(loop.index) }}] / MENU CATEGORY</span>
+              <h3 id="menu-category-{{ category.id }}">{{ category.label }}</h3>
+              <span class="menu-category-count" data-category-count>{{ category.count }} ITEMS</span>
+            </div>
+            <div class="menu-grid">
+            {% for item in category_items %}
             <article
               class="menu-card {% if not item.available %}is-unavailable{% endif %}"
               data-menu-item
@@ -193,8 +197,8 @@
                 <div class="card-action-row">
                   <strong>{{ item.price|int }} PKR</strong>
                   <span>
-                    <button type="button" data-detail-item>Details</button>
-                    <button type="button" data-add-item {% if not item.available %}disabled{% endif %}>
+                    <button type="button" data-detail-item aria-label="View details for {{ item.name }}">Details</button>
+                    <button type="button" data-add-item aria-label="{{ 'Add ' ~ item.name ~ ' to your order' if item.available else item.name ~ ' is sold out' }}" {% if not item.available %}disabled{% endif %}>
                       {{ "Sold out" if not item.available else "Add" }}
                     </button>
                   </span>
@@ -202,7 +206,10 @@
               </div>
             </article>
             {% endfor %}
-          </div>
+            </div>
+          </section>
+          {% endif %}
+          {% endfor %}
         </div>
 
         <aside id="cart-preview" class="cart-preview" aria-labelledby="cart-title">
@@ -231,9 +238,24 @@
         </aside>
       </section>
 
+      <section class="access-deck" aria-labelledby="access-title">
+        <div>
+          <p class="eyebrow">[03] / COMFORT CONTROLS</p>
+          <h2 id="access-title">Your comfort comes first.</h2>
+          <p data-context-summary aria-live="polite">Showing all dishes. Cart is empty.</p>
+        </div>
+        <div class="access-actions" aria-label="Display preference controls">
+          <button type="button" data-access-toggle="large">Larger text</button>
+          <button type="button" data-access-toggle="contrast">High contrast</button>
+          <button type="button" data-access-toggle="motion">Calm motion</button>
+        </div>
+      </section>
+
+      <details class="project-details demo-details" id="project-details">
+        <summary><span>Explore extra features</span><span>Optional previews and project notes <b aria-hidden="true">+</b></span></summary>
       <section id="ar-preview" class="ar-runway" aria-labelledby="ar-title">
         <div class="ar-copy">
-          <p class="eyebrow">[03] / TAKE A CLOSER LOOK</p>
+          <p class="eyebrow">[04] / TAKE A CLOSER LOOK</p>
           <h2 id="ar-title">A DIFFERENT<br /><em>PERSPECTIVE.</em></h2>
           <p>
             Explore your selected dish in our interactive tabletop preview. Rotate the photograph for another perspective, then come back to your order. No camera needed.
@@ -251,20 +273,6 @@
           <span class="ar-pin">AR</span>
         </div>
       </section>
-
-      <section class="access-deck" aria-labelledby="access-title">
-        <div>
-          <p class="eyebrow">[04] / COMFORT CONTROLS</p>
-          <h2 id="access-title">Your comfort comes first.</h2>
-          <p data-context-summary aria-live="polite">Showing all dishes. Cart is empty.</p>
-        </div>
-        <div class="access-actions" aria-label="Display preference controls">
-          <button type="button" data-access-toggle="large">Larger text</button>
-          <button type="button" data-access-toggle="contrast">High contrast</button>
-          <button type="button" data-access-toggle="motion">Calm motion</button>
-        </div>
-      </section>
-
 
       <section id="assistant" class="assistant-section" aria-labelledby="assistant-title">
         <div class="assistant-copy"><div class="voice-sculpture" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><span>YOUR ORDER.<br />YOUR WAY.</span></div>
@@ -310,7 +318,6 @@
         </div>
       </section>
 
-      <details class="project-details" id="project-details"><summary><span>Behind the experience</span><span>HCI project · interaction &amp; test evidence <b aria-hidden="true">+</b></span></summary>
       <section class="contract-cockpit" aria-labelledby="contract-title">
         <div class="contract-copy">
           <p class="eyebrow">Agent readiness</p>
@@ -437,7 +444,6 @@
             </label>
             <div class="detail-actions">
               <button class="button primary" type="button" data-detail-add>Add selected quantity</button>
-              <button class="button ar" type="button" data-detail-ar>View on table</button>
               <button class="button ghost" type="button" data-detail-close-secondary>Keep browsing</button>
             </div>
           </div>

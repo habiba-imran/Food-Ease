@@ -27,21 +27,48 @@ campaignPause?.addEventListener('click', () => {
   campaignPause.textContent = paused ? '▷' : 'Ⅱ';
 });
 let heroFrame = 0;
+let burgerTouch = null;
 editorialHero?.addEventListener('pointermove', event => {
-  if (calm() || !finePointer.matches || foodStudio?.dataset.sceneMode !== 'campaign') return;
+  if (calm() || !finePointer.matches || foodStudio?.dataset.sceneMode !== 'campaign' || burgerTouch) return;
   cancelAnimationFrame(heroFrame);
   heroFrame = requestAnimationFrame(() => {
-    const r = editorialHero.getBoundingClientRect();
-    const x = (event.clientX - r.left) / r.width - .5;
-    const y = (event.clientY - r.top) / r.height - .5;
+    const stage = foodStudio.getBoundingClientRect();
+    const x = Math.max(-.5, Math.min(.5, (event.clientX - stage.left) / stage.width - .5));
+    const y = Math.max(-.5, Math.min(.5, (event.clientY - stage.top) / stage.height - .5));
     editorialHero.style.setProperty('--scene-x', `${x * 30}px`);
     editorialHero.style.setProperty('--scene-y', `${y * 22}px`);
-    editorialHero.style.setProperty('--scene-yaw', `${x * 9}deg`);
+    editorialHero.style.setProperty('--scene-yaw', `${x * 36}deg`);
+    editorialHero.style.setProperty('--scene-pitch', `${-y * 24}deg`);
   });
 });
-editorialHero?.addEventListener('pointerleave', () => {
+foodStudio?.addEventListener('pointerdown', event => {
+  if (event.pointerType !== 'touch' || calm() || foodStudio.dataset.sceneMode !== 'campaign' ||
+      event.target.closest('a, button, input, [role="button"]')) return;
+  burgerTouch = {
+    id: event.pointerId,
+    x: event.clientX,
+    y: event.clientY,
+    yaw: Number.parseFloat(editorialHero.style.getPropertyValue('--scene-yaw')) || 0,
+    pitch: Number.parseFloat(editorialHero.style.getPropertyValue('--scene-pitch')) || 0,
+  };
+  try { foodStudio.setPointerCapture(event.pointerId); } catch {}
+});
+foodStudio?.addEventListener('pointermove', event => {
+  if (!burgerTouch || event.pointerId !== burgerTouch.id) return;
+  editorialHero.style.setProperty('--scene-yaw', `${burgerTouch.yaw + (event.clientX - burgerTouch.x) * .72}deg`);
+  const pitch = Math.max(-18, Math.min(18, burgerTouch.pitch - (event.clientY - burgerTouch.y) * .36));
+  editorialHero.style.setProperty('--scene-pitch', `${pitch}deg`);
+});
+const releaseBurgerTouch = event => {
+  if (burgerTouch && (!event || event.pointerId === burgerTouch.id)) burgerTouch = null;
+};
+foodStudio?.addEventListener('pointerup', releaseBurgerTouch);
+foodStudio?.addEventListener('pointercancel', releaseBurgerTouch);
+foodStudio?.addEventListener('lostpointercapture', releaseBurgerTouch);
+editorialHero?.addEventListener('pointerleave', event => {
+  if (event.pointerType === 'touch' && burgerTouch) return;
   cancelAnimationFrame(heroFrame);
-  ['--scene-x', '--scene-y', '--scene-yaw'].forEach(key => editorialHero.style.removeProperty(key));
+  ['--scene-x', '--scene-y', '--scene-yaw', '--scene-pitch'].forEach(key => editorialHero.style.removeProperty(key));
 });
 let headerFrame = 0;
 function refreshHeaderSurface() {

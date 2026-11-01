@@ -50,10 +50,11 @@
 .studio-explode:hover span { transform: rotate(45deg); }
 .food-studio[data-exploded=true] .ingredient-label-one { background: #fffef1; }
 .flavour-marquee { overflow: hidden; margin-top: 34px; border-block: 1px solid var(--ink); padding: 15px 0; }
-.flavour-marquee > div { display: flex; align-items: center; gap: 30px; width: max-content; animation: marquee-travel 35s linear infinite; }
+.flavour-marquee-track { display: flex; align-items: center; width: max-content; animation: marquee-travel 70s linear infinite; }
+.flavour-marquee-group { display: flex; flex: 0 0 auto; align-items: center; gap: 30px; padding-right: 30px; }
 .flavour-marquee span { font-size: .83rem; font-weight: 750; letter-spacing: 1px; }
 .flavour-marquee i { font-style: normal; font-size: 1.5rem; color: var(--red); }
-.flavour-marquee:hover > div { animation-play-state: paused; }
+.flavour-marquee:hover .flavour-marquee-track { animation-play-state: paused; }
 :root body[data-experience] .spotlight-gallery { display: grid; grid-template-columns: .65fr 1.35fr; gap: 40px; align-items: center; margin-top: 44px; }
 .spotlight-intro h2 { font-size: clamp(2rem, 3.2vw, 3.3rem); font-weight: 450; letter-spacing: -1.3px; line-height: 1.05; margin: 12px 0 18px; }
 .spotlight-intro h2 em { color: var(--red); font-weight: 400; }
@@ -270,10 +271,10 @@
   :root body[data-experience] .hero h1 { font-size: 2.9rem; }.voice-sculpture { gap: 7px; }.voice-sculpture > span { font-size: 1.1rem; }
 }
 /* Preferences apply to decorative motion, including the marquee and tabletop. */
-:root[data-calm-motion=true] .food-studio .ingredient-label, :root[data-calm-motion=true] .flavour-marquee > div, :root[data-calm-motion=true] body[data-experience] .ar-stage-card img { animation: none; }
-:root[data-visual-motion-paused=true] .ingredient-label, :root[data-visual-motion-paused=true] .flavour-marquee > div, :root[data-visual-motion-paused=true] body[data-experience] .ar-stage-card img { animation-play-state: paused; }
+:root[data-calm-motion=true] .food-studio .ingredient-label, :root[data-calm-motion=true] .flavour-marquee-track, :root[data-calm-motion=true] body[data-experience] .ar-stage-card img { animation: none; }
+:root[data-visual-motion-paused=true] .ingredient-label, :root[data-visual-motion-paused=true] .flavour-marquee-track, :root[data-visual-motion-paused=true] body[data-experience] .ar-stage-card img { animation-play-state: paused; }
 @media (prefers-reduced-motion: reduce) {
-  .ingredient-label, .flavour-marquee > div, :root body[data-experience] .ar-stage-card img { animation: none; }
+  .ingredient-label, .flavour-marquee-track, :root body[data-experience] .ar-stage-card img { animation: none; }
   :root body[data-experience] .category-card:hover, :root body[data-experience] .category-card:hover .category-photo, :root body[data-experience] .menu-card { transform: none; }
 }
 @media (hover: none) { :root body[data-experience] .menu-card, :root body[data-experience] .category-card:hover { transform: none; } }

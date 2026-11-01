@@ -16,6 +16,7 @@ test.afterEach(async ({ page }, info) => {
   }
 });
 async function start(page) {
+  await page.locator("#project-details > summary").click();
   await page.evaluate(() => {
     window.typedMicrophoneCalls = 0;
     navigator.mediaDevices.getUserMedia = async () => { window.typedMicrophoneCalls++; throw new Error("Typed mode must not request a microphone."); };
@@ -39,7 +40,8 @@ test("actual browser + website + worker: typed order, exact summary and demo rec
   await expect(page.locator("[data-checkout-dialog]")).toBeVisible();
   await expect(page.locator("[data-checkout-total]")).toHaveText("1750 PKR");
   await expect(page.locator("[data-agent-transcript]")).toContainText("Shall I place this demo order?");
-  await say(page, "yes");
+  // The checkout dialog owns confirmation now; typed controls stay outside it.
+  await page.locator("[data-confirm-order]").click();
   await expect(page.locator("[data-receipt-panel]")).toBeVisible();
   await expect(page.locator("[data-receipt-id]")).toHaveText(/^DEMO-/);
   await expect(page.locator("[data-cart-count]")).toHaveText("0");
@@ -60,7 +62,7 @@ test("manual filtering exactly matches authoritative IDs; search clear and avail
     headers: { "X-FoodEase-Session": sessionStorage.getItem("foodease.shopping-session.v2") },
   })).json());
   const visible = await page.locator("[data-menu-item]:not(.is-hidden)").evaluateAll((cards) => cards.map((c) => c.dataset.id));
-  expect(visible).toEqual(authoritative.visible_items.map((i) => i.item_id));
+  expect([...visible].sort()).toEqual(authoritative.visible_items.map((i) => i.item_id).sort());
   await page.locator("[data-filter=available]").click();
   await expect(page.locator("[data-filter=available]")).toHaveAttribute("aria-pressed", "true");
   await expect(page.locator("[data-menu-item][data-available=false]:not(.is-hidden)")).toHaveCount(0);
@@ -134,6 +136,7 @@ test("typed assistance does not attach remote audio", async ({ page }) => {
   await expect(page.locator("audio[data-foodease-audio]")).toHaveCount(0);
 });
 test("voice audio attaches once and end stops fake media immediately; native captions are ignored", async ({ page }) => {
+  await page.locator("#project-details > summary").click();
   await page.evaluate(() => {
     window.fakeStops = 0;
     Object.defineProperty(navigator.mediaDevices, "getUserMedia", { value: async () => ({
@@ -208,6 +211,7 @@ test("unknown action survives reload, blocks resubmit and reconciles a delayed o
   const response = await page.request.post("/api/v2/app/action", { data: original,
     headers: { "X-FoodEase-Session": original.session_id } });
   expect(response.ok()).toBe(true); // release the delayed *original* request once
+  await page.locator("#project-details > summary").click();
   await page.locator("[data-reconcile-action]").click();
   await expect(page.locator("[data-cart-count]")).toHaveText("1");
   await expect(page.locator("[data-order-status]")).toContainText("outcomes have been checked");

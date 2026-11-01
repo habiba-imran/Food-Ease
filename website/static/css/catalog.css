@@ -51,6 +51,13 @@
 :root body[data-experience] .filter-bar { gap:7px; }
 :root body[data-experience] .filter-bar button { padding:11px 13px; min-height:44px; }
 :root body[data-experience] .menu-count { margin:20px 0; font:.62rem var(--font-mono); color:var(--muted); text-transform:uppercase; }
+:root body[data-experience] .menu-category-group { margin-top:44px; }
+:root body[data-experience] .menu-category-group[hidden] { display:none !important; }
+:root body[data-experience] .menu-category-heading { display:grid; grid-template-columns:auto 1fr auto; align-items:baseline; gap:18px; margin-bottom:18px; padding-bottom:12px; border-bottom:1px solid var(--line); }
+:root body[data-experience] .menu-category-heading .eyebrow { margin:0; white-space:nowrap; }
+:root body[data-experience] .menu-category-heading h3 { margin:0; color:var(--ink); font:400 clamp(2rem,3.6vw,3.5rem)/.9 var(--font-condensed); letter-spacing:.01em; text-transform:uppercase; }
+:root body[data-experience] .menu-category-count { color:var(--muted); font:.55rem var(--font-mono); white-space:nowrap; }
+:root body[data-experience] .menu-category-group .menu-grid { margin-top:0; }
 :root body[data-experience] .menu-grid { grid-template-columns:repeat(3,minmax(0,1fr)); gap:22px 18px; }
 :root body[data-experience] .menu-card { border:1px solid var(--line); border-radius:3px; background:var(--surface); overflow:hidden; box-shadow:none; }
 :root body[data-experience] .menu-card:hover { transform:translateY(-4px); box-shadow:0 12px 24px #0002; }
@@ -119,6 +126,10 @@
 }
 @media (max-width:700px) {
  :root body[data-experience] .spotlight-gallery { margin-top:48px; }
+ :root body[data-experience] .menu-category-heading { grid-template-columns:1fr auto; gap:7px 14px; }
+ :root body[data-experience] .menu-category-heading .eyebrow { grid-column:1 / -1; }
+ :root body[data-experience] .menu-category-heading h3 { font-size:2.4rem; }
+ :root body[data-experience] .menu-category-group { margin-top:34px; }
  :root body[data-experience] .spotlight-intro { display:block; margin-bottom:24px; }
  :root body[data-experience] .spotlight-intro h2 { font-size:4.2rem; }
  :root body[data-experience] .spotlight-intro>p { max-width:320px; margin-top:20px; font-size:.8rem; }
@@ -160,6 +171,83 @@
 :root[data-calm-motion=true] body[data-experience] .spotlight-selection .hero-food-rail img,:root[data-calm-motion=true] body[data-experience] .menu-card,:root[data-calm-motion=true] body[data-experience] .food-photo { transition:none; transform:none; }
 @media (prefers-reduced-motion:reduce) {
  :root body[data-experience] .spotlight-selection .hero-food-rail button:hover img,:root body[data-experience] .menu-card:hover,:root body[data-experience] .menu-card:hover .food-photo { transform:none; transition:none; }
+}
+/* Keep the product motion contained to the menu cards. */
+:root body[data-experience] .menu-category-group .menu-card {
+  transform:perspective(1000px) rotateX(var(--card-rx,0deg)) rotateY(var(--card-ry,0deg));
+  transform-style:preserve-3d;
+  transition:transform .36s cubic-bezier(.2,.75,.25,1),box-shadow .36s,border-color .24s;
+}
+:root body[data-experience] .menu-category-group .menu-card:focus-within {
+  transform:perspective(1000px) translateY(-6px) rotateX(var(--card-rx,0deg)) rotateY(var(--card-ry,0deg));
+  box-shadow:0 20px 36px #17210f30;
+  border-color:var(--gold);
+}
+@media (hover:hover) {
+  :root body[data-experience] .menu-category-group .menu-card:hover {
+    transform:perspective(1000px) translateY(-6px) rotateX(var(--card-rx,0deg)) rotateY(var(--card-ry,0deg));
+    box-shadow:0 20px 36px #17210f30;
+    border-color:var(--gold);
+  }
+}
+:root body[data-experience] .menu-category-group .menu-art .food-photo {
+  transform:translateY(0) scale(.94) rotate(-2deg);
+  transition:transform .55s cubic-bezier(.2,.75,.25,1),filter .4s ease;
+}
+:root body[data-experience] .menu-category-group .menu-card:focus-within .food-photo {
+  transform:translate3d(0,-7px,18px) scale(1.06) rotate(1deg);
+  filter:drop-shadow(0 20px 11px #1c251b45);
+}
+@media (hover:hover) {
+  :root body[data-experience] .menu-category-group .menu-card:hover .food-photo {
+    transform:translate3d(0,-7px,18px) scale(1.06) rotate(1deg);
+    filter:drop-shadow(0 20px 11px #1c251b45);
+  }
+}
+:root body[data-experience] .menu-category-group .menu-art .image-orbit {
+  opacity:.55;
+  transition:transform .65s cubic-bezier(.2,.75,.25,1),opacity .35s ease;
+}
+:root body[data-experience] .menu-category-group .menu-card:focus-within .image-orbit {
+  opacity:.9;
+  transform:rotate(-7deg) scale(1.08);
+}
+@media (hover:hover) {
+  :root body[data-experience] .menu-category-group .menu-card:hover .image-orbit {
+    opacity:.9;
+    transform:rotate(-7deg) scale(1.08);
+  }
+}
+:root body[data-experience] .menu-category-group .card-action-row [data-add-item]::after {
+  content:'↗';
+  display:inline-block;
+  margin-left:.55em;
+  transition:transform .24s ease;
+}
+:root body[data-experience] .menu-category-group .menu-card:focus-within [data-add-item]::after {
+  transform:translate(2px,-2px);
+}
+@media (hover:hover) {
+  :root body[data-experience] .menu-category-group .menu-card:hover [data-add-item]::after {
+    transform:translate(2px,-2px);
+  }
+}
+:root[data-calm-motion=true] body[data-experience] .menu-category-group .menu-card,
+:root[data-calm-motion=true] body[data-experience] .menu-category-group .menu-card:hover,
+:root[data-calm-motion=true] body[data-experience] .menu-category-group .menu-card:focus-within {
+  transform:none;
+  transition:none;
+}
+:root[data-calm-motion=true] body[data-experience] .menu-category-group .food-photo,
+:root[data-calm-motion=true] body[data-experience] .menu-category-group .image-orbit,
+:root[data-calm-motion=true] body[data-experience] .menu-category-group [data-add-item]::after { transition:none; }
+@media (prefers-reduced-motion:reduce) {
+  :root body[data-experience] .menu-category-group .menu-card,
+  :root body[data-experience] .menu-category-group .menu-card:hover,
+  :root body[data-experience] .menu-category-group .menu-card:focus-within { transform:none; transition:none; }
+  :root body[data-experience] .menu-category-group .food-photo,
+  :root body[data-experience] .menu-category-group .image-orbit,
+  :root body[data-experience] .menu-category-group [data-add-item]::after { transition:none; }
 }
 :root[data-high-contrast=true] body[data-experience] .menu-card,:root[data-high-contrast=true] body[data-experience] .spotlight-selection .hero-food-rail button { border-color:#000; }
 /* Remove inherited plate/sprite decoration from the new photography stages. */
