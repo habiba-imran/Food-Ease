@@ -1,0 +1,1324 @@
+{
+  "kind": "offline_browser_fixture",
+  "errors": [],
+  "checks": [
+    {
+      "label": "light-welcome",
+      "pairs": [
+        {
+          "text": "Welcome to FoodEase",
+          "ratio": 16.9,
+          "minimum": 3,
+          "pass": true
+        },
+        {
+          "text": "Welcome! Would you like to order manually or use our voice assistant?",
+          "ratio": 16.9,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Your microphone stays off until you start voice assistance. You can switch modes at any time.",
+          "ratio": 5.52,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Order manually",
+          "ratio": 5.88,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Start Voice Assistant",
+          "ratio": 16.9,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Use typing instead",
+          "ratio": 16.9,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Listening…. Microphone on.",
+          "ratio": 5.52,
+          "minimum": 4.5,
+          "pass": true
+        }
+      ],
+      "overflow": false,
+      "semantics": "- region \"Welcome to FoodEase\":\n  - heading \"Welcome to FoodEase\" [level=2]\n  - paragraph: Welcome! Would you like to order manually or use our voice assistant?\n  - paragraph: Your microphone stays off until you start voice assistance. You can switch modes at any time.\n  - button \"Order manually\"\n  - button \"Start Voice Assistant\"\n  - button \"Use typing instead\"\n  - paragraph: Listening…. Microphone on."
+    },
+    {
+      "label": "light-320-controls",
+      "pairs": [
+        {
+          "text": "Close",
+          "ratio": 14.47,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Voice assistant",
+          "ratio": 16.9,
+          "minimum": 3,
+          "pass": true
+        },
+        {
+          "text": "Speak to browse and order, or type below. End stops your microphone and playback.",
+          "ratio": 16.9,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Listening…",
+          "ratio": 5.52,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Microphone on",
+          "ratio": 7.46,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Voice assistant ready. Microphone on.",
+          "ratio": 11.59,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Pause listening",
+          "ratio": 16.9,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Use typing instead",
+          "ratio": 16.9,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Order manually",
+          "ratio": 16.9,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "End voice session",
+          "ratio": 16.9,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Conversation and typed requests",
+          "ratio": 5.52,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Choose an ordering mode. Spoken welcome enables listening for your voice/manual answer. Manual shopping is available imm",
+          "ratio": 16.9,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "I’m here to help. What would you like to eat?",
+          "ratio": 16.9,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Type a request",
+          "ratio": 14.47,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Send",
+          "ratio": 16.9,
+          "minimum": 4.5,
+          "pass": true
+        }
+      ],
+      "overflow": false,
+      "semantics": "- dialog \"Voice assistant\":\n  - button \"Close voice controls\": Close\n  - heading \"Voice assistant\" [level=2]\n  - paragraph: Speak to browse and order, or type below. End stops your microphone and playback.\n  - paragraph: Listening…\n  - paragraph: Microphone on\n  - status: Voice assistant ready. Microphone on.\n  - button \"Pause listening\"\n  - button \"Use typing instead\"\n  - button \"Order manually\"\n  - button \"End voice session\"\n  - paragraph: Conversation and typed requests\n  - paragraph: Choose an ordering mode. Spoken welcome enables listening for your voice/manual answer. Manual shopping is available immediately.\n  - paragraph: I’m here to help. What would you like to eat?\n  - text: Type a request\n  - textbox \"Type a request\":\n    - /placeholder: \"Try: show burgers\"\n  - button \"Send\""
+    },
+    {
+      "label": "light-375-controls",
+      "pairs": [
+        {
+          "text": "Close",
+          "ratio": 14.47,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Voice assistant",
+          "ratio": 16.9,
+          "minimum": 3,
+          "pass": true
+        },
+        {
+          "text": "Speak to browse and order, or type below. End stops your microphone and playback.",
+          "ratio": 16.9,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Listening…",
+          "ratio": 5.52,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Microphone on",
+          "ratio": 7.46,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Voice assistant ready. Microphone on.",
+          "ratio": 11.59,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Pause listening",
+          "ratio": 16.9,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Use typing instead",
+          "ratio": 16.9,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Order manually",
+          "ratio": 16.9,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "End voice session",
+          "ratio": 16.9,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Conversation and typed requests",
+          "ratio": 5.52,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Choose an ordering mode. Spoken welcome enables listening for your voice/manual answer. Manual shopping is available imm",
+          "ratio": 16.9,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "I’m here to help. What would you like to eat?",
+          "ratio": 16.9,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Type a request",
+          "ratio": 14.47,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Send",
+          "ratio": 16.9,
+          "minimum": 4.5,
+          "pass": true
+        }
+      ],
+      "overflow": false,
+      "semantics": "- dialog \"Voice assistant\":\n  - button \"Close voice controls\": Close\n  - heading \"Voice assistant\" [level=2]\n  - paragraph: Speak to browse and order, or type below. End stops your microphone and playback.\n  - paragraph: Listening…\n  - paragraph: Microphone on\n  - status: Voice assistant ready. Microphone on.\n  - button \"Pause listening\"\n  - button \"Use typing instead\"\n  - button \"Order manually\"\n  - button \"End voice session\"\n  - paragraph: Conversation and typed requests\n  - paragraph: Choose an ordering mode. Spoken welcome enables listening for your voice/manual answer. Manual shopping is available immediately.\n  - paragraph: I’m here to help. What would you like to eat?\n  - text: Type a request\n  - textbox \"Type a request\":\n    - /placeholder: \"Try: show burgers\"\n  - button \"Send\""
+    },
+    {
+      "label": "light-768-controls",
+      "pairs": [
+        {
+          "text": "Close",
+          "ratio": 14.47,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Voice assistant",
+          "ratio": 16.9,
+          "minimum": 3,
+          "pass": true
+        },
+        {
+          "text": "Speak to browse and order, or type below. End stops your microphone and playback.",
+          "ratio": 16.9,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Listening…",
+          "ratio": 5.52,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Microphone on",
+          "ratio": 7.46,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Voice assistant ready. Microphone on.",
+          "ratio": 11.59,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Pause listening",
+          "ratio": 16.9,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Use typing instead",
+          "ratio": 16.9,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Order manually",
+          "ratio": 16.9,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "End voice session",
+          "ratio": 16.9,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Conversation and typed requests",
+          "ratio": 5.52,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Choose an ordering mode. Spoken welcome enables listening for your voice/manual answer. Manual shopping is available imm",
+          "ratio": 16.9,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "I’m here to help. What would you like to eat?",
+          "ratio": 16.9,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Type a request",
+          "ratio": 14.47,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Send",
+          "ratio": 16.9,
+          "minimum": 4.5,
+          "pass": true
+        }
+      ],
+      "overflow": false,
+      "semantics": "- dialog \"Voice assistant\":\n  - button \"Close voice controls\": Close\n  - heading \"Voice assistant\" [level=2]\n  - paragraph: Speak to browse and order, or type below. End stops your microphone and playback.\n  - paragraph: Listening…\n  - paragraph: Microphone on\n  - status: Voice assistant ready. Microphone on.\n  - button \"Pause listening\"\n  - button \"Use typing instead\"\n  - button \"Order manually\"\n  - button \"End voice session\"\n  - paragraph: Conversation and typed requests\n  - paragraph: Choose an ordering mode. Spoken welcome enables listening for your voice/manual answer. Manual shopping is available immediately.\n  - paragraph: I’m here to help. What would you like to eat?\n  - text: Type a request\n  - textbox \"Type a request\":\n    - /placeholder: \"Try: show burgers\"\n  - button \"Send\""
+    },
+    {
+      "label": "light-1440-controls",
+      "pairs": [
+        {
+          "text": "Close",
+          "ratio": 14.47,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Voice assistant",
+          "ratio": 16.9,
+          "minimum": 3,
+          "pass": true
+        },
+        {
+          "text": "Speak to browse and order, or type below. End stops your microphone and playback.",
+          "ratio": 16.9,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Listening…",
+          "ratio": 5.52,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Microphone on",
+          "ratio": 7.46,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Voice assistant ready. Microphone on.",
+          "ratio": 11.59,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Pause listening",
+          "ratio": 16.9,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Use typing instead",
+          "ratio": 16.9,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Order manually",
+          "ratio": 16.9,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "End voice session",
+          "ratio": 16.9,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Conversation and typed requests",
+          "ratio": 5.52,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Choose an ordering mode. Spoken welcome enables listening for your voice/manual answer. Manual shopping is available imm",
+          "ratio": 16.9,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "I’m here to help. What would you like to eat?",
+          "ratio": 16.9,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Type a request",
+          "ratio": 14.47,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Send",
+          "ratio": 16.9,
+          "minimum": 4.5,
+          "pass": true
+        }
+      ],
+      "overflow": false,
+      "semantics": "- dialog \"Voice assistant\":\n  - button \"Close voice controls\": Close\n  - heading \"Voice assistant\" [level=2]\n  - paragraph: Speak to browse and order, or type below. End stops your microphone and playback.\n  - paragraph: Listening…\n  - paragraph: Microphone on\n  - status: Voice assistant ready. Microphone on.\n  - button \"Pause listening\"\n  - button \"Use typing instead\"\n  - button \"Order manually\"\n  - button \"End voice session\"\n  - paragraph: Conversation and typed requests\n  - paragraph: Choose an ordering mode. Spoken welcome enables listening for your voice/manual answer. Manual shopping is available immediately.\n  - paragraph: I’m here to help. What would you like to eat?\n  - text: Type a request\n  - textbox \"Type a request\":\n    - /placeholder: \"Try: show burgers\"\n  - button \"Send\""
+    },
+    {
+      "label": "dark-welcome",
+      "pairs": [
+        {
+          "text": "Welcome to FoodEase",
+          "ratio": 14.34,
+          "minimum": 3,
+          "pass": true
+        },
+        {
+          "text": "Welcome! Would you like to order manually or use our voice assistant?",
+          "ratio": 14.34,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Your microphone stays off until you start voice assistance. You can switch modes at any time.",
+          "ratio": 6.67,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Order manually",
+          "ratio": 6.04,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Start Voice Assistant",
+          "ratio": 14.34,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Use typing instead",
+          "ratio": 14.34,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Listening…. Microphone on.",
+          "ratio": 6.67,
+          "minimum": 4.5,
+          "pass": true
+        }
+      ],
+      "overflow": false,
+      "semantics": "- region \"Welcome to FoodEase\":\n  - heading \"Welcome to FoodEase\" [level=2]\n  - paragraph: Welcome! Would you like to order manually or use our voice assistant?\n  - paragraph: Your microphone stays off until you start voice assistance. You can switch modes at any time.\n  - button \"Order manually\"\n  - button \"Start Voice Assistant\"\n  - button \"Use typing instead\"\n  - paragraph: Listening…. Microphone on."
+    },
+    {
+      "label": "dark-320-controls",
+      "pairs": [
+        {
+          "text": "Close",
+          "ratio": 13,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Voice assistant",
+          "ratio": 14.34,
+          "minimum": 3,
+          "pass": true
+        },
+        {
+          "text": "Speak to browse and order, or type below. End stops your microphone and playback.",
+          "ratio": 14.34,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Listening…",
+          "ratio": 6.67,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Microphone on",
+          "ratio": 8.76,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Voice assistant ready. Microphone on.",
+          "ratio": 11.21,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Pause listening",
+          "ratio": 14.34,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Use typing instead",
+          "ratio": 14.34,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Order manually",
+          "ratio": 14.34,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "End voice session",
+          "ratio": 14.34,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Conversation and typed requests",
+          "ratio": 6.67,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Choose an ordering mode. Spoken welcome enables listening for your voice/manual answer. Manual shopping is available imm",
+          "ratio": 14.34,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "I’m here to help. What would you like to eat?",
+          "ratio": 14.34,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Type a request",
+          "ratio": 13,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Send",
+          "ratio": 14.34,
+          "minimum": 4.5,
+          "pass": true
+        }
+      ],
+      "overflow": false,
+      "semantics": "- dialog \"Voice assistant\":\n  - button \"Close voice controls\": Close\n  - heading \"Voice assistant\" [level=2]\n  - paragraph: Speak to browse and order, or type below. End stops your microphone and playback.\n  - paragraph: Listening…\n  - paragraph: Microphone on\n  - status: Voice assistant ready. Microphone on.\n  - button \"Pause listening\"\n  - button \"Use typing instead\"\n  - button \"Order manually\"\n  - button \"End voice session\"\n  - paragraph: Conversation and typed requests\n  - paragraph: Choose an ordering mode. Spoken welcome enables listening for your voice/manual answer. Manual shopping is available immediately.\n  - paragraph: I’m here to help. What would you like to eat?\n  - text: Type a request\n  - textbox \"Type a request\":\n    - /placeholder: \"Try: show burgers\"\n  - button \"Send\""
+    },
+    {
+      "label": "dark-375-controls",
+      "pairs": [
+        {
+          "text": "Close",
+          "ratio": 13,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Voice assistant",
+          "ratio": 14.34,
+          "minimum": 3,
+          "pass": true
+        },
+        {
+          "text": "Speak to browse and order, or type below. End stops your microphone and playback.",
+          "ratio": 14.34,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Listening…",
+          "ratio": 6.67,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Microphone on",
+          "ratio": 8.76,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Voice assistant ready. Microphone on.",
+          "ratio": 11.21,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Pause listening",
+          "ratio": 14.34,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Use typing instead",
+          "ratio": 14.34,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Order manually",
+          "ratio": 14.34,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "End voice session",
+          "ratio": 14.34,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Conversation and typed requests",
+          "ratio": 6.67,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Choose an ordering mode. Spoken welcome enables listening for your voice/manual answer. Manual shopping is available imm",
+          "ratio": 14.34,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "I’m here to help. What would you like to eat?",
+          "ratio": 14.34,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Type a request",
+          "ratio": 13,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Send",
+          "ratio": 14.34,
+          "minimum": 4.5,
+          "pass": true
+        }
+      ],
+      "overflow": false,
+      "semantics": "- dialog \"Voice assistant\":\n  - button \"Close voice controls\": Close\n  - heading \"Voice assistant\" [level=2]\n  - paragraph: Speak to browse and order, or type below. End stops your microphone and playback.\n  - paragraph: Listening…\n  - paragraph: Microphone on\n  - status: Voice assistant ready. Microphone on.\n  - button \"Pause listening\"\n  - button \"Use typing instead\"\n  - button \"Order manually\"\n  - button \"End voice session\"\n  - paragraph: Conversation and typed requests\n  - paragraph: Choose an ordering mode. Spoken welcome enables listening for your voice/manual answer. Manual shopping is available immediately.\n  - paragraph: I’m here to help. What would you like to eat?\n  - text: Type a request\n  - textbox \"Type a request\":\n    - /placeholder: \"Try: show burgers\"\n  - button \"Send\""
+    },
+    {
+      "label": "dark-768-controls",
+      "pairs": [
+        {
+          "text": "Close",
+          "ratio": 13,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Voice assistant",
+          "ratio": 14.34,
+          "minimum": 3,
+          "pass": true
+        },
+        {
+          "text": "Speak to browse and order, or type below. End stops your microphone and playback.",
+          "ratio": 14.34,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Listening…",
+          "ratio": 6.67,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Microphone on",
+          "ratio": 8.76,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Voice assistant ready. Microphone on.",
+          "ratio": 11.21,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Pause listening",
+          "ratio": 14.34,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Use typing instead",
+          "ratio": 14.34,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Order manually",
+          "ratio": 14.34,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "End voice session",
+          "ratio": 14.34,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Conversation and typed requests",
+          "ratio": 6.67,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Choose an ordering mode. Spoken welcome enables listening for your voice/manual answer. Manual shopping is available imm",
+          "ratio": 14.34,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "I’m here to help. What would you like to eat?",
+          "ratio": 14.34,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Type a request",
+          "ratio": 13,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Send",
+          "ratio": 14.34,
+          "minimum": 4.5,
+          "pass": true
+        }
+      ],
+      "overflow": false,
+      "semantics": "- dialog \"Voice assistant\":\n  - button \"Close voice controls\": Close\n  - heading \"Voice assistant\" [level=2]\n  - paragraph: Speak to browse and order, or type below. End stops your microphone and playback.\n  - paragraph: Listening…\n  - paragraph: Microphone on\n  - status: Voice assistant ready. Microphone on.\n  - button \"Pause listening\"\n  - button \"Use typing instead\"\n  - button \"Order manually\"\n  - button \"End voice session\"\n  - paragraph: Conversation and typed requests\n  - paragraph: Choose an ordering mode. Spoken welcome enables listening for your voice/manual answer. Manual shopping is available immediately.\n  - paragraph: I’m here to help. What would you like to eat?\n  - text: Type a request\n  - textbox \"Type a request\":\n    - /placeholder: \"Try: show burgers\"\n  - button \"Send\""
+    },
+    {
+      "label": "dark-1440-controls",
+      "pairs": [
+        {
+          "text": "Close",
+          "ratio": 13,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Voice assistant",
+          "ratio": 14.34,
+          "minimum": 3,
+          "pass": true
+        },
+        {
+          "text": "Speak to browse and order, or type below. End stops your microphone and playback.",
+          "ratio": 14.34,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Listening…",
+          "ratio": 6.67,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Microphone on",
+          "ratio": 8.76,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Voice assistant ready. Microphone on.",
+          "ratio": 11.21,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Pause listening",
+          "ratio": 14.34,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Use typing instead",
+          "ratio": 14.34,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Order manually",
+          "ratio": 14.34,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "End voice session",
+          "ratio": 14.34,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Conversation and typed requests",
+          "ratio": 6.67,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Choose an ordering mode. Spoken welcome enables listening for your voice/manual answer. Manual shopping is available imm",
+          "ratio": 14.34,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "I’m here to help. What would you like to eat?",
+          "ratio": 14.34,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Type a request",
+          "ratio": 13,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Send",
+          "ratio": 14.34,
+          "minimum": 4.5,
+          "pass": true
+        }
+      ],
+      "overflow": false,
+      "semantics": "- dialog \"Voice assistant\":\n  - button \"Close voice controls\": Close\n  - heading \"Voice assistant\" [level=2]\n  - paragraph: Speak to browse and order, or type below. End stops your microphone and playback.\n  - paragraph: Listening…\n  - paragraph: Microphone on\n  - status: Voice assistant ready. Microphone on.\n  - button \"Pause listening\"\n  - button \"Use typing instead\"\n  - button \"Order manually\"\n  - button \"End voice session\"\n  - paragraph: Conversation and typed requests\n  - paragraph: Choose an ordering mode. Spoken welcome enables listening for your voice/manual answer. Manual shopping is available immediately.\n  - paragraph: I’m here to help. What would you like to eat?\n  - text: Type a request\n  - textbox \"Type a request\":\n    - /placeholder: \"Try: show burgers\"\n  - button \"Send\""
+    },
+    {
+      "label": "contrast-welcome",
+      "pairs": [
+        {
+          "text": "Welcome to FoodEase",
+          "ratio": 21,
+          "minimum": 3,
+          "pass": true
+        },
+        {
+          "text": "Welcome! Would you like to order manually or use our voice assistant?",
+          "ratio": 21,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Your microphone stays off until you start voice assistance. You can switch modes at any time.",
+          "ratio": 15.91,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Order manually",
+          "ratio": 18.88,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Start Voice Assistant",
+          "ratio": 21,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Use typing instead",
+          "ratio": 21,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Listening…. Microphone on.",
+          "ratio": 15.91,
+          "minimum": 4.5,
+          "pass": true
+        }
+      ],
+      "overflow": false,
+      "semantics": "- region \"Welcome to FoodEase\":\n  - heading \"Welcome to FoodEase\" [level=2]\n  - paragraph: Welcome! Would you like to order manually or use our voice assistant?\n  - paragraph: Your microphone stays off until you start voice assistance. You can switch modes at any time.\n  - button \"Order manually\"\n  - button \"Start Voice Assistant\"\n  - button \"Use typing instead\"\n  - paragraph: Listening…. Microphone on."
+    },
+    {
+      "label": "contrast-320-controls",
+      "pairs": [
+        {
+          "text": "Close",
+          "ratio": 18.76,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Voice assistant",
+          "ratio": 21,
+          "minimum": 3,
+          "pass": true
+        },
+        {
+          "text": "Speak to browse and order, or type below. End stops your microphone and playback.",
+          "ratio": 21,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Listening…",
+          "ratio": 15.91,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Microphone on",
+          "ratio": 21,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Voice assistant ready. Microphone on.",
+          "ratio": 18.88,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Pause listening",
+          "ratio": 21,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Use typing instead",
+          "ratio": 21,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Order manually",
+          "ratio": 21,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "End voice session",
+          "ratio": 21,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Conversation and typed requests",
+          "ratio": 15.91,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Choose an ordering mode. Spoken welcome enables listening for your voice/manual answer. Manual shopping is available imm",
+          "ratio": 21,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "I’m here to help. What would you like to eat?",
+          "ratio": 21,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Type a request",
+          "ratio": 18.76,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Send",
+          "ratio": 21,
+          "minimum": 4.5,
+          "pass": true
+        }
+      ],
+      "overflow": false,
+      "semantics": "- dialog \"Voice assistant\":\n  - button \"Close voice controls\": Close\n  - heading \"Voice assistant\" [level=2]\n  - paragraph: Speak to browse and order, or type below. End stops your microphone and playback.\n  - paragraph: Listening…\n  - paragraph: Microphone on\n  - status: Voice assistant ready. Microphone on.\n  - button \"Pause listening\"\n  - button \"Use typing instead\"\n  - button \"Order manually\"\n  - button \"End voice session\"\n  - paragraph: Conversation and typed requests\n  - paragraph: Choose an ordering mode. Spoken welcome enables listening for your voice/manual answer. Manual shopping is available immediately.\n  - paragraph: I’m here to help. What would you like to eat?\n  - text: Type a request\n  - textbox \"Type a request\":\n    - /placeholder: \"Try: show burgers\"\n  - button \"Send\""
+    },
+    {
+      "label": "contrast-375-controls",
+      "pairs": [
+        {
+          "text": "Close",
+          "ratio": 18.76,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Voice assistant",
+          "ratio": 21,
+          "minimum": 3,
+          "pass": true
+        },
+        {
+          "text": "Speak to browse and order, or type below. End stops your microphone and playback.",
+          "ratio": 21,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Listening…",
+          "ratio": 15.91,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Microphone on",
+          "ratio": 21,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Voice assistant ready. Microphone on.",
+          "ratio": 18.88,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Pause listening",
+          "ratio": 21,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Use typing instead",
+          "ratio": 21,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Order manually",
+          "ratio": 21,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "End voice session",
+          "ratio": 21,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Conversation and typed requests",
+          "ratio": 15.91,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Choose an ordering mode. Spoken welcome enables listening for your voice/manual answer. Manual shopping is available imm",
+          "ratio": 21,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "I’m here to help. What would you like to eat?",
+          "ratio": 21,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Type a request",
+          "ratio": 18.76,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Send",
+          "ratio": 21,
+          "minimum": 4.5,
+          "pass": true
+        }
+      ],
+      "overflow": false,
+      "semantics": "- dialog \"Voice assistant\":\n  - button \"Close voice controls\": Close\n  - heading \"Voice assistant\" [level=2]\n  - paragraph: Speak to browse and order, or type below. End stops your microphone and playback.\n  - paragraph: Listening…\n  - paragraph: Microphone on\n  - status: Voice assistant ready. Microphone on.\n  - button \"Pause listening\"\n  - button \"Use typing instead\"\n  - button \"Order manually\"\n  - button \"End voice session\"\n  - paragraph: Conversation and typed requests\n  - paragraph: Choose an ordering mode. Spoken welcome enables listening for your voice/manual answer. Manual shopping is available immediately.\n  - paragraph: I’m here to help. What would you like to eat?\n  - text: Type a request\n  - textbox \"Type a request\":\n    - /placeholder: \"Try: show burgers\"\n  - button \"Send\""
+    },
+    {
+      "label": "contrast-768-controls",
+      "pairs": [
+        {
+          "text": "Close",
+          "ratio": 18.76,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Voice assistant",
+          "ratio": 21,
+          "minimum": 3,
+          "pass": true
+        },
+        {
+          "text": "Speak to browse and order, or type below. End stops your microphone and playback.",
+          "ratio": 21,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Listening…",
+          "ratio": 15.91,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Microphone on",
+          "ratio": 21,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Voice assistant ready. Microphone on.",
+          "ratio": 18.88,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Pause listening",
+          "ratio": 21,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Use typing instead",
+          "ratio": 21,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Order manually",
+          "ratio": 21,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "End voice session",
+          "ratio": 21,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Conversation and typed requests",
+          "ratio": 15.91,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Choose an ordering mode. Spoken welcome enables listening for your voice/manual answer. Manual shopping is available imm",
+          "ratio": 21,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "I’m here to help. What would you like to eat?",
+          "ratio": 21,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Type a request",
+          "ratio": 18.76,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Send",
+          "ratio": 21,
+          "minimum": 4.5,
+          "pass": true
+        }
+      ],
+      "overflow": false,
+      "semantics": "- dialog \"Voice assistant\":\n  - button \"Close voice controls\": Close\n  - heading \"Voice assistant\" [level=2]\n  - paragraph: Speak to browse and order, or type below. End stops your microphone and playback.\n  - paragraph: Listening…\n  - paragraph: Microphone on\n  - status: Voice assistant ready. Microphone on.\n  - button \"Pause listening\"\n  - button \"Use typing instead\"\n  - button \"Order manually\"\n  - button \"End voice session\"\n  - paragraph: Conversation and typed requests\n  - paragraph: Choose an ordering mode. Spoken welcome enables listening for your voice/manual answer. Manual shopping is available immediately.\n  - paragraph: I’m here to help. What would you like to eat?\n  - text: Type a request\n  - textbox \"Type a request\":\n    - /placeholder: \"Try: show burgers\"\n  - button \"Send\""
+    },
+    {
+      "label": "contrast-1440-controls",
+      "pairs": [
+        {
+          "text": "Close",
+          "ratio": 18.76,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Voice assistant",
+          "ratio": 21,
+          "minimum": 3,
+          "pass": true
+        },
+        {
+          "text": "Speak to browse and order, or type below. End stops your microphone and playback.",
+          "ratio": 21,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Listening…",
+          "ratio": 15.91,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Microphone on",
+          "ratio": 21,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Voice assistant ready. Microphone on.",
+          "ratio": 18.88,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Pause listening",
+          "ratio": 21,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Use typing instead",
+          "ratio": 21,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Order manually",
+          "ratio": 21,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "End voice session",
+          "ratio": 21,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Conversation and typed requests",
+          "ratio": 15.91,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Choose an ordering mode. Spoken welcome enables listening for your voice/manual answer. Manual shopping is available imm",
+          "ratio": 21,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "I’m here to help. What would you like to eat?",
+          "ratio": 21,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Type a request",
+          "ratio": 18.76,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "text": "Send",
+          "ratio": 21,
+          "minimum": 4.5,
+          "pass": true
+        }
+      ],
+      "overflow": false,
+      "semantics": "- dialog \"Voice assistant\":\n  - button \"Close voice controls\": Close\n  - heading \"Voice assistant\" [level=2]\n  - paragraph: Speak to browse and order, or type below. End stops your microphone and playback.\n  - paragraph: Listening…\n  - paragraph: Microphone on\n  - status: Voice assistant ready. Microphone on.\n  - button \"Pause listening\"\n  - button \"Use typing instead\"\n  - button \"Order manually\"\n  - button \"End voice session\"\n  - paragraph: Conversation and typed requests\n  - paragraph: Choose an ordering mode. Spoken welcome enables listening for your voice/manual answer. Manual shopping is available immediately.\n  - paragraph: I’m here to help. What would you like to eat?\n  - text: Type a request\n  - textbox \"Type a request\":\n    - /placeholder: \"Try: show burgers\"\n  - button \"Send\""
+    }
+  ],
+  "limits": "Synthetic microphone; fake RTC/model. Computed solid-color text pairs and native accessibility snapshots; no human screen-reader, real speech recognition or audible voice-quality claim.",
+  "initialWelcome": {
+    "visible": true,
+    "top": 126,
+    "bottom": 525.234375,
+    "viewportHeight": 812
+  }
+}

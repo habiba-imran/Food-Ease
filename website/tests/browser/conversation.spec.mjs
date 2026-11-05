@@ -6,6 +6,7 @@ test.beforeEach(async ({ page }) => {
   await page.route('**/static/vendor/livekit-client.2.15.4.mjs', r => r.fulfill({ body: fake, contentType: 'text/javascript' }));
   await page.goto('/');
   await expect(page.locator('html')).toHaveAttribute('data-foodease-revision', /\d+/);
+  await page.locator('.main-nav a[href="#assistant"]').click();
   await page.locator('[data-assist-start]').click();
   await expect(page.locator('html')).toHaveAttribute('data-assistance-state', 'typed_active');
 });

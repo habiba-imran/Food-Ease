@@ -37,6 +37,7 @@ test('dark mobile browsing preserves filters, selection, and checkout', async ({
   const add = page.locator('[data-menu-item][data-id="wrap-hot-chicken"] [data-add-item]');
   await add.click();
   await expect(page.locator('[data-cart-count]')).toHaveText('1');
+  await page.locator('[data-cart-trigger]').click();
   await page.locator('[data-checkout-button]').click();
   await expect(page.locator('[data-confirm-order]')).toBeVisible();
   await expect(page.locator('[data-checkout-dialog] .assistant-controls')).toHaveCount(0);
@@ -66,7 +67,7 @@ test('popular item picks open focused details without exposing demo controls', a
 
 test('larger text and contrast preserve the mobile ordering path', async ({ page }) => {
   await page.setViewportSize({ width: 375, height: 812 });
-  const heading = page.locator('.menu-card h3').first();
+  const heading = page.locator('.menu-card h4').first();
   const before = await heading.evaluate(el => parseFloat(getComputedStyle(el).fontSize));
   await page.locator('[data-access-toggle=large]').click();
   expect(await heading.evaluate(el => parseFloat(getComputedStyle(el).fontSize))).toBeGreaterThan(before);
@@ -85,9 +86,11 @@ test('desktop navigation and checkout remain reachable while browsing a long men
     const top = document.querySelector('#popular').getBoundingClientRect().top + scrollY;
     scrollTo({ top: top + 900, behavior: 'instant' });
   });
-  await expect(page.locator('[data-checkout-button]')).toBeInViewport();
+  await expect(page.locator('[data-cart-trigger]')).toBeInViewport();
   await expect(page.locator('[data-header-theme]')).toBeInViewport();
   expect(await page.locator('.site-header').evaluate(el => el.getBoundingClientRect().top)).toBe(0);
+  await page.locator('[data-cart-trigger]').click();
+  await expect(page.locator('[data-checkout-button]')).toBeInViewport();
 });
 
 test('lower-page copy reveals on scroll and motion preferences keep it readable', async ({ page }) => {

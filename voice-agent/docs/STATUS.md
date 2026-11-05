@@ -1,5 +1,26 @@
 # STATUS
 
+**Voice entry follow-up — 2026-11-04:** The requested website welcome and floating
+controls now use the existing integrated lifecycle, actual microphone ownership,
+canonical captions/status and shared website cart. Precise full-sentence mode
+choices, same-generation mode acknowledgment, explicit cleanup retry and
+cancellation-before-late-capture are implemented. The policy asks for missing
+quantity and only real returned customizations. Providers, models and contracts
+are unchanged. See [follow-up evidence](../evidence/voice-entry-2026-11-04/report.md)
+and [live setup/test handoff](../../website/docs/VOICE_INTEGRATION_2026-11-04.md).
+Focused worker tests: 102 passed; opening tests: 21 passed; JavaScript: 49 passed;
+nine new Chromium entry scenarios and the complete 80-case browser suite passed;
+changed Python lint/types and browser builds passed. The visual audit found zero
+failures among 201 text-color pairs across 15 voice surfaces.
+Full worker suite: 377 passed, the inherited legacy mock-boundary check failed.
+Website: 41 passed. Orchestration: 53 passed, three acceptance-generator checks
+failed because the website requirements document was already deleted in the
+checkout. Complete browser/build/visual results are in the linked handoff.
+Physical/provider voice, human screen-reader/listening and production acceptance
+remain open. No credentials were inspected, and no provider call/push/deployment
+was performed in this follow-up. Historical live approvals/results below do not
+constitute new live evidence for this change.
+
 **Final orchestration Phase 9 — 2026-10-18:** Delivery implementation is complete.
 The final helper launches the real website/session/integrated worker on distinct
 ports, loads worker configuration before CLI resolution, checks health without

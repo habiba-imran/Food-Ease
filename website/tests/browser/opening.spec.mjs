@@ -6,6 +6,7 @@ test.beforeEach(async ({ page }) => {
   await page.route('**/static/vendor/livekit-client.2.15.4.mjs', r => r.fulfill({ body: fake, contentType: 'text/javascript' }));
   await page.goto('/');
   await expect(page.locator('html')).toHaveAttribute('data-foodease-revision', /\d+/);
+  await page.locator('.main-nav a[href="#assistant"]').click();
 });
 test.afterEach(async ({ page }, info) => {
   if (info.status !== info.expectedStatus) {
@@ -118,6 +119,7 @@ test('return visit uses explicit activation fallback and never silently reopens 
   await expect(page.locator('html')).toHaveAttribute('data-assistance-state', 'typed_active');
   await page.locator('[data-assist-manual]').click();
   await page.reload();
+  await page.locator('.main-nav a[href="#assistant"]').click();
   // Phase 8 may finish retained teardown after reload; both states require a gesture.
   await expect(page.locator('html')).toHaveAttribute('data-assistance-state', /^(awaiting_spoken_choice_consent|manual)$/);
   await page.evaluate(() => { navigator.mediaDevices.getUserMedia = () => { throw new Error('No new consent'); }; });
@@ -208,12 +210,13 @@ test('mode controls and typed input remain usable inside the preserved checkout 
   await input(page, 'Read my checkout summary');
   const dialog = page.locator('[data-checkout-dialog]');
   await expect(dialog).toBeVisible();
-  await dialog.locator('[data-assist-start]').click();
+  await dialog.locator('[data-dialog-typing]').click();
   await expect(page.locator('html')).toHaveAttribute('data-assistance-state', 'typed_active');
   await expect(dialog.locator('[data-assistant-input]')).toBeVisible();
   await expect(page.locator('html')).toHaveAttribute('data-foodease-route', 'checkout');
   await expect(page.locator('[data-cart-count]')).toHaveText('1');
-  await dialog.locator('[data-assist-manual]').click();
+  await expect.poll(() => page.evaluate(() => window.captured.every(t => t.readyState === 'ended'))).toBe(true);
+  await dialog.locator('[data-dialog-end-assistance]').click();
   await expect(page.locator('html')).toHaveAttribute('data-assistance-state', 'manual');
   await expect(dialog).toBeVisible();
 });

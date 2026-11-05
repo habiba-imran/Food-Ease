@@ -6,6 +6,7 @@ test.beforeEach(async ({ page }) => {
   await page.route("**/static/vendor/livekit-client.2.15.4.mjs", r => r.fulfill({ body: fake, contentType: "text/javascript" }));
   await page.goto("/");
   await expect(page.locator("html")).toHaveAttribute("data-foodease-revision", /\d+/);
+  await page.locator('.main-nav a[href="#assistant"]').click();
   await page.evaluate(() => {
     window.captured = [];
     const get = navigator.mediaDevices.getUserMedia.bind(navigator.mediaDevices);
@@ -13,6 +14,7 @@ test.beforeEach(async ({ page }) => {
   });
 });
 async function start(page, mode = "typed") {
+  if (!await page.locator('[data-assist-start]').isVisible()) await page.locator('.main-nav a[href="#assistant"]').click();
   await page.locator(mode === "voice" ? "[data-assist-voice]" : "[data-assist-start]").click();
   await expect(page.locator("html")).toHaveAttribute("data-assistance-state", `${mode}_active`);
 }
@@ -96,6 +98,7 @@ test("reload cleans up retained generation without capture and preserves cart", 
 });
 test("lost checkout response renders its original receipt once, including after reload", async ({ page }) => {
   await page.locator('[data-menu-item][data-id="wrap-hot-chicken"] [data-add-item]').click();
+  await page.locator('[data-cart-trigger]').click();
   await page.locator("[data-checkout-button]").click();
   await expect(page.locator("[data-confirm-order]")).toBeEnabled();
   let attempts = 0;
@@ -127,7 +130,7 @@ test("lost authority retention reports unavailable order state without replay", 
   await expect(page.locator("[data-order-status]")).toContainText("unknown");
   const sid = await page.evaluate(() => sessionStorage.getItem("foodease.shopping-session.v2"));
   await page.request.post(`/_test/forget-shopping/${sid}`);
-  await page.locator("[data-reconcile-action]").click();
+  await page.locator("[data-reconcile-action]:visible").click();
   await expect(page.locator("[data-order-status]")).toContainText(/expired|no longer retained/);
   await expect(page.locator("[data-cart-count]")).toHaveText("0");
 });

@@ -3514,16 +3514,14 @@ p {
 
 :root[data-theme="dark"] .ar-facts span,
 :root[data-theme="dark"] .order-status,
-:root[data-theme="dark"] .card-action-row button,
-:root[data-theme="dark"] .assistant-form button,
-:root[data-theme="dark"] .cart-line button {
+:root[data-theme="dark"] .assistant-form button {
   background: #fff7ec;
   color: #14100c !important;
 }
 
 :root[data-theme="dark"] .cart-controls button {
-  background: #fff7ec;
-  color: #14100c !important;
+  background: var(--paper);
+  color: var(--ink);
 }
 
 @media (max-width: 520px) {

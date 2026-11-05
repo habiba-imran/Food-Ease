@@ -8,13 +8,13 @@
     <link rel="preload" href="/static/fonts/bebas-neue-latin.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/static/fonts/dm-sans-latin.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" as="image" href="/static/img/editorial/fast-v7/chicken-burger-hero-768.webp" imagesrcset="/static/img/editorial/fast-v7/chicken-burger-hero-480.webp 480w, /static/img/editorial/fast-v7/chicken-burger-hero-768.webp 768w, /static/img/editorial/fast-v7/chicken-burger-hero-1024.webp 1024w" imagesizes="(max-width: 700px) 100vw, (max-width: 900px) 68vw, 640px" fetchpriority="high" />
-    <link rel="stylesheet" href="/static/vendor/food-experience.css?v=delivery-11" />
-    <script type="module" src="/static/js/app.js?v=delivery-8"></script>
+    <link rel="stylesheet" href="/static/vendor/food-experience.css?v=voice-13" />
+    <script type="module" src="/static/js/app.js?v=voice-13"></script>
     <script type="module" src="/static/js/experience.mjs?v=delivery-9"></script>
     <script type="module" src="/static/js/studio-loader.mjs?v=delivery-7"></script>
   </head>
   <body data-experience="immersive" data-orchestration-url="{{ orchestration_base_url }}">
-    <a class="skip-link" href="#main">Skip to ordering preview</a>
+    <a class="skip-link" href="#popular">Skip to menu</a>
     <header class="site-header" aria-label="FoodEase header">
       <a class="brand-mark" href="/" aria-label="FoodEase home">
         <span class="brand-icon" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none"><path d="M9 5v8m5-8v8M7 5v6a5 5 0 0 0 10 0V5M12 16v11M24 5c-4 3-5 7-5 11h5m0-11v22" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
@@ -24,15 +24,29 @@
         <a href="#popular" class="is-current">Our menu</a><a href="#ar-preview">The preview table</a><a href="#assistant">Order your way</a>
       </nav>
       <div class="header-actions">
-        <a class="cart-button" href="#cart-preview" aria-label="Open cart preview">
-          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 7h14l1 14H4L5 7Zm3 0V5a4 4 0 0 1 8 0v2" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg><span>Your order</span>
+        <button class="cart-button" type="button" data-cart-trigger aria-label="Open cart (0 items)" aria-haspopup="dialog" aria-controls="cart-preview" aria-expanded="false">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 7h14l1 14H4L5 7Zm3 0V5a4 4 0 0 1 8 0v2" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+          <span class="cart-button-text">Cart</span>
           <strong data-cart-count>0</strong>
-        </a>
+        </button>
         <button class="icon-button" type="button" data-header-theme aria-label="Switch to dark mode"></button>
       </div>
     </header>
 
     <main id="main" class="shell">
+      <section class="voice-welcome" data-voice-welcome aria-labelledby="voice-welcome-title">
+        <div>
+          <h2 id="voice-welcome-title">Welcome to FoodEase</h2>
+          <p>Welcome! Would you like to order manually or use our voice assistant?</p>
+          <p class="voice-privacy">Your microphone stays off until you start voice assistance. You can switch modes at any time.</p>
+        </div>
+        <div class="voice-welcome-actions">
+          <button class="button primary" type="button" data-welcome-manual>Order manually</button>
+          <button class="button ghost" type="button" data-welcome-voice>Start Voice Assistant</button>
+          <button class="voice-text-action" type="button" data-welcome-typed>Use typing instead</button>
+        </div>
+        <p class="voice-feedback" data-voice-feedback>Microphone off. Choose how you would like to order.</p>
+      </section>
       <section class="hero" aria-labelledby="hero-title">
         <div class="hero-coordinate" aria-hidden="true">FE—001<br />ORDERING / PKR</div>
         <div class="hero-rule" aria-hidden="true"><span>CRAVING SOMETHING GOOD?</span><i></i><span>SCROLL TO EXPLORE ↓</span></div>
@@ -41,13 +55,13 @@
           <h1 id="hero-title">FULL OF FLAVOUR</h1>
           <p class="hero-description">Local favourites. Big cravings. Find your next great bite, then build your order at your own pace.</p>
           <div class="hero-actions" aria-label="Ordering actions">
-            <a class="button primary" href="#popular">Start ordering <span aria-hidden="true">↗</span></a>
+            <a class="button primary" href="#popular" data-order-manual>Start ordering <span aria-hidden="true">↗</span></a>
             <a class="button ghost" href="#categories">Browse by category</a>
           </div>
           <div class="hero-footnote"><span>CATALOG / {{ catalog_summary.item_count }} ITEMS</span><span>YOUR ORDER. YOUR CONTROL.</span></div>
         </div>
 
-        <div class="food-studio" data-food-studio data-scene-mode="campaign">
+        <div class="food-studio" data-food-studio data-immersive-stage data-scene-mode="campaign">
           <svg class="editorial-orbits" viewBox="0 0 1200 700" aria-hidden="true"><ellipse cx="600" cy="350" rx="520" ry="90" transform="rotate(-13 600 350)"/><ellipse cx="600" cy="350" rx="310" ry="245" transform="rotate(58 600 350)"/><circle cx="1050" cy="244" r="4"/><circle cx="210" cy="482" r="3"/></svg>
           <span class="scene-crosshair crosshair-one" aria-hidden="true">+</span><span class="scene-crosshair crosshair-two" aria-hidden="true">+</span>
           <div class="scene-switch" role="group" aria-label="Hero viewing mode"><button type="button" data-scene-view="campaign" aria-pressed="true">01 / CAMPAIGN</button><button type="button" data-scene-view="inspect" aria-pressed="false">02 / INSPECT 3D</button><button type="button" data-campaign-pause aria-pressed="false" aria-label="Pause hero motion">Ⅱ</button></div>
@@ -115,7 +129,7 @@
         </div>
       </section>
 
-      <section id="popular" class="ordering-layout" aria-labelledby="popular-title">
+      <section id="popular" class="ordering-layout" aria-labelledby="popular-title" tabindex="-1">
         <div class="menu-board">
           <div class="section-heading compact">
             <p class="eyebrow">[02] / POPULAR PICKS & THE FULL CATALOG</p>
@@ -179,7 +193,7 @@
               <div class="menu-card-body">
                 <div>
                   <p class="menu-category">{{ item.category }}</p>
-                  <h3>{{ item.name }}</h3>
+                  <h4>{{ item.name }}</h4>
                   <p>{{ item.description }}</p>
                 </div>
                 <div class="tag-row">
@@ -210,39 +224,15 @@
           </section>
           {% endif %}
           {% endfor %}
+          <p class="order-status" data-order-status role="status" aria-atomic="true">Ready when you are. Your total updates as you go.</p>
         </div>
-
-        <aside id="cart-preview" class="cart-preview" aria-labelledby="cart-title">
-          <p class="eyebrow">Order summary</p>
-          <h2 id="cart-title">YOUR ORDER<span class="tomato-dot">.</span></h2><p class="cart-intro">A little of what you love.</p>
-          <div class="cart-lines" data-cart-lines aria-live="polite">
-            <p class="empty-cart">Your next great meal starts here. Add something that catches your eye.</p>
-          </div>
-          <p class="order-status" data-order-status aria-live="polite">Ready when you are. Your total updates as you go.</p>
-          <div class="fee-line">
-            <span>Subtotal</span>
-            <strong data-cart-subtotal>0 PKR</strong>
-          </div>
-          <div class="fee-line">
-            <span>Service fee</span>
-            <strong data-cart-fee data-service-fee="{{ catalog_summary.service_fee_pkr|int }}">0 PKR</strong>
-          </div>
-          <div class="total-line">
-            <span>Total</span>
-            <strong data-cart-total>0 PKR</strong>
-          </div>
-          <button class="button primary full" type="button" data-checkout-button disabled>
-            Demo checkout
-          </button>
-          <p class="checkout-disclaimer">A demo with real choices. No payment collected.</p>
-        </aside>
       </section>
 
       <section class="access-deck" aria-labelledby="access-title">
         <div>
           <p class="eyebrow">[03] / COMFORT CONTROLS</p>
           <h2 id="access-title">Your comfort comes first.</h2>
-          <p data-context-summary aria-live="polite">Showing all dishes. Cart is empty.</p>
+          <p data-context-summary>Showing all dishes. Cart is empty.</p>
         </div>
         <div class="access-actions" aria-label="Display preference controls">
           <button type="button" data-access-toggle="large">Larger text</button>
@@ -419,7 +409,7 @@
             <span class="detail-chip chip-three"></span>
           </div>
           <div class="detail-copy">
-            <button class="dialog-close" type="button" data-detail-close aria-label="Close item details">Close</button>
+            <button class="dialog-close" type="button" data-detail-close aria-label="Close item details" autofocus>Close</button>
             <p class="eyebrow" data-detail-category>Menu item</p>
             <h2 id="item-dialog-title" data-detail-name>Item details</h2>
             <p data-detail-description>Select an item to inspect price, availability, ingredients, and quantity.</p>
@@ -438,14 +428,25 @@
                 <dd data-detail-ingredients>No ingredient notes listed.</dd>
               </div>
             </dl>
-            <label class="quantity-stepper" for="detail-quantity">
-              <span>Quantity</span>
-              <input id="detail-quantity" data-detail-quantity type="number" min="1" max="12" value="1" />
-            </label>
+            <div class="detail-order-controls">
+              <label class="quantity-stepper" for="detail-quantity">
+                <span>Quantity</span>
+                <input id="detail-quantity" data-detail-quantity type="number" min="1" max="12" step="1" required value="1" aria-describedby="quantity-help quantity-error" />
+              </label>
+              <p class="detail-line-total">Item total <strong data-detail-total>0 PKR</strong></p>
+            </div>
+            <p id="quantity-help" class="quantity-help">Choose 1–12 per addition. This dish is served as listed.</p>
+            <p id="quantity-error" class="quantity-error" hidden></p>
             <div class="detail-actions">
               <button class="button primary" type="button" data-detail-add>Add selected quantity</button>
               <button class="button ghost" type="button" data-detail-close-secondary>Keep browsing</button>
             </div>
+            <p class="dialog-status" data-dialog-status role="status" aria-atomic="true"></p>
+            <div class="dialog-assistance" data-dialog-assistant hidden><p class="eyebrow">Typed assistance</p></div>
+            <button class="button ghost" type="button" data-reconcile-action hidden>Check pending changes</button>
+            <button class="button ghost" type="button" data-dialog-typing hidden>Continue by typing</button>
+            <button class="button ghost" type="button" data-dialog-end-assistance hidden>End assistance</button>
+            <div data-voice-launcher-slot></div>
           </div>
         </div>
       </dialog>
@@ -474,16 +475,17 @@
             <button class="button ghost" type="button" data-ar-spin-right aria-label="Rotate dish right">Rotate right</button>
             <a class="button primary" href="#popular" data-ar-close-link>Continue ordering</a>
           </div>
+          <div data-voice-launcher-slot></div>
         </div>
       </dialog>
 
       <dialog class="checkout-dialog" data-checkout-dialog aria-labelledby="checkout-dialog-title">
         <div class="checkout-shell">
-          <button class="dialog-close" type="button" data-checkout-close aria-label="Close checkout review">Close</button>
+          <button class="dialog-close" type="button" data-checkout-close aria-label="Close checkout review" autofocus>Close</button>
           <section data-checkout-review>
             <div class="checkout-progress" aria-label="Order steps"><span>01 · Pick your favourites</span><strong>02 · Review &amp; confirm</strong></div>
             <p class="eyebrow">Your good-food moment</p>
-            <h2 id="checkout-dialog-title">Confirm your FoodEase order</h2>
+            <h2 id="checkout-dialog-title">Review your demo order</h2>
             <p class="checkout-note">
               Check your picks and total before confirming. This is a demo order—no payment is collected. If you edit your bag, we’ll refresh the review.
             </p>
@@ -503,18 +505,109 @@
               </div>
             </dl>
             <div class="checkout-actions">
-              <button class="button primary" type="button" data-confirm-order>Confirm demo order</button>
+              <button class="button primary" type="button" data-confirm-order disabled>Confirm demo order</button>
               <button class="button ghost" type="button" data-edit-cart>Edit cart first</button>
             </div>
           </section>
           <section class="receipt-panel" data-receipt-panel hidden><span class="receipt-check" aria-hidden="true">✓</span>
             <p class="eyebrow">Demo order placed</p>
-            <h2 data-receipt-id style="overflow-wrap: anywhere">DEMO-0000</h2>
+            <h2 id="demo-receipt-title" data-receipt-id style="overflow-wrap: anywhere" tabindex="-1">DEMO-0000</h2>
             <p data-receipt-summary>Your simulated receipt is ready.</p>
             <button class="button primary" type="button" data-receipt-close>Back to menu</button>
           </section>
+          <p class="dialog-status" data-dialog-status role="status" aria-atomic="true"></p>
+          <div class="dialog-assistance" data-dialog-assistant hidden><p class="eyebrow">Typed assistance</p></div>
+          <button class="button ghost" type="button" data-reconcile-action hidden>Check pending changes</button>
+          <button class="button ghost" type="button" data-dialog-typing hidden>Continue by typing</button>
+          <button class="button ghost" type="button" data-dialog-end-assistance hidden>End assistance</button>
+          <div data-voice-launcher-slot></div>
+        </div>
+      </dialog>
+
+      <dialog id="cart-preview" class="cart-dialog cart-preview" data-cart-dialog aria-labelledby="cart-title">
+        <div class="cart-window-shell">
+          <header class="cart-window-header">
+            <div class="cart-header-title-row">
+              <span class="cart-header-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M5 7h14l1 14H4L5 7Zm3 0V5a4 4 0 0 1 8 0v2" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+              </span>
+              <div>
+                <p class="eyebrow">Order summary</p>
+                <h2 id="cart-title" class="cart-window-title">YOUR ORDER<span class="tomato-dot">.</span></h2>
+              </div>
+            </div>
+            <div class="cart-header-meta">
+              <span class="cart-badge-chip"><strong data-cart-header-count>0</strong> <span data-cart-header-unit>items</span></span>
+              <button class="dialog-close cart-close-button" type="button" data-cart-close aria-label="Close cart" autofocus>
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+              </button>
+            </div>
+          </header>
+
+          <div class="cart-window-body">
+            <p class="cart-intro">A little of what you love.</p>
+            <div class="cart-lines" data-cart-lines>
+              <p class="empty-cart">Your next great meal starts here. Add something that catches your eye.</p>
+            </div>
+            <p class="dialog-status" data-dialog-status role="status" aria-atomic="true"></p>
+            <div class="dialog-assistance" data-dialog-assistant hidden><p class="eyebrow">Typed assistance</p></div>
+            <button class="button ghost" type="button" data-reconcile-action hidden>Check pending changes</button>
+            <button class="button ghost" type="button" data-dialog-typing hidden>Continue by typing</button>
+            <button class="button ghost" type="button" data-dialog-end-assistance hidden>End assistance</button>
+            <div data-voice-launcher-slot></div>
+          </div>
+
+          <footer class="cart-window-footer">
+            <div class="cart-summary-breakdown">
+              <div class="fee-line">
+                <span>Subtotal</span>
+                <strong data-cart-subtotal>0 PKR</strong>
+              </div>
+              <div class="fee-line">
+                <span>Service fee</span>
+                <strong data-cart-fee data-service-fee="{{ catalog_summary.service_fee_pkr|int }}">0 PKR</strong>
+              </div>
+              <div class="total-line cart-window-total">
+                <span>Total</span>
+                <strong data-cart-total>0 PKR</strong>
+              </div>
+            </div>
+
+            <div class="cart-window-actions">
+              <button class="button primary full cart-checkout-btn" type="button" data-checkout-button disabled>
+                <span>Demo checkout</span>
+                <svg viewBox="0 0 20 20" fill="none" width="18" height="18" aria-hidden="true"><path d="M4 10h12m-5-5 5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+              <button class="button ghost full" type="button" data-cart-close-secondary>Keep browsing</button>
+            </div>
+            <p class="checkout-disclaimer">A demo with real choices. No payment collected.</p>
+          </footer>
+        </div>
+      </dialog>
+      <dialog id="voice-controls" class="voice-control-dialog" data-voice-controls aria-labelledby="voice-controls-title" aria-describedby="voice-controls-help">
+        <div class="voice-control-shell">
+          <button class="dialog-close" type="button" data-voice-panel-close aria-label="Close voice controls" autofocus>Close</button>
+          <h2 id="voice-controls-title">Voice assistant</h2>
+          <p id="voice-controls-help">Speak to browse and order, or type below. End stops your microphone and playback.</p>
+          <p class="voice-feedback" data-voice-feedback>Ready when you are.</p>
+          <p class="voice-microphone" data-voice-microphone>Microphone off</p>
+          <p class="dialog-status" data-dialog-status role="status" aria-atomic="true"></p>
+          <div class="voice-control-actions">
+            <button class="button primary" type="button" data-voice-use>Use voice ordering</button>
+            <button class="button primary" type="button" data-voice-retry hidden>Retry Voice Assistant</button>
+            <button class="button ghost" type="button" data-voice-pause hidden>Pause listening</button>
+            <button class="button ghost" type="button" data-voice-typed>Use typing instead</button>
+            <button class="button ghost" type="button" data-voice-panel-manual>Order manually</button>
+            <button class="button ghost" type="button" data-voice-end hidden>End voice session</button>
+          </div>
+          <div class="dialog-assistance" data-dialog-assistant hidden><p class="eyebrow">Conversation and typed requests</p></div>
+          <button class="button ghost" type="button" data-reconcile-action hidden>Check pending changes</button>
         </div>
       </dialog>
     </main>
+    <button class="voice-launcher" type="button" data-voice-launcher aria-label="Start Voice Assistant" aria-haspopup="dialog" aria-controls="voice-controls" aria-expanded="false">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="8" y="3" width="8" height="12" rx="4"/><path d="M5 10v2a7 7 0 0 0 14 0v-2M12 19v3m-4 0h8" stroke-linecap="round"/></svg>
+      <span data-voice-launcher-label>Start Voice Assistant</span>
+    </button>
   </body>
 </html>

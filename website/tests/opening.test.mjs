@@ -54,3 +54,55 @@ test('paused, reconnecting and ended states cannot create another dispatch', asy
   assert.equal(c.state, 'ended');
   assert.equal(calls.filter(([n]) => n === 'start').length, 1);
 });
+
+test('explicit retry finishes pending server cleanup before starting one replacement', async () => {
+  const { c, calls } = fixture();
+  const original = c.api;
+  let stops = 0;
+  c.api = async (name, ...args) => {
+    if (name === 'end' && ++stops === 1) throw new Error('offline');
+    return original(name, ...args);
+  };
+  await c.start({ mode: 'voice' });
+  await c.end();
+  assert.equal(c.current.serverPending, true);
+  await c.start({ mode: 'voice' });
+  assert.equal(c.state, 'voice_active');
+  assert.equal(stops, 2);
+  assert.equal(calls.filter(([name]) => name === 'start').length, 2);
+  await c.end();
+});
+
+test('permission completion updates microphone feedback before server preparation resolves', async () => {
+  const track = { kind: 'audio', enabled: true, readyState: 'live', stop() { this.readyState = 'ended'; } };
+  const { c, states } = fixture({ permission: async () => ({ getTracks: () => [track], getAudioTracks: () => [track] }) });
+  await c.start({ mode: 'voice' });
+  assert.equal(states.some(state => state.state === 'connecting' && state.microphoneActive), true);
+  await c.end();
+  assert.equal(states.at(-1).microphoneActive, false);
+});
+
+test('manual during a pending cleanup retry prevents a late microphone restart', async () => {
+  const { c, calls } = fixture();
+  const original = c.api;
+  let release, entered;
+  const waiting = new Promise(resolve => { entered = resolve; });
+  const hold = new Promise(resolve => { release = resolve; });
+  let stops = 0;
+  c.api = async (name, ...args) => {
+    if (name === 'end') {
+      stops++;
+      if (stops === 1) throw new Error('offline');
+      if (stops === 2) { entered(); await hold; }
+    }
+    return original(name, ...args);
+  };
+  await c.start({ mode: 'voice' });
+  await c.end();
+  const retry = c.start({ mode: 'voice' });
+  await waiting;
+  await c.end();
+  release();
+  await assert.rejects(retry, /cancelled/);
+  assert.equal(calls.filter(([name]) => name === 'media').length, 1);
+});

@@ -47,8 +47,8 @@ test("actual browser + website + worker: typed order, exact summary and demo rec
   await expect(page.locator("[data-cart-count]")).toHaveText("0");
   expect(await page.evaluate(() => window.typedMicrophoneCalls)).toBe(0);
   await page.locator("[data-receipt-panel]").scrollIntoViewIfNeeded();
-  await mkdir("../orchestration/evidence/final/phase-08/browser", { recursive: true });
-  await page.screenshot({ path: "../orchestration/evidence/final/phase-08/browser/typed-receipt.png" });
+  await mkdir("docs/ui-audit-evidence", { recursive: true });
+  await page.screenshot({ path: "docs/ui-audit-evidence/typed-receipt.png" });
   expect(errors).toEqual([]);
   const receipt = await page.locator("[data-receipt-id]").textContent();
   await page.reload();
@@ -211,8 +211,8 @@ test("unknown action survives reload, blocks resubmit and reconciles a delayed o
   const response = await page.request.post("/api/v2/app/action", { data: original,
     headers: { "X-FoodEase-Session": original.session_id } });
   expect(response.ok()).toBe(true); // release the delayed *original* request once
-  await page.locator("#project-details > summary").click();
-  await page.locator("[data-reconcile-action]").click();
+  if (!await page.locator('#project-details').evaluate(el => el.open)) await page.locator("#project-details > summary").click();
+  await page.locator("[data-reconcile-action]:visible").click();
   await expect(page.locator("[data-cart-count]")).toHaveText("1");
   await expect(page.locator("[data-order-status]")).toContainText("outcomes have been checked");
   expect(attempts).toBe(1);

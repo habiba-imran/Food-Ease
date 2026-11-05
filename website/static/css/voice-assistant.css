@@ -1,0 +1,66 @@
+/* Voice entry points reuse the existing FoodEase tokens and native dialogs. */
+:root body[data-experience] .voice-welcome {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 16px 28px;
+  align-items: center; margin: 128px 0 24px; padding: 24px;
+  background: var(--paper); color: var(--ink); border: 1px solid var(--line); border-radius: 6px;
+}
+:root body[data-experience] .voice-welcome h2 { margin: 0 0 8px; font: 400 2.2rem/1.05 var(--font-condensed); }
+:root body[data-experience] .voice-welcome p { margin: 0; font-size: 1rem; line-height: 1.6; }
+:root body[data-experience] .voice-welcome .voice-privacy { margin-top: 8px; color: var(--muted); font-size: .85rem; }
+.voice-welcome-actions { display: flex; flex-wrap: wrap; justify-content: end; gap: 8px; max-width: 410px; }
+:root body[data-experience] .voice-welcome-actions .button { font-size: .85rem; min-height: 48px; }
+.voice-text-action { min-height: 44px; padding: 8px 12px; border: 0; background: transparent; color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
+:root body[data-experience] .voice-feedback { color: var(--muted); font-size: .9rem; line-height: 1.5; overflow-wrap: anywhere; }
+.voice-welcome > .voice-feedback { grid-column: 1 / -1; }
+.voice-launcher {
+  position: fixed; right: 20px; bottom: calc(20px + env(safe-area-inset-bottom, 0px)); z-index: 45;
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+  max-width: calc(100vw - 32px); min-height: 48px; padding: 12px 18px;
+  border: 1px solid var(--ink); border-radius: 6px;
+  background: var(--ink); color: var(--paper); box-shadow: 0 4px 16px #0002;
+  font: 650 .9rem/1.4 var(--font-sans); text-align: center; cursor: pointer;
+}
+.voice-launcher svg { flex: 0 0 22px; }
+.voice-launcher:hover { text-decoration: underline; text-underline-offset: 3px; }
+.voice-launcher[data-voice-state=active] { background: var(--paper); color: var(--ink); border: 2px solid var(--gold); }
+:root body[data-experience] .voice-launcher:focus-visible { outline-color: var(--gold); outline-offset: 4px; }
+:root body[data-experience] dialog .voice-launcher { position: static; width: 100%; max-width: 100%; margin-top: 16px; box-shadow: none; }
+:root body[data-experience] .voice-control-dialog {
+  position: fixed; inset: 0; margin: auto; padding: 0;
+  width: min(540px, calc(100vw - 24px)); max-width: calc(100vw - 24px);
+  max-height: calc(100dvh - 32px); overflow: auto; overscroll-behavior: contain;
+  background: var(--paper); color: var(--ink); border: 1px solid var(--line); border-radius: 6px;
+}
+.voice-control-dialog::backdrop { background: #101a14a6; }
+.voice-control-shell { display: grid; gap: 16px; padding: 24px; }
+:root body[data-experience] .voice-control-shell h2 { margin: 0; font: 400 2.5rem/1.05 var(--font-condensed); }
+.voice-control-shell > .dialog-close { position: sticky; top: 8px; z-index: 2; justify-self: end; }
+.voice-control-shell > p { margin: 0; line-height: 1.6; }
+.voice-control-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+:root body[data-experience] .voice-control-actions .button { font-size: .85rem; min-height: 48px; padding-inline: 12px; white-space: normal; }
+.voice-microphone { font-size: .9rem; font-weight: 650; }
+.voice-microphone::before { content: ''; display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 8px; background: currentColor; }
+.voice-microphone[data-microphone-active=true] { color: var(--mint); }
+.voice-control-dialog .dialog-assistance .message-list { max-height: 180px; }
+.voice-control-dialog .assistant-form > div { min-width: 0; }
+:root body[data-experience] dialog .dialog-assistance .assistant-form,
+:root body[data-experience] dialog .dialog-assistance .message-list { background: var(--surface); border-color: var(--line); }
+:root body[data-experience] .dialog-assistance .message-list p {
+  max-width: 100%; background: var(--paper); color: var(--ink) !important; font-size: .9rem;
+}
+:root body[data-experience] .dialog-assistance .assistant-form label { color: var(--ink); font-size: .9rem; }
+:root body[data-experience] .dialog-assistance .assistant-form input {
+  background: var(--paper); color: var(--ink); font-size: 1rem; border-color: var(--line);
+}
+:root body[data-experience] .dialog-assistance .assistant-form input::placeholder { color: var(--muted); opacity: 1; }
+:root body[data-experience] .dialog-assistance .assistant-form button {
+  background: var(--ink); color: var(--paper) !important; min-width: 48px; min-height: 48px;
+}
+@media (max-width: 700px) {
+  :root body[data-experience] .voice-welcome { grid-template-columns: minmax(0, 1fr); padding: 18px; margin-top: 136px; }
+  .voice-welcome-actions { justify-content: start; max-width: none; }
+  .voice-launcher { right: 12px; bottom: calc(82px + env(safe-area-inset-bottom, 0px)); font-size: .85rem; }
+  .voice-control-shell { padding: 18px; }
+  :root body[data-experience] .site-footer { padding-bottom: 160px; }
+}
+@media (max-width: 380px) { .voice-control-actions { grid-template-columns: minmax(0, 1fr); } }

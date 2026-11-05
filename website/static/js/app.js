@@ -1,10 +1,15 @@
 import { Application, newId } from "./application.mjs";
-import { AssistanceController } from "./assistance-controller.mjs";
+import { AssistanceController } from "./assistance-controller.mjs?v=voice-13";
 import { LiveKitSeats } from "./livekit-bridge.mjs";
 import { TranscriptView } from "./transcripts.mjs";
 import { acquireTabLease } from "./tab-lease.mjs";
+import { voicePresentation, voiceErrorMessage } from "./voice-ui.mjs";
 
 const root = document.documentElement;
+const voiceControls = document.querySelector("[data-voice-controls]");
+const voiceLauncher = document.querySelector("[data-voice-launcher]");
+const voiceLauncherHome = document.createComment("voice launcher home");
+voiceLauncher?.before(voiceLauncherHome);
 root.dataset.assistanceState = "awaiting_spoken_choice_consent";
 
 root.dataset.foodeaseReady = "true";
@@ -22,6 +27,70 @@ const cartFee = document.querySelector("[data-cart-fee]");
 const cartTotal = document.querySelector("[data-cart-total]");
 const checkoutButton = document.querySelector("[data-checkout-button]");
 const orderStatus = document.querySelector("[data-order-status]");
+const cartDialog = document.querySelector("[data-cart-dialog], #cart-preview");
+const cartButton = document.querySelector(".cart-button, [data-cart-trigger]");
+const cartCloseButtons = document.querySelectorAll("[data-cart-close], [data-cart-close-secondary]");
+const cartHeaderCount = document.querySelector("[data-cart-header-count]");
+const dialogOrigins = new WeakMap();
+let shoppingOrigin = null;
+let cartBusy = false;
+let checkoutBusy = false;
+let confirmationBusy = false;
+let navigationBusy = false;
+const navigationRequests = new Map();
+
+function showDialog(dialog) {
+  if (!dialog || dialog.open) return;
+  if (voiceControls?.open) voiceControls.close();
+  const active = document.activeElement;
+  if (active && active !== document.body && !active.closest("dialog")) shoppingOrigin = active;
+  dialogOrigins.set(dialog, shoppingOrigin || cartButton);
+  dialog.querySelector("[data-dialog-status]")?.replaceChildren();
+  dialog.querySelectorAll("[data-reconcile-action]").forEach(button => { button.hidden = true; });
+  dialog.showModal();
+  syncDialogAssistance();
+}
+
+function outsideDialog(event, dialog) {
+  if (event.target !== dialog) return false;
+  const rect = dialog.getBoundingClientRect();
+  return event.clientX < rect.left || event.clientX > rect.right
+    || event.clientY < rect.top || event.clientY > rect.bottom;
+}
+
+async function navigateOnce(target) {
+  if (navigationRequests.has(target)) return navigationRequests.get(target);
+  const task = submitAction("navigate", { target });
+  navigationRequests.set(target, task);
+  try { return await task; }
+  finally { navigationRequests.delete(target); }
+}
+
+async function requestCart() {
+  const result = await navigateOnce("cart");
+  const message = orderStatus?.textContent;
+  openCart();
+  if (result?.status !== "success" && message) setStatus(message);
+}
+
+function dismissDialog(dialog, target) {
+  dialog?.close();
+  void navigateOnce(target);
+}
+
+function openCart() {
+  if (cartDialog && !cartDialog.open) {
+    showDialog(cartDialog);
+    cartButton?.setAttribute("aria-expanded", "true");
+  }
+}
+
+function closeCart() {
+  if (cartDialog && cartDialog.open) {
+    cartDialog.close();
+    cartButton?.setAttribute("aria-expanded", "false");
+  }
+}
 const itemDialog = document.querySelector("[data-item-dialog]");
 const detailCloseButtons = document.querySelectorAll("[data-detail-close], [data-detail-close-secondary]");
 const detailName = document.querySelector("[data-detail-name]");
@@ -43,6 +112,29 @@ const assistEnd = document.querySelector("[data-assist-end]");
 const scenarioButtons = document.querySelectorAll("[data-scenario]");
 const assistantForm = document.querySelector("[data-assistant-form]");
 const assistantInput = document.querySelector("[data-assistant-input]");
+// Relocate the existing typed UI only; its handlers, draft, transcript and session survive.
+const assistantFormHome = document.createComment("typed form home");
+const transcriptHome = document.createComment("transcript home");
+assistantForm?.before(assistantFormHome);
+agentTranscript?.before(transcriptHome);
+
+function syncDialogAssistance() {
+  const activeDialog = voiceControls?.open ? voiceControls : document.querySelector("dialog[open]");
+  const destination = assistanceActive && (liveSeats?.mode === "typed" || activeDialog === voiceControls)
+    ? activeDialog?.querySelector("[data-dialog-assistant]") : null;
+  document.querySelectorAll("[data-dialog-assistant]").forEach(slot => { slot.hidden = slot !== destination; });
+  document.querySelectorAll("[data-dialog-end-assistance]").forEach(button => { button.hidden = !assistanceActive; });
+  document.querySelectorAll("[data-dialog-typing]").forEach(button => { button.hidden = !assistanceActive || liveSeats?.mode === "typed"; });
+  const changed = destination ? assistantForm?.parentElement !== destination : assistantForm?.previousSibling !== assistantFormHome;
+  if (!changed) return;
+  agentTranscript?.setAttribute("aria-live", "off");
+  if (destination) destination.append(agentTranscript, assistantForm);
+  else {
+    transcriptHome.after(agentTranscript);
+    assistantFormHome.after(assistantForm);
+  }
+  requestAnimationFrame(() => agentTranscript?.setAttribute("aria-live", "polite"));
+}
 const demoDetails = document.querySelector("#project-details");
 const checkoutDialog = document.querySelector("[data-checkout-dialog]");
 const checkoutReview = document.querySelector("[data-checkout-review]");
@@ -218,8 +310,14 @@ function downloadJson(filename, payload) {
 }
 
 function setStatus(message) {
-  if (orderStatus) {
-    orderStatus.textContent = message;
+  // Only the active surface announces; background content is inert in a modal.
+  const surface = voiceControls?.open ? voiceControls : document.querySelector("dialog[open]");
+  const target = surface?.querySelector("[data-dialog-status]") || orderStatus;
+  if (target && target.textContent !== message) target.textContent = message;
+  if (/pending changes|unknown|unresolved|could not synchronize/i.test(message)) {
+    const reconcile = surface?.querySelector("[data-reconcile-action]");
+    if (reconcile) reconcile.hidden = false;
+    else if (demoDetails) demoDetails.open = true;
   }
 }
 
@@ -293,6 +391,7 @@ function applyTheme() {
     const isDark = activeTheme === "dark";
     headerThemeButton.setAttribute("aria-pressed", isDark ? "true" : "false");
     headerThemeButton.setAttribute("aria-label", isDark ? "Switch to light mode" : "Switch to dark mode");
+    headerThemeButton.setAttribute("title", isDark ? "Switch to light mode" : "Switch to dark mode");
   }
 }
 
@@ -314,6 +413,66 @@ function setAgentStatus(status) {
   if (agentStateShell) {
     agentStateShell.dataset.agentState = status;
   }
+  syncVoiceUi();
+}
+
+function currentVoicePresentation() {
+  const run = assistanceController?.current;
+  const microphoneActive = !run?.cancelled && (run?.media?.getAudioTracks?.() || [])
+    .some(track => track.readyState !== "ended" && track.enabled !== false);
+  return voicePresentation({ phase: root.dataset.assistanceState,
+    agentState: agentStateShell?.dataset.agentState, microphoneActive,
+    cleanupPending: Boolean(run?.cancelled && run.serverPending) });
+}
+
+function syncVoiceUi() {
+  if (!voiceLauncher) return;
+  const view = currentVoicePresentation();
+  voiceLauncher.dataset.voiceState = view.state;
+  voiceLauncher.querySelector("[data-voice-launcher-label]").textContent = view.label;
+  voiceLauncher.setAttribute("aria-label", view.canManage ? `${view.label} Open voice controls` : view.label);
+  voiceLauncher.setAttribute("aria-expanded", String(Boolean(voiceControls?.open)));
+  document.querySelectorAll("[data-voice-feedback]").forEach(node => {
+    node.textContent = node.closest("[data-voice-controls]") ? view.label : `${view.label}. ${view.microphone}.`;
+  });
+  document.querySelectorAll("[data-voice-microphone]").forEach(node => {
+    node.textContent = view.microphone;
+    node.dataset.microphoneActive = String(view.microphone === "Microphone on");
+  });
+  const connecting = view.state === "connecting";
+  const active = view.canManage && !connecting;
+  voiceControls.querySelector("[data-voice-use]").hidden = view.state === "error" || connecting || root.dataset.assistanceState === "voice_active";
+  voiceControls.querySelector("[data-voice-retry]").hidden = view.state !== "error";
+  const pause = voiceControls.querySelector("[data-voice-pause]");
+  pause.hidden = !active;
+  pause.textContent = root.dataset.assistanceState === "paused" ? "Resume listening" : "Pause listening";
+  pause.setAttribute("aria-pressed", String(root.dataset.assistanceState === "paused"));
+  voiceControls.querySelector("[data-voice-end]").hidden = !view.canManage;
+  voiceControls.querySelector("[data-voice-typed]").disabled = connecting;
+  document.querySelectorAll("[data-welcome-voice], [data-welcome-typed]").forEach(button => { button.disabled = connecting; });
+}
+
+function placeVoiceLauncher() {
+  if (!voiceLauncher) return;
+  const slot = Array.from(document.querySelectorAll("dialog[open] [data-voice-launcher-slot]")).at(-1);
+  if (slot && voiceLauncher.parentElement !== slot) slot.append(voiceLauncher);
+  else if (!slot && voiceLauncher.previousSibling !== voiceLauncherHome) voiceLauncherHome.after(voiceLauncher);
+}
+
+function openVoiceControls() {
+  if (!voiceControls.open) voiceControls.showModal();
+  syncDialogAssistance();
+  syncVoiceUi();
+}
+
+function finishManualUi() {
+  voiceControls?.close();
+  placeVoiceLauncher();
+  syncDialogAssistance();
+  syncVoiceUi();
+  const target = document.querySelector("dialog[open]") ? voiceLauncher : document.querySelector("#popular");
+  target?.focus({ preventScroll: false });
+  setStatus("You can browse the menu and order manually. Start Voice Assistant whenever you need help. Your microphone is off.");
 }
 
 function appendTranscript(kind, text) {
@@ -365,11 +524,17 @@ async function renderApplication(snapshot, result = null, request = null) {
   if (cartChanged) {
     const active = document.activeElement;
     const label = active?.getAttribute("aria-label");
+    const rows = Array.from(cartLines?.children || []);
+    const rowIndex = rows.indexOf(active?.closest(".cart-line"));
+    const scrollTop = cartDialog?.scrollTop || 0;
     renderCart(snapshot.cart);
     lastRenderedCart = cartKey;
     if (label && active && !active.isConnected) {
-      Array.from(cartLines?.querySelectorAll("button") || []).find((b) => b.getAttribute("aria-label") === label)?.focus({ preventScroll: true });
+      const same = Array.from(cartLines?.querySelectorAll("button") || []).find((b) => b.getAttribute("aria-label") === label);
+      const next = cartLines?.children[Math.max(0, Math.min(rowIndex, cartLines.children.length - 1))];
+      (same && !same.disabled ? same : next?.querySelector("button:not(:disabled)") || cartDialog?.querySelector("[data-cart-close]"))?.focus({ preventScroll: true });
     }
+    if (cartDialog) cartDialog.scrollTop = scrollTop;
     pendingConfirmationToken = pendingSummaryRevision = null;
   }
   applyMenuState();
@@ -377,15 +542,16 @@ async function renderApplication(snapshot, result = null, request = null) {
   const routeChanged = lastRenderedRoute !== snapshot.route || lastRenderedFocus !== snapshot.focus_item_id;
   if (snapshot.route !== "item" && itemDialog?.open) itemDialog.close();
   if (!["checkout", "confirmation"].includes(snapshot.route) && checkoutDialog?.open) checkoutDialog.close();
+  if (snapshot.route !== "cart" && cartDialog?.open && ["home", "menu", "item", "checkout", "confirmation"].includes(snapshot.route)) closeCart();
   if (snapshot.route === "item" && snapshot.focus_item_id) {
     const detail = catalogItems.get(snapshot.focus_item_id);
-    if (detail && (routeChanged || result?.operation === "get_item_details")) {
+    if (detail && (routeChanged || ["get_item_details", "select_item"].includes(result?.operation))) {
       const preview = Array.from(previewButtons).find((button) => button.dataset.previewItem === detail.item_id);
       if (preview) paintPreview(preview);
       renderItemDetails({ id: detail.item_id, name: detail.name, price: detail.unit_price_pkr,
         category: detail.category, tags: detail.tags.join(" "), available: detail.available,
         description: detail.description }, detail);
-      if (!itemDialog.open) itemDialog.showModal();
+      showDialog(itemDialog);
     }
   } else if (snapshot.route === "checkout") {
     const summary = result?.status === "success" && result.operation === "checkout.get_summary" ? result : null;
@@ -400,13 +566,23 @@ async function renderApplication(snapshot, result = null, request = null) {
     try { sessionStorage.setItem("foodease.last-order-action.v2", request.payload.action_id); } catch { /* Memory-only. */ }
   }
   if (routeChanged && ["home", "menu", "cart"].includes(snapshot.route)) {
-    document.querySelector(snapshot.route === "cart" ? "#cart-preview" : snapshot.route === "menu" ? "#popular" : "#main")?.scrollIntoView({ block: "start", behavior: "instant" });
+    if (snapshot.route === "cart") {
+      openCart();
+    } else {
+      closeCart();
+      if (!["cart", "item", "checkout", "confirmation"].includes(lastRenderedRoute)) {
+        document.querySelector(snapshot.route === "menu" ? "#popular" : "#main")?.scrollIntoView({ block: "start", behavior: "instant" });
+      }
+    }
   }
   lastRenderedRoute = snapshot.route;
   lastRenderedFocus = snapshot.focus_item_id;
   root.dataset.foodeaseRevision = String(snapshot.revision);
   root.dataset.foodeaseRoute = snapshot.route;
   updateContextSummary();
+  syncDialogAssistance();
+  placeVoiceLauncher();
+  syncVoiceUi();
 }
 
 async function refreshContext() {
@@ -439,7 +615,13 @@ async function submitAction(operation, argumentsObject = {}) {
     return { status: "timeout_unknown", error_code: "timeout", verified_state: null };
   }
   if (result.status === "timeout_unknown") setStatus("The outcome is unknown. Use Check pending changes; no action has been sent again.");
-  else if (result.status !== "success") setStatus(`Action was not completed: ${result.error_code || result.status}.`);
+  else if (result.status !== "success") setStatus({
+    out_of_stock: "This dish is sold out. Please choose another item.",
+    invalid_arguments: "That change is unavailable. Each dish can have up to 99 in the cart.",
+    confirmation_expired: "Your review expired or the cart changed. Edit your cart, then review checkout again.",
+    stale_context: "Your order changed. Review the updated cart before trying again.",
+    not_available: "This action is unavailable. Review your cart and try again.",
+  }[result.error_code] || `Action was not completed: ${result.error_code || result.status}.`);
   return result;
 }
 
@@ -456,6 +638,7 @@ function itemFromCard(card) {
 }
 
 function renderItemDetails(item, details = {}) {
+  const resetQuantity = !itemDialog?.open || selectedDetailItem?.id !== item.id;
   selectedDetailItem = item;
   if (detailName) {
     detailName.textContent = item.name;
@@ -496,14 +679,34 @@ function renderItemDetails(item, details = {}) {
       }),
     );
   }
-  if (detailQuantity) {
+  if (detailQuantity && resetQuantity) {
     detailQuantity.value = "1";
+    detailQuantity.disabled = !item.available;
+    detailQuantity.removeAttribute("aria-invalid");
   }
+  const quantityError = document.querySelector("#quantity-error");
+  if (quantityError && resetQuantity) quantityError.hidden = true;
+  updateDetailTotal();
   if (detailAddButton) {
     detailAddButton.disabled = !item.available;
     detailAddButton.textContent = item.available ? "Add selected quantity" : "Sold out";
   }
 }
+
+function updateDetailTotal() {
+  const quantity = detailQuantity?.valueAsNumber;
+  const valid = detailQuantity?.validity.valid && Number.isInteger(quantity);
+  const total = document.querySelector("[data-detail-total]");
+  if (total) total.textContent = valid ? money(quantity * (selectedDetailItem?.price || 0)) : "—";
+  return valid;
+}
+
+detailQuantity?.addEventListener("input", () => {
+  if (updateDetailTotal()) {
+    detailQuantity.removeAttribute("aria-invalid");
+    document.querySelector("#quantity-error").hidden = true;
+  }
+});
 
 async function detectArSupport() {
   if (!("xr" in navigator) || typeof navigator.xr?.isSessionSupported !== "function") {
@@ -780,7 +983,10 @@ async function runAcceptanceSmoke() {
 async function openItemDetails(card) {
   const item = itemFromCard(card);
   setStatus(`Opening details for ${item.name}.`);
-  await submitAction("select_item", { item_id: item.id });
+  if (navigationBusy) return;
+  navigationBusy = true;
+  try { await submitAction("select_item", { item_id: item.id }); }
+  finally { navigationBusy = false; }
 }
 
 function applyMenuState() {
@@ -819,9 +1025,6 @@ function applyMenuState() {
 function resetConfirmation() {
   pendingConfirmationToken = null;
   pendingSummaryRevision = null;
-  if (checkoutButton) {
-    checkoutButton.textContent = "Demo checkout";
-  }
 }
 
 function renderCheckoutSummary(summary) {
@@ -858,17 +1061,20 @@ function renderCheckoutSummary(summary) {
   if (receiptPanel) {
     receiptPanel.hidden = true;
   }
-  if (checkoutDialog && !checkoutDialog.open) checkoutDialog.showModal();
+  document.querySelector("#checkout-dialog-title").textContent = "Review your demo order";
+  checkoutDialog?.setAttribute("aria-labelledby", "checkout-dialog-title");
+  showDialog(checkoutDialog);
 }
 
 function renderReceipt(orderResult) {
   const order = orderResult?.verified_state?.order;
-  const orderId = orderResult?.verified_state?.demo_order_id || "DEMO-0000";
+  const orderId = orderResult?.verified_state?.demo_order_id;
+  if (!order || !orderId) return;
   if (receiptId) {
     receiptId.textContent = orderId;
   }
   if (receiptSummary) {
-    receiptSummary.textContent = `Confirmed ${order?.lines?.length || 0} item line(s), total ${money(order?.total)}. Cart is preserved only until demo submission, then cleared as expected.`;
+    receiptSummary.textContent = `Demo confirmed: ${order.lines.reduce((sum, line) => sum + line.quantity, 0)} items, total ${money(order.total)}. No payment was collected and no restaurant order was sent.`;
   }
   if (checkoutReview) {
     checkoutReview.hidden = true;
@@ -876,7 +1082,9 @@ function renderReceipt(orderResult) {
   if (receiptPanel) {
     receiptPanel.hidden = false;
   }
-  if (checkoutDialog && !checkoutDialog.open) checkoutDialog.showModal();
+  checkoutDialog?.setAttribute("aria-labelledby", "demo-receipt-title");
+  showDialog(checkoutDialog);
+  receiptId?.focus();
 }
 
 function renderCart(cart) {
@@ -886,6 +1094,13 @@ function renderCart(cart) {
 
   if (cartCount) {
     cartCount.textContent = String(quantity);
+    if (cartButton) {
+      cartButton.setAttribute("aria-label", `Open cart (${quantity} ${quantity === 1 ? "item" : "items"})`);
+    }
+  }
+  if (cartHeaderCount) {
+    cartHeaderCount.textContent = String(quantity);
+    document.querySelector("[data-cart-header-unit]").textContent = quantity === 1 ? "item" : "items";
   }
   if (cartSubtotal) {
     cartSubtotal.textContent = money(cart?.subtotal);
@@ -897,14 +1112,19 @@ function renderCart(cart) {
     cartTotal.textContent = money(cart?.total);
   }
   if (checkoutButton) {
-    checkoutButton.disabled = lines.length === 0;
+    checkoutButton.disabled = lines.length === 0 || cartBusy || checkoutBusy;
   }
   if (!cartLines) {
     return;
   }
 
   if (!lines.length) {
-    cartLines.innerHTML = '<p class="empty-cart">Your cart is empty. Add a dish to preview checkout.</p>';
+    cartLines.innerHTML = '<div class="empty-cart-state"><div class="empty-cart-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" width="44" height="44" stroke="currentColor" stroke-width="1.6"><path d="M5 7h14l1 14H4L5 7Zm3 0V5a4 4 0 0 1 8 0v2" stroke-linejoin="round"/><path d="M10 12a2 2 0 1 0 4 0" stroke-linecap="round"/></svg></div><h3>Your cart is empty</h3><p class="empty-cart-hint">Add something delicious that catches your eye to start your order.</p><button type="button" class="button ghost" data-cart-browse>Explore menu</button></div>';
+    cartLines.querySelector("[data-cart-browse]")?.addEventListener("click", () => {
+      dialogOrigins.set(cartDialog, document.querySelector("#popular"));
+      dismissDialog(cartDialog, "menu");
+      document.querySelector("#popular")?.focus();
+    });
     return;
   }
 
@@ -912,63 +1132,87 @@ function renderCart(cart) {
     ...lines.map((line) => {
       const row = document.createElement("div");
       row.className = "cart-line";
+      row.dataset.itemId = line.item_id;
+      const image = document.createElement("img");
+      image.className = "cart-line-image";
+      image.src = itemImageUrl(line.item_id, 160);
+      image.alt = "";
+      image.width = 64;
+      image.height = 64;
 
       const copy = document.createElement("div");
+      copy.className = "cart-line-copy";
       const name = document.createElement("strong");
-      const meta = document.createElement("span");
+      name.className = "cart-line-name";
       name.textContent = line.name;
+      const meta = document.createElement("span");
+      meta.className = "cart-line-meta";
       meta.textContent = `${line.quantity} x ${money(line.unit_price)}`;
       copy.append(name, meta);
+
+      const subtotal = document.createElement("span");
+      subtotal.className = "cart-line-subtotal";
+      subtotal.textContent = money(line.quantity * line.unit_price);
 
       const controls = document.createElement("div");
       controls.className = "cart-controls";
 
       const decrease = document.createElement("button");
       decrease.type = "button";
+      decrease.className = "cart-stepper-btn cart-decrease";
       decrease.textContent = "-";
-      decrease.setAttribute("aria-label", `Decrease ${line.name}`);
-      decrease.addEventListener("click", async () => {
-        resetConfirmation();
-        let result;
-        if (line.quantity <= 1) {
-          result = await submitAction("cart.remove_item", { item_id: line.item_id });
-        } else {
-          result = await submitAction("cart.set_quantity", {
-            item_id: line.item_id,
-            quantity: line.quantity - 1,
-          });
-        }
-        if (result.status === "success") setStatus(`${line.name} quantity updated.`);
-      });
+      decrease.setAttribute("aria-label", `Decrease ${line.name}${line.quantity === 1 ? " (removes item)" : ""}`);
+      decrease.addEventListener("click", () => changeCart(line, line.quantity - 1));
+
+      const qty = document.createElement("span");
+      qty.className = "cart-stepper-qty";
+      qty.textContent = String(line.quantity);
 
       const increase = document.createElement("button");
       increase.type = "button";
+      increase.className = "cart-stepper-btn cart-increase";
       increase.textContent = "+";
       increase.setAttribute("aria-label", `Increase ${line.name}`);
-      increase.addEventListener("click", async () => {
-        resetConfirmation();
-        const result = await submitAction("cart.set_quantity", {
-          item_id: line.item_id,
-          quantity: line.quantity + 1,
-        });
-        if (result.status === "success") setStatus(`${line.name} quantity updated.`);
-      });
+      increase.disabled = line.quantity >= 99;
+      if (increase.disabled) increase.title = "Maximum quantity is 99";
+      increase.addEventListener("click", () => changeCart(line, line.quantity + 1));
 
       const remove = document.createElement("button");
       remove.type = "button";
+      remove.className = "cart-remove-btn";
       remove.textContent = "Remove";
       remove.setAttribute("aria-label", `Remove ${line.name} from cart`);
-      remove.addEventListener("click", async () => {
-        resetConfirmation();
-        const result = await submitAction("cart.remove_item", { item_id: line.item_id });
-        if (result.status === "success") setStatus(`${line.name} removed from cart.`);
-      });
+      remove.addEventListener("click", () => changeCart(line, 0));
 
-      controls.append(decrease, increase, remove);
-      row.append(copy, controls);
+      controls.append(decrease, qty, increase, remove);
+      row.append(image, copy, subtotal, controls);
       return row;
     }),
   );
+  setCartBusy(cartBusy);
+}
+
+function setCartBusy(busy) {
+  cartLines?.setAttribute("aria-busy", String(busy));
+  cartLines?.querySelectorAll("button").forEach(button => button.setAttribute("aria-disabled", String(busy)));
+  if (checkoutButton) checkoutButton.disabled = busy || checkoutBusy || !appContext?.cart?.lines.length;
+}
+
+async function changeCart(line, quantity) {
+  if (cartBusy) return;
+  cartBusy = true;
+  setCartBusy(true);
+  resetConfirmation();
+  setStatus(`Updating ${line.name}…`);
+  try {
+    const result = await submitAction(quantity === 0 ? "cart.remove_item" : "cart.set_quantity", {
+      item_id: line.item_id, ...(quantity === 0 ? {} : { quantity }),
+    });
+    if (result.status === "success") setStatus(`${line.name} ${quantity === 0 ? "removed" : `quantity ${quantity}`}. Cart total ${cartTotal.textContent}.`);
+  } finally {
+    cartBusy = false;
+    setCartBusy(false);
+  }
 }
 
 cards.forEach((card) => {
@@ -1017,32 +1261,42 @@ clearMenuState?.addEventListener("click", async () => {
 
 detailCloseButtons.forEach((button) => {
   button.addEventListener("click", () => {
-    void submitAction("navigate", { target: "back" });
+    dismissDialog(itemDialog, "back");
   });
 });
 
 itemDialog?.addEventListener("click", (event) => {
-  if (event.target === itemDialog) {
-    void submitAction("navigate", { target: "back" });
+  if (outsideDialog(event, itemDialog)) {
+    dismissDialog(itemDialog, "back");
   }
 });
 
 detailAddButton?.addEventListener("click", async () => {
-  if (!selectedDetailItem) {
+  if (!selectedDetailItem || detailAddButton.disabled) {
     return;
   }
-  const quantity = Math.max(1, Math.min(12, Number(detailQuantity?.value || 1)));
+  if (!updateDetailTotal()) {
+    const error = document.querySelector("#quantity-error");
+    error.textContent = "Enter a whole number from 1 to 12.";
+    error.hidden = false;
+    detailQuantity.setAttribute("aria-invalid", "true");
+    detailQuantity.focus();
+    setStatus(error.textContent);
+    return;
+  }
+  const quantity = detailQuantity.valueAsNumber;
+  const item = selectedDetailItem;
   resetConfirmation();
   detailAddButton.disabled = true;
-  setStatus(`Adding ${quantity} ${selectedDetailItem.name}.`);
+  setStatus(`Adding ${quantity} ${item.name}.`);
   const result = await submitAction("cart.add_item", {
-    item_id: selectedDetailItem.id,
+    item_id: item.id,
     quantity,
   });
-  detailAddButton.disabled = !selectedDetailItem.available;
+  detailAddButton.disabled = !selectedDetailItem?.available;
   if (result.status === "success") {
-    await submitAction("navigate", { target: "back" });
-    setStatus(`${selectedDetailItem.name} added from details. Cart total is ${cartTotal?.textContent || "updated"}.`);
+    if (appContext?.route === "item" && appContext.focus_item_id === item.id) await navigateOnce("back");
+    setStatus(`${quantity} ${item.name} added. Cart total is ${cartTotal?.textContent || "updated"}.`);
   }
 });
 
@@ -1130,44 +1384,74 @@ searchInput?.addEventListener("input", () => {
 });
 
 checkoutButton?.addEventListener("click", async () => {
+  if (checkoutBusy || cartBusy) return;
+  checkoutBusy = true;
+  checkoutButton.disabled = true;
   setStatus("Preparing checkout summary...");
-  const summary = await submitAction("checkout.get_summary");
-  if (summary.status === "success") {
-    pendingConfirmationToken = summary.confirmation_token;
-    pendingSummaryRevision = summary.verified_state.summary_revision;
-    checkoutButton.textContent = "Demo checkout";
-    setStatus(`Please review and confirm demo checkout total ${money(summary.verified_state.total)}.`);
+  try {
+    const summary = await submitAction("checkout.get_summary");
+    if (summary.status === "success") {
+      setStatus(`Review your demo order. Total ${money(summary.verified_state.total)}. No payment will be collected.`);
+    }
+  } finally {
+    checkoutBusy = false;
+    setCartBusy(cartBusy);
+  }
+});
+
+cartButton?.addEventListener("click", () => {
+  void requestCart();
+});
+
+cartCloseButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    dismissDialog(cartDialog, "menu");
+  });
+});
+
+cartDialog?.addEventListener("click", (event) => {
+  if (outsideDialog(event, cartDialog)) {
+    dismissDialog(cartDialog, "menu");
   }
 });
 
 confirmOrderButton?.addEventListener("click", async () => {
+  if (confirmationBusy) return;
   if (!pendingConfirmationToken) {
     setStatus("Checkout confirmation expired. Please review the cart again.");
     await submitAction("navigate", { target: "cart" });
     return;
   }
+  confirmationBusy = true;
+  confirmOrderButton.disabled = true;
   setStatus("Submitting confirmed demo order...");
-  const submit = await submitAction("checkout.submit_demo_order", {
-    confirmed: true,
-    confirmation_token: pendingConfirmationToken,
-    summary_revision: pendingSummaryRevision,
-  });
-  if (submit.status === "success") {
-    pendingConfirmationToken = null;
-    pendingSummaryRevision = null;
-    setStatus(`Demo order placed: ${submit.verified_state.demo_order_id}. Cart is now empty.`);
+  try {
+    const submit = await submitAction("checkout.submit_demo_order", {
+      confirmed: true,
+      confirmation_token: pendingConfirmationToken,
+      summary_revision: pendingSummaryRevision,
+    });
+    if (submit.status === "success") {
+      pendingConfirmationToken = pendingSummaryRevision = null;
+      setStatus(`Demo order confirmed: ${submit.verified_state.demo_order_id}. No payment collected or restaurant order sent.`);
+    } else {
+      pendingConfirmationToken = pendingSummaryRevision = null;
+    }
+  } finally {
+    confirmationBusy = false;
+    confirmOrderButton.disabled = !pendingConfirmationToken;
   }
 });
 
 checkoutCloseButtons.forEach((button) => {
   button.addEventListener("click", () => {
-    void submitAction("navigate", { target: button.matches("[data-receipt-close]") ? "menu" : "cart" });
+    dismissDialog(checkoutDialog, button.matches("[data-receipt-close]") ? "menu" : "cart");
   });
 });
 
 checkoutDialog?.addEventListener("click", (event) => {
-  if (event.target === checkoutDialog) {
-    void submitAction("navigate", { target: "cart" });
+  if (outsideDialog(event, checkoutDialog)) {
+    dismissDialog(checkoutDialog, appContext?.route === "confirmation" ? "menu" : "cart");
   }
 });
 
@@ -1188,6 +1472,7 @@ async function controller() {
       return response.json();
     },
     acquireMedia: async (mode) => mode !== "typed" ? (() => {
+      if (!window.isSecureContext) throw new Error("Voice needs HTTPS or localhost. You can still browse and order manually.");
       if (!navigator.mediaDevices?.getUserMedia) throw new Error("No microphone is available. You can use typing or browse yourself.");
       return navigator.mediaDevices.getUserMedia({ audio: true, video: false });
     })()
@@ -1207,13 +1492,14 @@ async function controller() {
           else if (status === "reconnected") assistanceController.modeChanged(seats.mode);
           else if (status === "paused") assistanceController.setPhase("paused");
           else if (/\s/.test(status)) setStatus(status);
-          else if (assistanceActive) setAgentStatus(status);
+          else setAgentStatus(status);
         }, onControl: async (control) => {
           if (liveSeats !== seats || seats.closed) return;
           if (control.intent === "end" || control.intent === "switch_mode" && control.mode === "manual") {
             assistanceIntent++;
             assistanceActive = false;
             await assistanceController.end();
+            finishManualUi();
           } else if (control.intent === "switch_mode" && control.mode === "typed") {
             seats.stopMicrophone();
             seats.mode = "typed";
@@ -1251,18 +1537,31 @@ async function controller() {
     },
     onState: (state) => {
       assistanceActive = ["active", "paused", "voice_active", "typed_active"].includes(state.state);
+      const previousPhase = root.dataset.assistanceState;
       root.dataset.assistanceState = state.modeState;
       const typedAudio = document.querySelector("[data-assist-typed-audio]");
       typedAudio.disabled = !assistanceActive || liveSeats?.mode !== "typed";
       if (typedAudio.disabled) typedAudio.checked = false;
       const send = assistantForm?.querySelector("button[type=submit]");
       if (send) send.disabled = !assistanceActive;
-      setAgentStatus(state.modeState === "ended" ? "ended" : state.state === "active" ? "ready/listening" : state.state);
+      const speechState = agentStateShell?.dataset.agentState;
+      setAgentStatus(state.modeState === "ended" ? "ended" : state.state === "active"
+        ? ["assistant_speaking", "thinking"].includes(speechState) ? speechState : "ready/listening" : state.state);
       if (state.state === "active") {
         try { sessionStorage.setItem("foodease.assistance-used.v2", app.sessionId); } catch { /* Optional resume copy only. */ }
       }
       if (state.serverCleanupPending) setStatus("Local assistance stopped. Server cleanup is pending; your cart is preserved.");
       else if (state.detail) setStatus(state.detail);
+      else if (state.state === "active" && previousPhase !== state.modeState) {
+        setStatus(state.modeState === "choosing_mode" ? "Say voice or manual, or choose a mode below."
+          : state.modeState === "typed_active" ? "Typed assistance ready. Microphone off."
+          : "Voice assistant ready. Microphone on.");
+      }
+      else if (previousPhase !== state.modeState && ["connecting", "reconnecting", "paused"].includes(state.modeState)) {
+        setStatus(state.modeState === "paused" ? "Assistance paused. Microphone muted."
+          : state.modeState === "reconnecting" ? "Reconnecting assistance. Microphone muted until the connection is checked."
+          : "Connecting voice or typed assistance. You can end or choose manual ordering at any time.");
+      }
       if (app.snapshot) void renderApplication(app.snapshot).catch(() => setStatus("Could not refresh assistance controls. Your cart is preserved."));
     },
   });
@@ -1274,6 +1573,10 @@ async function startAssistance(mode) {
   try {
     const owner = await controller();
     if (intent !== assistanceIntent) return;
+    if (assistanceActive && owner.current?.mode === "choice" && mode === "voice") {
+      await liveSeats.control("switch_mode", "voice");
+      return; // Existing bound worker acknowledges the choice; no second generation.
+    }
     if (owner.current && !owner.current.cancelled && owner.current.mode !== mode) await owner.end();
     if (intent !== assistanceIntent) return;
     if (assistancePaused && owner.current && !owner.current.cancelled && owner.current.mode === mode) {
@@ -1287,14 +1590,21 @@ async function startAssistance(mode) {
     if (assistPause) assistPause.textContent = "Pause";
   } catch (error) {
     if (intent !== assistanceIntent) return;
+    // Startup failures already stop their run; failed controls on an active
+    // chooser must also release capture before the UI offers a fresh retry.
+    if (assistanceController?.current && !assistanceController.current.cancelled) {
+      await assistanceController.end({ state: "error" });
+    }
+    if (intent !== assistanceIntent) return;
+    root.dataset.assistanceState = "error";
     setAgentStatus("error");
-    setStatus(error.message || "Could not start assistance. Manual ordering is still available.");
+    setStatus(voiceErrorMessage(error));
   }
 }
 assistStart?.addEventListener("click", () => { void startAssistance("typed"); });
 document.querySelector("[data-assist-voice]")?.addEventListener("click", () => { void startAssistance("voice"); });
 document.querySelector("[data-assist-choice]")?.addEventListener("click", () => { void startAssistance("choice"); });
-assistPause?.addEventListener("click", async () => {
+async function toggleAssistancePause() {
   if (!assistanceActive || !liveSeats) return;
   try {
     await liveSeats.control(assistancePaused ? "resume" : "pause");
@@ -1307,7 +1617,8 @@ assistPause?.addEventListener("click", async () => {
     assistPause.textContent = assistancePaused ? "Resume" : "Pause";
     setAgentStatus(assistancePaused ? "muted/paused" : "ready/listening");
   } catch { setStatus("The pause request could not be delivered. End assistance to stop locally."); }
-});
+}
+assistPause?.addEventListener("click", () => { void toggleAssistancePause(); });
 function chooseManual(ended = false) {
   assistanceIntent++;
   assistanceActive = false;
@@ -1316,7 +1627,9 @@ function chooseManual(ended = false) {
   void assistanceController?.end({ state: ended ? "ended" : "manual" });
 }
 assistEnd?.addEventListener("click", () => chooseManual(true));
-document.querySelector("[data-assist-manual]")?.addEventListener("click", () => chooseManual());
+document.querySelector("[data-assist-manual]")?.addEventListener("click", () => {
+  chooseManual(); finishManualUi();
+});
 document.querySelector("[data-assist-typed-audio]")?.addEventListener("change", async (event) => {
   const seats = liveSeats;
   if (!assistanceActive || seats?.mode !== "typed") { event.target.checked = false; return; }
@@ -1362,11 +1675,52 @@ assistantForm?.addEventListener("submit", async (event) => {
 });
 assistantInput?.addEventListener("focus", () => { if (assistanceActive) void liveSeats?.control("pause_tips"); });
 assistantInput?.addEventListener("blur", () => { if (assistanceActive) void liveSeats?.control("resume_tips"); });
-for (const dialog of [itemDialog, checkoutDialog]) dialog?.addEventListener("cancel", (event) => {
+for (const dialog of [itemDialog, checkoutDialog, cartDialog]) dialog?.addEventListener("cancel", (event) => {
   event.preventDefault();
-  void submitAction("navigate", { target: dialog === checkoutDialog ? "cart" : "back" });
+  dismissDialog(dialog, dialog === checkoutDialog ? appContext?.route === "confirmation" ? "menu" : "cart" : dialog === cartDialog ? "menu" : "back");
 });
+for (const dialog of [itemDialog, checkoutDialog, cartDialog, arDialog]) dialog?.addEventListener("close", () => {
+  syncDialogAssistance();
+  placeVoiceLauncher();
+  if (dialog === cartDialog) cartButton?.setAttribute("aria-expanded", "false");
+  if (document.querySelector("dialog[open]")) return;
+  const origin = dialogOrigins.get(dialog);
+  (origin?.isConnected && origin.getClientRects().length ? origin : cartButton)?.focus({ preventScroll: true });
+});
+voiceLauncher?.addEventListener("click", () => {
+  const view = currentVoicePresentation();
+  openVoiceControls();
+  if (view.canStart) void startAssistance("voice");
+});
+document.querySelector("[data-welcome-voice]")?.addEventListener("click", () => {
+  const view = currentVoicePresentation();
+  openVoiceControls();
+  if (view.canStart) void startAssistance("choice");
+});
+document.querySelector("[data-welcome-manual]")?.addEventListener("click", () => {
+  chooseManual();
+  finishManualUi();
+});
+document.querySelector("[data-welcome-typed]")?.addEventListener("click", () => {
+  openVoiceControls(); void startAssistance("typed");
+});
+voiceControls?.querySelector("[data-voice-panel-close]").addEventListener("click", () => voiceControls.close());
+voiceControls?.addEventListener("close", () => {
+  syncDialogAssistance(); placeVoiceLauncher(); syncVoiceUi();
+  const manual = ["manual", "ended"].includes(root.dataset.assistanceState);
+  const target = manual && !document.querySelector("dialog[open]") ? document.querySelector("#popular") : voiceLauncher;
+  target?.focus({ preventScroll: true });
+});
+voiceControls?.addEventListener("click", event => { if (outsideDialog(event, voiceControls)) voiceControls.close(); });
+voiceControls?.querySelector("[data-voice-use]").addEventListener("click", () => { void startAssistance("voice"); });
+voiceControls?.querySelector("[data-voice-retry]").addEventListener("click", () => { void startAssistance("voice"); });
+voiceControls?.querySelector("[data-voice-typed]").addEventListener("click", () => { void startAssistance("typed"); });
+voiceControls?.querySelector("[data-voice-pause]").addEventListener("click", () => { void toggleAssistancePause(); });
+for (const button of voiceControls?.querySelectorAll("[data-voice-panel-manual], [data-voice-end]") || []) {
+  button.addEventListener("click", () => { chooseManual(); finishManualUi(); });
+}
 document.addEventListener("click", (event) => {
+  if (event.defaultPrevented) return;
   if (event.target.closest("a[href='/']")) {
     event.preventDefault();
     void submitAction("navigate", { target: "home" });
@@ -1374,15 +1728,35 @@ document.addEventListener("click", (event) => {
   }
   const link = event.target.closest("a[href^='#']");
   const target = { "#popular": "menu", "#categories": "menu", "#cart-preview": "cart" }[link?.getAttribute("href")];
-  if (target) { event.preventDefault(); void submitAction("navigate", { target }); }
+  if (target) {
+    event.preventDefault();
+    if (target === "cart") { void requestCart(); return; }
+    if (target === "menu") {
+      document.querySelector(link.hash)?.scrollIntoView({ block: "start", behavior: "instant" });
+      if (link.classList.contains("skip-link")) document.querySelector(link.hash)?.focus();
+    }
+    void navigateOnce(target);
+  }
 });
+document.querySelector("[data-order-manual]")?.addEventListener("click", () => chooseManual());
 window.addEventListener("pagehide", () => { assistanceIntent++; void assistanceController?.end(); });
 document.addEventListener("visibilitychange", () => {
   if (document.visibilityState !== "hidden") return;
   assistanceIntent++;
   void assistanceController?.end();
 });
-document.querySelector("[data-reconcile-action]")?.addEventListener("click", async () => {
+document.querySelectorAll("[data-dialog-end-assistance]").forEach(button => {
+  button.addEventListener("click", () => {
+    chooseManual();
+    syncDialogAssistance();
+    button.closest("dialog")?.querySelector("[autofocus]")?.focus();
+    setStatus("Assistance ended. You can continue ordering manually.");
+  });
+});
+document.querySelectorAll("[data-dialog-typing]").forEach(button => {
+  button.addEventListener("click", () => { void startAssistance("typed"); });
+});
+document.querySelectorAll("[data-reconcile-action]").forEach(button => button.addEventListener("click", async () => {
   try {
     const app = await application();
     for (const id of [...app.pending.keys()]) await app.reconcile(id);
@@ -1393,7 +1767,7 @@ document.querySelector("[data-reconcile-action]")?.addEventListener("click", asy
     await app.refresh();
     if (!app.pending.size) setStatus("Your cart is up to date. All earlier action outcomes have been checked.");
   } catch { setStatus("The earlier outcome could not be checked. Please try checking again when connected."); }
-});
+}));
 
 contractTraceButtons.forEach((button) => {
   button.addEventListener("click", async () => {
@@ -1531,3 +1905,4 @@ refreshContext().then(async () => {
 });
 applyTheme();
 applyMenuState();
+syncVoiceUi();

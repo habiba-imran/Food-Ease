@@ -17,9 +17,20 @@ export class AssistanceController {
 
   start({ mode = "voice" } = {}) {
     if (!["choice", "voice", "typed"].includes(mode)) return Promise.reject(new Error("Invalid assistance mode."));
-    if (this.orphan) return this.recover().then(() => this.start({ mode }));
+    const stopEpoch = this.stopEpoch || 0;
+    if (this.orphan) return this.recover().then(() => {
+      if ((this.stopEpoch || 0) !== stopEpoch) throw new Error("Assistance start cancelled.");
+      return this.start({ mode });
+    });
     if (this.current && !this.current.cancelled) return this.current.promise;
-    if (this.current?.serverPending) return Promise.reject(new Error("Cleanup is still pending."));
+    if (this.current?.serverPending) {
+      if (!this.cleanupRetry) this.cleanupRetry = this._serverStop(this.current).then(() => {
+        if ((this.stopEpoch || 0) !== stopEpoch) throw new Error("Assistance start cancelled.");
+        if (this.current?.serverPending) throw new Error("Cleanup is still pending. Retry when connected; your microphone is off.");
+        return this.start({ mode });
+      }).finally(() => { this.cleanupRetry = null; });
+      return this.cleanupRetry;
+    }
     const run = { request_id: this.newId(), mode, cancelled: false, sent: false,
                   media: null, seats: null, generation: null, serverPending: false,
                   abort: new AbortController() };
@@ -90,7 +101,9 @@ export class AssistanceController {
   _emit(run, state) {
     if (this.current !== run) return;
     this.state = state.modeState || state.state;
-    this.onState({ ...state, modeState: this.state });
+    const microphoneActive = !run.cancelled && (run.media?.getAudioTracks?.() || [])
+      .some(track => track.readyState !== "ended" && track.enabled !== false);
+    this.onState({ ...state, modeState: this.state, microphoneActive });
   }
 
   modeChanged(mode) {
@@ -146,6 +159,7 @@ export class AssistanceController {
       this._emit(run, { state: "requesting_permission", modeState: "connecting", localStopped: false });
       run.media = await this.acquireMedia(run.mode);
       this._check(run);
+      this._emit(run, { state: "connecting", localStopped: false });
       run.sent = true;
       this._save(run);
       const prepared = await this.api("start", { request_id: run.request_id, consent: true }, run.abort.signal);
@@ -197,6 +211,7 @@ export class AssistanceController {
   }
 
   end({ state = "manual" } = {}) {
+    this.stopEpoch = (this.stopEpoch || 0) + 1;
     const run = this.current;
     if (!run) { this.state = state; this.onState({ state: "manual", modeState: state, localStopped: true }); return Promise.resolve({ state: "ended" }); }
     run.userEnded = true;

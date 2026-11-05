@@ -48,7 +48,8 @@ test('reduced motion stops automatic 3D rotation but keeps keyboard controls usa
 test('the scene stops rendering offscreen and resumes on return', async ({ page }) => {
   await ready(page);
   const studio = page.locator('[data-food-studio]');
-  await page.locator('#assistant').evaluate(el => el.scrollIntoView({ block: 'start', behavior: 'instant' }));
+  await page.locator('.main-nav a[href="#assistant"]').click();
+  await expect(studio).not.toBeInViewport();
   await page.waitForTimeout(250);
   const stopped = await studio.getAttribute('data-rotation');
   await page.waitForTimeout(250);

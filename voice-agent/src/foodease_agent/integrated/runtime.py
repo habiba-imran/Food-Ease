@@ -156,7 +156,9 @@ class LiveConversationRuntime:
         self.mode = "choosing"
         self._set_audio()
         self._choice_deadline = asyncio.get_running_loop().time() + 15
-        self.say("Hi! How would you like to order today — by voice, or browse yourself?")
+        self.say(
+            "Welcome to FoodEase! How would you like to order today — by voice, or browse yourself?"
+        )
 
     async def choice_timeout(self) -> None:
         if self.mode != "choosing" or self._choice_clarified or self.closed:
@@ -400,7 +402,7 @@ class LiveConversationRuntime:
 
     @staticmethod
     def control_name(text: str) -> str | None:
-        normalized = text.strip().lower().rstrip(".!?")
+        normalized = " ".join(text.strip().lower().replace("’", "'").split()).rstrip(".!?")
         if normalized in {
             "manual",
             "manual please",
@@ -413,6 +415,13 @@ class LiveConversationRuntime:
             "i will order myself",
             "browse myself",
             "i want to browse myself",
+            "manual ordering",
+            "order manually",
+            "i'd like to order manually",
+            "i would like to order manually",
+            "i'll order manually",
+            "i want to order by myself",
+            "please switch to manual ordering",
         }:
             return "manual"
         if normalized in {
@@ -424,6 +433,14 @@ class LiveConversationRuntime:
             "voice input",
             "voice mode",
             "switch to voice",
+            "voice ordering",
+            "i'd like to order using voice",
+            "i would like to order using voice",
+            "i want to order by voice",
+            "i want to order using voice",
+            "use the voice assistant",
+            "i'd like to use the voice assistant",
+            "please switch to voice ordering",
         }:
             return "voice"
         if normalized in {"typing", "typed", "switch to typing"}:
@@ -998,6 +1015,12 @@ class LiveConversationRuntime:
                         await self.activate_mode(
                             event.payload.mode, resuming=event.payload.intent == "resume"
                         )
+                        if (
+                            event.payload.intent == "switch_mode"
+                            and not self.closed
+                            and self.mode == event.payload.mode
+                        ):
+                            await self.adapter.publish_control("switch_mode", self.mode)
                         if event.payload.intent == "resume" and not self.closed and not self.paused:
                             self._publish(
                                 "agent.control",

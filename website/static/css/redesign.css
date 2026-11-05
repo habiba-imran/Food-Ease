@@ -813,7 +813,7 @@ button:disabled {
 }
 .menu-category {
   color: var(--red) !important;
-  font-size: 0.5625rem !important;
+  font-size: 0.7rem;
   font-weight: 650;
   letter-spacing: 1.2px;
   text-transform: uppercase;

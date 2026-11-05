@@ -6,6 +6,30 @@ Newest entries at the top.
 
 ---
 
+## ADR-0022 — Accessible website entry on the existing integrated voice owner
+
+- **Context:** The integrated provider/runtime and shared website authority were
+  present, but visible welcome/reactivation controls were missing, full-sentence
+  choices could fail deterministic matching, and failed teardown had no useful
+  explicit retry. Native shopping dialogs also make body-level controls inert.
+- **Decision:** Reuse the existing AssistanceController and bound LiveKit seats.
+  Derive presentation from its lifecycle, actual media tracks and canonical agent
+  status. Move one launcher into active shopping dialogs and reuse the original
+  typed form/transcript in a native voice control panel. No capture/autoplay is
+  attempted before a gesture. A requested retry reconciles the old server owner
+  before replacement; a later manual/end intent revokes a pending retry. Match
+  clear full-utterance mode phrases, retain ambiguity/negation refusal, and echo
+  an actual mode switch through the existing control event. Keep structured
+  application tools and confirmation unchanged. Ask for missing quantity and
+  offer only actual returned customizations. Preserve all provider/model choices.
+- **Evidence:** Regression results and precise live limitations in the
+  [follow-up report](../evidence/voice-entry-2026-11-04/report.md). No new SDK API,
+  wire field, dependency or private configuration was introduced. Human/provider
+  evidence remains open; synthetic capture and fixture model turns do not close it.
+- **Date:** 2026-11-04
+
+---
+
 ## ADR-0021 — Final stack delivery and evidence-gated acceptance
 
 - **Context:** Habiba authorized completion of final orchestration Phase 9. The

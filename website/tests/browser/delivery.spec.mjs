@@ -18,9 +18,10 @@ test("keyboard-activated manual checkout uses real authority with no capture or 
   let starts = 0;
   page.on("request", r => { if (r.url().endsWith("/v2/assist/start")) starts++; });
   await page.evaluate(() => { navigator.mediaDevices.getUserMedia = () => { throw new Error("Manual mode cannot capture"); }; });
-  await keyActivate(page, "[data-assist-manual]");
+  await keyActivate(page, "[data-order-manual]");
   await keyActivate(page, '[data-menu-item][data-id="wrap-hot-chicken"] [data-add-item]');
   await expect(page.locator("[data-cart-count]")).toHaveText("1");
+  await keyActivate(page, "[data-cart-trigger]");
   await keyActivate(page, "[data-checkout-button]");
   await expect(page.locator("[data-confirm-order]")).toBeEnabled();
   await keyActivate(page, "[data-confirm-order]");
@@ -33,15 +34,17 @@ test("keyboard-activated manual checkout uses real authority with no capture or 
   expect(starts).toBe(0);
 });
 test("Tab reaches manual exit within checkout while typed assistance is active", async ({ page }) => {
+  await page.locator('.main-nav a[href="#assistant"]').click();
   await keyActivate(page, "[data-assist-start]");
   await expect(page.locator("html")).toHaveAttribute("data-assistance-state", "typed_active");
   await keyActivate(page, '[data-menu-item][data-id="wrap-hot-chicken"] [data-add-item]');
   await expect(page.locator("[data-cart-count]")).toHaveText("1");
+  await keyActivate(page, "[data-cart-trigger]");
   await keyActivate(page, "[data-checkout-button]");
   await expect(page.locator("[data-checkout-dialog]")).toBeVisible();
   let reached = false;
   for (let index = 0; index < 30; index++) {
-    if (await page.locator("[data-assist-manual]").evaluate(el => el === document.activeElement)) { reached = true; break; }
+    if (await page.locator("[data-checkout-dialog] [data-dialog-end-assistance]").evaluate(el => el === document.activeElement)) { reached = true; break; }
     await page.keyboard.press("Tab");
   }
   expect(reached).toBe(true);

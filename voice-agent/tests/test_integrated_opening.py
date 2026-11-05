@@ -19,7 +19,19 @@ async def opening():
     await runtime.close()
 
 
-@pytest.mark.parametrize("text", ["manual please", "I'll order myself", "browse myself"])
+@pytest.mark.parametrize(
+    "text",
+    [
+        "manual please",
+        "I'll order myself",
+        "browse myself",
+        "I want to order manually.",
+        "I'd like to order manually",
+        "I'll order manually",
+        "I want to order by myself",
+        "Please switch to manual ordering",
+    ],
+)
 async def test_manual_choice_closes_without_shopping(opening, text):
     await opening.input_text(text, "choice", opening.snapshot.revision, source="audio")
     assert opening.closed
@@ -28,7 +40,19 @@ async def test_manual_choice_closes_without_shopping(opening, text):
     assert opening.adapter.controls == [("switch_mode", "manual")]
 
 
-@pytest.mark.parametrize("text", ["use voice", "talk me through it", "voice please"])
+@pytest.mark.parametrize(
+    "text",
+    [
+        "use voice",
+        "talk me through it",
+        "voice please",
+        "I'd like to order using voice.",
+        "I want to order by voice",
+        "Use the voice assistant",
+        "I'd like to use the voice assistant",
+        "Please switch to voice ordering",
+    ],
+)
 async def test_voice_choice_enables_once(opening, text):
     await opening.input_text(text, "choice", opening.snapshot.revision, source="audio")
     assert opening.mode == "voice"
@@ -38,7 +62,17 @@ async def test_voice_choice_enables_once(opening, text):
 
 
 async def test_ambiguous_order_and_silence_have_one_clarification(opening):
-    for i, text in enumerate(["add a wrap", "yes", "voice or manual", "not manual"]):
+    for i, text in enumerate(
+        [
+            "add a wrap",
+            "yes",
+            "voice or manual",
+            "not manual",
+            "don't use voice",
+            "I want manual or voice",
+            "I don't want to order manually",
+        ]
+    ):
         await opening.input_text(text, str(i), opening.snapshot.revision, source="audio")
     await opening.choice_timeout()
     await opening.choice_timeout()

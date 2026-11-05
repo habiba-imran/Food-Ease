@@ -22,7 +22,10 @@ try {
     if (exited || Date.now() > deadline) throw new Error("The offline browser fixture did not start.");
     await new Promise((resolve) => setTimeout(resolve, 100));
   }
-  const tests = spawn(process.execPath, ["node_modules/@playwright/test/cli.js", "test", ...process.argv.slice(2)],
+  const args = process.argv.slice(2);
+  const command = args.includes("--voice-audit-only") ? ["tools/voice-audit.mjs"]
+    : ["node_modules/@playwright/test/cli.js", "test", ...args];
+  const tests = spawn(process.execPath, command,
     { env, stdio: "inherit", windowsHide: true });
   const [code] = await once(tests, "exit");
   process.exitCode = code ?? 1;
