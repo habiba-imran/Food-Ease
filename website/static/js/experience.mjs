@@ -9,22 +9,18 @@ const heroCarousel = document.querySelector('[data-hero-carousel]');
 if (heroCarousel) {
   const track = heroCarousel.querySelector('[data-hero-track]');
   const group = track.querySelector('.hero-carousel-group');
-  const pauseButton = heroCarousel.querySelector('[data-hero-food-pause]');
-  let animation, duration = 1, manuallyPaused = false, hovered = false, visible = true;
+  let animation, duration = 1, hovered = false, visible = true;
   const synchronize = () => {
-    const paused = manuallyPaused || hovered || (heroCarousel.contains(document.activeElement) && document.activeElement.matches(':focus-visible')) || calm() || document.hidden || !visible;
+    const paused = hovered || (heroCarousel.contains(document.activeElement) && document.activeElement.matches(':focus-visible')) || calm() || document.hidden || !visible;
     if (animation) paused ? animation.pause() : animation.play();
     heroCarousel.dataset.paused = String(paused);
-    pauseButton.hidden = calm();
-    pauseButton.setAttribute('aria-pressed', String(manuallyPaused));
-    pauseButton.setAttribute('aria-label', manuallyPaused ? 'Resume food carousel' : 'Pause food carousel');
   };
   const build = () => {
     const phase = animation ? (Number(animation.currentTime || 0) % duration) / duration : 0;
     animation?.cancel();
     const distance = group.getBoundingClientRect().width;
     if (!distance) return;
-    duration = distance / 30 * 1000;
+    duration = distance / 70 * 1000;
     animation = track.animate([
       { transform: `translateX(${-distance}px)` },
       { transform: `translateX(${-2 * distance}px)` },
@@ -40,17 +36,6 @@ if (heroCarousel) {
   heroCarousel.addEventListener('pointercancel', () => { hovered = false; synchronize(); });
   heroCarousel.addEventListener('focusin', synchronize);
   heroCarousel.addEventListener('focusout', () => requestAnimationFrame(synchronize));
-  pauseButton.addEventListener('click', () => { manuallyPaused = !manuallyPaused; synchronize(); });
-  const step = direction => {
-    if (!animation) return;
-    const stepTime = duration / group.children.length;
-    const position = Number(animation.currentTime || 0) / stepTime;
-    const next = direction > 0 ? Math.floor(position + .02) + 1 : Math.ceil(position - .02) - 1;
-    animation.currentTime = ((next * stepTime) % duration + duration) % duration;
-    synchronize();
-  };
-  heroCarousel.querySelector('[data-hero-food-prev]').addEventListener('click', () => step(-1));
-  heroCarousel.querySelector('[data-hero-food-next]').addEventListener('click', () => step(1));
   reducedMotion.addEventListener('change', synchronize);
   document.addEventListener('visibilitychange', synchronize);
   new MutationObserver(synchronize).observe(root, { attributes: true, attributeFilter: ['data-calm-motion'] });

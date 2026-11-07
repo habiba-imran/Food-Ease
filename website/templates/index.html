@@ -25,7 +25,7 @@
         <span><strong>Food<span class="brand-ease">Ease</span><span class="brand-period">.</span></strong><small>Good food. Your way.</small></span>
       </a>
       <nav class="main-nav" aria-label="Primary navigation">
-        <a href="#popular" class="is-current">Our menu</a><a href="#ar-preview">The preview table</a><a href="#assistant">Order your way</a>
+        <a href="#popular" class="is-current">Our menu</a>
       </nav>
       <div class="header-actions">
         <button class="cart-button" type="button" data-cart-trigger aria-label="Open cart (0 items)" aria-haspopup="dialog" aria-controls="cart-preview" aria-expanded="false">
@@ -98,18 +98,14 @@
                 {% endfor %}
               </div>
             </div>
-            <div class="hero-carousel-controls" aria-label="Featured dish controls">
-              <button type="button" data-hero-food-prev aria-label="Previous featured dish"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="m14 6-6 6 6 6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-              <button type="button" data-hero-food-pause aria-label="Pause food carousel" aria-pressed="false"><svg class="hero-pause-icon" viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M7 5h3v14H7zm7 0h3v14h-3z"/></svg><svg class="hero-play-icon" viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="m8 5 11 7-11 7z"/></svg></button>
-              <button type="button" data-hero-food-next aria-label="Next featured dish"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="m10 6 6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-            </div>
           </div>
         </div>
       </section>
       <div class="flavour-marquee" aria-hidden="true">
         <div class="flavour-marquee-track">
+          {% for _ in range(4) %}
           <div class="flavour-marquee-group"><span>BIG FLAVOUR</span><i>✳</i><span>ZERO FUSS</span><i>✳</i><span>GOOD FOOD, YOUR WAY</span><i>✳</i><span>MADE FRESH</span><i>✳</i><span>FIND YOUR FAVOURITE</span><i>✳</i><span>ORDER YOUR WAY</span><i>✳</i></div>
-          <div class="flavour-marquee-group"><span>BIG FLAVOUR</span><i>✳</i><span>ZERO FUSS</span><i>✳</i><span>GOOD FOOD, YOUR WAY</span><i>✳</i><span>MADE FRESH</span><i>✳</i><span>FIND YOUR FAVOURITE</span><i>✳</i><span>ORDER YOUR WAY</span><i>✳</i></div>
+          {% endfor %}
         </div>
       </div>
       <section class="spotlight-gallery" aria-labelledby="featured-title">
@@ -275,157 +271,6 @@
         </div>
       </section>
 
-      <details class="project-details demo-details" id="project-details">
-        <summary><span>Explore extra features</span><span>Optional previews and project notes <b aria-hidden="true">+</b></span></summary>
-      <section id="ar-preview" class="ar-runway" aria-labelledby="ar-title">
-        <div class="ar-copy">
-          <p class="eyebrow">[04] / TAKE A CLOSER LOOK</p>
-          <h2 id="ar-title">A DIFFERENT<br /><em>PERSPECTIVE.</em></h2>
-          <p>
-            Explore your selected dish in our interactive tabletop preview. Rotate the photograph for another perspective, then come back to your order. No camera needed.
-          </p>
-          <div class="ar-action-row">
-            <button class="button primary" type="button" data-open-ar>Take a closer look <span aria-hidden="true">↗</span></button>
-            <span data-ar-inline-status aria-live="polite">Fallback preview is ready.</span>
-          </div>
-        </div>
-        <div class="ar-stage-card" aria-hidden="true">
-          <span class="ar-floor"></span>
-          <span class="ar-scan-ring ring-one"></span>
-          <span class="ar-scan-ring ring-two"></span>
-          <img src="/static/img/catalog-v7/wrap-hot-chicken-480.webp" alt="" loading="lazy" decoding="async" data-ar-mini-photo />
-          <span class="ar-pin">AR</span>
-        </div>
-      </section>
-
-      <section id="assistant" class="assistant-section" aria-labelledby="assistant-title">
-        <div class="assistant-copy"><div class="voice-sculpture" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><span>YOUR ORDER.<br />YOUR WAY.</span></div>
-          <p class="eyebrow">[05] / CONSENT-FIRST GUIDANCE</p>
-          <h2 id="assistant-title">FoodEase ordering assistance</h2>
-          <p>How would you like to order today — by voice, typing, or browse yourself?</p>
-          <p>
-            Typed guidance connects without a microphone. Voice assistance asks for
-            microphone permission after you start it. You can pause or end assistance
-            anytime; manual ordering uses the same menu and cart.
-          </p>
-        </div>
-        <div class="assistant-panel" aria-label="FoodEase assistant">
-          <div class="assistant-status" data-agent-state="off/awaiting_consent">
-            <span data-agent-dot></span>
-            <strong data-agent-status>off/awaiting_consent</strong>
-          </div>
-          <div class="assistant-controls" aria-label="Assistance controls">
-            <button type="button" data-assist-choice>Enable microphone and spoken welcome</button>
-            <button type="button" data-assist-manual>Browse myself</button>
-            <button type="button" data-assist-start>Start typed guidance</button>
-            <button type="button" data-assist-voice>Start voice assistance</button>
-            <button type="button" data-assist-pause>Pause</button>
-            <button type="button" data-assist-end>End</button>
-            <button type="button" data-reconcile-action>Check pending changes</button>
-            <label><input type="checkbox" data-assist-typed-audio disabled> Read typed replies aloud (no microphone)</label>
-          </div>
-          <div class="scenario-grid" aria-label="Suggested requests">
-            <button type="button" data-scenario="filter-veg">Filter vegetarian under 800</button>
-            <button type="button" data-scenario="add-wrap">Add hot chicken wrap</button>
-            <button type="button" data-scenario="checkout-summary">Ask checkout summary</button>
-          </div>
-          <div class="message-list" data-agent-transcript aria-live="polite" aria-label="Conversation transcript">
-            <p class="assistant-message">Choose an ordering mode. Spoken welcome enables listening for your voice/manual answer. Manual shopping is available immediately.</p>
-          </div>
-          <form class="assistant-form" data-assistant-form>
-            <label for="assistant-text">Type a request</label>
-            <div>
-              <input id="assistant-text" name="assistant-text" placeholder="Try: show burgers" data-assistant-input />
-              <button type="submit">Send</button>
-            </div>
-          </form>
-        </div>
-      </section>
-
-      <section class="contract-cockpit" aria-labelledby="contract-title">
-        <div class="contract-copy">
-          <p class="eyebrow">Agent readiness</p>
-          <h2 id="contract-title">Live app context and contract trace cockpit</h2>
-          <p>
-            This panel proves FoodEase exposes semantic state for the future voice agent:
-            revision, route, focused item, visible results, valid actions and verified cart totals.
-          </p>
-        </div>
-        <div class="context-grid" aria-label="Current app context">
-          <div>
-            <span>Revision</span>
-            <strong data-contract-revision>0</strong>
-          </div>
-          <div>
-            <span>Route</span>
-            <strong data-contract-route>home</strong>
-          </div>
-          <div>
-            <span>Focused item</span>
-            <strong data-contract-focus>none</strong>
-          </div>
-          <div>
-            <span>Visible items</span>
-            <strong data-contract-visible>0</strong>
-          </div>
-          <div>
-            <span>Valid actions</span>
-            <strong data-contract-actions>0</strong>
-          </div>
-          <div>
-            <span>Cart total</span>
-            <strong data-contract-total>0 PKR</strong>
-          </div>
-          <div>
-            <span>Cart lines</span>
-            <strong data-contract-cart-lines>0</strong>
-          </div>
-        </div>
-        <div class="trace-panel">
-          <div class="trace-actions" aria-label="Contract trace buttons">
-            <button type="button" data-contract-trace="out-of-stock">Reject sold-out item</button>
-            <button type="button" data-contract-trace="stale">Reject stale revision</button>
-            <button type="button" data-contract-trace="duplicate">Duplicate action ID</button>
-          </div>
-          <div class="trace-log" data-trace-log aria-live="polite">
-            <p>Trace results will appear here.</p>
-          </div>
-        </div>
-      </section>
-
-      <section id="evidence" class="evidence-section" aria-labelledby="evidence-title">
-        <div class="evidence-copy">
-          <p class="eyebrow">Project acceptance evidence</p>
-          <h2 id="evidence-title">A test runway for the final handover</h2>
-          <p>
-            The smoke runner injects contract-shaped app events, verifies shared
-            cart/context behavior, and prepares a downloadable evidence snapshot.
-          </p>
-        </div>
-        <div class="evidence-console" aria-label="Acceptance evidence console">
-          <div class="evidence-score">
-            <span data-acceptance-score>Not run yet</span>
-            <strong>W01-W22 acceptance record</strong>
-            <small data-acceptance-updated>Written report included in docs.</small>
-          </div>
-          <div class="evidence-actions">
-            <button type="button" data-run-acceptance>Run contract smoke</button>
-            <button type="button" data-export-acceptance>Download evidence JSON</button>
-            <button type="button" data-export-context>Download context</button>
-          </div>
-          <div class="acceptance-grid" data-acceptance-grid aria-live="polite">
-            <article data-check-id="W01"><strong>W01-W03</strong><span>Manual/keyboard base</span><em>Ready</em></article>
-            <article data-check-id="W04"><strong>W04-W08</strong><span>Menu, cart, checkout</span><em>Ready</em></article>
-            <article data-check-id="W09"><strong>W09-W15</strong><span>Mock agent contract</span><em>Ready</em></article>
-            <article data-check-id="W16"><strong>W16-W22</strong><span>Assistive states/fallback</span><em>Ready</em></article>
-          </div>
-          <div class="trace-log evidence-log" data-acceptance-log aria-live="polite">
-            <p>Acceptance smoke results will appear here.</p>
-          </div>
-        </div>
-      </section>
-
-      </details>
       <footer class="site-footer restaurant-footer" aria-labelledby="restaurant-footer-title">
         <div class="footer-intro">
           <h2 id="restaurant-footer-title">Flavorful Food, Ready for You at FoodEase in Lahore, Islamabad, Gujranwala</h2>
@@ -661,7 +506,19 @@
             <button class="button ghost" type="button" data-voice-panel-manual>Order manually</button>
             <button class="button ghost" type="button" data-voice-end hidden>End voice session</button>
           </div>
-          <div class="dialog-assistance" data-dialog-assistant hidden><p class="eyebrow">Conversation and typed requests</p></div>
+          <div class="dialog-assistance" data-dialog-assistant hidden>
+            <p class="eyebrow">Conversation and typed requests</p>
+            <div class="message-list" data-agent-transcript aria-live="polite" aria-label="Conversation transcript">
+              <p class="assistant-message">Choose an ordering mode. Spoken welcome enables listening for your voice/manual answer. Manual shopping is available immediately.</p>
+            </div>
+            <form class="assistant-form" data-assistant-form>
+              <label for="assistant-text">Type a request</label>
+              <div>
+                <input id="assistant-text" name="assistant-text" placeholder="Try: show burgers" data-assistant-input />
+                <button type="submit">Send</button>
+              </div>
+            </form>
+          </div>
           <button class="button ghost" type="button" data-reconcile-action hidden>Check pending changes</button>
         </div>
       </dialog>
