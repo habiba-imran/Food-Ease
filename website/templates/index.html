@@ -13,9 +13,9 @@
     <link rel="preload" href="/static/fonts/bebas-neue-latin.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/static/fonts/dm-sans-latin.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" as="image" href="/static/img/editorial/fast-v7/chicken-burger-hero-768.webp" imagesrcset="/static/img/editorial/fast-v7/chicken-burger-hero-480.webp 480w, /static/img/editorial/fast-v7/chicken-burger-hero-768.webp 768w, /static/img/editorial/fast-v7/chicken-burger-hero-1024.webp 1024w" imagesizes="(max-width: 700px) 90vw, (max-width: 900px) 480px, 560px" fetchpriority="high" />
-    <link rel="stylesheet" href="/static/vendor/food-experience.css?v=theme-18" />
-    <script type="module" src="/static/js/app.js?v=theme-18"></script>
-    <script type="module" src="/static/js/experience.mjs?v=theme-18"></script>
+    <link rel="stylesheet" href="/static/vendor/food-experience.css?v=menu-19" />
+    <script type="module" src="/static/js/app.js?v=menu-19"></script>
+    <script type="module" src="/static/js/experience.mjs?v=menu-19"></script>
   </head>
   <body data-experience="immersive" data-orchestration-url="{{ orchestration_base_url }}">
     <a class="skip-link" href="#popular">Skip to menu</a>
@@ -38,7 +38,13 @@
           <svg class="theme-icon theme-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.9 13A9 9 0 0 1 11 3.1 9 9 0 1 0 20.9 13Z"/></svg>
         </button>
       </div>
+      <nav class="menu-category-nav" aria-label="Menu categories" data-menu-category-nav hidden>
+        {% for category in category_cards %}
+        <a href="#menu-category-section-{{ category.id }}" data-category-jump="{{ category.id }}">{{ category.label }}</a>
+        {% endfor %}
+      </nav>
     </header>
+    <div class="cart-toast" data-cart-toast aria-hidden="true" hidden><span class="cart-toast-check">✓</span><span data-cart-toast-message></span></div>
 
     <main id="main" class="shell">
       <section class="voice-welcome" data-voice-welcome aria-labelledby="voice-welcome-title">
@@ -155,11 +161,15 @@
           {% for category in category_cards %}
           {% set category_items = menu_items|selectattr("category_id", "equalto", category.id)|list %}
           {% if category_items %}
-          <section class="menu-category-group" data-menu-category-group="{{ category.id }}" aria-labelledby="menu-category-{{ category.id }}">
-            <div class="menu-category-heading">
-              <span class="eyebrow">[{{ "%02d"|format(loop.index) }}] / MENU CATEGORY</span>
-              <h3 id="menu-category-{{ category.id }}">{{ category.label }}</h3>
-              <span class="menu-category-count" data-category-count>{{ category.count }} ITEMS</span>
+          <section id="menu-category-section-{{ category.id }}" class="menu-category-group" data-menu-category-group="{{ category.id }}" aria-labelledby="menu-category-{{ category.id }}">
+            <div class="menu-category-heading category-banner">
+              <div class="category-banner-art art-left" aria-hidden="true"><img src="/static/img/catalog-v7/{{ category_items[0].item_id }}-160.webp" srcset="/static/img/catalog-v7/{{ category_items[0].item_id }}-160.webp 160w, /static/img/catalog-v7/{{ category_items[0].item_id }}-320.webp 320w" sizes="(max-width: 700px) 20vw, 300px" alt="" width="320" height="249" loading="lazy" decoding="async" /></div>
+              <div class="category-banner-copy">
+                <span class="eyebrow">[{{ "%02d"|format(loop.index) }}] / FIND YOUR FLAVOUR</span>
+                <h3 id="menu-category-{{ category.id }}">{{ category.label }}</h3>
+                <span class="menu-category-count" data-category-count>{{ category.count }} ITEMS</span>
+              </div>
+              <div class="category-banner-art art-right" aria-hidden="true"><img src="/static/img/catalog-v7/{{ category_items[-1].item_id }}-160.webp" srcset="/static/img/catalog-v7/{{ category_items[-1].item_id }}-160.webp 160w, /static/img/catalog-v7/{{ category_items[-1].item_id }}-320.webp 320w" sizes="(max-width: 700px) 20vw, 300px" alt="" width="320" height="249" loading="lazy" decoding="async" /></div>
             </div>
             <div class="menu-grid">
             {% for item in category_items %}
@@ -174,22 +184,23 @@
               data-available="{{ 'true' if item.available else 'false' }}"
               data-description="{{ item.description }}"
             >
-              <div class="menu-art tone-{{ item.category_id }}"><span class="catalog-item-index" aria-hidden="true">{{ "%02d"|format(loop.index) }} / {{ item.category }}</span><span class="image-orbit" aria-hidden="true"></span>
+              <button class="menu-art tone-{{ item.category_id }}" type="button" data-detail-item aria-label="View details for {{ item.name }}"><span class="catalog-item-index" aria-hidden="true">{{ "%02d"|format(loop.index) }} / {{ item.category }}</span><span class="image-orbit" aria-hidden="true"></span>
+                <img class="food-photo-preview" src="/static/img/catalog-v7/{{ item.item_id }}-160.webp" alt="" width="160" height="124" loading="lazy" decoding="async" aria-hidden="true" />
                 <img
                   class="food-photo"
                   width="900" height="700"
-                  src="/static/img/catalog-v7/{{ item.item_id }}-640.webp"
-                  srcset="/static/img/catalog-v7/{{ item.item_id }}-160.webp 160w, /static/img/catalog-v7/{{ item.item_id }}-320.webp 320w, /static/img/catalog-v7/{{ item.item_id }}-480.webp 480w, /static/img/catalog-v7/{{ item.item_id }}-640.webp 640w"
-                  sizes="(max-width: 360px) calc(100vw - 24px), (max-width: 700px) calc((100vw - 44px) / 2), (max-width: 1180px) calc((100vw - 64px) / 2), calc((min(100vw, 1708px) - 96px) / 3)"
+                  src="/static/img/catalog-v7/{{ item.item_id }}-480.webp"
+                  srcset="/static/img/catalog-v7/{{ item.item_id }}-160.webp 160w, /static/img/catalog-v7/{{ item.item_id }}-320.webp 320w, /static/img/catalog-v7/{{ item.item_id }}-480.webp 480w"
+                  sizes="(max-width: 360px) calc(100vw - 64px), (max-width: 700px) calc((100vw - 88px) / 2), (max-width: 1180px) calc((100vw - 112px) / 2), (min-width: 1600px) calc((min(100vw, 1708px) - 200px) / 4), calc((100vw - 160px) / 3)"
                   alt="{{ item.name }} food photo"
                   loading="lazy" decoding="async"
                 />
-              </div>
+              </button>
               <div class="menu-card-body">
                 <div>
                   <p class="menu-category">{{ item.category }}</p>
-                  <h4>{{ item.name }}</h4>
-                  <p>{{ item.description }}</p>
+                  <h4><button class="menu-name-trigger" type="button" data-open-item>{{ item.name }}</button></h4>
+                  <button class="menu-description-trigger" type="button" data-open-item aria-label="Read description and details for {{ item.name }}">{{ item.description }}</button>
                 </div>
                 <div class="tag-row">
                   {% if item.tags %}
@@ -206,7 +217,6 @@
                 <div class="card-action-row">
                   <strong>{{ item.price|int }} PKR</strong>
                   <span>
-                    <button type="button" data-detail-item aria-label="View details for {{ item.name }}">Details</button>
                     <button type="button" data-add-item aria-label="{{ 'Add ' ~ item.name ~ ' to your order' if item.available else item.name ~ ' is sold out' }}" {% if not item.available %}disabled{% endif %}>
                       {{ "Sold out" if not item.available else "Add" }}
                     </button>
@@ -388,7 +398,6 @@
 
       </details>
       <footer class="site-footer"><a class="footer-wordmark" href="#main">FoodEase<span>.</span></a><p>Good food. Your way.<br /><span>Designed with everyone at the table.</span></p><a href="#popular">Back to the menu ↗</a></footer>
-      <a class="mobile-cart-link" href="#cart-preview"><span>Your order</span><span data-mobile-cart-total>View bag ↗</span></a>
 
       <dialog class="item-dialog" data-item-dialog aria-labelledby="item-dialog-title">
         <div class="detail-shell">

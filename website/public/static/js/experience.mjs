@@ -41,11 +41,9 @@ refreshHeaderSurface();
 // Observe authoritative renders; this layer never submits an ordering action.
 const count = document.querySelector('[data-cart-count]');
 const total = document.querySelector('[data-cart-total]');
-const mobileTotal = document.querySelector('[data-mobile-cart-total]');
 let previousCount = count?.textContent;
 function syncCartFeedback() {
   const value = count?.textContent?.trim() || '0';
-  if (mobileTotal) mobileTotal.textContent = value === '0' ? 'View bag ↗' : `${value} ${value === '1' ? 'item' : 'items'} · ${total?.textContent || ''} ↗`;
   if (value !== previousCount && count && !calm()) {
     count.classList.remove('cart-pop');
     void count.offsetWidth;
@@ -116,26 +114,6 @@ if ('IntersectionObserver' in window && !calm()) {
   });
 }
 
-// Suppress the floating mobile shortcut when its destination or a modal is visible.
-const mobileCart = document.querySelector('.mobile-cart-link');
-let cartInView = false;
-function syncMobileCart() {
-  if (!mobileCart) return;
-  mobileCart.hidden = cartInView || Number(count?.textContent || 0) === 0 || !!document.querySelector('dialog[open]');
-}
-if ('IntersectionObserver' in window) {
-  const cartVisibility = new IntersectionObserver(entries => {
-    cartInView = entries[0].isIntersecting;
-    syncMobileCart();
-  }, { threshold: 0 });
-  const cart = document.querySelector('#cart-preview');
-  if (cart) cartVisibility.observe(cart);
-}
-const dialogObserver = new MutationObserver(syncMobileCart);
-document.querySelectorAll('dialog').forEach(dialog => dialogObserver.observe(dialog, { attributes: true, attributeFilter: ['open'] }));
-if (count) dialogObserver.observe(count, { childList: true, characterData: true, subtree: true });
-syncMobileCart();
-
 // Respect a requested deep link after the application's first authoritative render.
 if (location.hash) {
   const target = document.getElementById(decodeURIComponent(location.hash.slice(1)));
@@ -186,3 +164,71 @@ const addFeedback = new MutationObserver(() => {
   feedbackCount = next;
 });
 if (count) addFeedback.observe(count, { childList: true, characterData: true, subtree: true });
+
+// The existing cart trigger moves with the menu navigation, retaining its listeners and name.
+const menu = document.querySelector('#popular');
+const header = document.querySelector('.site-header');
+const categoryNav = document.querySelector('[data-menu-category-nav]');
+const categoryLinks = [...document.querySelectorAll('[data-category-jump]')];
+const categoryGroups = [...document.querySelectorAll('[data-menu-category-group]')];
+const menuCart = document.querySelector('.cart-button');
+const cartHome = document.createComment('navbar cart home');
+menuCart?.before(cartHome);
+let categoryFrame = 0;
+let currentCategory = '';
+function refreshMenuNavigation() {
+  if (categoryFrame) return;
+  categoryFrame = requestAnimationFrame(() => {
+    categoryFrame = 0;
+    if (!menu || !header || !categoryNav) return;
+    const bounds = menu.getBoundingClientRect();
+    const inMenu = bounds.top <= (innerWidth <= 700 ? 150 : 112) && bounds.bottom > 100;
+    document.body.dataset.menuNavigation = String(inMenu);
+    categoryNav.hidden = !inMenu;
+    if (menuCart && menuCart.classList.contains('is-floating-cart') !== inMenu) {
+      const focused = document.activeElement === menuCart;
+      menuCart.classList.toggle('is-floating-cart', inMenu);
+      if (inMenu) document.body.append(menuCart);
+      else cartHome.after(menuCart);
+      if (focused) menuCart.focus({ preventScroll: true });
+    }
+    root.style.setProperty('--header-clearance', `${header.offsetHeight + 20}px`);
+    if (!inMenu) return;
+    const active = categoryGroups.find(group => !group.hidden && group.getBoundingClientRect().bottom > header.offsetHeight + 32);
+    const id = active?.dataset.menuCategoryGroup || '';
+    if (currentCategory === id) return;
+    currentCategory = id;
+    categoryLinks.forEach(link => {
+      const selected = link.dataset.categoryJump === id;
+      link.classList.toggle('is-current', selected);
+      if (selected) {
+        link.setAttribute('aria-current', 'location');
+        categoryNav.scrollTo({ left: link.offsetLeft - categoryNav.clientWidth / 2 + link.offsetWidth / 2, behavior: calm() ? 'instant' : 'smooth' });
+      } else link.removeAttribute('aria-current');
+    });
+  });
+}
+addEventListener('scroll', refreshMenuNavigation, { passive: true });
+addEventListener('resize', refreshMenuNavigation);
+if (header) new ResizeObserver(refreshMenuNavigation).observe(header);
+new MutationObserver(refreshMenuNavigation).observe(root, { attributes: true, attributeFilter: ['data-foodease-revision'] });
+refreshMenuNavigation();
+
+// A small original-image preview remains visible until the sharper version decodes.
+const imageStages = [...document.querySelectorAll('.menu-art[data-detail-item]')];
+for (const stage of imageStages) {
+  const photo = stage.querySelector('.food-photo');
+  const ready = () => { if (photo.naturalWidth) stage.dataset.imageState = 'ready'; };
+  photo.addEventListener('load', ready);
+  if (photo.complete) ready();
+}
+if ('IntersectionObserver' in window) {
+  const nearbyImages = new IntersectionObserver(entries => {
+    for (const entry of entries) {
+      if (!entry.isIntersecting) continue;
+      entry.target.querySelectorAll('img').forEach(img => { img.loading = 'eager'; });
+      nearbyImages.unobserve(entry.target);
+    }
+  }, { rootMargin: '600px 0px' });
+  imageStages.forEach(stage => nearbyImages.observe(stage));
+}

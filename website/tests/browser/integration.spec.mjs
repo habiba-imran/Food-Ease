@@ -70,7 +70,7 @@ test("manual filtering exactly matches authoritative IDs; search clear and avail
   await expect(page.locator("[data-visible-count]")).toHaveText("0");
   await page.locator("[data-clear-menu-state]").click();
   await expect(page.locator("#menu-search")).toHaveValue("");
-  await expect(page.locator("[data-visible-count]")).toHaveText("25");
+  await expect(page.locator("[data-visible-count]")).toHaveText("28");
   await page.locator("a.brand-mark").click();
   await expect(page.locator("html")).toHaveAttribute("data-foodease-route", "home");
 });
@@ -115,7 +115,7 @@ test("reply lost after a real commit reconciles once; rejected actions never ann
   expect(submissions).toBe(1);
   await page.unroute("**/api/v2/app/action");
   await start(page);
-  const result = await inject(page, "cart.add_item", { item_id: "burger-soldout", quantity: 1 });
+  const result = await inject(page, "cart.add_item", { item_id: "unknown-dish", quantity: 1 });
   expect(result.payload.status).toBe("rejected");
   await expect(page.locator("[data-order-status]")).toContainText("not completed");
   await expect(page.locator("[data-cart-count]")).toHaveText("1");

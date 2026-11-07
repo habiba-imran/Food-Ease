@@ -5,7 +5,7 @@ import { mkdir } from 'node:fs/promises';
 const card = (page, id) => page.locator(`[data-menu-item][data-id="${id}"]`);
 const cart = page => page.locator('[data-cart-dialog]');
 const row = (page, id) => cart(page).locator(`[data-item-id="${id}"]`);
-const evidence = 'docs/ui-audit-evidence';
+const evidence = process.env.FOODEASE_UI_EVIDENCE || 'docs/ui-audit-evidence';
 
 test.beforeEach(async ({ page }) => {
   await page.addInitScript(() => {
@@ -125,7 +125,7 @@ test('cart and edit links each issue one navigation action', async ({ page }) =>
   page.on('request', request => {
     if (request.url().endsWith('/api/v2/app/action') && request.postDataJSON()?.payload.operation === 'navigate') navigation.push(request.postDataJSON().payload.arguments.target);
   });
-  await test.step('open mobile cart link', async () => { await page.locator('.mobile-cart-link').click(); });
+  await test.step('open floating cart', async () => { await page.locator('.is-floating-cart').click(); });
   await expect(page.locator('html')).toHaveAttribute('data-foodease-route', 'cart');
   expect(navigation).toEqual(['cart']);
   await test.step('review checkout', async () => { await page.locator('[data-checkout-button]').click(); });
@@ -226,11 +226,11 @@ test('complete manual demo with Tab, Enter, number keys and Escape only', async 
   await expect(page.locator('dialog[open]')).toHaveCount(0);
 });
 
-test('accessible names, quantity description, headings and unavailable dish semantics', async ({ page }) => {
+test('accessible names, quantity description, headings and available dish semantics', async ({ page }) => {
   await card(page, 'burger-soldout').locator('[data-detail-item]').click();
-  await expect(page.locator('[data-detail-add]')).toBeDisabled();
-  await expect(page.locator('[data-detail-quantity]')).toBeDisabled();
-  await expect(page.locator('[data-detail-availability]')).toHaveText('Sold out today');
+  await expect(page.locator('[data-detail-add]')).toBeEnabled();
+  await expect(page.locator('[data-detail-quantity]')).toBeEnabled();
+  await expect(page.locator('[data-detail-availability]')).toHaveText('Available now');
   await page.keyboard.press('Escape');
   await card(page, 'wrap-hot-chicken').locator('[data-detail-item]').click();
   await expect(page.getByRole('spinbutton', { name: 'Quantity' })).toHaveAccessibleDescription('Choose 1–12 per addition. This dish is served as listed.');

@@ -20,5 +20,5 @@ def test_catalog_summary_counts_available_items() -> None:
     summary = catalog.summary()
 
     assert summary["item_count"] == 28
-    assert summary["available_item_count"] == 27
+    assert summary["available_item_count"] == 28
     assert "burgers" in summary["categories"]

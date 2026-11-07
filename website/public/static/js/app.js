@@ -27,6 +27,8 @@ const cartFee = document.querySelector("[data-cart-fee]");
 const cartTotal = document.querySelector("[data-cart-total]");
 const checkoutButton = document.querySelector("[data-checkout-button]");
 const orderStatus = document.querySelector("[data-order-status]");
+const cartToast = document.querySelector("[data-cart-toast]");
+let cartToastTimer = 0;
 const cartDialog = document.querySelector("[data-cart-dialog], #cart-preview");
 const cartButton = document.querySelector(".cart-button, [data-cart-trigger]");
 const cartCloseButtons = document.querySelectorAll("[data-cart-close], [data-cart-close-secondary]");
@@ -583,6 +585,16 @@ async function renderApplication(snapshot, result = null, request = null) {
   syncDialogAssistance();
   placeVoiceLauncher();
   syncVoiceUi();
+  if (cartChanged && result?.status === "success" && result.operation === "cart.add_item") {
+    const item = catalogItems.get(request?.payload?.arguments?.item_id);
+    const label = cartToast?.querySelector("[data-cart-toast-message]");
+    if (cartToast && label) {
+      clearTimeout(cartToastTimer);
+      label.textContent = `${item?.name || "Item"} added to cart`;
+      cartToast.hidden = false;
+      cartToastTimer = setTimeout(() => { cartToast.hidden = true; }, 3600);
+    }
+  }
 }
 
 async function refreshContext() {
@@ -871,18 +883,18 @@ async function runAcceptanceSmoke() {
   setAcceptanceGroup("W04", "Pass");
 
   const unavailable = await submitRawAction(
-    nextActionId("acceptance.unavailable"),
+    nextActionId("acceptance.unknown"),
     "cart.add_item",
-    { item_id: "burger-soldout", quantity: 1 },
+    { item_id: "unknown-dish", quantity: 1 },
     appContext?.revision,
   );
   await refreshContext();
   recordAcceptance(
     results,
     "W07",
-    "Unavailable item refusal",
-    unavailable.status === "rejected" && unavailable.error_code === "out_of_stock",
-    `Sold-out item returned ${unavailable.status}/${unavailable.error_code}.`,
+    "Unknown item refusal",
+    unavailable.status === "rejected" && unavailable.error_code === "unknown_item",
+    `Unknown item returned ${unavailable.status}/${unavailable.error_code}.`,
   );
 
   const duplicateBefore = appContext?.cart?.lines?.find((line) => line.item_id === "side-raita")?.quantity || 0;
@@ -991,7 +1003,16 @@ async function openItemDetails(card) {
 
 function applyMenuState() {
   if (!appContext) return;
-  const visibleIds = new Set(appContext.visible_items.map((item) => item.item_id));
+  // Agent context is deliberately bounded to 25 rows. The full catalog plus the
+  // authority's accepted filter state drives the complete visual menu.
+  const query = (appContext.search_query || '').toLowerCase();
+  const tags = appContext.filter_tags || [];
+  const visibleIds = new Set([...catalogItems.values()].filter(item =>
+    (!appContext.category || item.category === appContext.category) &&
+    (!query || item.name.toLowerCase().includes(query) || item.description.toLowerCase().includes(query)) &&
+    (appContext.max_price_pkr === null || item.unit_price_pkr <= appContext.max_price_pkr) &&
+    tags.every(tag => tag === 'available' ? item.available : item.tags.includes(tag))
+  ).map(item => item.item_id));
   let showing = 0;
 
   cards.forEach((card) => {
@@ -1217,7 +1238,7 @@ async function changeCart(line, quantity) {
 
 cards.forEach((card) => {
   const button = card.querySelector("[data-add-item]");
-  const detailButton = card.querySelector("[data-detail-item]");
+  const detailButtons = card.querySelectorAll("[data-detail-item], [data-open-item]");
   button?.addEventListener("click", async () => {
     const item = itemFromCard(card);
     resetConfirmation();
@@ -1227,9 +1248,7 @@ cards.forEach((card) => {
     button.disabled = !item.available;
     if (result.status === "success") setStatus(`${item.name} added. Cart total is ${cartTotal?.textContent || "updated"}.`);
   });
-  detailButton?.addEventListener("click", () => {
-    openItemDetails(card);
-  });
+  detailButtons.forEach(trigger => trigger.addEventListener("click", () => { void openItemDetails(card); }));
 });
 
 accessToggles.forEach((button) => {
@@ -1372,6 +1391,27 @@ categoryButtons.forEach((button) => {
       max_price_pkr: appContext?.max_price_pkr ?? null,
       category,
     });
+  });
+});
+
+// The sticky category rail jumps through the complete menu; category cards retain filtering.
+document.querySelectorAll('[data-category-jump]').forEach(link => {
+  link.addEventListener('click', async event => {
+    event.preventDefault();
+    const group = document.getElementById(`menu-category-section-${link.dataset.categoryJump}`);
+    if (!group) return;
+    group.querySelectorAll('img').forEach((img, index) => {
+      img.loading = 'eager';
+      if (index < 4) img.fetchPriority = 'high';
+    });
+    if (group.hidden) {
+      if (searchInput) searchInput.value = '';
+      const search = await submitAction('search_menu', { query: '' });
+      if (search.status !== 'success') return;
+      const filters = await submitAction('filter_menu', { tags: [], category: null, max_price_pkr: null });
+      if (filters.status !== 'success') return;
+    }
+    group.scrollIntoView({ block: 'start', behavior: root.dataset.calmMotion === 'true' || matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' });
   });
 });
 

@@ -158,8 +158,10 @@ test('voice ordering writes real cart data and follows a later manual quantity c
 test('floating controls fit mobile and remain keyboard reachable inside the cart', async ({ page }) => {
   await page.setViewportSize({ width: 375, height: 812 });
   await page.emulateMedia({ reducedMotion: 'reduce' });
-  const boxes = await page.locator('[data-voice-launcher], .mobile-cart-link').evaluateAll(elements => elements.map(el => el.getBoundingClientRect().toJSON()));
-  expect(boxes[0].bottom <= boxes[1].top || boxes[1].bottom <= boxes[0].top).toBe(true);
+  await page.locator('[data-order-manual]').click();
+  await expect(page.locator('.is-floating-cart')).toBeVisible();
+  const boxes = await page.locator('[data-voice-launcher], .is-floating-cart').evaluateAll(elements => elements.map(el => el.getBoundingClientRect().toJSON()));
+  expect(boxes[0].right <= boxes[1].left || boxes[1].right <= boxes[0].left || boxes[0].bottom <= boxes[1].top || boxes[1].bottom <= boxes[0].top).toBe(true);
   await page.locator('[data-cart-trigger]').click();
   await expect(page.locator('[data-cart-dialog] [data-voice-launcher]')).toBeVisible();
   await launcher(page).focus();

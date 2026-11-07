@@ -208,6 +208,9 @@ def test_duplicate_conflict_stale_and_future_requests() -> None:
         )["payload"]["status"]
         == "stale_context"
     )
+    # Exercise the safety rule with simulated stock loss; the shipped menu is fully available.
+    shopping = client.app.state.sessions._sessions[sid]
+    shopping.domain.menu_by_id["burger-soldout"].available = False
     assert (
         action(client, "cart.add_item", {"item_id": "burger-soldout"}, "soldout")["payload"][
             "error_code"
