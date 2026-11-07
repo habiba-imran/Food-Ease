@@ -13,9 +13,9 @@
     <link rel="preload" href="/static/fonts/bebas-neue-latin.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/static/fonts/dm-sans-latin.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" as="image" href="/static/img/editorial/fast-v7/chicken-burger-hero-768.webp" imagesrcset="/static/img/editorial/fast-v7/chicken-burger-hero-480.webp 480w, /static/img/editorial/fast-v7/chicken-burger-hero-768.webp 768w, /static/img/editorial/fast-v7/chicken-burger-hero-1024.webp 1024w" imagesizes="(max-width: 700px) 90vw, (max-width: 900px) 480px, 560px" fetchpriority="high" />
-    <link rel="stylesheet" href="/static/vendor/food-experience.css?v=menu-19" />
-    <script type="module" src="/static/js/app.js?v=menu-19"></script>
-    <script type="module" src="/static/js/experience.mjs?v=menu-19"></script>
+    <link rel="stylesheet" href="/static/vendor/food-experience.css?v=menu-20" />
+    <script type="module" src="/static/js/app.js?v=menu-20"></script>
+    <script type="module" src="/static/js/experience.mjs?v=menu-20"></script>
   </head>
   <body data-experience="immersive" data-orchestration-url="{{ orchestration_base_url }}">
     <a class="skip-link" href="#popular">Skip to menu</a>
@@ -32,6 +32,7 @@
           <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 7h14l1 14H4L5 7Zm3 0V5a4 4 0 0 1 8 0v2" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
           <span class="cart-button-text">Cart</span>
           <strong data-cart-count>0</strong>
+          <span class="cart-floating-summary" aria-hidden="true"><span data-floating-cart-quantity>0 items</span><strong data-floating-cart-total>0 PKR</strong></span>
         </button>
         <button class="icon-button" type="button" data-header-theme aria-label="Switch to light mode">
           <svg class="theme-icon theme-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"/></svg>
@@ -44,7 +45,7 @@
         {% endfor %}
       </nav>
     </header>
-    <div class="cart-toast" data-cart-toast aria-hidden="true" hidden><span class="cart-toast-check">✓</span><span data-cart-toast-message></span></div>
+    <div class="cart-toast" data-cart-toast aria-hidden="true" hidden><span class="cart-toast-check">✓</span><span class="cart-toast-copy"><span data-cart-toast-message></span><small data-cart-toast-summary></small></span></div>
 
     <main id="main" class="shell">
       <section class="voice-welcome" data-voice-welcome aria-labelledby="voice-welcome-title">
@@ -118,7 +119,7 @@
             class="category-card"
             type="button"
             data-category-trigger="{{ category.id }}"
-            aria-label="Filter menu by {{ category.label }}"
+            aria-label="Browse {{ category.label }}"
           >
             <img class="category-photo" src="/static/img/catalog-v7/{{ category_images[category.id] }}-160.webp" alt="" width="90" height="70" loading="lazy" decoding="async" />
             <span class="category-copy">
@@ -139,8 +140,12 @@
 
           <div class="menu-toolbar" aria-label="Menu controls">
             <label class="search-field" for="menu-search">
-              <span>Search menu</span>
-              <input id="menu-search" type="search" placeholder="Try biryani, burger, chai..." />
+              <span class="search-label">Search menu</span>
+              <span class="search-shell">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5" stroke-linecap="round"/></svg>
+                <span class="search-prefix" aria-hidden="true">Search for</span>
+                <span class="search-entry"><input id="menu-search" type="search" autocomplete="off" placeholder=" " /><span class="search-suggestion" aria-hidden="true" data-search-suggestion>Biryani</span></span>
+              </span>
             </label>
             <div class="filter-bar" role="group" aria-label="Preview filters">
               <button class="is-active" type="button" data-filter="all">All</button>

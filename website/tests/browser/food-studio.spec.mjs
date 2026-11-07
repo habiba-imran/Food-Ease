@@ -101,8 +101,8 @@ test('all product images load and category selection preserves search and cart',
     await expect.poll(() => photo.evaluate(img => img.complete && img.naturalWidth > 0)).toBe(true);
   }
   await page.locator('[data-category-trigger=burgers]').click();
-  await expect(page.locator('[data-category-trigger=burgers]')).toHaveAttribute('aria-pressed', 'true');
-  await expect(page.locator('[data-menu-item]:visible').first()).toHaveAttribute('data-category', 'burgers');
+  await expect(page.locator('[data-menu-item]:visible')).toHaveCount(28);
+  await expect(page.locator('[data-category-jump=burgers]')).toHaveAttribute('aria-current', 'location');
   await page.locator('#menu-search').fill('Zinger');
   await expect(page.locator('[data-menu-item]:visible')).toHaveCount(2);
   const add = page.locator('[data-menu-item][data-id="zinger-classic"] [data-add-item]');

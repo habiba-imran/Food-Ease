@@ -25,7 +25,7 @@ for (const [width, height, label] of [[1440, 1000, 'desktop'], [768, 1024, 'tabl
     await page.locator('[data-order-manual]').click();
     await expect(page.locator('html')).toHaveAttribute('data-assistance-state', 'manual');
     await page.locator('[data-category-trigger="wraps"]').click();
-    await expect(card(page, 'zinger-classic')).toBeHidden();
+    await expect(page.locator('[data-menu-item]:visible')).toHaveCount(28);
     const trigger = card(page, 'wrap-hot-chicken').locator('[data-detail-item]');
     await trigger.click();
     await expect(page.getByRole('dialog', { name: 'Hot Chicken Wrap', exact: true })).toBeVisible();

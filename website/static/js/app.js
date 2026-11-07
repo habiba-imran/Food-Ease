@@ -38,7 +38,8 @@ let shoppingOrigin = null;
 let cartBusy = false;
 let checkoutBusy = false;
 let confirmationBusy = false;
-let navigationBusy = false;
+let detailPreview = null;
+let menuPreview = null;
 const navigationRequests = new Map();
 
 function showDialog(dialog) {
@@ -76,6 +77,7 @@ async function requestCart() {
 }
 
 function dismissDialog(dialog, target) {
+  if (dialog === itemDialog && detailPreview) detailPreview.dismissed = true;
   dialog?.close();
   void navigateOnce(target);
 }
@@ -510,17 +512,17 @@ async function application() {
 
 async function renderApplication(snapshot, result = null, request = null) {
   appContext = snapshot;
-  activeCategory = snapshot.category || "all";
-  activeFilter = snapshot.filter_tags[0] || (snapshot.max_price_pkr !== null ? "budget" : "all");
-  if (searchInput && searchInput !== document.activeElement) searchInput.value = snapshot.search_query || "";
+  const menuState = menuPreview?.state || snapshot;
+  activeCategory = menuState.category || "all";
+  activeFilter = menuState.filter_tags[0] || (menuState.max_price_pkr !== null ? "budget" : "all");
+  if (searchInput && searchInput !== document.activeElement) searchInput.value = menuState.search_query || "";
   for (const button of filterButtons) {
     const filter = button.dataset.filter;
-    const active = snapshot.filter_tags.includes(filter) || filter === "budget" && snapshot.max_price_pkr !== null
-      || filter === "all" && snapshot.filter_tags.length === 0 && snapshot.max_price_pkr === null && !snapshot.category;
+    const active = menuState.filter_tags.includes(filter) || filter === "budget" && menuState.max_price_pkr !== null
+      || filter === "all" && menuState.filter_tags.length === 0 && menuState.max_price_pkr === null && !menuState.category;
     button.classList.toggle("is-active", active);
     button.setAttribute("aria-pressed", String(active));
   }
-  for (const button of categoryButtons) button.setAttribute("aria-pressed", String(button.dataset.categoryTrigger === snapshot.category));
   const cartKey = JSON.stringify(snapshot.cart);
   const cartChanged = cartKey !== lastRenderedCart;
   if (cartChanged) {
@@ -542,12 +544,12 @@ async function renderApplication(snapshot, result = null, request = null) {
   applyMenuState();
   renderContractContext();
   const routeChanged = lastRenderedRoute !== snapshot.route || lastRenderedFocus !== snapshot.focus_item_id;
-  if (snapshot.route !== "item" && itemDialog?.open) itemDialog.close();
+  if (!detailPreview && snapshot.route !== "item" && itemDialog?.open) itemDialog.close();
   if (!["checkout", "confirmation"].includes(snapshot.route) && checkoutDialog?.open) checkoutDialog.close();
   if (snapshot.route !== "cart" && cartDialog?.open && ["home", "menu", "item", "checkout", "confirmation"].includes(snapshot.route)) closeCart();
   if (snapshot.route === "item" && snapshot.focus_item_id) {
     const detail = catalogItems.get(snapshot.focus_item_id);
-    if (detail && (routeChanged || ["get_item_details", "select_item"].includes(result?.operation))) {
+    if (detail && !detailPreview?.dismissed && (!detailPreview || detailPreview.id === detail.item_id) && (routeChanged || ["get_item_details", "select_item"].includes(result?.operation))) {
       const preview = Array.from(previewButtons).find((button) => button.dataset.previewItem === detail.item_id);
       if (preview) paintPreview(preview);
       renderItemDetails({ id: detail.item_id, name: detail.name, price: detail.unit_price_pkr,
@@ -572,7 +574,7 @@ async function renderApplication(snapshot, result = null, request = null) {
       openCart();
     } else {
       closeCart();
-      if (!["cart", "item", "checkout", "confirmation"].includes(lastRenderedRoute)) {
+      if (!menuPreview && !["cart", "item", "checkout", "confirmation"].includes(lastRenderedRoute)) {
         document.querySelector(snapshot.route === "menu" ? "#popular" : "#main")?.scrollIntoView({ block: "start", behavior: "instant" });
       }
     }
@@ -591,6 +593,8 @@ async function renderApplication(snapshot, result = null, request = null) {
     if (cartToast && label) {
       clearTimeout(cartToastTimer);
       label.textContent = `${item?.name || "Item"} added to cart`;
+      const quantity = snapshot.cart.lines.reduce((sum, line) => sum + line.quantity, 0);
+      cartToast.querySelector('[data-cart-toast-summary]').textContent = `${quantity} ${quantity === 1 ? 'item' : 'items'} · Total ${money(snapshot.cart.total)}`;
       cartToast.hidden = false;
       cartToastTimer = setTimeout(() => { cartToast.hidden = true; }, 3600);
     }
@@ -994,23 +998,26 @@ async function runAcceptanceSmoke() {
 
 async function openItemDetails(card) {
   const item = itemFromCard(card);
-  setStatus(`Opening details for ${item.name}.`);
-  if (navigationBusy) return;
-  navigationBusy = true;
+  const preview = { id: item.id, dismissed: false };
+  detailPreview = preview;
+  renderItemDetails(item, catalogItems.get(item.id) || {});
+  showDialog(itemDialog);
+  placeVoiceLauncher();
   try { await submitAction("select_item", { item_id: item.id }); }
-  finally { navigationBusy = false; }
+  finally { if (detailPreview === preview) detailPreview = null; }
 }
 
 function applyMenuState() {
   if (!appContext) return;
   // Agent context is deliberately bounded to 25 rows. The full catalog plus the
   // authority's accepted filter state drives the complete visual menu.
-  const query = (appContext.search_query || '').toLowerCase();
-  const tags = appContext.filter_tags || [];
+  const state = menuPreview?.state || appContext;
+  const query = (state.search_query || '').toLowerCase();
+  const tags = state.filter_tags || [];
   const visibleIds = new Set([...catalogItems.values()].filter(item =>
-    (!appContext.category || item.category === appContext.category) &&
+    (!state.category || item.category === state.category) &&
     (!query || item.name.toLowerCase().includes(query) || item.description.toLowerCase().includes(query)) &&
-    (appContext.max_price_pkr === null || item.unit_price_pkr <= appContext.max_price_pkr) &&
+    (state.max_price_pkr === null || item.unit_price_pkr <= state.max_price_pkr) &&
     tags.every(tag => tag === 'available' ? item.available : item.tags.includes(tag))
   ).map(item => item.item_id));
   let showing = 0;
@@ -1116,7 +1123,9 @@ function renderCart(cart) {
   if (cartCount) {
     cartCount.textContent = String(quantity);
     if (cartButton) {
-      cartButton.setAttribute("aria-label", `Open cart (${quantity} ${quantity === 1 ? "item" : "items"})`);
+      cartButton.setAttribute("aria-label", `Open cart (${quantity} ${quantity === 1 ? "item" : "items"}, total ${money(cart?.total)})`);
+      cartButton.querySelector('[data-floating-cart-quantity]').textContent = `${quantity} ${quantity === 1 ? 'item' : 'items'}`;
+      cartButton.querySelector('[data-floating-cart-total]').textContent = money(cart?.total);
     }
   }
   if (cartHeaderCount) {
@@ -1371,56 +1380,69 @@ contextExportButton?.addEventListener("click", async () => {
   downloadJson("foodease-context-snapshot.json", appContext);
 });
 
-filterButtons.forEach((button) => {
-  button.addEventListener("click", async () => {
-    const filter = button.dataset.filter || "all";
-    await submitAction("filter_menu", {
-      tags: ["vegetarian", "spicy", "available"].includes(filter) ? [filter] : [],
-      max_price_pkr: filter === "budget" ? 800 : null,
-      category: filter === "all" ? null : appContext?.category,
-    });
+// Preview only browsing immediately; all accepted state still passes through Application.
+async function previewMenuAction(operation, args) {
+  await application();
+  if (!appContext) await refreshContext();
+  const previous = menuPreview?.state || appContext;
+  const state = { ...previous, ...(operation === 'search_menu'
+    ? { search_query: args.query }
+    : { filter_tags: args.tags, max_price_pkr: args.max_price_pkr, category: args.category }) };
+  const preview = { state };
+  menuPreview = preview;
+  applyMenuState();
+  filterButtons.forEach(button => {
+    const filter = button.dataset.filter;
+    const active = state.filter_tags.includes(filter) || filter === 'budget' && state.max_price_pkr !== null
+      || filter === 'all' && !state.filter_tags.length && state.max_price_pkr === null && !state.category;
+    button.classList.toggle('is-active', active);
+    button.setAttribute('aria-pressed', String(active));
   });
-});
+  const result = await submitAction(operation, args);
+  if (menuPreview === preview) {
+    menuPreview = null;
+    await renderApplication(appContext);
+  }
+  return result;
+}
 
-categoryButtons.forEach((button) => {
-  button.addEventListener("click", async () => {
-    const category = button.dataset.categoryTrigger || null;
-    document.querySelector("#popular")?.scrollIntoView({ behavior: "smooth", block: "start" });
-    await submitAction("filter_menu", {
-      tags: appContext?.filter_tags || [],
-      max_price_pkr: appContext?.max_price_pkr ?? null,
-      category,
-    });
+filterButtons.forEach(button => button.addEventListener('click', () => {
+  const filter = button.dataset.filter;
+  void previewMenuAction('filter_menu', {
+    tags: ['vegetarian', 'spicy', 'available'].includes(filter) ? [filter] : [],
+    max_price_pkr: filter === 'budget' ? 800 : null,
+    category: null,
   });
-});
+}));
 
-// The sticky category rail jumps through the complete menu; category cards retain filtering.
-document.querySelectorAll('[data-category-jump]').forEach(link => {
-  link.addEventListener('click', async event => {
-    event.preventDefault();
-    const group = document.getElementById(`menu-category-section-${link.dataset.categoryJump}`);
-    if (!group) return;
-    group.querySelectorAll('img').forEach((img, index) => {
-      img.loading = 'eager';
-      if (index < 4) img.fetchPriority = 'high';
-    });
-    if (group.hidden) {
-      if (searchInput) searchInput.value = '';
-      const search = await submitAction('search_menu', { query: '' });
-      if (search.status !== 'success') return;
-      const filters = await submitAction('filter_menu', { tags: [], category: null, max_price_pkr: null });
-      if (filters.status !== 'success') return;
-    }
-    group.scrollIntoView({ block: 'start', behavior: root.dataset.calmMotion === 'true' || matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' });
+async function jumpToCategory(id) {
+  const group = document.getElementById(`menu-category-section-${id}`);
+  if (!group) return;
+  // Navigation always exposes the complete catalog before targeting a heading.
+  if (searchInput) searchInput.value = '';
+  const state = menuPreview?.state || appContext;
+  const search = state?.search_query ? previewMenuAction('search_menu', { query: '' }) : Promise.resolve();
+  const filters = state?.category || state?.filter_tags?.length || state?.max_price_pkr != null
+    ? previewMenuAction('filter_menu', { tags: [], category: null, max_price_pkr: null }) : Promise.resolve();
+  // Both previews begin after application readiness, before either network reply.
+  await Promise.resolve();
+  group.querySelectorAll('img').forEach((img, index) => {
+    img.loading = 'eager';
+    if (index < 4) img.fetchPriority = 'high';
   });
-});
+  requestAnimationFrame(() => group.scrollIntoView({ block: 'start', behavior: root.dataset.calmMotion === 'true' || matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' }));
+  await Promise.all([search, filters]);
+}
+categoryButtons.forEach(button => button.addEventListener('click', () => { void jumpToCategory(button.dataset.categoryTrigger); }));
+document.querySelectorAll('[data-category-jump]').forEach(link => link.addEventListener('click', event => {
+  event.preventDefault();
+  void jumpToCategory(link.dataset.categoryJump);
+}));
 
 let searchTimer = null;
-searchInput?.addEventListener("input", () => {
+searchInput?.addEventListener('input', () => {
   window.clearTimeout(searchTimer);
-  searchTimer = window.setTimeout(async () => {
-    await submitAction("search_menu", { query: searchInput.value });
-  }, 350);
+  searchTimer = window.setTimeout(() => { void previewMenuAction('search_menu', { query: searchInput.value }); }, 200);
 });
 
 checkoutButton?.addEventListener("click", async () => {
@@ -1720,6 +1742,7 @@ for (const dialog of [itemDialog, checkoutDialog, cartDialog]) dialog?.addEventL
   dismissDialog(dialog, dialog === checkoutDialog ? appContext?.route === "confirmation" ? "menu" : "cart" : dialog === cartDialog ? "menu" : "back");
 });
 for (const dialog of [itemDialog, checkoutDialog, cartDialog, arDialog]) dialog?.addEventListener("close", () => {
+  if (dialog === itemDialog && detailPreview) detailPreview.dismissed = true;
   syncDialogAssistance();
   placeVoiceLauncher();
   if (dialog === cartDialog) cartButton?.setAttribute("aria-expanded", "false");

@@ -232,3 +232,31 @@ if ('IntersectionObserver' in window) {
   }, { rootMargin: '600px 0px' });
   imageStages.forEach(stage => nearbyImages.observe(stage));
 }
+// Animated suggestions are decorative; the input value and accessible name stay stable.
+const search = document.querySelector('#menu-search');
+const suggestion = document.querySelector('[data-search-suggestion]');
+if (search && suggestion) {
+  const words = [...document.querySelectorAll('[data-category-trigger]')].map(button => button.querySelector('strong')?.textContent.trim()).filter(Boolean);
+  let word = 0, length = words[0]?.length || 0, deleting = true, timer, visible = false;
+  const tick = () => {
+    clearTimeout(timer);
+    if (!visible || calm() || document.hidden || document.activeElement === search || search.value || !words.length) return;
+    const text = words[word];
+    length += deleting ? -1 : 1;
+    suggestion.textContent = text.slice(0, Math.max(0, length));
+    let delay = deleting ? 48 : 85;
+    if (length <= 0) { deleting = false; word = (word + 1) % words.length; delay = 280; }
+    else if (length >= text.length && !deleting) { deleting = true; delay = 1600; }
+    timer = setTimeout(tick, delay);
+  };
+  suggestion.textContent = words[0] || 'Biryani';
+  const resume = () => { clearTimeout(timer); timer = setTimeout(tick, 1300); };
+  search.addEventListener('focus', () => clearTimeout(timer));
+  search.addEventListener('input', resume);
+  search.addEventListener('blur', resume);
+  document.addEventListener('visibilitychange', resume);
+  reducedMotion.addEventListener('change', resume);
+  new IntersectionObserver(([entry]) => { visible = entry.isIntersecting; resume(); }).observe(search);
+  new MutationObserver(resume).observe(root, { attributes: true, attributeFilter: ['data-calm-motion'] });
+  resume();
+}

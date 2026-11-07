@@ -14,7 +14,7 @@ for (const width of [375, 768, 1440]) {
     await expect(page.locator('[data-menu-item] [data-add-item]:disabled')).toHaveCount(0);
     await expect(page.getByRole('button', { name: 'Details', exact: true })).toHaveCount(0);
     const item = card(page, 'biryani-chicken');
-    for (const target of ['[data-detail-item]', '.menu-description-trigger']) {
+    for (const target of ['.food-photo', '.menu-description-trigger']) {
       await item.locator(target).click();
       await expect(page.locator('[data-item-dialog]')).toBeVisible();
       await expect(page.locator('[data-detail-name]')).toHaveText('Chicken Biryani');
@@ -38,7 +38,12 @@ for (const width of [375, 768, 1440]) {
     await expect(page.locator('[data-cart-toast]')).toBeVisible();
     await expect(page.locator('[data-cart-toast]')).toContainText('Chicken Biryani added to cart');
     const [cartBox, voiceBox] = await Promise.all([page.locator('.is-floating-cart').boundingBox(), page.locator('body > [data-voice-launcher]').boundingBox()]);
-    expect(voiceBox.x + voiceBox.width <= cartBox.x || cartBox.x + cartBox.width <= voiceBox.x).toBe(true);
+    expect(voiceBox.y + voiceBox.height + 8 <= cartBox.y).toBe(true);
+    await expect(page.locator("[data-floating-cart-quantity]")).toHaveText("1 item");
+    await expect(page.locator("[data-floating-cart-total]")).toHaveText("600 PKR");
+    await expect(page.locator("[data-floating-cart-quantity]")).toBeVisible();
+    await expect(page.locator("[data-floating-cart-total]")).toBeVisible();
+    await expect(page.locator("[data-cart-toast-summary]")).toContainText(/1 item .* Total/);
     await page.screenshot({ path: `${evidence}/added-${width}.png` });
     await expect(page.locator('[data-cart-toast]')).toBeHidden({ timeout: 5000 });
     await page.locator('.is-floating-cart').click();
@@ -110,4 +115,67 @@ test('small original preview is visible while the larger photo is delayed', asyn
     releaseImages();
     await page.unrouteAll({ behavior: 'wait' });
   }
+});
+
+
+test('browsing responds immediately despite a slow authority and dismissed details stay closed', async ({ page }) => {
+  let release; const gate = new Promise(resolve => { release = resolve; });
+  await page.route('**/api/v2/app/action', async route => { await gate; await route.continue(); });
+  try {
+    await card(page, 'biryani-chicken').locator('.food-photo').click();
+    await expect(page.locator('[data-item-dialog]')).toBeVisible({ timeout: 800 });
+    await page.keyboard.press('Escape');
+    await page.locator('[data-filter=vegetarian]').click();
+    await expect(page.locator('[data-filter=vegetarian]')).toHaveAttribute('aria-pressed', 'true', { timeout: 800 });
+    const count = await page.locator('[data-menu-item]:visible').count();
+    expect(count).toBeGreaterThan(0); expect(count).toBeLessThan(28);
+    release();
+    await expect(page.locator('html')).toHaveAttribute('data-foodease-route', 'menu');
+    await expect(page.locator('[data-item-dialog]')).toBeHidden();
+    await expect(page.locator('[data-filter=vegetarian]')).toHaveAttribute('aria-pressed', 'true');
+  } finally { release(); await page.unrouteAll({ behavior: 'wait' }); }
+});
+
+test('every filter updates matching dishes and category cards jump to their own heading', async ({ page }) => {
+  const catalog = await (await page.request.get('/api/catalog/items')).json();
+  for (const filter of ['vegetarian', 'spicy', 'budget', 'available', 'all']) {
+    await page.locator(`[data-filter=${filter}]`).click();
+    const expected = catalog.items.filter(item => filter === 'all' || (filter === 'budget' ? item.unit_price_pkr <= 800 : filter === 'available' ? item.available : item.tags.includes(filter))).map(item => item.item_id).sort();
+    await expect.poll(() => page.locator('[data-menu-item]:visible').evaluateAll(cards => cards.map(card => card.dataset.id).sort())).toEqual(expected);
+  }
+  await page.locator('[data-category-trigger=wraps]').click();
+  await expect.poll(() => page.locator('#menu-category-section-wraps').evaluate(el => Math.abs(el.getBoundingClientRect().top - document.querySelector('.site-header').offsetHeight - 20) < 4)).toBe(true);
+  await expect(page.locator('[data-menu-item]:visible')).toHaveCount(28);
+});
+
+test('search is centered with a stable prefix and decorative typing never enters the query', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'no-preference' });
+  await page.reload();
+  const field = page.locator('.search-field');
+  await field.scrollIntoViewIfNeeded();
+  const box = await field.boundingBox();
+  expect(Math.abs(box.x + box.width / 2 - 720)).toBeLessThan(2);
+  await expect(page.locator('.search-prefix')).toHaveText('Search for');
+  const first = await page.locator('[data-search-suggestion]').textContent();
+  await expect.poll(() => page.locator('[data-search-suggestion]').textContent()).not.toBe(first);
+  await expect(page.locator('#menu-search')).toHaveValue('');
+  await page.locator('#menu-search').fill('biryani');
+  await expect(page.locator('[data-menu-item]:visible')).toHaveCount(2);
+  await expect(page.locator('[data-search-suggestion]')).toBeHidden();
+});
+
+test('rapid filter choices retain the latest preview until the authority catches up', async ({ page }) => {
+  let release; const gate = new Promise(resolve => { release = resolve; });
+  await page.route('**/api/v2/app/action', async route => { await gate; await route.continue(); });
+  try {
+    await page.locator('[data-filter=vegetarian]').click();
+    await page.locator('[data-filter=budget]').click();
+    await page.locator('[data-filter=spicy]').click();
+    await expect(page.locator('[data-filter=spicy]')).toHaveAttribute('aria-pressed', 'true', { timeout: 800 });
+    const lastAction = page.waitForResponse(r => r.url().endsWith('/api/v2/app/action') && r.request().postDataJSON().payload.arguments.tags?.[0] === 'spicy');
+    release(); await lastAction;
+    await expect(page.locator('html')).toHaveAttribute('data-foodease-revision', '4');
+    await expect(page.locator('[data-filter=spicy]')).toHaveAttribute('aria-pressed', 'true');
+    expect(await page.locator('[data-menu-item]:visible').evaluateAll(cards => cards.every(card => card.dataset.tags.includes('spicy')))).toBe(true);
+  } finally { release(); await page.unrouteAll({ behavior: 'wait' }); }
 });
