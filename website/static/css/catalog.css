@@ -18,7 +18,7 @@
 .preview-navigation { display:flex; gap:6px; }
 :root body[data-experience] .spotlight-selection .hero-arrow { position:static; width:44px; height:44px; min-width:44px; margin:0; border:1px solid var(--line); border-radius:0; background:none; color:var(--ink); box-shadow:none; transform:none; font-size:1.1rem; }
 :root body[data-experience] .spotlight-selection .hero-arrow:hover { background:var(--gold); color:#18200f; }
-:root body[data-experience] .spotlight-selection .hero-food-rail { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); align-items:stretch; gap:18px; width:100%; margin:0; overflow:visible; }
+:root body[data-experience] .spotlight-selection .hero-food-rail { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); align-items:stretch; gap:24px; width:100%; margin:0; overflow:visible; }
 :root body[data-experience] .spotlight-selection .hero-food-rail button { --card-stock:#aeb795; position:relative; display:flex; flex-direction:column; align-items:stretch; justify-content:start; gap:0; min-width:0; min-height:0; padding:0; border:1px solid var(--line); border-radius:3px; background:var(--surface); color:var(--ink); text-align:left; overflow:hidden; transform:none; transition:border-color .2s,box-shadow .2s; }
 :root body[data-experience] .spotlight-selection .hero-food-rail button:nth-child(2) { --card-stock:#c6ba9e; }
 :root body[data-experience] .spotlight-selection .hero-food-rail button:nth-child(3) { --card-stock:#ae8e73; }
@@ -58,9 +58,9 @@
 :root body[data-experience] .menu-category-heading h3 { margin:0; color:var(--ink); font:400 clamp(2rem,3.6vw,3.5rem)/.9 var(--font-condensed); letter-spacing:.01em; text-transform:uppercase; }
 :root body[data-experience] .menu-category-count { color:var(--muted); font:.55rem var(--font-mono); white-space:nowrap; }
 :root body[data-experience] .menu-category-group .menu-grid { margin-top:0; }
-:root body[data-experience] .menu-grid { grid-template-columns:repeat(3,minmax(0,1fr)); gap:22px 18px; }
+:root body[data-experience] .menu-grid { grid-template-columns:repeat(3,minmax(0,1fr)); gap:28px 24px; }
 :root body[data-experience] .menu-card { border:1px solid var(--line); border-radius:3px; background:var(--surface); overflow:hidden; box-shadow:none; }
-:root body[data-experience] .menu-card:hover { transform:translateY(-4px); box-shadow:0 12px 24px #0002; }
+:root body[data-experience] .menu-card:hover { transform:translateY(-2px); box-shadow:none; }
 :root body[data-experience] .menu-art { --food-stock:#b6bd9d; position:relative; isolation:isolate; display:grid; place-items:center; width:100%; height:auto; aspect-ratio:1.16; padding:28px 4px 4px; background:var(--food-stock); overflow:hidden; }
 :root body[data-experience] .menu-art.tone-burgers,:root body[data-experience] .menu-art.tone-rolls { --food-stock:#c6ba9e; }
 :root body[data-experience] .menu-art.tone-karahi,:root body[data-experience] .menu-art.tone-biryani { --food-stock:#b59c7f; }
@@ -107,7 +107,7 @@
 :root body[data-experience] .ar-tabletop img { width:92%; max-height:330px; height:auto; object-fit:contain; border:0; border-radius:0; filter:drop-shadow(0 18px 12px #17261030); }
 :root body[data-experience] .site-footer { margin-top:70px; padding-block:36px 48px; }
 @media (hover:hover) {
- :root body[data-experience] .spotlight-selection .hero-food-rail button:hover img { transform:translateY(-8px) rotate(1deg) scale(1.035); }
+ :root body[data-experience] .spotlight-selection .hero-food-rail button:hover img { transform:translateY(-2px) rotate(-3deg) scale(1.025); }
  :root body[data-experience] .menu-card:hover .food-photo { transform:translateY(-6px) scale(1.04); }
 }
 @media (max-width:1180px) {
@@ -172,82 +172,17 @@
 @media (prefers-reduced-motion:reduce) {
  :root body[data-experience] .spotlight-selection .hero-food-rail button:hover img,:root body[data-experience] .menu-card:hover,:root body[data-experience] .menu-card:hover .food-photo { transform:none; transition:none; }
 }
-/* Keep the product motion contained to the menu cards. */
-:root body[data-experience] .menu-category-group .menu-card {
-  transform:perspective(1000px) rotateX(var(--card-rx,0deg)) rotateY(var(--card-ry,0deg));
-  transform-style:preserve-3d;
-  transition:transform .36s cubic-bezier(.2,.75,.25,1),box-shadow .36s,border-color .24s;
-}
+/* Small image zooms keep menu cards steady while browsing or using the keyboard. */
 :root body[data-experience] .menu-category-group .menu-card:focus-within {
-  transform:perspective(1000px) translateY(-6px) rotateX(var(--card-rx,0deg)) rotateY(var(--card-ry,0deg));
-  box-shadow:0 20px 36px #17210f30;
   border-color:var(--gold);
 }
-@media (hover:hover) {
-  :root body[data-experience] .menu-category-group .menu-card:hover {
-    transform:perspective(1000px) translateY(-6px) rotateX(var(--card-rx,0deg)) rotateY(var(--card-ry,0deg));
-    box-shadow:0 20px 36px #17210f30;
-    border-color:var(--gold);
-  }
-}
 :root body[data-experience] .menu-category-group .menu-art .food-photo {
-  transform:translateY(0) scale(.94) rotate(-2deg);
-  transition:transform .55s cubic-bezier(.2,.75,.25,1),filter .4s ease;
+  transform:scale(.96);
 }
-:root body[data-experience] .menu-category-group .menu-card:focus-within .food-photo {
-  transform:translate3d(0,-7px,18px) scale(1.06) rotate(1deg);
-  filter:drop-shadow(0 20px 11px #1c251b45);
-}
-@media (hover:hover) {
+@media (hover:hover) and (pointer:fine) {
   :root body[data-experience] .menu-category-group .menu-card:hover .food-photo {
-    transform:translate3d(0,-7px,18px) scale(1.06) rotate(1deg);
-    filter:drop-shadow(0 20px 11px #1c251b45);
+    transform:scale(1.01);
   }
-}
-:root body[data-experience] .menu-category-group .menu-art .image-orbit {
-  opacity:.55;
-  transition:transform .65s cubic-bezier(.2,.75,.25,1),opacity .35s ease;
-}
-:root body[data-experience] .menu-category-group .menu-card:focus-within .image-orbit {
-  opacity:.9;
-  transform:rotate(-7deg) scale(1.08);
-}
-@media (hover:hover) {
-  :root body[data-experience] .menu-category-group .menu-card:hover .image-orbit {
-    opacity:.9;
-    transform:rotate(-7deg) scale(1.08);
-  }
-}
-:root body[data-experience] .menu-category-group .card-action-row [data-add-item]::after {
-  content:'↗';
-  display:inline-block;
-  margin-left:.55em;
-  transition:transform .24s ease;
-}
-:root body[data-experience] .menu-category-group .menu-card:focus-within [data-add-item]::after {
-  transform:translate(2px,-2px);
-}
-@media (hover:hover) {
-  :root body[data-experience] .menu-category-group .menu-card:hover [data-add-item]::after {
-    transform:translate(2px,-2px);
-  }
-}
-:root[data-calm-motion=true] body[data-experience] .menu-category-group .menu-card,
-:root[data-calm-motion=true] body[data-experience] .menu-category-group .menu-card:hover,
-:root[data-calm-motion=true] body[data-experience] .menu-category-group .menu-card:focus-within {
-  transform:none;
-  transition:none;
-}
-:root[data-calm-motion=true] body[data-experience] .menu-category-group .food-photo,
-:root[data-calm-motion=true] body[data-experience] .menu-category-group .image-orbit,
-:root[data-calm-motion=true] body[data-experience] .menu-category-group [data-add-item]::after { transition:none; }
-@media (prefers-reduced-motion:reduce) {
-  :root body[data-experience] .menu-category-group .menu-card,
-  :root body[data-experience] .menu-category-group .menu-card:hover,
-  :root body[data-experience] .menu-category-group .menu-card:focus-within { transform:none; transition:none; }
-  :root body[data-experience] .menu-category-group .food-photo,
-  :root body[data-experience] .menu-category-group .image-orbit,
-  :root body[data-experience] .menu-category-group [data-add-item]::after { transition:none; }
 }
 :root[data-high-contrast=true] body[data-experience] .menu-card,:root[data-high-contrast=true] body[data-experience] .spotlight-selection .hero-food-rail button { border-color:#000; }
 /* Remove inherited plate/sprite decoration from the new photography stages. */

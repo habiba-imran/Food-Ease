@@ -1,100 +1,93 @@
 import { test, expect } from '@playwright/test';
+import { mkdir } from 'node:fs/promises';
+const evidence = '../artifacts/ui-polish-2026-11-07';
 
-test.use({ launchOptions: { args: ['--enable-unsafe-swiftshader'] } });
-
-async function ready(page) {
+test.beforeEach(async ({ page }) => {
   await page.goto('/');
   await expect(page.locator('html')).toHaveAttribute('data-foodease-revision', /\d+/);
-  await page.locator('[data-scene-view=inspect]').click();
-  await expect(page.locator('[data-food-studio]')).toHaveAttribute('data-render-state', 'ready');
-}
-
-test('real rendered model rotates, pauses, separates layers, and responds to drag', async ({ page }) => {
-  await ready(page);
-  const studio = page.locator('[data-food-studio]');
-  const canvas = page.locator('[data-food-canvas]');
-  await expect.poll(async () => Number(await studio.getAttribute('data-rotation'))).not.toBe(-.6);
-  await page.locator('[data-studio-pause]').click();
-  await expect(studio).toHaveAttribute('data-motion', 'paused');
-  await page.locator('[data-studio-explode]').click();
-  await expect.poll(async () => Number(await studio.getAttribute('data-layer-spread'))).toBeGreaterThan(.98);
-  await page.locator('[data-studio-explode]').click();
-  await expect.poll(async () => Number(await studio.getAttribute('data-layer-spread'))).toBeLessThan(.02);
-  const box = await canvas.boundingBox();
-  const before = Number(await studio.getAttribute('data-rotation'));
-  await page.mouse.move(box.x + box.width * .4, box.y + box.height * .5);
-  await page.mouse.down();
-  await page.mouse.move(box.x + box.width * .7, box.y + box.height * .5, { steps: 12 });
-  await page.mouse.up();
-  await expect(studio).toHaveAttribute('data-dragged', 'true');
-  await expect.poll(async () => Number(await studio.getAttribute('data-rotation'))).toBeGreaterThan(before + .3);
+  await page.evaluate(() => document.fonts.ready);
 });
 
-test('reduced motion stops automatic 3D rotation but keeps keyboard controls usable', async ({ page }) => {
-  await page.emulateMedia({ reducedMotion: 'reduce' });
-  await ready(page);
-  const studio = page.locator('[data-food-studio]');
-  await expect(studio).toHaveAttribute('data-motion', 'paused');
-  await expect.poll(() => studio.getAttribute('data-rotation')).toBe('-0.600');
-  await page.locator('[data-food-canvas]').focus();
-  await page.keyboard.press('ArrowRight');
-  await expect.poll(async () => Number(await studio.getAttribute('data-rotation'))).toBeGreaterThan(-.1);
-  await page.locator('[data-studio-explode]').click();
-  await expect(studio).toHaveAttribute('data-layer-spread', '1.000');
-  await expect(page.locator('[data-cart-count]')).toHaveText('0');
-  await expect(page.locator('html')).toHaveAttribute('data-assistance-state', 'awaiting_spoken_choice_consent');
-});
-
-test('the scene stops rendering offscreen and resumes on return', async ({ page }) => {
-  await ready(page);
-  const studio = page.locator('[data-food-studio]');
-  await page.locator('.main-nav a[href="#assistant"]').click();
-  await expect(studio).not.toBeInViewport();
-  await page.waitForTimeout(250);
-  const stopped = await studio.getAttribute('data-rotation');
-  await page.waitForTimeout(250);
-  expect(await studio.getAttribute('data-rotation')).toBe(stopped);
-  await studio.scrollIntoViewIfNeeded();
-  await expect.poll(() => studio.getAttribute('data-rotation')).not.toBe(stopped);
-});
-
-test('missing WebGL falls back without preventing manual ordering', async ({ browser }) => {
-  const context = await browser.newContext();
-  const page = await context.newPage();
-  try {
-    await page.addInitScript(() => {
-      const original = HTMLCanvasElement.prototype.getContext;
-      HTMLCanvasElement.prototype.getContext = function(type, ...args) {
-        if (String(type).includes('webgl')) return null;
-        return original.call(this, type, ...args);
+for (const [width, height] of [[320, 740], [375, 812], [667, 375], [768, 1024], [900, 900], [1024, 768], [1440, 1000], [1920, 1080]]) {
+  test(`full hero headline and ordering controls fit ${width}px`, async ({ page }) => {
+    await page.setViewportSize({ width, height });
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await expect(page.locator('#hero-title')).toHaveText('FULL OF FLAVOURS.');
+    await expect(page.locator('[data-scene-view], [data-campaign-pause], [data-food-canvas], .studio-control-deck')).toHaveCount(0);
+    const geometry = await page.evaluate(() => {
+      const box = selector => document.querySelector(selector).getBoundingClientRect().toJSON();
+      return { title: box('#hero-title'), photo: box('.hero-product'), hero: box('.hero'), rule: box('.hero-rule'), description: box('.hero-description'),
+        overflow: document.documentElement.scrollWidth > innerWidth,
+        navOverlap: document.querySelector('.main-nav').getBoundingClientRect().right > document.querySelector('.brand-mark').getBoundingClientRect().left && innerWidth > 700,
+        titleOverflow: document.querySelector('#hero-title').scrollWidth > document.querySelector('#hero-title').clientWidth,
       };
     });
-    await page.goto('/');
-    await page.locator('[data-scene-view=inspect]').click();
-    await expect(page.locator('[data-food-studio]')).toHaveAttribute('data-render-state', 'fallback');
-    await expect(page.locator('.studio-fallback')).toBeVisible();
+    expect(geometry.overflow).toBe(false);
+    expect(geometry.navOverlap).toBe(false);
+    expect(geometry.titleOverflow).toBe(false);
+    expect(geometry.title.bottom).toBeLessThanOrEqual(geometry.photo.top + 2);
+    expect(geometry.photo.bottom).toBeLessThanOrEqual(geometry.rule.top);
+    if (width <= 700) expect(geometry.photo.bottom).toBeLessThanOrEqual(geometry.description.top);
+    await mkdir(evidence, { recursive: true });
+    await page.screenshot({ path: `${evidence}/hero-${width}.png`, fullPage: true, clip: { x: geometry.hero.x, y: geometry.hero.y + await page.evaluate(() => scrollY), width: geometry.hero.width, height: geometry.hero.height } });
+    await page.locator('[data-order-manual]').click();
+    await expect(page.locator('#popular')).toBeInViewport();
+    await expect.poll(() => page.locator('#popular').evaluate(el => el.getBoundingClientRect().top >= document.querySelector('.site-header').getBoundingClientRect().bottom - 1)).toBe(true);
+    if ([375, 768, 1440].includes(width)) {
+      await page.screenshot({ path: `${evidence}/menu-${width}.png` });
+    }
     await page.locator('[data-menu-item][data-id="wrap-hot-chicken"] [data-add-item]').click();
     await expect(page.locator('[data-cart-count]')).toHaveText('1');
+  });
+}
+
+test('desktop float and parallax respect live motion preference changes', async ({ page }) => {
+  const hero = page.locator('.hero');
+  const product = page.locator('.hero-product');
+  await expect(product).toHaveCSS('animation-name', 'hero-object-float');
+  await hero.scrollIntoViewIfNeeded();
+  const box = await hero.boundingBox();
+  await page.mouse.move(box.x + box.width * .7, Math.max(100, box.y + box.height * .4));
+  await expect.poll(() => hero.evaluate(el => el.style.getPropertyValue('--scene-x'))).not.toBe('');
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await expect(product).toHaveCSS('animation-name', 'none');
+  await expect.poll(() => hero.evaluate(el => el.style.getPropertyValue('--scene-x'))).toBe('');
+  await page.emulateMedia({ reducedMotion: 'no-preference' });
+  await page.locator('[data-access-toggle=motion]').click();
+  await expect(product).toHaveCSS('animation-name', 'none');
+});
+
+test('mobile hero stays still and never captures touch rotation', async ({ browser }) => {
+  const context = await browser.newContext({ viewport: { width: 375, height: 812 }, hasTouch: true, isMobile: true });
+  try {
+    const page = await context.newPage();
+    await page.goto('/');
+    await expect(page.locator('.hero-product')).toHaveCSS('animation-name', 'none');
+    const hero = page.locator('.hero');
+    await hero.dispatchEvent('pointerdown', {pointerType:'touch',pointerId:1,clientX:100,clientY:350});
+    await hero.dispatchEvent('pointermove', {pointerType:'touch',pointerId:1,clientX:250,clientY:350});
+    expect(await hero.evaluate(el => el.style.cssText)).not.toContain('--scene-');
   } finally { await context.close(); }
 });
 
-for (const width of [320, 375, 768, 1000, 1440]) {
-  test(`assistant and 3D controls fit ${width}px including direct assistant links`, async ({ page }) => {
-    await page.setViewportSize({ width, height: 900 });
-    await page.goto('/#assistant');
-    await expect(page.locator('html')).toHaveAttribute('data-foodease-revision', /\d+/);
-    await expect(page.locator('#assistant')).toBeInViewport();
-    await expect.poll(() => page.evaluate(() => document.querySelector('#assistant').getBoundingClientRect().top >= document.querySelector('.site-header').getBoundingClientRect().bottom - 1)).toBe(true);
-    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
-    await page.locator('[data-scene-view=inspect]').click();
-    await expect(page.locator('[data-food-studio]')).toHaveAttribute('data-scene-mode', 'inspect');
-    const controls = await page.locator('#assistant button, #assistant input:not([type=checkbox]), .studio-control-deck button, .studio-control-deck input').evaluateAll(elements => elements.map(el => {
-      const r = el.getBoundingClientRect(); return { left: r.left, right: r.right, width: r.width };
-    }));
-    for (const control of controls) {
-      expect(control.left).toBeGreaterThanOrEqual(0);
-      expect(control.right).toBeLessThanOrEqual(width);
-      expect(control.width).toBeGreaterThan(25);
-    }
-  });
-}
+test('all product images load and category selection preserves search and cart', async ({ page }) => {
+  const cards = page.locator('[data-menu-item]');
+  await expect(cards).toHaveCount(28);
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  for (const photo of await page.locator('[data-menu-item] img.food-photo').all()) {
+    if (await photo.isVisible()) await photo.scrollIntoViewIfNeeded();
+    else await photo.evaluate(img => { img.loading = 'eager'; });
+    await expect.poll(() => photo.evaluate(img => img.complete && img.naturalWidth > 0)).toBe(true);
+  }
+  await page.locator('[data-category-trigger=burgers]').click();
+  await expect(page.locator('[data-category-trigger=burgers]')).toHaveAttribute('aria-pressed', 'true');
+  await expect(page.locator('[data-menu-item]:visible').first()).toHaveAttribute('data-category', 'burgers');
+  await page.locator('#menu-search').fill('Zinger');
+  await expect(page.locator('[data-menu-item]:visible')).toHaveCount(2);
+  const add = page.locator('[data-menu-item][data-id="zinger-classic"] [data-add-item]');
+  await add.click();
+  await expect(add).toHaveClass(/is-added/);
+  await expect(page.locator('[data-cart-count]')).toHaveText('1');
+  await page.locator('[data-cart-trigger]').click();
+  await expect(page.locator('[data-cart-dialog]')).toBeVisible();
+});

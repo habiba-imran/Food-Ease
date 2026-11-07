@@ -1,75 +1,32 @@
 // Decorative enhancements only. Ordering, consent, media, and sessions remain in app.js.
 const root = document.documentElement;
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)');
 const calm = () => reducedMotion.matches || root.dataset.calmMotion === 'true';
 
-// Editorial view controls affect the hero presentation only.
+// The flat hero photograph gets only a few pixels of desktop parallax.
 const editorialHero = document.querySelector('.hero');
-const foodStudio = document.querySelector('[data-food-studio]');
-const sceneViewButtons = [...document.querySelectorAll('[data-scene-view]')];
-function setSceneView(view) {
-  if (!foodStudio) return;
-  foodStudio.dataset.sceneMode = view;
-  document.body.dataset.heroView = view;
-  sceneViewButtons.forEach(button => button.setAttribute('aria-pressed', String(button.dataset.sceneView === view)));
-  const canvas = foodStudio.querySelector('canvas');
-  if (canvas) canvas.tabIndex = view === 'inspect' ? 0 : -1;
-}
-sceneViewButtons.forEach(button => button.addEventListener('click', () => setSceneView(button.dataset.sceneView)));
-setSceneView(foodStudio?.dataset.sceneMode || 'campaign');
-const campaignPause = document.querySelector('[data-campaign-pause]');
-campaignPause?.addEventListener('click', () => {
-  const paused = root.dataset.campaignPaused !== 'true';
-  root.dataset.campaignPaused = String(paused);
-  campaignPause.setAttribute('aria-pressed', String(paused));
-  campaignPause.setAttribute('aria-label', paused ? 'Play hero motion' : 'Pause hero motion');
-  campaignPause.textContent = paused ? '▷' : 'Ⅱ';
-});
+const desktopMotion = window.matchMedia('(min-width: 901px) and (hover: hover) and (pointer: fine)');
 let heroFrame = 0;
-let burgerTouch = null;
+function resetHeroMotion() {
+  cancelAnimationFrame(heroFrame);
+  ['--scene-x', '--scene-y'].forEach(key => editorialHero?.style.removeProperty(key));
+}
 editorialHero?.addEventListener('pointermove', event => {
-  if (calm() || !finePointer.matches || foodStudio?.dataset.sceneMode !== 'campaign' || burgerTouch) return;
+  if (calm() || !desktopMotion.matches || event.pointerType === 'touch') return;
   cancelAnimationFrame(heroFrame);
   heroFrame = requestAnimationFrame(() => {
-    const stage = foodStudio.getBoundingClientRect();
-    const x = Math.max(-.5, Math.min(.5, (event.clientX - stage.left) / stage.width - .5));
-    const y = Math.max(-.5, Math.min(.5, (event.clientY - stage.top) / stage.height - .5));
-    editorialHero.style.setProperty('--scene-x', `${x * 30}px`);
-    editorialHero.style.setProperty('--scene-y', `${y * 22}px`);
-    editorialHero.style.setProperty('--scene-yaw', `${x * 36}deg`);
-    editorialHero.style.setProperty('--scene-pitch', `${-y * 24}deg`);
+    const rect = editorialHero.getBoundingClientRect();
+    const x = Math.max(-.5, Math.min(.5, (event.clientX - rect.left) / rect.width - .5));
+    const y = Math.max(-.5, Math.min(.5, (event.clientY - rect.top) / rect.height - .5));
+    editorialHero.style.setProperty('--scene-x', `${x * 12}px`);
+    editorialHero.style.setProperty('--scene-y', `${y * 8}px`);
   });
 });
-foodStudio?.addEventListener('pointerdown', event => {
-  if (event.pointerType !== 'touch' || calm() || foodStudio.dataset.sceneMode !== 'campaign' ||
-      event.target.closest('a, button, input, [role="button"]')) return;
-  burgerTouch = {
-    id: event.pointerId,
-    x: event.clientX,
-    y: event.clientY,
-    yaw: Number.parseFloat(editorialHero.style.getPropertyValue('--scene-yaw')) || 0,
-    pitch: Number.parseFloat(editorialHero.style.getPropertyValue('--scene-pitch')) || 0,
-  };
-  try { foodStudio.setPointerCapture(event.pointerId); } catch {}
-});
-foodStudio?.addEventListener('pointermove', event => {
-  if (!burgerTouch || event.pointerId !== burgerTouch.id) return;
-  editorialHero.style.setProperty('--scene-yaw', `${burgerTouch.yaw + (event.clientX - burgerTouch.x) * .72}deg`);
-  const pitch = Math.max(-18, Math.min(18, burgerTouch.pitch - (event.clientY - burgerTouch.y) * .36));
-  editorialHero.style.setProperty('--scene-pitch', `${pitch}deg`);
-});
-const releaseBurgerTouch = event => {
-  if (burgerTouch && (!event || event.pointerId === burgerTouch.id)) burgerTouch = null;
-};
-foodStudio?.addEventListener('pointerup', releaseBurgerTouch);
-foodStudio?.addEventListener('pointercancel', releaseBurgerTouch);
-foodStudio?.addEventListener('lostpointercapture', releaseBurgerTouch);
-editorialHero?.addEventListener('pointerleave', event => {
-  if (event.pointerType === 'touch' && burgerTouch) return;
-  cancelAnimationFrame(heroFrame);
-  ['--scene-x', '--scene-y', '--scene-yaw', '--scene-pitch'].forEach(key => editorialHero.style.removeProperty(key));
-});
+editorialHero?.addEventListener('pointerleave', resetHeroMotion);
+editorialHero?.addEventListener('pointercancel', resetHeroMotion);
+reducedMotion.addEventListener('change', resetHeroMotion);
+desktopMotion.addEventListener('change', resetHeroMotion);
+new MutationObserver(resetHeroMotion).observe(root, { attributes: true, attributeFilter: ['data-calm-motion'] });
 let headerFrame = 0;
 function refreshHeaderSurface() {
   if (headerFrame) return;
@@ -81,40 +38,6 @@ function refreshHeaderSurface() {
 addEventListener('scroll', refreshHeaderSurface, { passive: true });
 addEventListener('resize', refreshHeaderSurface);
 refreshHeaderSurface();
-const stage = document.querySelector('[data-immersive-stage]');
-let frame = 0;
-
-function resetTilt() {
-  cancelAnimationFrame(frame);
-  stage?.style.removeProperty('--tilt-x');
-  stage?.style.removeProperty('--tilt-y');
-}
-stage?.addEventListener('pointermove', event => {
-  if (calm() || !finePointer.matches) return;
-  cancelAnimationFrame(frame);
-  frame = requestAnimationFrame(() => {
-    const rect = stage.getBoundingClientRect();
-    stage.style.setProperty('--tilt-x', `${(0.5 - (event.clientY - rect.top) / rect.height) * 8}deg`);
-    stage.style.setProperty('--tilt-y', `${((event.clientX - rect.left) / rect.width - 0.5) * 10}deg`);
-  });
-});
-stage?.addEventListener('pointerleave', resetTilt);
-stage?.addEventListener('pointercancel', resetTilt);
-reducedMotion.addEventListener('change', resetTilt);
-
-if (stage) {
-  const dishTransition = new MutationObserver(() => {
-    const photo = stage.querySelector('[data-preview-photo]');
-    if (!photo || calm()) return;
-    photo.getAnimations().forEach(animation => animation.cancel());
-    photo.animate([
-      { opacity: 0.25, transform: 'translate(-50%, -48%) rotate(-5deg) scale(.97)' },
-      { opacity: 1, transform: 'translate(-50%, -50%) rotate(-9deg) translateZ(32px)' },
-    ], { duration: 320, easing: 'cubic-bezier(.2,.65,.3,1)' });
-  });
-  dishTransition.observe(stage, { attributes: true, attributeFilter: ['data-preview-tone'] });
-}
-
 // Observe authoritative renders; this layer never submits an ordering action.
 const count = document.querySelector('[data-cart-count]');
 const total = document.querySelector('[data-cart-total]');
@@ -180,7 +103,7 @@ if ('IntersectionObserver' in window && !calm()) {
     textEntrances.observe(text);
   });
   const revealAllText = () => {
-    if (!calm() && root.dataset.visualMotionPaused !== 'true') return;
+    if (!calm()) return;
     textEntrances.disconnect();
     textTargets.forEach(text => {
       text.dataset.textReveal = 'shown';
@@ -189,7 +112,7 @@ if ('IntersectionObserver' in window && !calm()) {
   };
   reducedMotion.addEventListener('change', revealAllText);
   new MutationObserver(revealAllText).observe(root, {
-    attributes: true, attributeFilter: ['data-calm-motion', 'data-visual-motion-paused'],
+    attributes: true, attributeFilter: ['data-calm-motion'],
   });
 }
 
@@ -229,24 +152,6 @@ if (location.hash) {
   }
 }
 
-// Tactile food cards: pointer tilt on desktop, ordinary scrolling on touch devices.
-document.querySelectorAll('[data-menu-item]').forEach(card => {
-  let tiltFrame = 0;
-  card.addEventListener('pointermove', event => {
-    if (calm() || !finePointer.matches) return;
-    cancelAnimationFrame(tiltFrame);
-    tiltFrame = requestAnimationFrame(() => {
-      const r = card.getBoundingClientRect();
-      card.style.setProperty('--card-rx', `${(.5 - (event.clientY - r.top) / r.height) * 7}deg`);
-      card.style.setProperty('--card-ry', `${((event.clientX - r.left) / r.width - .5) * 9}deg`);
-    });
-  });
-  card.addEventListener('pointerleave', () => {
-    cancelAnimationFrame(tiltFrame);
-    card.style.removeProperty('--card-rx'); card.style.removeProperty('--card-ry');
-  });
-});
-
 if ('IntersectionObserver' in window) {
   const cardsEntering = new IntersectionObserver(entries => {
     entries.filter(entry => entry.isIntersecting).forEach((entry, i) => {
@@ -263,35 +168,21 @@ if ('IntersectionObserver' in window) {
   document.querySelectorAll('[data-menu-item]').forEach(card => cardsEntering.observe(card));
 }
 
-// Animate a dish to the bag only after the authoritative cart count increases.
-let pendingDish = null;
+// Acknowledge Add only after the authoritative cart count increases.
+let pendingAdd = null;
 document.addEventListener('click', event => {
   const button = event.target.closest('[data-add-item]');
-  const photo = button?.closest('[data-menu-item]')?.querySelector('img');
-  if (photo && !button.disabled) pendingDish = { src: photo.src, rect: photo.getBoundingClientRect(), at: performance.now() };
+  if (button && !button.disabled) pendingAdd = { button, at: performance.now() };
 }, { capture: true });
-let flightCount = Number(count?.textContent || 0);
-const flightObserver = new MutationObserver(() => {
+let feedbackCount = Number(count?.textContent || 0);
+const addFeedback = new MutationObserver(() => {
   const next = Number(count?.textContent || 0);
-  if (next > flightCount && pendingDish && performance.now() - pendingDish.at < 3000 && !calm()) {
-    const bag = document.querySelector('.cart-button');
-    const destination = bag?.getBoundingClientRect();
-    if (destination) {
-      const source = pendingDish.rect;
-      const dish = document.createElement('img');
-      dish.src = pendingDish.src; dish.alt = ''; dish.className = 'cart-flight'; dish.setAttribute('aria-hidden', 'true');
-      dish.style.left = `${source.left + source.width / 2 - 32}px`; dish.style.top = `${source.top + source.height / 2 - 32}px`;
-      document.body.append(dish);
-      const dx = destination.left + destination.width / 2 - source.left - source.width / 2;
-      const dy = destination.top + destination.height / 2 - source.top - source.height / 2;
-      const animation = dish.animate([
-        { transform: 'translate(0,0) scale(1)', opacity: 1 },
-        { transform: `translate(${dx * .5}px,${dy * .55 - 70}px) scale(.8)`, opacity: 1, offset: .5 },
-        { transform: `translate(${dx}px,${dy}px) scale(.12)`, opacity: .2 },
-      ], { duration: 700, easing: 'cubic-bezier(.25,.6,.4,1)' });
-      animation.finished.catch(() => {}).finally(() => dish.remove());
-    }
+  if (next > feedbackCount && pendingAdd && performance.now() - pendingAdd.at < 3000) {
+    const button = pendingAdd.button;
+    button.classList.add('is-added');
+    setTimeout(() => button.classList.remove('is-added'), 1400);
   }
-  pendingDish = null; flightCount = next;
+  pendingAdd = null;
+  feedbackCount = next;
 });
-if (count) flightObserver.observe(count, { childList: true, characterData: true, subtree: true });
+if (count) addFeedback.observe(count, { childList: true, characterData: true, subtree: true });

@@ -7,11 +7,10 @@
     <meta name="description" content="Explore local favourites, browse the menu, and build your FoodEase order." />
     <link rel="preload" href="/static/fonts/bebas-neue-latin.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/static/fonts/dm-sans-latin.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="preload" as="image" href="/static/img/editorial/fast-v7/chicken-burger-hero-768.webp" imagesrcset="/static/img/editorial/fast-v7/chicken-burger-hero-480.webp 480w, /static/img/editorial/fast-v7/chicken-burger-hero-768.webp 768w, /static/img/editorial/fast-v7/chicken-burger-hero-1024.webp 1024w" imagesizes="(max-width: 700px) 100vw, (max-width: 900px) 68vw, 640px" fetchpriority="high" />
-    <link rel="stylesheet" href="/static/vendor/food-experience.css?v=voice-13" />
+    <link rel="preload" as="image" href="/static/img/editorial/fast-v7/chicken-burger-hero-768.webp" imagesrcset="/static/img/editorial/fast-v7/chicken-burger-hero-480.webp 480w, /static/img/editorial/fast-v7/chicken-burger-hero-768.webp 768w, /static/img/editorial/fast-v7/chicken-burger-hero-1024.webp 1024w" imagesizes="(max-width: 700px) 90vw, (max-width: 900px) 480px, 560px" fetchpriority="high" />
+    <link rel="stylesheet" href="/static/vendor/food-experience.css?v=polish-16" />
     <script type="module" src="/static/js/app.js?v=voice-13"></script>
-    <script type="module" src="/static/js/experience.mjs?v=delivery-9"></script>
-    <script type="module" src="/static/js/studio-loader.mjs?v=delivery-7"></script>
+    <script type="module" src="/static/js/experience.mjs?v=polish-16"></script>
   </head>
   <body data-experience="immersive" data-orchestration-url="{{ orchestration_base_url }}">
     <a class="skip-link" href="#popular">Skip to menu</a>
@@ -52,7 +51,7 @@
         <div class="hero-rule" aria-hidden="true"><span>CRAVING SOMETHING GOOD?</span><i></i><span>SCROLL TO EXPLORE ↓</span></div>
         <div class="hero-copy">
           <p class="eyebrow">FOODEASE — THE FLAVOUR EDITION<br /><span>VOL. 01 / MADE FOR YOUR APPETITE</span></p>
-          <h1 id="hero-title">FULL OF FLAVOUR</h1>
+          <h1 id="hero-title"><span>FULL OF</span> <span>FLAVOURS.</span></h1>
           <p class="hero-description">Local favourites. Big cravings. Find your next great bite, then build your order at your own pace.</p>
           <div class="hero-actions" aria-label="Ordering actions">
             <a class="button primary" href="#popular" data-order-manual>Start ordering <span aria-hidden="true">↗</span></a>
@@ -61,23 +60,11 @@
           <div class="hero-footnote"><span>CATALOG / {{ catalog_summary.item_count }} ITEMS</span><span>YOUR ORDER. YOUR CONTROL.</span></div>
         </div>
 
-        <div class="food-studio" data-food-studio data-immersive-stage data-scene-mode="campaign">
+        <div class="food-studio" data-immersive-stage>
           <svg class="editorial-orbits" viewBox="0 0 1200 700" aria-hidden="true"><ellipse cx="600" cy="350" rx="520" ry="90" transform="rotate(-13 600 350)"/><ellipse cx="600" cy="350" rx="310" ry="245" transform="rotate(58 600 350)"/><circle cx="1050" cy="244" r="4"/><circle cx="210" cy="482" r="3"/></svg>
           <span class="scene-crosshair crosshair-one" aria-hidden="true">+</span><span class="scene-crosshair crosshair-two" aria-hidden="true">+</span>
-          <div class="scene-switch" role="group" aria-label="Hero viewing mode"><button type="button" data-scene-view="campaign" aria-pressed="true">01 / CAMPAIGN</button><button type="button" data-scene-view="inspect" aria-pressed="false">02 / INSPECT 3D</button><button type="button" data-campaign-pause aria-pressed="false" aria-label="Pause hero motion">Ⅱ</button></div>
-          <div class="studio-topline"><span>FE / OBJECT STUDY 001</span><span>ROTATE / SEPARATE / EXPLORE</span></div>
-          <div class="studio-viewport" data-studio-viewport>
-            <div class="campaign-product"><img class="hero-product" src="/static/img/editorial/fast-v7/chicken-burger-hero-768.webp" srcset="/static/img/editorial/fast-v7/chicken-burger-hero-480.webp 480w, /static/img/editorial/fast-v7/chicken-burger-hero-768.webp 768w, /static/img/editorial/fast-v7/chicken-burger-hero-1024.webp 1024w" sizes="(max-width: 700px) 100vw, (max-width: 900px) 68vw, 640px" decoding="async" alt="Crispy chicken burger, studio artwork" width="1536" height="1536" fetchpriority="high" /><span class="product-ground-shadow" aria-hidden="true"></span></div>
-            <canvas data-food-canvas tabindex="0" role="group" aria-label="Interactive 3D illustrated burger. Drag horizontally or use left and right arrow keys to rotate." aria-describedby="studio-help"></canvas>
-            <img class="studio-fallback" data-fallback-src="/static/img/catalog-v7/zinger-classic-640.webp" alt="Burger illustration fallback" />
-            <span class="ingredient-label ingredient-label-one" aria-hidden="true">GOLDEN ON TOP <b>↗</b></span>
-            <span class="ingredient-label ingredient-label-two" aria-hidden="true"><b>↖</b> LAYERS OF GOOD</span>
-          </div>
-          <div class="studio-control-deck">
-            <div class="studio-title"><strong>ILLUSTRATED 3D / BURGER STUDY</strong><p id="studio-help" data-studio-status aria-live="polite">Drag to rotate · a stylized food illustration</p></div>
-            <div class="studio-orbit-controls"><button type="button" data-studio-turn="-1" aria-label="Rotate 3D burger left">↶</button><button type="button" data-studio-pause aria-pressed="false" aria-label="Pause 3D animation">Ⅱ</button><button type="button" data-studio-turn="1" aria-label="Rotate 3D burger right">↷</button></div>
-            <label class="studio-spread"><span>LAYER SEPARATION <b data-spread-value>35%</b></span><input type="range" min="0" max="100" value="35" data-studio-spread aria-label="Ingredient layer spacing" /></label>
-            <button class="studio-explode" type="button" data-studio-explode aria-pressed="false">Explore the layers <span aria-hidden="true">↗</span></button>
+          <div class="studio-viewport">
+            <div class="campaign-product"><img class="hero-product" src="/static/img/editorial/fast-v7/chicken-burger-hero-768.webp" srcset="/static/img/editorial/fast-v7/chicken-burger-hero-480.webp 480w, /static/img/editorial/fast-v7/chicken-burger-hero-768.webp 768w, /static/img/editorial/fast-v7/chicken-burger-hero-1024.webp 1024w" sizes="(max-width: 700px) 90vw, (max-width: 900px) 480px, 560px" decoding="async" alt="Crispy chicken burger, studio artwork" width="1536" height="1536" fetchpriority="high" /><span class="product-ground-shadow" aria-hidden="true"></span></div>
           </div>
         </div>
       </section>
@@ -185,7 +172,7 @@
                   width="900" height="700"
                   src="/static/img/catalog-v7/{{ item.item_id }}-640.webp"
                   srcset="/static/img/catalog-v7/{{ item.item_id }}-160.webp 160w, /static/img/catalog-v7/{{ item.item_id }}-320.webp 320w, /static/img/catalog-v7/{{ item.item_id }}-480.webp 480w, /static/img/catalog-v7/{{ item.item_id }}-640.webp 640w"
-                  sizes="(max-width: 360px) calc(100vw - 24px), (max-width: 700px) calc((100vw - 44px) / 2), (max-width: 1180px) calc((100vw - 350px) / 2), calc((min(100vw, 1708px) - 406px) / 3)"
+                  sizes="(max-width: 360px) calc(100vw - 24px), (max-width: 700px) calc((100vw - 44px) / 2), (max-width: 1180px) calc((100vw - 64px) / 2), calc((min(100vw, 1708px) - 96px) / 3)"
                   alt="{{ item.name }} food photo"
                   loading="lazy" decoding="async"
                 />

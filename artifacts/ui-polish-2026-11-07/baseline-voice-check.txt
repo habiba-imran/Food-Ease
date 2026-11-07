@@ -1,0 +1,330 @@
+
+Running 7 tests using 1 worker
+
+
+
+(node:21160) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+[1/7] tests\browser\baseline-comparison-conversation.spec.mjs:25:1 › read page, presented second item and add button have matching caption and visible effect
+  1) tests\browser\baseline-comparison-conversation.spec.mjs:25:1 › read page, presented second item and add button have matching caption and visible effect
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: locator('[data-agent-transcript]')
+    Timeout: 5000ms
+    - Expected substring  - 1
+    + Received string     + 3
+
+    - home page
+    +
+    +             Choose an ordering mode. Spoken welcome enables listening for your voice/manual answer. Manual shopping is available immediately.
+    +           I’m here to help. What would you like to eat?read this pageYour cart is empty. You can choose something from the menu.
+
+    Call log:
+      - Expect "toContainText" locator('[data-agent-transcript]') with timeout 5000ms
+      - waiting for locator('[data-agent-transcript]')
+        3 × locator resolved to <div aria-live="polite" class="message-list" data-agent-transcript="" aria-label="Conversation transcript">…</div>
+          - unexpected value "
+                Choose an ordering mode. Spoken welcome enables listening for your voice/manual answer. Manual shopping is available immediately.
+              I’m here to help. What would you like to eat?read this page"
+        11 × locator resolved to <div aria-live="polite" class="message-list" data-agent-transcript="" aria-label="Conversation transcript">…</div>
+           - unexpected value "
+                Choose an ordering mode. Spoken welcome enables listening for your voice/manual answer. Manual shopping is available immediately.
+              I’m here to help. What would you like to eat?read this pageYour cart is empty. You can choose something from the menu. "
+
+
+      27 |   await say(page, 'read this page');
+      28 |   const transcript = page.locator('[data-agent-transcript]');
+    > 29 |   await expect(transcript).toContainText('home page');
+         |                            ^
+      30 |   await expect(transcript).toContainText(initial.visible_items[1].name);
+      31 |   await say(page, 'open the second one');
+      32 |   await expect(page.locator('[data-item-dialog]')).toBeVisible();
+        at C:\HCI-PROJECT\website\tests\browser\baseline-comparison-conversation.spec.mjs:29:28
+
+    Error Context: test-results\baseline-comparison-conver-d886b--caption-and-visible-effect\error-context.md
+
+
+
+(node:20852) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[2/7] tests\browser\baseline-comparison-conversation.spec.mjs:39:1 › manual context change requires clarification for an old ordinal without a select action
+  2) tests\browser\baseline-comparison-conversation.spec.mjs:39:1 › manual context change requires clarification for an old ordinal without a select action
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: locator('[data-agent-transcript]')
+    Timeout: 5000ms
+    - Expected substring  - 1
+    + Received string     + 3
+
+    - First:
+    +
+    +             Choose an ordering mode. Spoken welcome enables listening for your voice/manual answer. Manual shopping is available immediately.
+    +           I’m here to help. What would you like to eat?read the pageYour cart is empty. You can choose something from the menu.
+
+    Call log:
+      - Expect "toContainText" locator('[data-agent-transcript]') with timeout 5000ms
+      - waiting for locator('[data-agent-transcript]')
+        - locator resolved to <div aria-live="polite" class="message-list" data-agent-transcript="" aria-label="Conversation transcript">…</div>
+        - unexpected value "
+                Choose an ordering mode. Spoken welcome enables listening for your voice/manual answer. Manual shopping is available immediately.
+              I’m here to help. What would you like to eat?"
+        3 × locator resolved to <div aria-live="polite" class="message-list" data-agent-transcript="" aria-label="Conversation transcript">…</div>
+          - unexpected value "
+                Choose an ordering mode. Spoken welcome enables listening for your voice/manual answer. Manual shopping is available immediately.
+              I’m here to help. What would you like to eat?read the page"
+        10 × locator resolved to <div aria-live="polite" class="message-list" data-agent-transcript="" aria-label="Conversation transcript">…</div>
+           - unexpected value "
+                Choose an ordering mode. Spoken welcome enables listening for your voice/manual answer. Manual shopping is available immediately.
+              I’m here to help. What would you like to eat?read the pageYour cart is empty. You can choose something from the menu. "
+
+
+      39 | test('manual context change requires clarification for an old ordinal without a select action', async ({ page }) => {
+      40 |   await say(page, 'read the page');
+    > 41 |   await expect(page.locator('[data-agent-transcript]')).toContainText('First:');
+         |                                                         ^
+      42 |   await page.locator('#menu-search').fill('wrap');
+      43 |   await expect(page.locator('html')).toHaveAttribute('data-foodease-route', 'menu');
+      44 |   await say(page, 'open the second one');
+        at C:\HCI-PROJECT\website\tests\browser\baseline-comparison-conversation.spec.mjs:41:57
+
+    Error Context: test-results\baseline-comparison-conver-13bd3-nal-without-a-select-action\error-context.md
+
+
+
+(node:20740) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[3/7] tests\browser\baseline-comparison-conversation.spec.mjs:49:1 › next and previous deliver small actual windows with stable ordinal identity
+  3) tests\browser\baseline-comparison-conversation.spec.mjs:49:1 › next and previous deliver small actual windows with stable ordinal identity
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: locator('[data-agent-transcript]')
+    Timeout: 5000ms
+    - Expected substring  - 1
+    + Received string     + 3
+
+    - Beef Smash Burger
+    +
+    +             Choose an ordering mode. Spoken welcome enables listening for your voice/manual answer. Manual shopping is available immediately.
+    +           I’m here to help. What would you like to eat?read the pageYour cart is empty. You can choose something from the menu.
+
+    Call log:
+      - Expect "toContainText" locator('[data-agent-transcript]') with timeout 5000ms
+      - waiting for locator('[data-agent-transcript]')
+        3 × locator resolved to <div aria-live="polite" class="message-list" data-agent-transcript="" aria-label="Conversation transcript">…</div>
+          - unexpected value "
+                Choose an ordering mode. Spoken welcome enables listening for your voice/manual answer. Manual shopping is available immediately.
+              I’m here to help. What would you like to eat?read the page"
+        11 × locator resolved to <div aria-live="polite" class="message-list" data-agent-transcript="" aria-label="Conversation transcript">…</div>
+           - unexpected value "
+                Choose an ordering mode. Spoken welcome enables listening for your voice/manual answer. Manual shopping is available immediately.
+              I’m here to help. What would you like to eat?read the pageYour cart is empty. You can choose something from the menu. "
+
+
+      50 |   const initial = await snapshot(page);
+      51 |   await say(page, 'read the page');
+    > 52 |   await expect(page.locator('[data-agent-transcript]')).toContainText(initial.visible_items[2].name);
+         |                                                         ^
+      53 |   await say(page, 'next please');
+      54 |   await expect(page.locator('[data-agent-transcript]')).toContainText(initial.visible_items[5].name);
+      55 |   await say(page, 'previous');
+        at C:\HCI-PROJECT\website\tests\browser\baseline-comparison-conversation.spec.mjs:52:57
+
+    Error Context: test-results\baseline-comparison-conver-03845-ith-stable-ordinal-identity\error-context.md
+
+
+
+(node:9096) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[4/7] tests\browser\baseline-comparison-opening.spec.mjs:46:1 › chooser rejects shopping, clarifies once, and manual ends actual capture and playback
+Cannot enable audio input when it's not set
+Cannot enable audio output when it's not set
+Cannot enable audio input when it's not set
+Cannot enable audio output when it's not set
+unknown AI function `cart_add_item`
+provider failed component=llm_error error_type=SyntaxError status=None
+tests\browser\baseline-comparison-opening.spec.mjs:46:1 › chooser rejects shopping, clarifies once, and manual ends actual capture and playback
+Opening failure: You can browse the menu and order manually. Start Voice Assistant whenever you need help. Your microphone is off.
+
+Media tracks: [ { kind: 'audio', state: 'ended' } ]
+
+  4) tests\browser\baseline-comparison-opening.spec.mjs:46:1 › chooser rejects shopping, clarifies once, and manual ends actual capture and playback
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: locator('[data-agent-transcript]')
+    Timeout: 5000ms
+    - Expected substring  - 1
+    + Received string     + 3
+
+    - Say use voice
+    +
+    +             Choose an ordering mode. Spoken welcome enables listening for your voice/manual answer. Manual shopping is available immediately.
+    +           Welcome to FoodEase! How would you like to order today — by voice, or browse yourself?I’m here. What would you like to do next?add a wrap
+
+    Call log:
+      - Expect "toContainText" locator('[data-agent-transcript]') with timeout 5000ms
+      - waiting for locator('[data-agent-transcript]')
+        14 × locator resolved to <div aria-live="polite" class="message-list" data-agent-transcript="" aria-label="Conversation transcript">…</div>
+           - unexpected value "
+                Choose an ordering mode. Spoken welcome enables listening for your voice/manual answer. Manual shopping is available immediately.
+              Welcome to FoodEase! How would you like to order today — by voice, or browse yourself?I’m here. What would you like to do next?add a wrap"
+
+
+      54 |   await expect(page.locator('html')).toHaveAttribute('data-assistance-state', 'choosing_mode');
+      55 |   await input(page, 'add a wrap');
+    > 56 |   await expect(page.locator('[data-agent-transcript]')).toContainText('Say use voice');
+         |                                                         ^
+      57 |   await expect(page.locator('[data-cart-count]')).toHaveText('0');
+      58 |   await page.evaluate(async () => {
+      59 |     const user = window.fakeLiveKit.rooms.find(r => r.role === 'user' && !r.closed);
+        at C:\HCI-PROJECT\website\tests\browser\baseline-comparison-opening.spec.mjs:56:57
+
+    Error Context: test-results\baseline-comparison-openin-a1d59-actual-capture-and-playback\error-context.md
+
+
+
+(node:11820) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[5/7] tests\browser\baseline-comparison-opening.spec.mjs:77:1 › voice manual voice and typing preserve cart/session; each generation greets once
+Cannot enable audio input when it's not set
+Cannot enable audio output when it's not set
+Cannot enable audio input when it's not set
+Cannot enable audio output when it's not set
+Cannot enable audio input when it's not set
+Cannot enable audio output when it's not set
+tests\browser\baseline-comparison-opening.spec.mjs:77:1 › voice manual voice and typing preserve cart/session; each generation greets once
+Opening failure: Voice assistant ready. Microphone on.
+
+Media tracks: [ { kind: 'audio', state: 'ended' }, { kind: 'audio', state: 'live' } ]
+
+  5) tests\browser\baseline-comparison-opening.spec.mjs:77:1 › voice manual voice and typing preserve cart/session; each generation greets once
+
+    Error: expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  locator('html')
+    Expected: "typed_active"
+    Received: "voice_active"
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveAttribute" locator('html') with timeout 5000ms
+      - waiting for locator('html')
+        13 × locator resolved to <html lang="en" data-theme="light" data-foodease-ready="true" data-foodease-revision="2" data-foodease-route="home" data-assistance-state="voice_active">…</html>
+           - unexpected value "voice_active"
+
+
+      88 |   await expect(page.locator('[data-agent-transcript]')).toContainText('Welcome back');
+      89 |   await input(page, 'switch to typing');
+    > 90 |   await expect(page.locator('html')).toHaveAttribute('data-assistance-state', 'typed_active');
+         |                                      ^
+      91 |   await expect.poll(() => page.evaluate(() => window.captured.every(t => t.readyState === 'ended'))).toBe(true);
+      92 |   await expect(page.locator('[data-cart-count]')).toHaveText('1');
+      93 |   expect(await page.evaluate(() => sessionStorage.getItem('foodease.shopping-session.v2'))).toBe(sid);
+        at C:\HCI-PROJECT\website\tests\browser\baseline-comparison-opening.spec.mjs:90:38
+
+    Error Context: test-results\baseline-comparison-openin-e406e-each-generation-greets-once\error-context.md
+
+
+(node:19364) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[6/7] tests\browser\baseline-comparison-opening.spec.mjs:195:1 › spoken chooser voice choice opens shopping once; manual during greeting revokes it
+Cannot enable audio input when it's not set
+Cannot enable audio output when it's not set
+unknown AI function `get_cart`
+provider failed component=llm_error error_type=SyntaxError status=None
+tests\browser\baseline-comparison-opening.spec.mjs:195:1 › spoken chooser voice choice opens shopping once; manual during greeting revokes it
+Opening failure: You can browse the menu and order manually. Start Voice Assistant whenever you need help. Your microphone is off.
+
+Media tracks: [ { kind: 'audio', state: 'ended' } ]
+
+  6) tests\browser\baseline-comparison-opening.spec.mjs:195:1 › spoken chooser voice choice opens shopping once; manual during greeting revokes it
+
+    Error: expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  locator('html')
+    Expected: "voice_active"
+    Received: "manual"
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveAttribute" locator('html') with timeout 5000ms
+      - waiting for locator('html')
+        - locator resolved to <html lang="en" data-theme="light" data-foodease-ready="true" data-foodease-revision="1" data-foodease-route="home" data-assistance-state="choosing_mode">…</html>
+        - unexpected value "choosing_mode"
+        12 × locator resolved to <html lang="en" data-theme="light" data-foodease-ready="true" data-foodease-revision="1" data-foodease-route="home" data-assistance-state="manual">…</html>
+           - unexpected value "manual"
+
+
+      198 |   await expect(page.locator('html')).toHaveAttribute('data-assistance-state', 'choosing_mode');
+      199 |   await input(page, 'talk me through it');
+    > 200 |   await expect(page.locator('html')).toHaveAttribute('data-assistance-state', 'voice_active');
+          |                                      ^
+      201 |   await expect(page.locator('[data-agent-transcript]')).toContainText('What would you like to eat');
+      202 |   await page.locator('[data-assist-manual]').click();
+      203 |   await expect.poll(() => page.evaluate(() => window.captured.every(t => t.readyState === 'ended'))).toBe(true);
+        at C:\HCI-PROJECT\website\tests\browser\baseline-comparison-opening.spec.mjs:200:38
+
+    Error Context: test-results\baseline-comparison-openin-a956e--during-greeting-revokes-it\error-context.md
+
+
+(node:16744) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[7/7] tests\browser\baseline-comparison-voice-entry.spec.mjs:38:1 › spoken welcome, unclear answer and spoken manual choice clean up without ordering
+Cannot enable audio input when it's not set
+Cannot enable audio output when it's not set
+unknown AI function `get_cart`
+provider failed component=llm_error error_type=SyntaxError status=None
+  7) tests\browser\baseline-comparison-voice-entry.spec.mjs:38:1 › spoken welcome, unclear answer and spoken manual choice clean up without ordering
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: locator('[data-agent-transcript]')
+    Timeout: 5000ms
+    - Expected substring  - 1
+    + Received string     + 3
+
+    - Say use voice
+    +
+    +             Choose an ordering mode. Spoken welcome enables listening for your voice/manual answer. Manual shopping is available immediately.
+    +           Welcome to FoodEase! How would you like to order today — by voice, or browse yourself?voice or manual
+
+    Call log:
+      - Expect "toContainText" locator('[data-agent-transcript]') with timeout 5000ms
+      - waiting for locator('[data-agent-transcript]')
+        13 × locator resolved to <div aria-live="polite" class="message-list" data-agent-transcript="" aria-label="Conversation transcript">…</div>
+           - unexpected value "
+                Choose an ordering mode. Spoken welcome enables listening for your voice/manual answer. Manual shopping is available immediately.
+              Welcome to FoodEase! How would you like to order today — by voice, or browse yourself?voice or manual"
+
+
+      42 |   await panel(page).locator('[data-assistant-input]').fill('voice or manual');
+      43 |   await panel(page).locator('[data-assistant-form] button[type=submit]').click();
+    > 44 |   await expect(page.locator('[data-agent-transcript]')).toContainText('Say use voice');
+         |                                                         ^
+      45 |   await panel(page).locator('[data-assistant-input]').fill("I'd like to order manually");
+      46 |   await panel(page).locator('[data-assistant-form] button[type=submit]').click();
+      47 |   await expect(panel(page)).toBeHidden();
+        at C:\HCI-PROJECT\website\tests\browser\baseline-comparison-voice-entry.spec.mjs:44:57
+
+    Error Context: test-results\baseline-comparison-voice--7fcaf-e-clean-up-without-ordering\error-context.md
+
+
+  7 failed
+    tests\browser\baseline-comparison-conversation.spec.mjs:25:1 › read page, presented second item and add button have matching caption and visible effect
+    tests\browser\baseline-comparison-conversation.spec.mjs:39:1 › manual context change requires clarification for an old ordinal without a select action
+    tests\browser\baseline-comparison-conversation.spec.mjs:49:1 › next and previous deliver small actual windows with stable ordinal identity
+    tests\browser\baseline-comparison-opening.spec.mjs:46:1 › chooser rejects shopping, clarifies once, and manual ends actual capture and playback
+    tests\browser\baseline-comparison-opening.spec.mjs:77:1 › voice manual voice and typing preserve cart/session; each generation greets once
+    tests\browser\baseline-comparison-opening.spec.mjs:195:1 › spoken chooser voice choice opens shopping once; manual during greeting revokes it
+    tests\browser\baseline-comparison-voice-entry.spec.mjs:38:1 › spoken welcome, unclear answer and spoken manual choice clean up without ordering

@@ -11,12 +11,6 @@ for (const [source, destination] of [
   ['@fontsource/bebas-neue/LICENSE', 'Bebas-Neue-LICENSE.txt'],
 ]) await copyFile(`node_modules/${source}`, `static/fonts/${destination}`);
 await build({
-  entryPoints: ['static/js/food-studio.mjs'],
-  outfile: 'static/vendor/food-studio.mjs',
-  bundle: true, format: 'esm', platform: 'browser', target: 'es2022',
-  minify: true, legalComments: 'eof',
-});
-await build({
   entryPoints: ['static/css/food-experience.css'],
   outfile: 'static/vendor/food-experience.css',
   bundle: true, minify: true, legalComments: 'eof',

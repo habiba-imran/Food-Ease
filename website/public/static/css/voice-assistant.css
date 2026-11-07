@@ -1,7 +1,7 @@
 /* Voice entry points reuse the existing FoodEase tokens and native dialogs. */
 :root body[data-experience] .voice-welcome {
   display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 16px 28px;
-  align-items: center; margin: 128px 0 24px; padding: 24px;
+  align-items: center; margin: 24px 0; padding: 24px;
   background: var(--paper); color: var(--ink); border: 1px solid var(--line); border-radius: 6px;
 }
 :root body[data-experience] .voice-welcome h2 { margin: 0 0 8px; font: 400 2.2rem/1.05 var(--font-condensed); }
@@ -57,9 +57,13 @@
   background: var(--ink); color: var(--paper) !important; min-width: 48px; min-height: 48px;
 }
 @media (max-width: 700px) {
-  :root body[data-experience] .voice-welcome { grid-template-columns: minmax(0, 1fr); padding: 18px; margin-top: 136px; }
+  :root body[data-experience] .voice-welcome { grid-template-columns: minmax(0, 1fr); padding: 18px; margin-top: 16px; }
   .voice-welcome-actions { justify-content: start; max-width: none; }
   .voice-launcher { right: 12px; bottom: calc(82px + env(safe-area-inset-bottom, 0px)); font-size: .85rem; }
+  /* Keep the floating entry point clear of the narrow hero headline.
+     Dialogs retain the full label; aria-label names the floating button. */
+  :root body[data-experience] > .voice-launcher { width: 48px; height: 48px; min-height: 48px; padding: 12px; gap: 0; border-radius: 50%; }
+  :root body[data-experience] > .voice-launcher [data-voice-launcher-label] { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
   .voice-control-shell { padding: 18px; }
   :root body[data-experience] .site-footer { padding-bottom: 160px; }
 }

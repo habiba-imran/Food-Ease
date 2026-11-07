@@ -4,7 +4,7 @@ import { chromium } from 'playwright';
 import { mkdir, writeFile } from 'node:fs/promises';
 
 const base = process.argv[2] || 'http://127.0.0.1:8186';
-const output = 'docs/ui-audit-evidence';
+const output = process.argv[3] || 'docs/ui-audit-evidence';
 await mkdir(output, { recursive: true });
 const browser = await chromium.launch();
 const page = await browser.newPage({ viewport: { width: 1440, height: 1000 }, reducedMotion: 'reduce' });

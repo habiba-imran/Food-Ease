@@ -33,7 +33,7 @@ def test_homepage_uses_ordering_design_language() -> None:
     assert "Start ordering" in response.text
     assert "POPULAR PICKS" in response.text
     assert "FoodEase ordering assistance" in response.text
-    assert "FULL OF FLAVOUR" in response.text
+    assert '<span>FULL OF</span> <span>FLAVOURS.</span>' in response.text
     assert "/static/vendor/food-experience.css" in response.text
     assert "data-immersive-stage" in response.text
     assert "Project acceptance evidence" in response.text
