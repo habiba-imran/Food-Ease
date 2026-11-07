@@ -85,6 +85,9 @@ async def test_combined_steps_use_fresh_revisions_and_duplicate_add_is_refused(r
 
 
 async def test_failed_combined_step_blocks_later_mutation_but_allows_read(runtime):
+    # The current shipped menu is fully available; this scenario requires stock loss.
+    shopping = runtime.adapter.store._sessions[runtime.adapter.session_id]
+    shopping.domain.menu_by_id["burger-soldout"].available = False
     context = await turn(runtime, "add a sold out burger then add a wrap")
     bad = await runtime.agent.cart_add_item(context, "burger-soldout", 1)
     assert bad["status"] != "success"

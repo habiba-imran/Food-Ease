@@ -53,6 +53,10 @@ def urdu_number(number: int) -> str:
 
 def urdu_text(text: str) -> str:
     text = render(text, "ur")
+    # Group separators are presentation, not a decimal or extra amount.
+    text = re.sub(r"(?<=\d)[,٬](?=\d{3}(?:\D|$))", "", text)
+    text = re.sub(r"\b(?:PKR|Rs\.?)\s*(\d+(?:\.\d{1,2})?)", r"\1 روپے", text, flags=re.I)
+    text = re.sub(r"(\d+(?:\.\d{1,2})?)\s*\b(?:PKR|Rs\.?)\b", r"\1 روپے", text, flags=re.I)
     # Catalog translations are display labels. They never choose IDs or change filters.
     for original, translated in sorted(
         urdu_resources()["labels"].items(), key=lambda row: -len(row[0])
@@ -78,5 +82,5 @@ def speech_text(text: str, language: str = "en") -> str:
         return text
     text = urdu_text(text)
     if re.search(r"[A-Za-z]", text):
-        return "معذرت، براہِ کرم اپنا سوال دوبارہ بتائیں۔"
+        return "معاف کیجیے، بات واضح نہیں ہوئی۔ ایک بار پھر بتا دیں؟"
     return text

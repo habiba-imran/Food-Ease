@@ -1,5 +1,37 @@
 # STATUS
 
+**Cloud deployment — 2026-11-08.** Agent `CA_gibAwTdK3sjn`, dispatch `foodease`,
+version `ckhnpPJ2Lg5h` is Running with one replica in `ap-south` (Mumbai). Final logs
+verify health startup, VAD prewarm and worker registration. A disposable actual RTC
+room/named dispatch passed on the initial version and was cleaned up; the expected
+missing-backend rejection was observed. The user will host the new single-process
+backend on Render, then configure Cloud's public callback and Vercel's same-origin
+gateway. No Render/Vercel deployment or Git publication was performed.
+Final regressions: **472 worker tests passed / 1 inherited failure; 45 website tests
+passed; 55 backend tests passed / 3 inherited missing-document failures**. Live provider
+synthetic ordering failed: an unnecessary quantity question persisted, followed by
+Groq HTTP 429 at the account's 8,000 TPM limit. The 1.62-second clarification sample
+is not caller-heard or successful-order latency. Production acceptance remains open.
+See [deployment report](../../deployment/DEPLOYMENT_REPORT_2026-11-08.md),
+[hosting guide](../../deployment/RENDER_VERCEL_GUIDE.md) and ADR-0027. Earlier dated
+notes below describe their own verification state, not this deployment's final status.
+
+**Zara review — 2026-11-08.** Compared the requested behavior with the integrated
+implementation and preserved the existing Urdu providers, actual shopping authority and
+guarded demo checkout. Added an everyday Pakistani Urdu persona/welcome, opt-in browser
+wake recognition with microphone/lease handoff, Roman reference/consent validation,
+verified menu sorting, speech formatting and casual outcome guards. Fixed floating
+speaking feedback after the old debug status element was removed. See the
+[review](../../website/docs/ZARA_REVIEW_2026-11-08.md),
+[evidence](../evidence/zara-followup-2026-11-08/report.md) and ADR-0026.
+Focused Urdu/safety/dialogue/speech: **129 passed**; full worker: **466 passed, one
+inherited mock-import failure**; website: **41 passed**; JavaScript: **59 passed**;
+current browser voice/wake acceptance: **18 passed**; changed lint/types and build passed.
+Older browser specs targeting removed UI controls are not claimed to pass. Live Urdu
+provider/audio, physical wake recognition and human accessibility/listening acceptance
+remain unverified. Restart the existing worker to load changes. No provider call,
+environment edit, push or deployment was made.
+
 **Latency audit — 2026-11-07.** Current Urdu caller-heard p50/p95 and interruption
 latency remain unverified: saved Phase 9/final acceptance evidence has zero live
 audible samples. The offline audit confirms batched Urdu STT after the default

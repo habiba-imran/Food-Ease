@@ -105,6 +105,7 @@ def build_session_kwargs(
     settings: Settings,
     *,
     pipeline: PipelineConfig | None = None,
+    prewarmed_vad: Any = None,
 ) -> SessionBundle:
     """Assemble kwargs for ``AgentSession(**kwargs)`` without starting I/O."""
     urdu = settings.assistant_language == "ur"
@@ -131,7 +132,7 @@ def build_session_kwargs(
             preemptive_enabled=preemptive,
             **intr,
         )
-        vad = silero.VAD.load()  # still needed for interruptions
+        vad = prewarmed_vad if prewarmed_vad is not None else silero.VAD.load()
         kwargs: dict[str, Any] = {
             "stt": stt,
             "llm": llm,
@@ -141,7 +142,7 @@ def build_session_kwargs(
             "use_tts_aligned_transcript": True,
         }
     else:
-        vad = silero.VAD.load()
+        vad = prewarmed_vad if prewarmed_vad is not None else silero.VAD.load()
         turn = turn_handling_options(
             # Whisper is non-streaming; SDK adapts it with Silero VAD. The
             # English semantic turn detector must not judge Urdu end-of-turn.

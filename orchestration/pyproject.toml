@@ -6,6 +6,7 @@ readme = "README.md"
 requires-python = ">=3.12,<3.15"
 dependencies = [
     "foodease-contract==2.0.0",
+    "foodease-website==0.1.0",
     "fastapi>=0.115.0",
     "livekit-api>=1.2.1",
     "pydantic>=2.13.5",
@@ -33,6 +34,7 @@ package = true
 
 [tool.uv.sources]
 foodease-contract = { path = "../contracts", editable = true }
+foodease-website = { path = "../website", editable = true }
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

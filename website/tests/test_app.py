@@ -32,8 +32,9 @@ def test_homepage_uses_ordering_design_language() -> None:
     assert response.status_code == 200
     assert "Start ordering" in response.text
     assert "POPULAR PICKS" in response.text
-    assert "FoodEase ordering assistance" in response.text
+    assert 'id="voice-controls-title">Voice assistant</h2>' in response.text
+    assert 'data-wake-toggle aria-pressed="false"' in response.text
     assert '<span>FULL OF</span> <span>FLAVOURS.</span>' in response.text
     assert "/static/vendor/food-experience.css" in response.text
     assert "data-immersive-stage" in response.text
-    assert "Project acceptance evidence" in response.text
+    assert 'data-wake-status role="status"' in response.text

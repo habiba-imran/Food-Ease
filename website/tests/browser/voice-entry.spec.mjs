@@ -1,5 +1,6 @@
 // Native synthetic media + real website/worker logic; RTC/model are offline fixtures.
-import { test, expect } from '@playwright/test';
+import { test, expect as baseExpect } from '@playwright/test';
+const expect = baseExpect.configure({ timeout: 15000 });
 import { readFile, mkdir } from 'node:fs/promises';
 const fake = await readFile(new URL('../fake-livekit.mjs', import.meta.url), 'utf8');
 test.use({ channel: 'chromium', permissions: ['microphone'], launchOptions: { args: ['--use-fake-device-for-media-stream', '--use-fake-ui-for-media-stream'] } });
@@ -134,6 +135,8 @@ test('welcome choice continues in the same generation and reflects speaking stat
   await panel(page).locator('[data-voice-use]').click();
   await expect(page.locator('html')).toHaveAttribute('data-assistance-state', 'voice_active');
   expect(await page.evaluate(() => window.fakeLiveKit.rooms.filter(room => room.role === 'user').length)).toBe(1);
+  // Drain mode activation before injecting a later speaking status into fake RTC.
+  await expect(panel(page).locator('[data-agent-transcript]')).toContainText('What would you like to eat');
   await page.evaluate(() => {
     const user = window.fakeLiveKit.rooms.find(room => room.role === 'user' && !room.closed);
     user.emit('DataReceived', new TextEncoder().encode(JSON.stringify({

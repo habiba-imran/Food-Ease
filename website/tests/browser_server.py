@@ -58,6 +58,28 @@ class LocalStream(llm.LLMStream):
         if user == "offline provider failure":
             raise APIConnectionError("local fixture model unavailable")
         outputs = [item for item in items[last:] if isinstance(item, llm.FunctionCallOutput)]
+        # Fixture interpretations only. Production always uses the configured LLM;
+        # these deterministic inputs exercise its actual control-tool execution path.
+        intents = {
+            "i'd like to order manually": "manual", "i'll order myself": "manual",
+            "use voice": "voice", "switch to typing": "typed",
+            "talk me through it": "voice",
+            "read this page": "read_page", "read the page": "read_page",
+            "open the second one": "open_reference", "open the third one": "open_reference",
+            "press add to cart": "add_button", "next please": "next", "previous": "previous",
+        }
+        if not outputs and user in intents:
+            self._event_ch.send_nowait(llm.ChatChunk(id=uuid4().hex, delta=llm.ChoiceDelta(
+                tool_calls=[llm.FunctionToolCall(name="conversation_control",
+                    arguments=json.dumps({"intent": intents[user]}), call_id=uuid4().hex)])))
+            return
+        if not outputs and self._tools and all(
+            tool.id == "conversation_control" for tool in self._tools
+        ):
+            self._event_ch.send_nowait(llm.ChatChunk(id=uuid4().hex, delta=llm.ChoiceDelta(
+                content=("Say use voice, use typing, or order manually. "
+                         "Shopping needs a mode choice."))))
+            return
         if outputs:
             # Installed SDK stringifies dict tool returns as Python literals.
             # Parse literals safely; this fixture never evals model/user content.

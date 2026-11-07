@@ -216,7 +216,7 @@ async def test_production_factory_passes_urdu_setting_to_agent_and_runtime(monke
     )
     monkeypatch.setattr(factory, "IntegratedRpcAdapter", lambda gate: adapter)
     monkeypatch.setattr(
-        factory, "build_session_kwargs", lambda settings: SessionBundle({}, "B", False)
+        factory, "build_session_kwargs", lambda settings, **kwargs: SessionBundle({}, "B", False)
     )
     monkeypatch.setattr(factory, "AgentSession", lambda **kwargs: Session())
     runtime = await factory.create_integrated_runtime(

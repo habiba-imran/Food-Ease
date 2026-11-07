@@ -1,0 +1,14 @@
+{
+  "room": "foodease-deploy-check-63c44c255d174f98",
+  "dispatch_name": "foodease",
+  "conversation_tested": false,
+  "microphone_used": false,
+  "backend_callback_configured": false,
+  "rtc_connected": true,
+  "rtc_connect_ms": 3653.22,
+  "dispatch_created": true,
+  "dispatch_id": "AD_zF7Y3WTJTznb",
+  "dispatch_found": true,
+  "dispatch_cleaned": true,
+  "room_cleaned": true
+}

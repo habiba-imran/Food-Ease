@@ -6,6 +6,50 @@ Newest entries at the top.
 
 ---
 
+## ADR-0027 — Cloud worker with an explicitly hosted shared backend
+
+- **Context:** The user authorized actual FoodEase Cloud deployment and secure Vercel
+  integration, superseding the completed historical phase boundaries. The production
+  frontend points to localhost; existing cart and assistance stores are in memory.
+  The user confirmed no backend exists and will host it on Render.
+- **Decision:** Deploy the existing named worker once in Mumbai with locked/nonroot
+  Docker inputs and Cloud secrets. Keep the providers and thirteen guarded operations.
+  Combine existing cart/session services in one long-running backend process, with
+  Vercel as an owner-bound same-origin stateless gateway. Reject Cloud jobs without a
+  public HTTPS callback; do not use localhost or a mock. Reuse prewarmed VAD and record
+  supported SDK timing fields without transcripts. Require a shared durable store
+  before multiple backend processes/replicas or restart recovery can be supported.
+  No paid hosting plan, quota upgrade, Git publication or unrelated Cloud agent was changed.
+- **Evidence:** [Deployment report](../../deployment/DEPLOYMENT_REPORT_2026-11-08.md).
+  Actual Cloud deployment/status/logs and disposable RTC dispatch passed. The live
+  provider probe failed explicit-quantity ordering and consecutive turns (Groq 429);
+  these are open acceptance issues, not production success. Render/Vercel hosting
+  steps and physical audio acceptance are explicitly pending.
+- **Date:** 2026-11-08
+
+---
+
+## ADR-0026 — Targeted Zara review and explicit browser wake opt-in
+
+- **Context:** The user requested review and implementation against the current assistant,
+  preserving working integrations rather than restarting the completed historical phase plan.
+  Urdu providers, actual shopping tools and guarded demo checkout already exist; browser
+  wake activation, everyday persona detail and Roman reference validation needed work.
+- **Decision:** Keep the existing providers, thirteen wire operations and authority. Add
+  a context-driven Urdu persona, verified presentation sorting, finite Roman reference and
+  consent validation, speech formatting and additional casual-success guards. Browser wake
+  recognition is an explicit per-page manual-mode opt-in, with remote-processing disclosure,
+  native-end and lease-release handoff, duplicate latch and no ambient transcript forwarding.
+  Disable it while Zara speaks/in active assistance and on manual/end/background. Retain
+  gesture-gated welcome and button/typing fallbacks. Cartesia's documented English-only
+  emotion tags are not used for Urdu; do not claim measured human-like audio quality.
+- **Evidence:** [Review](../../website/docs/ZARA_REVIEW_2026-11-08.md) and
+  [verification](../evidence/zara-followup-2026-11-08/report.md). Provider documents were
+  checked against installed Cartesia plugin 1.8.4. No dependencies, keys or contracts changed.
+- **Date:** 2026-11-08
+
+---
+
 ## ADR-0025 — Semantic conversation controls without phrase allowlists
 
 - **Context:** The user explicitly requested natural wording for ending assistance

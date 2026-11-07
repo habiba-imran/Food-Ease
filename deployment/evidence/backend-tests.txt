@@ -1,0 +1,128 @@
+..........................F..FF...........................               [100%]
+================================== FAILURES ===================================
+_ test_acceptance_preparation_covers_all_final_scenarios_and_never_passes_empty_evidence _
+
+tmp_path = WindowsPath('C:/Users/habiba/AppData/Local/Temp/pytest-of-habiba/pytest-12/test_acceptance_preparation_co0')
+
+    def test_acceptance_preparation_covers_all_final_scenarios_and_never_passes_empty_evidence(
+        tmp_path,
+    ):
+        tool = acceptance_tool()
+>       tool.prepare(tmp_path)
+
+tests\test_final_delivery.py:210: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tools\final_acceptance.py:63: in prepare
+    "scenarios": scenarios(),
+                 ^^^^^^^^^^^
+tools\final_acceptance.py:28: in scenarios
+    rf"^\| ({pattern}) \| (.*?) \| (.*?) \|$", path.read_text(encoding="utf-8"), re.M
+                                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\habiba\AppData\Roaming\uv\python\cpython-3.12-windows-x86_64-none\Lib\pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = WindowsPath('C:/HCI-PROJECT/Zainab_Web_Application_UI_UX_Requirements_Specification (1).md')
+mode = 'r', buffering = -1, encoding = 'utf-8', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: 'C:\\HCI-PROJECT\\Zainab_Web_Application_UI_UX_Requirements_Specification (1).md'
+
+C:\Users\habiba\AppData\Roaming\uv\python\cpython-3.12-windows-x86_64-none\Lib\pathlib.py:1013: FileNotFoundError
+_____ test_missing_fake_or_path_escaping_evidence_cannot_close_live_gate ______
+
+tmp_path = WindowsPath('C:/Users/habiba/AppData/Local/Temp/pytest-of-habiba/pytest-12/test_missing_fake_or_path_esca0')
+
+    def test_missing_fake_or_path_escaping_evidence_cannot_close_live_gate(tmp_path):
+        tool = acceptance_tool()
+>       tool.prepare(tmp_path)
+
+tests\test_final_delivery.py:255: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tools\final_acceptance.py:63: in prepare
+    "scenarios": scenarios(),
+                 ^^^^^^^^^^^
+tools\final_acceptance.py:28: in scenarios
+    rf"^\| ({pattern}) \| (.*?) \| (.*?) \|$", path.read_text(encoding="utf-8"), re.M
+                                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\habiba\AppData\Roaming\uv\python\cpython-3.12-windows-x86_64-none\Lib\pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = WindowsPath('C:/HCI-PROJECT/Zainab_Web_Application_UI_UX_Requirements_Specification (1).md')
+mode = 'r', buffering = -1, encoding = 'utf-8', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: 'C:\\HCI-PROJECT\\Zainab_Web_Application_UI_UX_Requirements_Specification (1).md'
+
+C:\Users\habiba\AppData\Roaming\uv\python\cpython-3.12-windows-x86_64-none\Lib\pathlib.py:1013: FileNotFoundError
+_ test_acceptance_calculator_checks_all_targets_and_does_not_omit_failed_attempts _
+
+tmp_path = WindowsPath('C:/Users/habiba/AppData/Local/Temp/pytest-of-habiba/pytest-12/test_acceptance_calculator_che0')
+
+    def test_acceptance_calculator_checks_all_targets_and_does_not_omit_failed_attempts(tmp_path):
+>       tool, path, data = synthetic_complete_manifest(tmp_path)
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_final_delivery.py:306: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\test_final_delivery.py:268: in synthetic_complete_manifest
+    tool.prepare(tmp_path)
+tools\final_acceptance.py:63: in prepare
+    "scenarios": scenarios(),
+                 ^^^^^^^^^^^
+tools\final_acceptance.py:28: in scenarios
+    rf"^\| ({pattern}) \| (.*?) \| (.*?) \|$", path.read_text(encoding="utf-8"), re.M
+                                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\habiba\AppData\Roaming\uv\python\cpython-3.12-windows-x86_64-none\Lib\pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = WindowsPath('C:/HCI-PROJECT/Zainab_Web_Application_UI_UX_Requirements_Specification (1).md')
+mode = 'r', buffering = -1, encoding = 'utf-8', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: 'C:\\HCI-PROJECT\\Zainab_Web_Application_UI_UX_Requirements_Specification (1).md'
+
+C:\Users\habiba\AppData\Roaming\uv\python\cpython-3.12-windows-x86_64-none\Lib\pathlib.py:1013: FileNotFoundError
+============================== warnings summary ===============================
+.venv\Lib\site-packages\fastapi\testclient.py:1
+  C:\HCI-PROJECT\orchestration\.venv\Lib\site-packages\fastapi\testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED tests/test_final_delivery.py::test_acceptance_preparation_covers_all_final_scenarios_and_never_passes_empty_evidence
+FAILED tests/test_final_delivery.py::test_missing_fake_or_path_escaping_evidence_cannot_close_live_gate
+FAILED tests/test_final_delivery.py::test_acceptance_calculator_checks_all_targets_and_does_not_omit_failed_attempts
+3 failed, 55 passed, 1 warning in 5.15s

@@ -10,6 +10,7 @@ from foodease_contract.models import CartSummary
 
 from foodease_agent.confirmation import ConfirmationMachine
 from foodease_agent.i18n import label, render, speech_text
+from foodease_agent.reference_language import reference_text
 
 
 @dataclass
@@ -26,12 +27,16 @@ class Turn:
     steps: int = 0
     effects: set[str] = field(default_factory=set)
     read_all: bool = False
+    sort_by: str | None = None
     control_done: bool = False
 
 
 def explicit_yes(text: str) -> bool:
     # Deliberately finite: additions/corrections/"yesterday" are never consent.
-    return text.strip().lower().rstrip(".!?۔؟").strip() in {
+    # A question is not consent, even if its words otherwise look affirmative.
+    if "?" in text or "؟" in text:
+        return False
+    return text.strip().lower().rstrip(".!۔،,").strip() in {
         "yes",
         "yes please",
         "yeah",
@@ -49,6 +54,12 @@ def explicit_yes(text: str) -> bool:
         "تصدیق کریں",
         "آرڈر درج کر دیں",
         "آرڈر کر دیں",
+        "haan",
+        "han",
+        "ji haan",
+        "jee haan",
+        "haan kar do",
+        "ji kar dein",
     }
 
 
@@ -108,7 +119,7 @@ def has_reference(text: str) -> bool:
             r"\b(first|second|third|fourth|fifth|cheaper|cheapest|other|that|this|it|"
             r"پہلا|دوسرا|تیسرا|چوتھا|پانچواں|پہلے|دوسرے|تیسرے|چوتھے|پانچویں|"
             r"یہ|وہ|اسے|اسی|سستا|سستی)\b",
-            text,
+            reference_text(text.lower()),
             re.I,
         )
     )

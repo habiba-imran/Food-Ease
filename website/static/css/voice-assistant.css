@@ -39,6 +39,10 @@
 .voice-control-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
 :root body[data-experience] .voice-control-actions .button { font-size: .85rem; min-height: 48px; padding-inline: 12px; white-space: normal; }
 .voice-microphone { font-size: .9rem; font-weight: 650; }
+.wake-preference { grid-column: 1 / -1; display: grid; gap: 6px; min-width: 0; }
+.wake-preference p { margin: 0; font-size: .85rem; line-height: 1.5; }
+.wake-preference .voice-text-action { justify-self: start; min-height: 44px; }
+.wake-preference [aria-pressed=true] { font-weight: 700; }
 .voice-microphone::before { content: ''; display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 8px; background: currentColor; }
 .voice-microphone[data-microphone-active=true] { color: var(--mint); }
 .voice-control-dialog .dialog-assistance .message-list { max-height: 180px; }

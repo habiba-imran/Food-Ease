@@ -1,0 +1,7 @@
+{
+  "passed": false,
+  "error_type": "UnicodeEncodeError",
+  "detail": "'charmap' codec can't encode characters in position 32-34: character maps to <undefined>",
+  "cause_type": "NoneType",
+  "cause": "None"
+}

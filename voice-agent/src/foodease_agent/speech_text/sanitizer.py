@@ -32,7 +32,15 @@ _ALLOW = {
 
 
 def sanitize_assistant_text(text: str, *, known_item_ids: set[str] | None = None) -> str:
-    out = _URL.sub("", text)
+    # Director/SSML instructions are internal, never pronounce their attributes.
+    out = re.sub(
+        r"<(?:[^>]+)>|\[(?:warm|calm|happy|sad|laugh(?:ter)?|pause|emotion[^\]]*)\]",
+        "",
+        text,
+        flags=re.I,
+    )
+    out = re.sub(r"[*`#]+", "", out)
+    out = _URL.sub("", out)
     out = _STATUS_NAMES.sub("", out)
     out = _JSONISH.sub("", out)
     if known_item_ids:

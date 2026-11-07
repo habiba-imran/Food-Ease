@@ -20,9 +20,7 @@ async def create_integrated_runtime(ctx, startup, gate) -> LiveConversationRunti
     adapter = IntegratedRpcAdapter(gate)
     # Verify the real application before constructing paid-provider clients.
     snapshot = await adapter.get_snapshot()
-    bundle = build_session_kwargs(settings)
-    if "vad" in ctx.proc.userdata:
-        bundle.session_kwargs["vad"] = ctx.proc.userdata["vad"]
+    bundle = build_session_kwargs(settings, prewarmed_vad=ctx.proc.userdata.get("vad"))
     session = AgentSession(**bundle.session_kwargs, max_tool_steps=8)
     runtime = LiveConversationRuntime(
         IntegratedFoodEaseAgent(language=settings.assistant_language),

@@ -1,0 +1,54 @@
+{
+  "kind": "live_providers_local_real_authority_synthetic_audio",
+  "passed": false,
+  "samples": [
+    {
+      "recognized_synthetic_urdu": " ایک عام کا جوس کارٹ میں ایڈ کر دو",
+      "reply": "کیا آپ ایک بوتل (ایک عدد) میٹھی لسی یا آم کا جوس چاہتے ہیں؟ ",
+      "stt_request_ms": 435.1,
+      "model_and_tools_complete_ms": 866.41,
+      "response_tts_first_frame_ms": 123.89,
+      "serialized_probe_to_first_output_audio_ms": 1425.4,
+      "output_audio_seconds": 4.01,
+      "operations": []
+    },
+    {
+      "recognized_synthetic_urdu": " میرے کارٹ کا ٹوٹل کتنا ہوا؟",
+      "reply": "فی الحال جواب دینے میں رکاوٹ ہے۔ آرڈر دوبارہ کہنے سے پہلے اپنی ٹوکری دیکھ لیں۔",
+      "stt_request_ms": 234.12,
+      "model_and_tools_complete_ms": 16170.13,
+      "response_tts_first_frame_ms": 173.55,
+      "serialized_probe_to_first_output_audio_ms": 16577.79,
+      "output_audio_seconds": 4.33,
+      "operations": [
+        "get_cart"
+      ]
+    }
+  ],
+  "sdk_metrics": [
+    {
+      "source": "livekit_message_metrics",
+      "role": "unknown"
+    },
+    {
+      "source": "livekit_message_metrics",
+      "role": "user"
+    },
+    {
+      "source": "livekit_message_metrics",
+      "role": "assistant",
+      "llm_node_ttft_ms": 843.32
+    },
+    {
+      "source": "livekit_message_metrics",
+      "role": "user"
+    },
+    {
+      "source": "livekit_message_metrics",
+      "role": "assistant"
+    }
+  ],
+  "actual_cart_total": 0.0,
+  "cloud_room_tested": false,
+  "caller_heard_latency_measured": false
+}

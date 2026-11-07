@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import json
 from decimal import Decimal
-from typing import Any
+from typing import Any, Literal
 
 from livekit.agents import Agent, RunContext, StopResponse, function_tool, llm
 
@@ -82,13 +82,36 @@ Combine repeated units into one quantity. A correction such as 'make it one' use
 not another add. If no selection or unambiguous cart item exists, clarify before changing it.
 Use semantic operations for buttons; never claim a camera, CSS click, payment or control
 that the application does not support. No forced checkout or extra purchase suggestions.
+For cheapest/price-order requests, use sort_by=price_asc; price_desc sorts highest first.
+Sorting covers only verified returned rows. If results are truncated, narrow the category
+or budget before claiming a whole-menu cheapest item. Keep lists short unless asked for all.
 """
 
 
 URDU_POLICY = """
+Your name is Zara (زارا), FoodEase's voice assistant. Use a relaxed, warm Pakistani
+female conversational style, with feminine self-reference (میں دیکھتی ہوں، سن رہی ہوں).
+Do not claim a human age, identity or personal experience. Sound like a patient companion
+helping with food, not a formal customer-support announcement or a literary translation.
 Speak and write every user-facing reply entirely in natural Pakistani Urdu, in Urdu script.
 Do not reply in English or Roman Urdu, even when the user uses them. Understand Urdu,
 Roman Urdu and English input semantically. Use simple conversational Urdu and short answers.
+Everyday borrowed words such as مینو، کارٹ، ایڈ and چیک آؤٹ are fine in Urdu script.
+An Urdu quantity is explicit: ایک/ek/one/1 means one, دو/do/two/2 means two,
+تین/teen/three/3 means three. When a request already includes a quantity, use it;
+never ask how many again. Ask only about the genuinely missing or ambiguous part.
+Do not invent bottles, portion sizes or pieces; use the real product's name and unit.
+Respond to a name-only call with a brief context-aware invitation, not another introduction.
+Choose wording from the conversation: acknowledge confusion patiently, accept a change of
+mind without fuss, and offer verified cheaper choices when the user objects to the price.
+If speech is unclear, ask about only the unclear part. Never repeat the entire request.
+Use varied, relevant wording rather than rotating greetings or repeating جی، اچھا or ہمم.
+No artificial laughter, stutters, fake excitement, emoji, stage directions or emotion tags.
+Use natural punctuation for short pauses and questions; never insert a deliberate delay.
+Usually give one short answer and at most one useful question. Don't introduce yourself
+again, over-apologize or push extras. Important review details still need to be read fully.
+After a successful cart action mention the actual item/quantity briefly; generic ہو گیا
+alone hides useful feedback from a blind user. Before a result, never imply it succeeded.
 Use application-provided speech_name labels for dishes; otherwise faithfully transliterate
 the actual name into Urdu script. Translate descriptions without adding ingredients or facts.
 Tool IDs and argument keys remain canonical internally, and must never be spoken.
@@ -152,9 +175,17 @@ class IntegratedFoodEaseAgent(Agent):
             yield chunk  # preserve SDK timing/alignment objects in the native output chain
 
     async def _run(
-        self, context: RunContext, operation: str, arguments: Any, *, read_all: bool = False
+        self,
+        context: RunContext,
+        operation: str,
+        arguments: Any,
+        *,
+        read_all: bool = False,
+        sort_by: str | None = None,
     ) -> dict:
-        return await self.runtime.execute(context, operation, arguments, read_all=read_all)
+        return await self.runtime.execute(
+            context, operation, arguments, read_all=read_all, sort_by=sort_by
+        )
 
     @function_tool
     async def conversation_control(self, context: RunContext, intent: ConversationIntent) -> dict:
@@ -176,13 +207,21 @@ class IntegratedFoodEaseAgent(Agent):
         return await self._run(context, "navigate", {"target": target})
 
     @function_tool
-    async def search_menu(self, context: RunContext, query: str, read_all: bool = False) -> dict:
+    async def search_menu(
+        self,
+        context: RunContext,
+        query: str,
+        read_all: bool = False,
+        sort_by: Literal["price_asc", "price_desc", "name"] | None = None,
+    ) -> dict:
         """Search real names/descriptions, retaining filters; empty query clears search.
 
         Return bounded actual matches. Usually present three; read all returned rows if asked.
         Never invent a result or position, or claim a truncated list includes all matches.
         """
-        return await self._run(context, "search_menu", {"query": query}, read_all=read_all)
+        return await self._run(
+            context, "search_menu", {"query": query}, read_all=read_all, sort_by=sort_by
+        )
 
     @function_tool
     async def filter_menu(
@@ -198,6 +237,7 @@ class IntegratedFoodEaseAgent(Agent):
         clear_search: bool = False,
         read_all: bool = False,
         price_exclusive: bool = False,
+        sort_by: Literal["price_asc", "price_desc", "name"] | None = None,
     ) -> dict:
         """Refine real filters without losing existing preferences.
 
@@ -206,6 +246,8 @@ class IntegratedFoodEaseAgent(Agent):
         read_all reads every returned row. price_exclusive makes the price strictly below
         max_price_pkr; otherwise the ceiling is inclusive. Wait for each dependent result.
         """
+        if sort_by not in {None, "price_asc", "price_desc", "name"}:
+            return safe_failure("invalid_arguments")
         if price_exclusive and (max_price_pkr is None or max_price_pkr <= 0):
             return safe_failure("invalid_arguments")
         if clear_search:
@@ -234,7 +276,9 @@ class IntegratedFoodEaseAgent(Agent):
                 else (None if clear or clear_budget else current.max_price_pkr),
             }
 
-        return await self._run(context, "filter_menu", fresh_arguments, read_all=read_all)
+        return await self._run(
+            context, "filter_menu", fresh_arguments, read_all=read_all, sort_by=sort_by
+        )
 
     @function_tool
     async def select_item(self, context: RunContext, item_id: str) -> dict:

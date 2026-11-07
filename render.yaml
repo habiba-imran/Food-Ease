@@ -1,0 +1,27 @@
+services:
+  - type: web
+    name: foodease-backend
+    runtime: docker
+    plan: starter
+    region: singapore
+    dockerfilePath: deployment/backend.Dockerfile
+    dockerContext: .
+    numInstances: 1
+    healthCheckPath: /healthz
+    envVars:
+      - key: PORT
+        value: "10000"
+      - key: LIVEKIT_URL
+        sync: false
+      - key: LIVEKIT_API_KEY
+        sync: false
+      - key: LIVEKIT_API_SECRET
+        sync: false
+      - key: CORS_ORIGINS
+        value: https://food-ease-seven.vercel.app
+      - key: FOODEASE_AGENT_NAME
+        value: foodease
+      - key: LIVEKIT_AGENT_DISPATCH
+        value: "true"
+      - key: FOODEASE_LEGACY_DEV_API
+        value: "false"

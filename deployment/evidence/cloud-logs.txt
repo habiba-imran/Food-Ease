@@ -1,0 +1,19 @@
+{"message": "starting worker", "level": "INFO", "name": "livekit.agents", "version": "1.8.4", "rtc-version": "1.1.20", "region": "ap-south", "pid": 1, "timestamp": "2026-11-07T21:39:26.320128+00:00"}
+{"message": "plugin registered", "level": "INFO", "name": "livekit.agents", "plugin": "livekit.plugins.silero", "version": "1.8.4", "region": "ap-south", "pid": 1, "timestamp": "2026-11-07T21:39:26.320356+00:00"}
+{"message": "plugin registered", "level": "INFO", "name": "livekit.agents", "plugin": "livekit.plugins.cartesia", "version": "1.8.4", "region": "ap-south", "pid": 1, "timestamp": "2026-11-07T21:39:26.320442+00:00"}
+{"message": "plugin registered", "level": "INFO", "name": "livekit.agents", "plugin": "livekit.plugins.deepgram", "version": "1.8.4", "region": "ap-south", "pid": 1, "timestamp": "2026-11-07T21:39:26.320487+00:00"}
+{"message": "plugin registered", "level": "INFO", "name": "livekit.agents", "plugin": "livekit.plugins.google", "version": "1.8.4", "region": "ap-south", "pid": 1, "timestamp": "2026-11-07T21:39:26.320531+00:00"}
+{"message": "plugin registered", "level": "INFO", "name": "livekit.agents", "plugin": "livekit.plugins.openai", "version": "1.8.4", "region": "ap-south", "pid": 1, "timestamp": "2026-11-07T21:39:26.320570+00:00"}
+{"message": "plugin registered", "level": "INFO", "name": "livekit.agents", "plugin": "livekit.plugins.groq", "version": "1.8.4", "region": "ap-south", "pid": 1, "timestamp": "2026-11-07T21:39:26.320600+00:00"}
+{"message": "preloading plugins", "level": "INFO", "name": "livekit.agents", "packages": ["livekit.plugins.silero", "livekit.plugins.cartesia", "livekit.plugins.deepgram", "livekit.plugins.google", "livekit.plugins.openai", "livekit.plugins.groq", "livekit.agents.ipc._preload", "livekit.agents.ipc._preload_freeze"], "region": "ap-south", "pid": 1, "timestamp": "2026-11-07T21:39:26.320637+00:00"}
+{"message": "HTTP server listening on :8081", "level": "INFO", "name": "livekit.agents", "region": "ap-south", "pid": 1, "timestamp": "2026-11-07T21:39:26.338669+00:00"}
+{"message": "initializing process", "level": "INFO", "name": "livekit.agents", "pid": 133, "region": "ap-south", "timestamp": "2026-11-07T21:39:31.206439+00:00"}
+{"message": "initializing process", "level": "INFO", "name": "livekit.agents", "pid": 136, "region": "ap-south", "timestamp": "2026-11-07T21:39:31.245403+00:00"}
+{"message": "process initialized", "level": "INFO", "name": "livekit.agents", "pid": 133, "elapsed_time": 0.3, "region": "ap-south", "timestamp": "2026-11-07T21:39:31.511610+00:00"}
+{"message": "prewarm: silero VAD loaded", "level": "INFO", "name": "foodease_agent.worker", "region": "ap-south", "pid": 133, "timestamp": "2026-11-07T21:39:31.502977+00:00"}
+{"message": "prewarm: silero VAD loaded", "level": "INFO", "name": "foodease_agent.worker", "region": "ap-south", "pid": 136, "timestamp": "2026-11-07T21:39:31.534947+00:00"}
+{"message": "process initialized", "level": "INFO", "name": "livekit.agents", "pid": 136, "elapsed_time": 0.29, "region": "ap-south", "timestamp": "2026-11-07T21:39:31.535799+00:00"}
+{"message": "registered worker", "level": "INFO", "name": "livekit.agents", "agent_name": "foodease", "deployment": "", "id": "CAW_JkME5XfF4eVH", "url": "https://foodease-nb0qr57x.livekit.cloud", "region": "India South", "protocol": 18, "pid": 1, "timestamp": "2026-11-07T21:39:31.661893+00:00"}
+WARNING: config file C:\Users\habiba/.livekit/cli-config.yaml should have permissions 600
+Using url, api-key, api-secret from environment
+Using agent [CA_gibAwTdK3sjn]

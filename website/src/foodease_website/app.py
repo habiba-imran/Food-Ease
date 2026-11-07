@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import os
 import secrets
 from pathlib import Path
 
@@ -139,6 +140,10 @@ def create_app(
     app.state.catalog = catalog
     store = sessions or SessionStore(catalog)
     app.state.sessions = store
+    if backend_url := os.environ.get("FOODEASE_BACKEND_URL", "").strip():
+        from foodease_website.backend_proxy import BackendProxy
+
+        app.add_middleware(BackendProxy, backend_url=backend_url)
 
     @app.exception_handler(SessionError)
     async def session_error(request: Request, exc: SessionError) -> JSONResponse:

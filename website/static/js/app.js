@@ -4,6 +4,7 @@ import { LiveKitSeats } from "./livekit-bridge.mjs?v=voice-15";
 import { TranscriptView } from "./transcripts.mjs";
 import { acquireTabLease } from "./tab-lease.mjs";
 import { voicePresentation, voiceErrorMessage } from "./voice-ui.mjs";
+import { WakeWordListener } from "./wake-word.mjs";
 
 const root = document.documentElement;
 const voiceControls = document.querySelector("[data-voice-controls]");
@@ -112,6 +113,7 @@ const detailAddButton = document.querySelector("[data-detail-add]");
 const detailPhoto = document.querySelector("[data-detail-photo]");
 const agentStatus = document.querySelector("[data-agent-status]");
 const agentStateShell = document.querySelector("[data-agent-state]");
+let currentAgentState = 'idle';
 const agentTranscript = document.querySelector("[data-agent-transcript]");
 const assistStart = document.querySelector("[data-assist-start]");
 const assistPause = document.querySelector("[data-assist-pause]");
@@ -267,6 +269,30 @@ const transcriptView = new TranscriptView(agentTranscript);
 let liveSeats = null;
 let assistanceController = null;
 let assistancePaused = false;
+let wakeState = { state: 'off', message: 'Wake microphone off.', enabled: false };
+const wakeListener = new WakeWordListener({
+  createRecognition: () => {
+    const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    return Recognition ? new Recognition() : null;
+  },
+  acquireLease: async () => acquireTabLease(await shoppingSession()),
+  onState: state => {
+    wakeState = state;
+    syncVoiceUi();
+    if (voiceControls?.open && state.state !== 'off') setStatus(state.message);
+  },
+  onWake: async command => {
+    if (document.hidden || shoppingSessionExpired) return;
+    openVoiceControls();
+    const ready = await startAssistance('voice');
+    // Only the explicitly addressed wake utterance enters the conversation.
+    // Never replay ambient transcripts or resubmit a failed command.
+    if (ready && command && root.dataset.assistanceState === 'voice_active') {
+      try { await liveSeats.text(command); }
+      catch { setStatus('Your request could not be delivered. Check your cart before repeating it.'); }
+    }
+  },
+});
 const displayModes = new Set();
 const themeStorageKey = "foodease-theme";
 let activeTheme = "dark";
@@ -421,6 +447,7 @@ function toggleTheme() {
 }
 
 function setAgentStatus(status) {
+  currentAgentState = status;
   if (agentStatus) {
     agentStatus.textContent = status;
   }
@@ -435,9 +462,14 @@ function currentVoicePresentation() {
   const microphoneActive = !run?.cancelled && (run?.media?.getAudioTracks?.() || [])
     .some(track => track.readyState !== "ended" && track.enabled !== false);
   const view = voicePresentation({ phase: root.dataset.assistanceState,
-    agentState: agentStateShell?.dataset.agentState, microphoneActive,
+    agentState: currentAgentState, microphoneActive,
     cleanupPending: Boolean(run?.cancelled && run.serverPending) });
   if (shoppingSessionExpired) return { ...view, label: "Shopping session expired", canStart: false };
+  if (['listening', 'starting', 'stopping'].includes(wakeState.state)) {
+    view.microphone = wakeState.state === 'listening' ? 'Wake microphone on' : 'Wake microphone starting or closing';
+    if (wakeState.state === 'listening') view.label = 'Hey Zara enabled';
+  }
+  if (wakeListener.recognition && !wakeState.enabled) view.microphone = 'Wake microphone closing';
   return view;
 }
 
@@ -453,7 +485,15 @@ function syncVoiceUi() {
   });
   document.querySelectorAll("[data-voice-microphone]").forEach(node => {
     node.textContent = view.microphone;
-    node.dataset.microphoneActive = String(view.microphone === "Microphone on");
+    node.dataset.microphoneActive = String(['Microphone on', 'Wake microphone on'].includes(view.microphone));
+  });
+  document.querySelectorAll('[data-wake-toggle]').forEach(button => {
+    button.setAttribute('aria-pressed', String(wakeState.enabled));
+    button.textContent = wakeState.enabled ? 'Turn off Hey Zara' : 'Enable Hey Zara';
+    button.disabled = shoppingSessionExpired || view.canManage || wakeState.state === 'stopping';
+  });
+  document.querySelectorAll('[data-wake-status]').forEach(node => {
+    if (node.textContent !== wakeState.message) node.textContent = wakeState.message;
   });
   const connecting = view.state === "connecting";
   const active = view.canManage && !connecting;
@@ -491,7 +531,9 @@ function finishManualUi() {
   syncVoiceUi();
   const target = document.querySelector("dialog[open]") ? voiceLauncher : document.querySelector("#popular");
   target?.focus({ preventScroll: false });
-  setStatus("You can browse the menu and order manually. Start Voice Assistant whenever you need help. Your microphone is off.");
+  setStatus(wakeListener.recognition
+    ? "You can order manually. The wake microphone is still closing; wait for its off status."
+    : "You can browse the menu and order manually. Start Voice Assistant whenever you need help. Your microphone is off.");
 }
 
 function appendTranscript(kind, text) {
@@ -1681,7 +1723,7 @@ async function controller() {
       }
       const send = assistantForm?.querySelector("button[type=submit]");
       if (send) send.disabled = !assistanceActive;
-      const speechState = agentStateShell?.dataset.agentState;
+      const speechState = currentAgentState;
       setAgentStatus(state.modeState === "ended" ? "ended" : state.state === "active"
         ? ["assistant_speaking", "thinking"].includes(speechState) ? speechState : "ready/listening" : state.state);
       if (state.state === "active") {
@@ -1712,11 +1754,14 @@ async function startAssistance(mode) {
   }
   const intent = ++assistanceIntent;
   try {
+    // Await native end before opening LiveKit capture or playing Zara's voice.
+    await wakeListener.stop();
+    if (intent !== assistanceIntent || document.hidden) return false;
     const owner = await controller();
     if (intent !== assistanceIntent) return;
     if (assistanceActive && owner.current?.mode === "choice" && mode === "voice") {
       await liveSeats.control("switch_mode", "voice");
-      return; // Existing bound worker acknowledges the choice; no second generation.
+      return true; // Existing bound worker acknowledges the choice; no second generation.
     }
     if (owner.current && !owner.current.cancelled && owner.current.mode !== mode) await owner.end();
     if (intent !== assistanceIntent) return;
@@ -1729,6 +1774,7 @@ async function startAssistance(mode) {
     } else await owner.start({ mode });
     assistancePaused = false;
     if (assistPause) assistPause.textContent = "Pause";
+    return intent === assistanceIntent;
   } catch (error) {
     if (intent !== assistanceIntent) return;
     // Startup failures already stop their run; failed controls on an active
@@ -1761,6 +1807,7 @@ async function toggleAssistancePause() {
 }
 assistPause?.addEventListener("click", () => { void toggleAssistancePause(); });
 function chooseManual(ended = false) {
+  void wakeListener.stop().catch(error => setStatus(error.message));
   assistanceIntent++;
   assistanceActive = false;
   root.dataset.assistanceState = ended ? "ended" : "manual";
@@ -1834,6 +1881,18 @@ voiceLauncher?.addEventListener("click", () => {
   openVoiceControls();
   if (view.canStart) void startAssistance("voice");
 });
+document.querySelectorAll('[data-wake-toggle]').forEach(button => {
+  button.addEventListener('click', async () => {
+    if (wakeListener.enabled) { await wakeListener.stop().catch(error => setStatus(error.message)); return; }
+    if (document.hidden || shoppingSessionExpired || currentVoicePresentation().canManage) return;
+    // A cleanup/recovery lease cannot be replaced by browser recognition.
+    if (assistanceController?.current?.serverPending) {
+      setStatus('Voice cleanup is pending. Retry voice assistance before enabling Hey Zara.'); return;
+    }
+    if (!window.isSecureContext) { setStatus('Hey Zara needs HTTPS or localhost. Use typing or manual ordering.'); return; }
+    await wakeListener.start();
+  });
+});
 document.querySelector("[data-welcome-voice]")?.addEventListener("click", () => {
   const view = currentVoicePresentation();
   openVoiceControls();
@@ -1887,9 +1946,10 @@ document.addEventListener("click", (event) => {
   }
 });
 document.querySelector("[data-order-manual]")?.addEventListener("click", () => chooseManual());
-window.addEventListener("pagehide", () => { assistanceIntent++; void assistanceController?.end(); });
+window.addEventListener("pagehide", () => { assistanceIntent++; void wakeListener.stop().catch(() => {}); void assistanceController?.end(); });
 document.addEventListener("visibilitychange", () => {
   if (document.visibilityState !== "hidden") return;
+  void wakeListener.stop().catch(() => {});
   assistanceIntent++;
   void assistanceController?.end();
 });

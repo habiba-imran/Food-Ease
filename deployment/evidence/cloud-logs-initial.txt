@@ -1,0 +1,21 @@
+{"message": "starting worker", "level": "INFO", "name": "livekit.agents", "version": "1.8.4", "rtc-version": "1.1.20", "region": "ap-south", "pid": 1, "timestamp": "2026-11-07T21:26:39.461611+00:00"}
+{"message": "plugin registered", "level": "INFO", "name": "livekit.agents", "plugin": "livekit.plugins.silero", "version": "1.8.4", "region": "ap-south", "pid": 1, "timestamp": "2026-11-07T21:26:39.461787+00:00"}
+{"message": "plugin registered", "level": "INFO", "name": "livekit.agents", "plugin": "livekit.plugins.cartesia", "version": "1.8.4", "region": "ap-south", "pid": 1, "timestamp": "2026-11-07T21:26:39.461891+00:00"}
+{"message": "plugin registered", "level": "INFO", "name": "livekit.agents", "plugin": "livekit.plugins.deepgram", "version": "1.8.4", "region": "ap-south", "pid": 1, "timestamp": "2026-11-07T21:26:39.461930+00:00"}
+{"message": "plugin registered", "level": "INFO", "name": "livekit.agents", "plugin": "livekit.plugins.google", "version": "1.8.4", "region": "ap-south", "pid": 1, "timestamp": "2026-11-07T21:26:39.461967+00:00"}
+{"message": "plugin registered", "level": "INFO", "name": "livekit.agents", "plugin": "livekit.plugins.openai", "version": "1.8.4", "region": "ap-south", "pid": 1, "timestamp": "2026-11-07T21:26:39.461996+00:00"}
+{"message": "plugin registered", "level": "INFO", "name": "livekit.agents", "plugin": "livekit.plugins.groq", "version": "1.8.4", "region": "ap-south", "pid": 1, "timestamp": "2026-11-07T21:26:39.462025+00:00"}
+{"message": "preloading plugins", "level": "INFO", "name": "livekit.agents", "packages": ["livekit.plugins.silero", "livekit.plugins.cartesia", "livekit.plugins.deepgram", "livekit.plugins.google", "livekit.plugins.openai", "livekit.plugins.groq", "livekit.agents.ipc._preload", "livekit.agents.ipc._preload_freeze"], "region": "ap-south", "pid": 1, "timestamp": "2026-11-07T21:26:39.462061+00:00"}
+{"message": "HTTP server listening on :8081", "level": "INFO", "name": "livekit.agents", "region": "ap-south", "pid": 1, "timestamp": "2026-11-07T21:26:39.478379+00:00"}
+{"message": "initializing process", "level": "INFO", "name": "livekit.agents", "pid": 134, "region": "ap-south", "timestamp": "2026-11-07T21:26:44.159982+00:00"}
+{"message": "initializing process", "level": "INFO", "name": "livekit.agents", "pid": 137, "region": "ap-south", "timestamp": "2026-11-07T21:26:44.220186+00:00"}
+{"message": "prewarm: silero VAD loaded", "level": "INFO", "name": "foodease_agent.worker", "region": "ap-south", "pid": 134, "timestamp": "2026-11-07T21:26:44.477654+00:00"}
+{"message": "process initialized", "level": "INFO", "name": "livekit.agents", "pid": 134, "elapsed_time": 0.32, "region": "ap-south", "timestamp": "2026-11-07T21:26:44.478935+00:00"}
+{"message": "prewarm: silero VAD loaded", "level": "INFO", "name": "foodease_agent.worker", "region": "ap-south", "pid": 137, "timestamp": "2026-11-07T21:26:44.482837+00:00"}
+{"message": "process initialized", "level": "INFO", "name": "livekit.agents", "pid": 137, "elapsed_time": 0.26, "region": "ap-south", "timestamp": "2026-11-07T21:26:44.485034+00:00"}
+{"message": "registered worker", "level": "INFO", "name": "livekit.agents", "agent_name": "foodease", "deployment": "", "id": "CAW_kK7s7fQWjjRb", "url": "https://foodease-nb0qr57x.livekit.cloud", "region": "India South", "protocol": 18, "pid": 1, "timestamp": "2026-11-07T21:26:44.750339+00:00"}
+{"message": "received job request", "level": "INFO", "name": "livekit.agents", "job_id": "AJ_r9EuV83str2K", "dispatch_id": "AD_zF7Y3WTJTznb", "room": "foodease-deploy-check-63c44c255d174f98", "room_id": "RM_9hgFkqExSP6Z", "agent_name": "foodease", "resuming": false, "enable_recording": true, "region": "ap-south", "pid": 1, "timestamp": "2026-11-07T21:30:24.695557+00:00"}
+{"message": "cloud dispatch rejected: configure public FOODEASE_SESSION_API after hosting the backend", "level": "ERROR", "name": "foodease_agent.worker", "region": "ap-south", "pid": 1, "timestamp": "2026-11-07T21:30:24.695874+00:00"}
+WARNING: config file C:\Users\habiba/.livekit/cli-config.yaml should have permissions 600
+Using url, api-key, api-secret from environment
+Using agent [CA_gibAwTdK3sjn]

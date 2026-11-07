@@ -1,5 +1,9 @@
 ﻿# HCI-PROJECT
 
+For the LiveKit Cloud worker and Render/Vercel production wiring, use the
+[hosting guide](deployment/RENDER_VERCEL_GUIDE.md) and
+[deployment report](deployment/DEPLOYMENT_REPORT_2026-11-08.md).
+
 Sibling folders for Habiba and Zainab (no shared voice/website mix).
 
 The final integrated website now runs from the

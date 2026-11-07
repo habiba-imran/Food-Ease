@@ -230,7 +230,7 @@ async def test_actual_worker_entrypoint_attaches_runtime_and_waits_for_ready(mon
     monkeypatch.setenv("FOODEASE_APP_TRANSPORT", "website")
     monkeypatch.setattr(factory, "load_config", lambda: _settings(preemptive_generation=True))
 
-    def bundle(settings):
+    def bundle(settings, **kwargs):
         assert settings.preemptive_generation is False
         order.append("providers_prepared")
         return SessionBundle({}, "A", False)

@@ -1,0 +1,54 @@
+{
+  "kind": "live_providers_local_real_authority_synthetic_audio",
+  "passed": false,
+  "samples": [
+    {
+      "recognized_synthetic_urdu": " ایک کولا کا کین کاٹ میں ایڈ کر دو",
+      "reply": "کولا کے کین کی کتنی مقدار شامل کرنی ہے؟ ",
+      "stt_request_ms": 488.92,
+      "model_and_tools_complete_ms": 800.57,
+      "response_tts_first_frame_ms": 330.52,
+      "serialized_probe_to_first_output_audio_ms": 1620.01,
+      "output_audio_seconds": 2.81,
+      "operations": []
+    },
+    {
+      "recognized_synthetic_urdu": " میرے کاٹ کا ٹوٹل کتنا ہوا؟",
+      "reply": "فی الحال جواب دینے میں رکاوٹ ہے۔ آرڈر دوبارہ کہنے سے پہلے اپنی ٹوکری دیکھ لیں۔",
+      "stt_request_ms": 283.73,
+      "model_and_tools_complete_ms": 1523.12,
+      "response_tts_first_frame_ms": 330.82,
+      "serialized_probe_to_first_output_audio_ms": 2137.67,
+      "output_audio_seconds": 4.25,
+      "operations": [
+        "get_cart"
+      ]
+    }
+  ],
+  "sdk_metrics": [
+    {
+      "source": "livekit_message_metrics",
+      "role": "unknown"
+    },
+    {
+      "source": "livekit_message_metrics",
+      "role": "user"
+    },
+    {
+      "source": "livekit_message_metrics",
+      "role": "assistant",
+      "llm_node_ttft_ms": 778.57
+    },
+    {
+      "source": "livekit_message_metrics",
+      "role": "user"
+    },
+    {
+      "source": "livekit_message_metrics",
+      "role": "assistant"
+    }
+  ],
+  "actual_cart_total": 0.0,
+  "cloud_room_tested": false,
+  "caller_heard_latency_measured": false
+}

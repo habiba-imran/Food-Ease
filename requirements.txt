@@ -1,0 +1,3 @@
+# LiveKit CLI SDK detection for the monorepo build context.
+# Docker installs the actual application from voice-agent/uv.lock using uv --locked.
+livekit-agents[cartesia,deepgram,google,groq,silero,turn-detector]==1.8.4

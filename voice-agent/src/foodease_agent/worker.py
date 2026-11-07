@@ -8,6 +8,7 @@ import logging
 import os
 import sys
 from pathlib import Path
+from urllib.parse import urlsplit
 
 from dotenv import load_dotenv
 from foodease_contract.startup import StartupBinding
@@ -132,6 +133,13 @@ async def accept_job(request: JobRequest) -> None:
         mode = app_transport_mode()
         raw = str(getattr(request.job, "metadata", "") or "")
         if mode == "website":
+            if os.environ.get("FOODEASE_CLOUD_RUNTIME") == "1":
+                callback = urlsplit(os.environ.get("FOODEASE_SESSION_API", ""))
+                if (callback.scheme != "https" or not callback.hostname
+                        or callback.hostname in {"localhost", "127.0.0.1", "::1"}):
+                    logger.error("cloud dispatch rejected: configure public FOODEASE_SESSION_API after hosting the backend")
+                    await request.reject()
+                    return
             startup = StartupBinding.model_validate_json(raw)
             await request.accept(
                 identity=startup.binding.agent_identity,

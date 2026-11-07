@@ -35,6 +35,7 @@ from foodease_agent.integrated.policy import (
 from foodease_agent.integrated.recovery import RuntimeRecovery
 from foodease_agent.interruption import InterruptionReconciler
 from foodease_agent.preferences import SessionPreferences
+from foodease_agent.production_metrics import log_metrics
 from foodease_agent.reference import PresentedItem, ReferenceResolver
 from foodease_agent.speech_text.shaping import shape_assistant_reply
 
@@ -97,6 +98,7 @@ class LiveConversationRuntime:
         self._user_speaking = self._agent_speaking = False
         self.recovery = RuntimeRecovery(self)
         self._handlers = {
+            "conversation_item_added": log_metrics,
             "speech_created": self.on_speech_created,
             "user_state_changed": self.on_user_state,
             "agent_state_changed": self.on_agent_state,
@@ -240,17 +242,20 @@ class LiveConversationRuntime:
         return bool(
             not self.closed
             and not self.paused
-            and self.mode in (
-                {"voice", "typed", "choosing"} if conversation else {"voice", "typed"}
-            )
+            and self.mode
+            in ({"voice", "typed", "choosing"} if conversation else {"voice", "typed"})
             and self.active_turn is turn
             and turn.epoch == self.epoch
             and turn.committed
             and not turn.discarded
             and (turn.speech is None or not turn.speech.interrupted)
             and (not revision or turn.revision == self.snapshot.revision)
-            and (turn.source == "text" or self.mode == "voice"
-                 or conversation and self.mode == "choosing")
+            and (
+                turn.source == "text"
+                or self.mode == "voice"
+                or conversation
+                and self.mode == "choosing"
+            )
         )
 
     def uncommit_turn(self, turn_id: str) -> None:
@@ -322,8 +327,12 @@ class LiveConversationRuntime:
         # All rows are contract bounded; cap untrusted free text further for prompts.
         data = self.snapshot.model_dump(mode="json", exclude={"cart"})
         data["visible_items"] = [
-            {**row, "name": row["name"][:120], "descriptors": [s[:80] for s in row["descriptors"]],
-             "speech_name": label(row["name"], self.language)}
+            {
+                **row,
+                "name": row["name"][:120],
+                "descriptors": [s[:80] for s in row["descriptors"]],
+                "speech_name": label(row["name"], self.language),
+            }
             for row in data["visible_items"]
         ]
         semantic_page = SemanticPage(self.snapshot, self.details).data()
@@ -407,10 +416,16 @@ class LiveConversationRuntime:
         speech = context.speech_handle
         turn = self.speech_turns.get(speech.id)
         if (
-            context.session is not self.session or turn is None or self.closed
-            or self.active_turn is not turn or turn.discarded or not turn.committed
-            or turn.epoch != self.epoch or turn.revision != self.snapshot.revision
-            or speech.interrupted or turn.control_done
+            context.session is not self.session
+            or turn is None
+            or self.closed
+            or self.active_turn is not turn
+            or turn.discarded
+            or not turn.committed
+            or turn.epoch != self.epoch
+            or turn.revision != self.snapshot.revision
+            or speech.interrupted
+            or turn.control_done
             or self.mode not in {"voice", "typed", "choosing"}
             or (turn.source == "audio" and self.mode not in {"voice", "choosing"})
         ):
@@ -455,13 +470,17 @@ class LiveConversationRuntime:
                 return
         if command == "read_categories":
             categories = [
-                target.replace("-", " ") for target in self.snapshot.valid_navigation_targets
+                target.replace("-", " ")
+                for target in self.snapshot.valid_navigation_targets
                 if target not in {"home", "menu", "back", "cart", "checkout"}
             ]
             self.say(
-                self.t("The menu categories are {categories}.",
-                       categories=", ".join(label(row, self.language) for row in categories))
-                if categories else "I couldn’t find any menu categories on the site."
+                self.t(
+                    "The menu categories are {categories}.",
+                    categories=", ".join(label(row, self.language) for row in categories),
+                )
+                if categories
+                else "I couldn’t find any menu categories on the site."
             )
         elif command == "read_page":
             if self.snapshot.focus_item_id:
@@ -561,8 +580,12 @@ class LiveConversationRuntime:
                 self.say("I’ll use that volume for my next reply.")
         elif control in {"more_detail", "less_detail"}:
             self.preferences.detail_level = "more" if control == "more_detail" else "brief"
-            if (control == "more_detail" and self.language == "en"
-                    and self.snapshot.focus_item_id and turn is not None):
+            if (
+                control == "more_detail"
+                and self.language == "en"
+                and self.snapshot.focus_item_id
+                and turn is not None
+            ):
                 result = await self.broker.run(
                     turn, "get_item_details", {"item_id": self.snapshot.focus_item_id}
                 )
@@ -610,8 +633,13 @@ class LiveConversationRuntime:
             self.end_local()
 
     async def execute(
-        self, context: Any, operation: str, arguments: dict | Callable[[], dict],
-        *, read_all: bool = False,
+        self,
+        context: Any,
+        operation: str,
+        arguments: dict | Callable[[], dict],
+        *,
+        read_all: bool = False,
+        sort_by: str | None = None,
     ) -> dict:
         speech = context.speech_handle
         turn = self.speech_turns.get(speech.id)
@@ -622,7 +650,10 @@ class LiveConversationRuntime:
         if turn.control_done:
             return safe_failure("inactive_turn")
         if operation in {"search_menu", "filter_menu"}:
+            if sort_by not in {None, "price_asc", "price_desc", "name"}:
+                return safe_failure("invalid_arguments")
             turn.read_all = read_all
+            turn.sort_by = sort_by
         if not isinstance(arguments, dict):
             if operation != "filter_menu":
                 return safe_failure("invalid_arguments")
@@ -633,8 +664,11 @@ class LiveConversationRuntime:
             names = [(row.item_id, row.name) for row in self.snapshot.visible_items]
             names += [(row.item_id, row.name) for row in self.snapshot.cart.lines]
             explicit_name = any(
-                candidate == item and any(value.lower() in turn.text.lower()
-                                         for value in {name, label(name, self.language)})
+                candidate == item
+                and any(
+                    value.lower() in turn.text.lower()
+                    for value in {name, label(name, self.language)}
+                )
                 for candidate, name in names
             )
             if has_reference(turn.text) and not explicit_name:
@@ -684,6 +718,16 @@ class LiveConversationRuntime:
         facts = result.payload.verified_state or {}
         if operation in {"search_menu", "filter_menu"}:
             self.browse.reset(self.snapshot.visible_items, self.snapshot.revision)
+            if turn.sort_by:
+                self.browse.rows.sort(
+                    key=lambda row: row.name.casefold() if turn.sort_by == "name" else row.price,
+                    reverse=turn.sort_by == "price_desc",
+                )
+                # Only presentation order changes; application prices/revision remain authoritative.
+                facts = {
+                    **facts,
+                    "items": [row.model_dump(mode="json") for row in self.browse.rows],
+                }
         elif operation == "get_current_context" and self.browse.revision != self.snapshot.revision:
             self.browse.reset(self.snapshot.visible_items, self.snapshot.revision)
         elif operation == "get_current_context" and not self.browse.rows:
@@ -706,15 +750,20 @@ class LiveConversationRuntime:
         say = "The page is ready. What would you like to do next?"
         if "lines" in facts:
             # Exact checkout delivery may not silently fall back to an untranslated item name.
-            if self.language == "ur" and operation == "checkout.get_summary" and any(
-                re.search(r"[A-Za-z]", label(value, "ur"))
-                for value in [line["name"] for line in facts["lines"]]
-                + [fee["label"] for fee in facts["fees"]]
+            if (
+                self.language == "ur"
+                and operation == "checkout.get_summary"
+                and any(
+                    re.search(r"[A-Za-z]", label(value, "ur"))
+                    for value in [line["name"] for line in facts["lines"]]
+                    + [fee["label"] for fee in facts["fees"]]
+                )
             ):
                 self._invalidate_confirmation()
                 return safe_failure("not_available")
-            say = cart_speech(facts, confirmation=operation == "checkout.get_summary",
-                              language=self.language)
+            say = cart_speech(
+                facts, confirmation=operation == "checkout.get_summary", language=self.language
+            )
         if operation == "checkout.get_summary":
             self._invalidate_confirmation()
             summary_id = self.summary_id = new_id()
@@ -750,12 +799,15 @@ class LiveConversationRuntime:
         elif operation == "checkout.submit_demo_order":
             say = "Your demo order was placed. No payment was taken."
         elif operation in {"get_item_details", "select_item"}:
-            say = self.t("{name} costs {price} rupees.", name=facts["name"],
-                         price=f"{facts['price']:g}")
+            say = self.t(
+                "{name} costs {price} rupees.", name=facts["name"], price=f"{facts['price']:g}"
+            )
         elif operation in {"search_menu", "filter_menu"}:
             rows = self.browse.rows
             say = self.t("I found {count} options. ", count=facts["result_count"]) + list_speech(
-                rows, language=self.language, read_all=turn.read_all,
+                rows,
+                language=self.language,
+                read_all=turn.read_all,
             )
             if facts["result_count"] > len(rows):
                 say += self.t(
@@ -786,7 +838,8 @@ class LiveConversationRuntime:
         revision, epoch = self.snapshot.revision, self.epoch
         voice_deliverable = self.mode == "voice" and self._voice_output_available()
         text = shape_assistant_reply(
-            text, known_item_ids={i.item_id for i in self.snapshot.visible_items},
+            text,
+            known_item_ids={i.item_id for i in self.snapshot.visible_items},
             language=self.language,
         ).spoken_text
         handle = self.session.say(text, allow_interruptions=True)
