@@ -101,11 +101,11 @@ test('lower-page copy reveals on scroll and motion preferences keep it readable'
   await expect(heading).toHaveCSS('opacity', '1');
   await expect(heading).toBeInViewport();
   await page.locator('[data-access-toggle=motion]').click();
-  await expect(page.locator('.footer-wordmark')).toHaveCSS('opacity', '1');
+  await expect(page.locator('.footer-home')).toHaveCSS('opacity', '1');
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.reload();
   await expect(page.locator('#ar-title')).toHaveCSS('opacity', '1');
-  await expect(page.locator('.footer-wordmark')).toHaveCSS('opacity', '1');
+  await expect(page.locator('.footer-home')).toHaveCSS('opacity', '1');
 });
 for (const width of [375, 1440]) {
   test(`dark default, saved theme, and centered icons work at ${width}px`, async ({ page }) => {

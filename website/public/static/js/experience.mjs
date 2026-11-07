@@ -3,30 +3,61 @@ const root = document.documentElement;
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 const calm = () => reducedMotion.matches || root.dataset.calmMotion === 'true';
 
-// Horizontal pointer movement turns the photograph around its fixed center.
+// One moving strip, with explicit controls and no scroll or touch interception.
 const editorialHero = document.querySelector('.hero');
-const desktopMotion = window.matchMedia('(min-width: 701px) and (hover: hover) and (pointer: fine)');
-let heroFrame = 0;
-function resetHeroMotion() {
-  cancelAnimationFrame(heroFrame);
-  editorialHero?.style.removeProperty('--scene-angle');
-  if (editorialHero) delete editorialHero.dataset.pointerRotation;
-}
-editorialHero?.addEventListener('pointermove', event => {
-  if (calm() || !desktopMotion.matches || event.pointerType === 'touch') return;
-  cancelAnimationFrame(heroFrame);
-  heroFrame = requestAnimationFrame(() => {
-    const rect = editorialHero.getBoundingClientRect();
-    const x = Math.max(-.5, Math.min(.5, (event.clientX - rect.left) / rect.width - .5));
-    editorialHero.dataset.pointerRotation = 'true';
-    editorialHero.style.setProperty('--scene-angle', `${x * 20}deg`);
+const heroCarousel = document.querySelector('[data-hero-carousel]');
+if (heroCarousel) {
+  const track = heroCarousel.querySelector('[data-hero-track]');
+  const group = track.querySelector('.hero-carousel-group');
+  const pauseButton = heroCarousel.querySelector('[data-hero-food-pause]');
+  let animation, duration = 1, manuallyPaused = false, hovered = false, visible = true;
+  const synchronize = () => {
+    const paused = manuallyPaused || hovered || (heroCarousel.contains(document.activeElement) && document.activeElement.matches(':focus-visible')) || calm() || document.hidden || !visible;
+    if (animation) paused ? animation.pause() : animation.play();
+    heroCarousel.dataset.paused = String(paused);
+    pauseButton.hidden = calm();
+    pauseButton.setAttribute('aria-pressed', String(manuallyPaused));
+    pauseButton.setAttribute('aria-label', manuallyPaused ? 'Resume food carousel' : 'Pause food carousel');
+  };
+  const build = () => {
+    const phase = animation ? (Number(animation.currentTime || 0) % duration) / duration : 0;
+    animation?.cancel();
+    const distance = group.getBoundingClientRect().width;
+    if (!distance) return;
+    duration = distance / 30 * 1000;
+    animation = track.animate([
+      { transform: `translateX(${-distance}px)` },
+      { transform: `translateX(${-2 * distance}px)` },
+    ], { duration, iterations: Infinity, easing: 'linear' });
+    animation.currentTime = phase * duration;
+    synchronize();
+  };
+  heroCarousel.addEventListener('pointerenter', event => {
+    if (event.pointerType === 'touch') return;
+    hovered = true; synchronize();
   });
-});
-editorialHero?.addEventListener('pointerleave', resetHeroMotion);
-editorialHero?.addEventListener('pointercancel', resetHeroMotion);
-reducedMotion.addEventListener('change', resetHeroMotion);
-desktopMotion.addEventListener('change', resetHeroMotion);
-new MutationObserver(resetHeroMotion).observe(root, { attributes: true, attributeFilter: ['data-calm-motion'] });
+  heroCarousel.addEventListener('pointerleave', () => { hovered = false; synchronize(); });
+  heroCarousel.addEventListener('pointercancel', () => { hovered = false; synchronize(); });
+  heroCarousel.addEventListener('focusin', synchronize);
+  heroCarousel.addEventListener('focusout', () => requestAnimationFrame(synchronize));
+  pauseButton.addEventListener('click', () => { manuallyPaused = !manuallyPaused; synchronize(); });
+  const step = direction => {
+    if (!animation) return;
+    const stepTime = duration / group.children.length;
+    const position = Number(animation.currentTime || 0) / stepTime;
+    const next = direction > 0 ? Math.floor(position + .02) + 1 : Math.ceil(position - .02) - 1;
+    animation.currentTime = ((next * stepTime) % duration + duration) % duration;
+    synchronize();
+  };
+  heroCarousel.querySelector('[data-hero-food-prev]').addEventListener('click', () => step(-1));
+  heroCarousel.querySelector('[data-hero-food-next]').addEventListener('click', () => step(1));
+  reducedMotion.addEventListener('change', synchronize);
+  document.addEventListener('visibilitychange', synchronize);
+  new MutationObserver(synchronize).observe(root, { attributes: true, attributeFilter: ['data-calm-motion'] });
+  new IntersectionObserver(([entry]) => { visible = entry.isIntersecting; synchronize(); }, { threshold: .01 }).observe(heroCarousel);
+  new ResizeObserver(build).observe(heroCarousel);
+  build();
+}
 let headerFrame = 0;
 function refreshHeaderSurface() {
   if (headerFrame) return;

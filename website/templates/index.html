@@ -13,9 +13,9 @@
     <link rel="preload" href="/static/fonts/bebas-neue-latin.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/static/fonts/dm-sans-latin.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" as="image" href="/static/img/editorial/fast-v7/chicken-burger-hero-768.webp" imagesrcset="/static/img/editorial/fast-v7/chicken-burger-hero-480.webp 480w, /static/img/editorial/fast-v7/chicken-burger-hero-768.webp 768w, /static/img/editorial/fast-v7/chicken-burger-hero-1024.webp 1024w" imagesizes="(max-width: 700px) 90vw, (max-width: 900px) 480px, 560px" fetchpriority="high" />
-    <link rel="stylesheet" href="/static/vendor/food-experience.css?v=menu-21" />
-    <script type="module" src="/static/js/app.js?v=menu-21"></script>
-    <script type="module" src="/static/js/experience.mjs?v=menu-21"></script>
+    <link rel="stylesheet" href="/static/vendor/food-experience.css?v=menu-22" />
+    <script type="module" src="/static/js/app.js?v=menu-22"></script>
+    <script type="module" src="/static/js/experience.mjs?v=menu-22"></script>
   </head>
   <body data-experience="immersive" data-orchestration-url="{{ orchestration_base_url }}">
     <a class="skip-link" href="#popular">Skip to menu</a>
@@ -78,8 +78,31 @@
         <div class="food-studio" data-immersive-stage>
           <svg class="editorial-orbits" viewBox="0 0 1200 700" aria-hidden="true"><ellipse cx="600" cy="350" rx="520" ry="90" transform="rotate(-13 600 350)"/><ellipse cx="600" cy="350" rx="310" ry="245" transform="rotate(58 600 350)"/><circle cx="1050" cy="244" r="4"/><circle cx="210" cy="482" r="3"/></svg>
           <span class="scene-crosshair crosshair-one" aria-hidden="true">+</span><span class="scene-crosshair crosshair-two" aria-hidden="true">+</span>
-          <div class="studio-viewport">
-            <div class="campaign-product"><img class="hero-product" src="/static/img/editorial/fast-v7/chicken-burger-hero-768.webp" srcset="/static/img/editorial/fast-v7/chicken-burger-hero-480.webp 480w, /static/img/editorial/fast-v7/chicken-burger-hero-768.webp 768w, /static/img/editorial/fast-v7/chicken-burger-hero-1024.webp 1024w" sizes="(max-width: 700px) 90vw, (max-width: 900px) 480px, 560px" decoding="async" alt="Crispy chicken burger, studio artwork" width="1536" height="1536" fetchpriority="high" /><span class="product-ground-shadow" aria-hidden="true"></span></div>
+          <div class="studio-viewport hero-food-carousel" role="region" aria-roledescription="carousel" aria-label="Featured FoodEase dishes" data-hero-carousel>
+            {% set hero_dishes = [('chicken-burger-hero', 'Crispy chicken burger'), ('roll-chicken', 'Chicken roll'), ('biryani-chicken', 'Chicken biryani'), ('burger-beef', 'Beef burger'), ('zinger-supreme', 'Zinger Supreme'), ('wrap-hot-chicken', 'Hot chicken wrap')] %}
+            <div class="hero-carousel-window">
+              <div class="hero-carousel-track" data-hero-track>
+                {% for copy in range(3) %}
+                <div class="hero-carousel-group" {% if copy != 1 %}aria-hidden="true"{% else %}role="list" aria-label="Featured dishes"{% endif %}>
+                  {% for id, name in hero_dishes %}
+                  <div class="hero-food-slide" {% if copy == 1 %}role="listitem"{% endif %}>
+                    {% if id == 'chicken-burger-hero' %}
+                    <img class="hero-carousel-image{% if copy == 1 %} hero-product{% endif %}" src="/static/img/editorial/fast-v7/chicken-burger-hero-768.webp" srcset="/static/img/editorial/fast-v7/chicken-burger-hero-480.webp 480w, /static/img/editorial/fast-v7/chicken-burger-hero-768.webp 768w, /static/img/editorial/fast-v7/chicken-burger-hero-1024.webp 1024w" sizes="(max-width: 700px) 86vw, (max-width: 900px) 480px, 560px" alt="{% if copy == 1 %}{{ name }}{% endif %}" width="1536" height="1536" decoding="async" {% if copy == 1 %}fetchpriority="high"{% else %}loading="lazy"{% endif %} />
+                    {% else %}
+                    <img class="hero-carousel-image" src="/static/img/catalog-v7/{{ id }}-640.webp" srcset="/static/img/catalog-v7/{{ id }}-320.webp 320w, /static/img/catalog-v7/{{ id }}-480.webp 480w, /static/img/catalog-v7/{{ id }}-640.webp 640w" sizes="(max-width: 700px) 86vw, (max-width: 900px) 480px, 560px" alt="{% if copy == 1 %}{{ name }}{% endif %}" width="900" height="700" decoding="async" loading="lazy" />
+                    {% endif %}
+                    <span class="hero-dish-caption">{{ name }}</span>
+                  </div>
+                  {% endfor %}
+                </div>
+                {% endfor %}
+              </div>
+            </div>
+            <div class="hero-carousel-controls" aria-label="Featured dish controls">
+              <button type="button" data-hero-food-prev aria-label="Previous featured dish"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="m14 6-6 6 6 6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+              <button type="button" data-hero-food-pause aria-label="Pause food carousel" aria-pressed="false"><svg class="hero-pause-icon" viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M7 5h3v14H7zm7 0h3v14h-3z"/></svg><svg class="hero-play-icon" viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="m8 5 11 7-11 7z"/></svg></button>
+              <button type="button" data-hero-food-next aria-label="Next featured dish"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="m10 6 6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            </div>
           </div>
         </div>
       </section>

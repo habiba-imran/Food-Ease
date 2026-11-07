@@ -20,11 +20,14 @@ for (const [width, height] of [[320, 740], [375, 812], [667, 375], [768, 1024], 
         overflow: document.documentElement.scrollWidth > innerWidth,
         navOverlap: document.querySelector('.main-nav').getBoundingClientRect().right > document.querySelector('.brand-mark').getBoundingClientRect().left && innerWidth > 700,
         titleOverflow: document.querySelector('#hero-title').scrollWidth > document.querySelector('#hero-title').clientWidth,
+        carousel: box('.hero-carousel-window'), controls: box('.hero-carousel-controls'),
       };
     });
     expect(geometry.overflow).toBe(false);
     expect(geometry.navOverlap).toBe(false);
     expect(geometry.titleOverflow).toBe(false);
+    expect(geometry.carousel.bottom + 12).toBeLessThanOrEqual(geometry.description.top);
+    expect(geometry.controls.top).toBeGreaterThanOrEqual(geometry.title.bottom);
     expect(geometry.title.bottom).toBeLessThanOrEqual(geometry.photo.top + 2);
     expect(geometry.photo.bottom).toBeLessThanOrEqual(geometry.rule.top);
     if (width <= 700) expect(geometry.photo.bottom).toBeLessThanOrEqual(geometry.description.top);
@@ -41,54 +44,57 @@ for (const [width, height] of [[320, 740], [375, 812], [667, 375], [768, 1024], 
   });
 }
 
-test('mouse rotation keeps the burger center fixed and respects live motion preferences', async ({ page }) => {
-  const hero = page.locator('.hero');
-  const product = page.locator('.hero-product');
-  await expect(product).toHaveCSS('animation-name', 'hero-object-float');
-  await expect(product).toHaveCSS('animation-iteration-count', 'infinite');
-  // The earlier animation silently finished after 14 seconds.
-  await product.evaluate(el => { el.getAnimations()[0].currentTime = 16000; });
-  await expect.poll(() => product.evaluate(el => el.getAnimations()[0]?.playState)).toBe('running');
-  const rotation = await product.evaluate(el => getComputedStyle(el).transform);
-  await expect.poll(() => product.evaluate(el => getComputedStyle(el).transform)).not.toBe(rotation);
-  await hero.scrollIntoViewIfNeeded();
-  const box = await hero.boundingBox();
-  const pointerY = Math.max(150, box.y + box.height * .4);
-  await page.mouse.move(box.x + box.width * .25, pointerY);
-  await expect.poll(() => hero.evaluate(el => Number.parseFloat(el.style.getPropertyValue('--scene-angle')))).toBeCloseTo(-5, 1);
-  const center = await product.evaluate(el => { const r = el.getBoundingClientRect(); return { x: r.x + r.width / 2, y: r.y + r.height / 2 }; });
-  await page.mouse.move(box.x + box.width * .75, pointerY);
-  await expect.poll(() => hero.evaluate(el => Number.parseFloat(el.style.getPropertyValue('--scene-angle')))).toBeCloseTo(5, 1);
-  const next = await product.evaluate(el => { const r = el.getBoundingClientRect(); return { x: r.x + r.width / 2, y: r.y + r.height / 2 }; });
-  expect(Math.abs(next.x - center.x)).toBeLessThan(1);
-  expect(Math.abs(next.y - center.y)).toBeLessThan(1);
-  await page.mouse.move(box.x + box.width * .75, pointerY + 60);
-  await expect.poll(() => hero.evaluate(el => Number.parseFloat(el.style.getPropertyValue('--scene-angle')))).toBeCloseTo(5, 1);
-  await page.emulateMedia({ reducedMotion: 'reduce' });
-  await expect(product).toHaveCSS('animation-name', 'none');
-  await expect.poll(() => hero.evaluate(el => el.style.getPropertyValue('--scene-angle'))).toBe('');
-  await page.emulateMedia({ reducedMotion: 'no-preference' });
-  await page.locator('[data-access-toggle=motion]').click();
-  await expect(product).toHaveCSS('animation-name', 'none');
+test('food strip moves left, stops on hover, resumes, and loops without a visible seam', async ({ page }) => {
+  const carousel = page.locator('[data-hero-carousel]'), track = page.locator('[data-hero-track]');
+  await carousel.scrollIntoViewIfNeeded();
+  const x = () => track.evaluate(el => new DOMMatrix(getComputedStyle(el).transform).m41);
+  const initial = await x(); await expect.poll(x).toBeLessThan(initial - 8);
+  await carousel.hover(); await expect(carousel).toHaveAttribute('data-paused', 'true');
+  const frozen = await x(); await page.waitForTimeout(250); expect(Math.abs(await x() - frozen)).toBeLessThan(.1);
+  await page.mouse.move(5, 5); await expect(carousel).toHaveAttribute('data-paused', 'false');
+  await expect.poll(x).toBeLessThan(frozen - 8);
+  const seam = await track.evaluate(el => {
+    const a = el.getAnimations()[0], duration = a.effect.getTiming().duration; a.pause();
+    const nearest = () => [...el.querySelectorAll('img')].map(img => { const r = img.getBoundingClientRect(); return {src: img.getAttribute('src'), x:r.x+r.width/2}; }).sort((a,b)=>Math.abs(a.x-innerWidth/2)-Math.abs(b.x-innerWidth/2))[0];
+    a.currentTime=duration-20; const before=nearest(); a.currentTime=duration+20; return {before, after:nearest()};
+  });
+  expect(seam.before.src).toBe(seam.after.src); expect(Math.abs(seam.before.x-seam.after.x)).toBeLessThan(3);
 });
 
-test('mobile hero gently rotates without capturing touch gestures and respects reduced motion', async ({ browser }) => {
-  const context = await browser.newContext({ viewport: { width: 375, height: 812 }, hasTouch: true, isMobile: true });
+test('reduced motion keeps the strip still and keyboard controls explore all six dishes', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion:'reduce' });
+  const carousel=page.locator('[data-hero-carousel]'), track=page.locator('[data-hero-track]');
+  await carousel.scrollIntoViewIfNeeded(); await expect(carousel).toHaveAttribute('data-paused','true');
+  await expect(page.locator('[data-hero-food-pause]')).toBeHidden();
+  await page.keyboard.press('Tab'); const next=page.locator('[data-hero-food-next]'); await next.focus();
+  const sources=[];
+  for(let i=0;i<6;i++) {
+    sources.push(await track.evaluate(el=>[...el.querySelectorAll('img')].map(img=>{const r=img.getBoundingClientRect();return{src:img.getAttribute('src'),d:Math.abs(r.x+r.width/2-innerWidth/2)}}).sort((a,b)=>a.d-b.d)[0].src));
+    await expect.poll(() => track.evaluate(el => {
+      const images=[...el.querySelectorAll('img')].sort((a,b)=>{ const x=a.getBoundingClientRect(),y=b.getBoundingClientRect();return Math.abs(x.x+x.width/2-innerWidth/2)-Math.abs(y.x+y.width/2-innerWidth/2); });
+      return images[0].complete && images[0].naturalWidth > 0;
+    })).toBe(true);
+    await page.locator('.hero').screenshot({ path: `${evidence}/dish-${i}.png` });
+    await page.keyboard.press('Enter');
+  }
+  expect(new Set(sources).size).toBe(6); await expect(next).toBeFocused();
+  const time=await track.evaluate(el=>el.getAnimations()[0].currentTime); await page.waitForTimeout(200);
+  expect(await track.evaluate(el=>el.getAnimations()[0].currentTime)).toBe(time);
+  await page.emulateMedia({reducedMotion:'no-preference'}); await page.locator('[data-access-toggle=motion]').click();
+  await expect(carousel).toHaveAttribute('data-paused','true');
+});
+
+test('touch controls pause and resume without capturing vertical gestures', async ({ browser }) => {
+  const context=await browser.newContext({viewport:{width:375,height:812},hasTouch:true,isMobile:true});
   try {
-    const page = await context.newPage();
-    await page.goto('/');
-    const product = page.locator('.hero-product');
-    await expect(product).toHaveCSS('animation-name', 'hero-object-float');
-    await expect(product).toHaveCSS('animation-iteration-count', 'infinite');
-    const rotation = await product.evaluate(el => getComputedStyle(el).transform);
-    await expect.poll(() => product.evaluate(el => getComputedStyle(el).transform)).not.toBe(rotation);
-    const hero = page.locator('.hero');
-    await hero.dispatchEvent('pointerdown', {pointerType:'touch',pointerId:1,clientX:100,clientY:350});
-    await hero.dispatchEvent('pointermove', {pointerType:'touch',pointerId:1,clientX:250,clientY:350});
-    expect(await hero.evaluate(el => el.style.cssText)).not.toContain('--scene-');
-    await page.emulateMedia({ reducedMotion: 'reduce' });
-    await expect(product).toHaveCSS('animation-name', 'none');
-  } finally { await context.close(); }
+    const page=await context.newPage();await page.goto('/'); const carousel=page.locator('[data-hero-carousel]');
+    await carousel.scrollIntoViewIfNeeded(); await expect(carousel).toHaveAttribute('data-paused','false');
+    const pause=page.locator('[data-hero-food-pause]');await pause.tap();await expect(pause).toHaveAttribute('aria-pressed','true');
+    await expect(carousel).toHaveAttribute('data-paused','true');await pause.tap();await page.locator('#hero-title').tap();
+    await expect(carousel).toHaveAttribute('data-paused','false');
+    expect(await carousel.evaluate(el=>getComputedStyle(el).touchAction)).toBe('auto');
+    expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+  } finally {await context.close();}
 });
 
 test('all product images load and category selection preserves search and cart', async ({ page }) => {
