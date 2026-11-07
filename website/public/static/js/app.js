@@ -1654,7 +1654,8 @@ async function controller() {
           } else if (seats.mode === "typed" && ["mute", "unmute"].includes(control.intent)) {
             try { await seats.setAudioPreference(control.intent === "unmute"); }
             catch { setStatus("Audio playback is blocked. Typed replies remain available."); }
-            document.querySelector("[data-assist-typed-audio]").checked = seats.typedAudio;
+            const typedAudioToggle = document.querySelector("[data-assist-typed-audio]");
+            if (typedAudioToggle) typedAudioToggle.checked = seats.typedAudio;
           } else if (["pause", "mute", "resume", "unmute"].includes(control.intent)) {
             assistancePaused = ["pause", "mute"].includes(control.intent);
             seats.paused = assistancePaused;
@@ -1674,8 +1675,10 @@ async function controller() {
       const previousPhase = root.dataset.assistanceState;
       root.dataset.assistanceState = state.modeState;
       const typedAudio = document.querySelector("[data-assist-typed-audio]");
-      typedAudio.disabled = !assistanceActive || liveSeats?.mode !== "typed";
-      if (typedAudio.disabled) typedAudio.checked = false;
+      if (typedAudio) {
+        typedAudio.disabled = !assistanceActive || liveSeats?.mode !== "typed";
+        if (typedAudio.disabled) typedAudio.checked = false;
+      }
       const send = assistantForm?.querySelector("button[type=submit]");
       if (send) send.disabled = !assistanceActive;
       const speechState = agentStateShell?.dataset.agentState;
