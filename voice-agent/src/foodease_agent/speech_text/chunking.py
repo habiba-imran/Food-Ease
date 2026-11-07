@@ -10,7 +10,7 @@ def chunk_for_speech(text: str, *, max_first_chars: int = 80) -> list[str]:
     cleaned = re.sub(r"\s+", " ", text.strip())
     if not cleaned:
         return []
-    parts = [p.strip() for p in re.split(r"(?<=[.!?])\s+", cleaned) if p.strip()]
+    parts = [p.strip() for p in re.split(r"(?<=[.!?۔؟])\s+", cleaned) if p.strip()]
     if not parts:
         return [cleaned]
     first = parts[0]

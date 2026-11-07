@@ -6,6 +6,7 @@ import asyncio
 import json
 import logging
 import os
+import sys
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -29,7 +30,7 @@ from foodease_agent.adapters.dev_wiring import (
 )
 from foodease_agent.adapters.integrated_startup import IntegratedRoomGate, report_worker_ready
 from foodease_agent.agent import FoodEaseAgent, apply_speech_speed
-from foodease_agent.config import load_config
+from foodease_agent.config import ConfigError, load_config
 from foodease_agent.contract.enums import ProductState
 from foodease_agent.session import build_session_kwargs
 
@@ -165,12 +166,15 @@ async def run_integrated_job(ctx, startup: StartupBinding, *, runtime_factory=No
             await runtime.close()
 
     ctx.add_shutdown_callback(cleanup)
+    startup_stage = "room_context"
     try:
         snapshot = await gate.wait_ready(timeout=15)
+        startup_stage = "prepare_runtime"
         if runtime_factory is not None:
             runtime = await runtime_factory(ctx, startup, gate)
         if gate.latest is None:
             raise RuntimeError("integrated context unavailable")
+        startup_stage = "worker_ready"
         response = await report_worker_ready(
             os.environ.get("FOODEASE_SESSION_API", "http://127.0.0.1:8090"),
             startup,
@@ -180,18 +184,25 @@ async def run_integrated_job(ctx, startup: StartupBinding, *, runtime_factory=No
         if response.get("greeting_allowed") is not True or gate.closed or runtime is None:
             raise RuntimeError("integrated runtime unavailable or generation ended")
         # The server verifies consent, app/user/worker roles and browser readiness.
+        startup_stage = "start_runtime"
         await runtime.start()
     except asyncio.CancelledError:
         await cleanup()
         ctx.shutdown("integrated_startup_cancelled")
         raise
-    except Exception:
+    except Exception as error:
+        logger.warning("integrated startup failed stage=%s error_type=%s", startup_stage, type(error).__name__)
         await cleanup()
         ctx.shutdown("integrated_startup_failed")
 
 
 def main() -> None:
     load_dotenv(Path(__file__).resolve().parents[2] / ".env", override=False)
+    if len(sys.argv) > 1 and sys.argv[1] in {"start", "dev"} and "--help" not in sys.argv[2:]:
+        try:
+            load_config()
+        except ConfigError as error:
+            raise SystemExit(str(error)) from None
     agent_name = (os.environ.get("FOODEASE_AGENT_NAME") or "foodease").strip() or "foodease"
     options = {}
     if port := os.environ.get("FOODEASE_WORKER_PORT"):

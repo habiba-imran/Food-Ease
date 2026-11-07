@@ -6,6 +6,78 @@ Newest entries at the top.
 
 ---
 
+## ADR-0025 — Semantic conversation controls without phrase allowlists
+
+- **Context:** The user explicitly requested natural wording for ending assistance
+  and other conversation requests. The Urdu follow-up still routed controls using
+  fixed English/Urdu phrases. That user requirement supersedes the original
+  phase's lexical fast-path requirement for the integrated website assistant.
+- **Decision:** Remove the active control/page phrase routers and the Urdu
+  control phrase sets. Add one local `conversation_control` model tool with a
+  bounded set of effects. This is not a fourteenth website operation: the thirteen
+  business operations and frozen transport stay unchanged. Validate turn/session,
+  revision, mode and replay state before any effect. Interpret free-form wording
+  in the LLM, including ending, onboarding mode choice and page/list requests.
+  During onboarding and pause/mute, expose only this tool and reject shopping
+  in code. Restrict onboarding context to ordering modes. Use SDK `StopResponse`
+  after a completed control to prevent duplicate acknowledgments/continuations.
+  Keep direct UI revocation, correlated business outcomes, reference freshness and
+  exact post-summary checkout consent in code. Spoken activity still interrupts
+  current output; semantic spoken control completion now depends on the LLM.
+- **Evidence:** Installed 1.8.4 and current official SDK docs for function tools,
+  tool restriction and `StopResponse`; native SDK scripted-tool test; full offline
+  suite and catalog-extension test in the
+  [report](../evidence/semantic-controls-2026-11-07/report.md). Live paraphrase
+  classification and audible stop timing were not evaluated. The legacy standalone
+  English harness retains its earlier control matcher.
+- **Date:** 2026-11-07
+
+---
+
+## ADR-0024 — Urdu integrated assistant and semantic menu interpretation
+
+- **Context:** The requested Urdu assistant needs recognition, synthesis, delivery
+  and consent in the same language. The initial menu repair special-cased a few
+  English words, which does not provide general interpretation of paraphrases or
+  translated requests. This follow-up explicitly authorizes Urdu beyond the
+  original English-only phase plan; the read-only plan files remain untouched.
+- **Decision:** Remove the shopping keyword parser. Use the existing LLM/tool
+  path with real category/product context for free-form shopping language, and
+  code-owned price boundaries/full-result presentation. Default the integrated
+  website runtime to Urdu. Reuse the installed Groq Whisper plugin, explicit
+  `language=ur`, and Silero VAD; do not use English Flux or the English semantic
+  turn detector for Urdu. Reuse Sonic 3.6 with explicit Urdu and disable word
+  timestamps unsupported by the installed plugin for this language. Localize
+  deterministic messages, catalog display names, numbers and exact checkout
+  summaries. Keep finite stop/mode/reference/consent controls in code. A missing
+  checkout item/fee translation blocks confirmation rather than marking an
+  incomplete summary delivered. No new dependency or wire-contract field is used.
+- **Evidence:** Installed LiveKit plugins 1.8.4 signatures and capabilities;
+  current official Cartesia/Groq/LiveKit documentation; offline regression
+  results and limits in the [follow-up report](../evidence/urdu-2026-11-07/report.md).
+  Provider recognition, model paraphrase quality, accent and audible latency have
+  not been measured in this follow-up. Existing provider quota limits still apply.
+- **Date:** 2026-11-07
+
+---
+
+## ADR-0023 — Default to Groq and validate Cartesia voice configuration
+
+- **Context** FoodEase encountered intermittent Gemini 503s, and Cartesia rejected
+  a malformed local voice ID. The default voice from the environment template
+  synthesized audio successfully through the locked LiveKit Cartesia plugin.
+- **Decision** Default to Groq GPT-OSS 20B and retain Gemini as an explicit
+  selection. Import the Groq plugin on the worker's main thread before Windows
+  job threads start. Use the tested Cartesia voice for blank or malformed IDs
+  and keep valid custom UUIDs.
+- **Evidence** The live Chromium test received the greeting and the reply to a
+  synthetic spoken menu question. A second request in the same session hit
+  Groq's 8,000-token-per-minute free-tier limit. The worker regression suite and
+  dependency lock check passed.
+- **Date** 2026-11-06
+
+---
+
 ## ADR-0022 — Accessible website entry on the existing integrated voice owner
 
 - **Context:** The integrated provider/runtime and shared website authority were

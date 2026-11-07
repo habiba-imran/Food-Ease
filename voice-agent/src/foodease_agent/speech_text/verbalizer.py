@@ -130,8 +130,8 @@ def speak_position(index: int, total: int) -> str:
 
 _NUM = r"(?:\d{1,3}(?:,\d{3})+|\d+)(?:\.\d+)?"
 _PKR_NUM = re.compile(
-    rf"(?:(?P<pre>PKR|Rs\.?)\s*(?P<num>{_NUM}))"
-    rf"|(?:(?P<num2>{_NUM})\s*(?P<suf>PKR|Rs\.?|rupees?))",
+    rf"(?<!\w)(?:(?P<pre>PKR|Rs\.?)\s*(?P<num>{_NUM})"
+    rf"|(?P<num2>{_NUM})\s*(?P<suf>PKR|Rs\.?|rupees?))(?!\w)",
     re.I,
 )
 _QTY = re.compile(r"\b(?P<n>\d+)\s+(?P<unit>items?|pieces?|pcs?)\b", re.I)

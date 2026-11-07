@@ -91,6 +91,43 @@ test('permission failure gives a clear retry without duplicate sessions', async 
   expect(await page.evaluate(() => window.fakeLiveKit.rooms.filter(room => room.role === 'user').length)).toBe(1);
 });
 
+test('expired shopping attachment offers a new cart without starting assistance', async ({ page }) => {
+  const expired = 'expired-shopping-session';
+  await page.evaluate(id => sessionStorage.setItem('foodease.shopping-session.v2', id), expired);
+  const attach = page.waitForResponse(response => response.url().endsWith('/api/v2/app/sessions/attach'));
+  await page.reload();
+  expect((await attach).status()).toBe(410);
+  await expect(launcher(page)).toHaveAccessibleName('Shopping session expired');
+  await launcher(page).click();
+  await expect(panel(page).getByRole('status')).toContainText('earlier order status is unavailable');
+  await expect(panel(page).locator('[data-voice-retry]')).toBeHidden();
+  await expect(panel(page).locator('[data-voice-typed]')).toBeHidden();
+  expect(await page.evaluate(() => window.captured.length)).toBe(0);
+
+  const newCart = page.waitForResponse(response => response.url().endsWith('/api/v2/app/sessions'));
+  await panel(page).getByRole('button', { name: 'Start a new cart' }).click();
+  expect((await newCart).status()).toBe(201);
+  await expect(page.locator('html')).toHaveAttribute('data-foodease-revision', /\d+/);
+  await expect(panel(page)).toBeHidden();
+  expect(await page.evaluate(() => window.captured.length)).toBe(0);
+  await page.locator('[data-menu-item][data-id="drink-cola"] [data-add-item]').click();
+  await expect(page.locator('[data-cart-count]')).toHaveText('1');
+  await launcher(page).click();
+  await expect(page.locator('html')).toHaveAttribute('data-assistance-state', 'voice_active');
+});
+
+test('shopping expiry reported by assistance stops microphone and offers recovery', async ({ page }) => {
+  await page.route('**/v2/assist/start', route => route.fulfill({ status: 410, contentType: 'application/json',
+    body: JSON.stringify({ error: 'shopping_session_unavailable' }) }));
+  await launcher(page).click();
+  await expect(panel(page).getByRole('button', { name: 'Start a new cart' })).toBeVisible();
+  await expect(panel(page).locator('[data-voice-microphone]')).toHaveText('Microphone off');
+  expect(await page.evaluate(() => window.captured.map(track => track.readyState))).toEqual(['ended']);
+  await panel(page).locator('[data-voice-panel-manual]').click();
+  await expect(panel(page)).toBeHidden();
+  await expect(page.locator('[data-order-status]')).toContainText('Your shopping session expired');
+});
+
 test('welcome choice continues in the same generation and reflects speaking status', async ({ page }) => {
   await page.locator('[data-welcome-voice]').click();
   await expect(page.locator('html')).toHaveAttribute('data-assistance-state', 'choosing_mode');
@@ -106,6 +143,28 @@ test('welcome choice continues in the same generation and reflects speaking stat
     })), user.agent, null, 'foodease.events.v2');
   });
   await expect(launcher(page)).toContainText('Assistant Speaking');
+});
+
+test('the worker receives the same cart revision if earlier startup snapshots were missed', async ({ page }) => {
+  const revision = Number(await page.locator('html').getAttribute('data-foodease-revision'));
+  let missed = 0;
+  let readyRequests = 0;
+  page.on('request', request => { if (request.url().endsWith('/v2/assist/ready')) readyRequests++; });
+  await page.route('**/_test/data/*', route => {
+    if (route.request().postDataJSON().topic === 'foodease.context.v2' && missed < 2) {
+      missed++;
+      return route.fulfill({ json: {} });
+    }
+    return route.continue();
+  });
+  await page.locator('[data-welcome-voice]').click();
+  await expect(page.locator('html')).toHaveAttribute('data-assistance-state', 'choosing_mode');
+  await expect(panel(page).locator('[data-agent-transcript]')).toContainText('Welcome to FoodEase');
+  const packets = await page.evaluate(() => window.fakeLiveKit.sent.filter(packet => packet.topic === 'foodease.context.v2'));
+  expect(packets.slice(0, 3).map(packet => packet.event.payload.revision)).toEqual([revision, revision, revision]);
+  expect(packets[2].destinationIdentities).toEqual(['agent']);
+  expect(missed).toBe(2);
+  expect(readyRequests).toBe(1);
 });
 
 test('failed mode-control delivery stops capture before offering retry', async ({ page }) => {

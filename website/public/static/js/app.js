@@ -1,6 +1,6 @@
 import { Application, newId } from "./application.mjs";
-import { AssistanceController } from "./assistance-controller.mjs?v=voice-13";
-import { LiveKitSeats } from "./livekit-bridge.mjs";
+import { AssistanceController } from "./assistance-controller.mjs?v=voice-15";
+import { LiveKitSeats } from "./livekit-bridge.mjs?v=voice-15";
 import { TranscriptView } from "./transcripts.mjs";
 import { acquireTabLease } from "./tab-lease.mjs";
 import { voicePresentation, voiceErrorMessage } from "./voice-ui.mjs";
@@ -206,17 +206,20 @@ let actionCounter = 0;
 let pendingConfirmationToken = null;
 let pendingSummaryRevision = null;
 let shoppingSessionPromise = null;
+let shoppingSessionExpired = false;
+const expiredShoppingMessage = "Your shopping session expired. Start a new cart to continue. The earlier order status is unavailable.";
 
-async function checkedResponse(response) {
+async function checkedResponse(response, failureMessage) {
   if (!response.ok) {
     const error = await response.json().catch(() => ({}));
-    const message = error.error === "session_expired"
-      ? "Your shopping session expired. Reload to start a new cart; earlier order status is unavailable."
-      : "The request could not be completed. Refresh the page and review your cart.";
-    if (response.status === 410) {
+    if (response.status === 410 && ["session_expired", "shopping_session_unavailable"].includes(error?.error)) {
+      shoppingSessionExpired = true;
       try { window.sessionStorage.removeItem("foodease.shopping-session.v2"); } catch { /* Memory only. */ }
+      setStatus(expiredShoppingMessage);
+      throw new Error(expiredShoppingMessage);
     }
-    setStatus(message);
+    const message = failureMessage || "The request could not be completed. Refresh the page and review your cart.";
+    if (!failureMessage) setStatus(message);
     throw new Error(message);
   }
   return response;
@@ -317,6 +320,10 @@ function downloadJson(filename, payload) {
 }
 
 function setStatus(message) {
+  if (shoppingSessionExpired) {
+    message = expiredShoppingMessage;
+    syncVoiceUi();
+  }
   // Only the active surface announces; background content is inert in a modal.
   const surface = voiceControls?.open ? voiceControls : document.querySelector("dialog[open]");
   const target = surface?.querySelector("[data-dialog-status]") || orderStatus;
@@ -427,9 +434,11 @@ function currentVoicePresentation() {
   const run = assistanceController?.current;
   const microphoneActive = !run?.cancelled && (run?.media?.getAudioTracks?.() || [])
     .some(track => track.readyState !== "ended" && track.enabled !== false);
-  return voicePresentation({ phase: root.dataset.assistanceState,
+  const view = voicePresentation({ phase: root.dataset.assistanceState,
     agentState: agentStateShell?.dataset.agentState, microphoneActive,
     cleanupPending: Boolean(run?.cancelled && run.serverPending) });
+  if (shoppingSessionExpired) return { ...view, label: "Shopping session expired", canStart: false };
+  return view;
 }
 
 function syncVoiceUi() {
@@ -448,15 +457,17 @@ function syncVoiceUi() {
   });
   const connecting = view.state === "connecting";
   const active = view.canManage && !connecting;
-  voiceControls.querySelector("[data-voice-use]").hidden = view.state === "error" || connecting || root.dataset.assistanceState === "voice_active";
-  voiceControls.querySelector("[data-voice-retry]").hidden = view.state !== "error";
+  voiceControls.querySelector("[data-voice-use]").hidden = shoppingSessionExpired || view.state === "error" || connecting || root.dataset.assistanceState === "voice_active";
+  voiceControls.querySelector("[data-voice-retry]").hidden = shoppingSessionExpired || view.state !== "error";
   const pause = voiceControls.querySelector("[data-voice-pause]");
   pause.hidden = !active;
   pause.textContent = root.dataset.assistanceState === "paused" ? "Resume listening" : "Pause listening";
   pause.setAttribute("aria-pressed", String(root.dataset.assistanceState === "paused"));
   voiceControls.querySelector("[data-voice-end]").hidden = !view.canManage;
+  voiceControls.querySelector("[data-voice-typed]").hidden = shoppingSessionExpired;
   voiceControls.querySelector("[data-voice-typed]").disabled = connecting;
-  document.querySelectorAll("[data-welcome-voice], [data-welcome-typed]").forEach(button => { button.disabled = connecting; });
+  document.querySelectorAll("[data-welcome-voice], [data-welcome-typed]").forEach(button => { button.disabled = connecting || shoppingSessionExpired; });
+  document.querySelectorAll("[data-shopping-restart]").forEach(button => { button.hidden = !shoppingSessionExpired; });
 }
 
 function placeVoiceLauncher() {
@@ -470,6 +481,7 @@ function openVoiceControls() {
   if (!voiceControls.open) voiceControls.showModal();
   syncDialogAssistance();
   syncVoiceUi();
+  if (shoppingSessionExpired) setStatus(expiredShoppingMessage);
 }
 
 function finishManualUi() {
@@ -1591,8 +1603,7 @@ async function controller() {
         keepalive: name === "end",
         credentials: "include", signal, headers: { "Content-Type": "application/json", "X-FoodEase-Session": app.sessionId },
         ...(name === "status" ? {} : { body: JSON.stringify(body) }) });
-      if (!response.ok) throw new Error("Assistance is unavailable. Manual ordering is still available.");
-      return response.json();
+      return (await checkedResponse(response, "Assistance is unavailable. Manual ordering is still available.")).json();
     },
     acquireMedia: async (mode) => mode !== "typed" ? (() => {
       if (!window.isSecureContext) throw new Error("Voice needs HTTPS or localhost. You can still browse and order manually.");
@@ -1692,6 +1703,10 @@ async function controller() {
   return assistanceController;
 }
 async function startAssistance(mode) {
+  if (shoppingSessionExpired) {
+    setStatus(expiredShoppingMessage);
+    return;
+  }
   const intent = ++assistanceIntent;
   try {
     const owner = await controller();
@@ -1840,6 +1855,12 @@ voiceControls?.querySelector("[data-voice-use]").addEventListener("click", () =>
 voiceControls?.querySelector("[data-voice-retry]").addEventListener("click", () => { void startAssistance("voice"); });
 voiceControls?.querySelector("[data-voice-typed]").addEventListener("click", () => { void startAssistance("typed"); });
 voiceControls?.querySelector("[data-voice-pause]").addEventListener("click", () => { void toggleAssistancePause(); });
+document.querySelectorAll("[data-shopping-restart]").forEach(button => {
+  button.addEventListener("click", () => {
+    chooseManual();
+    window.location.reload();
+  });
+});
 for (const button of voiceControls?.querySelectorAll("[data-voice-panel-manual], [data-voice-end]") || []) {
   button.addEventListener("click", () => { chooseManual(); finishManualUi(); });
 }

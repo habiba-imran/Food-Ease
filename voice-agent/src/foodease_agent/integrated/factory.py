@@ -25,7 +25,7 @@ async def create_integrated_runtime(ctx, startup, gate) -> LiveConversationRunti
         bundle.session_kwargs["vad"] = ctx.proc.userdata["vad"]
     session = AgentSession(**bundle.session_kwargs, max_tool_steps=8)
     runtime = LiveConversationRuntime(
-        IntegratedFoodEaseAgent(),
+        IntegratedFoodEaseAgent(language=settings.assistant_language),
         session,
         adapter,
         gate=gate,

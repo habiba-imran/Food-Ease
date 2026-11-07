@@ -66,8 +66,10 @@ selected nonsecret values):
 | Category | Required configuration |
 | --- | --- |
 | Same LiveKit project in worker and session service | `LIVEKIT_URL`, `LIVEKIT_API_KEY`, `LIVEKIT_API_SECRET` |
-| Speech/model credentials | `DEEPGRAM_API_KEY`, `GOOGLE_API_KEY`, `CARTESIA_API_KEY` |
-| Provider selections | `STT_MODEL`, `LLM_MODEL`, `LLM_THINKING_LEVEL`, `TTS_MODEL`, `TTS_VOICE_ID` |
+| Speech credentials | `DEEPGRAM_API_KEY`, `CARTESIA_API_KEY` |
+| Default language model | `GROQ_API_KEY` and optional `GROQ_MODEL` (defaults to `openai/gpt-oss-20b`) |
+| Gemini selection | `LLM_PROVIDER=gemini`, `GOOGLE_API_KEY`, `LLM_MODEL`, `LLM_THINKING_LEVEL` |
+| Speech selections | `STT_MODEL`, `TTS_MODEL`, optional `TTS_VOICE_ID` (Cartesia UUID) |
 | Runtime settings | `VOICE_PIPELINE_CONFIG`, `IDLE_PROMPT_1_SECONDS`, `IDLE_PROMPT_2_SECONDS`, `SNAPSHOT_TIMEOUT_SECONDS` |
 | Explicit safe flags | `RECORD_AUDIO=false`, `DEV_MODE=false`, `PREEMPTIVE_GENERATION=false`, plus `NOISE_CANCELLATION`, `GREETING_CACHE` |
 

@@ -153,13 +153,20 @@ export class LiveKitSeats {
     const { text: _text, ...echo } = request;
     return { ...echo, delivered: true };
   }
-  async publishContext(snapshot, turnId = null) {
-    if (this.closed || snapshot.revision <= this.lastContextRevision) return;
+  async publishContext(snapshot, turnId = null, destination = null) {
+    if (this.closed || (!destination && snapshot.revision <= this.lastContextRevision)) return;
     const event = this.envelope("app.context_updated", snapshot,
       { context_revision: snapshot.revision, turn_id: turnId });
     await this.app.localParticipant.publishData(new TextEncoder().encode(bounded(event)),
-      { reliable: true, topic: TOPICS.context });
-    this.lastContextRevision = Math.max(this.lastContextRevision, snapshot.revision);
+      { reliable: true, topic: TOPICS.context, ...(destination && { destinationIdentities: [destination] }) });
+    if (!destination) this.lastContextRevision = Math.max(this.lastContextRevision, snapshot.revision);
+  }
+  async publishStartupContext() {
+    // The pre-dispatch snapshot is not buffered for a worker joining the room later.
+    const agent = this.app.remoteParticipants.get(this.prepared.binding.agent_identity);
+    if (this.bound(agent, "agent") && this.application.snapshot) {
+      await this.publishContext(this.application.snapshot, null, agent.identity);
+    }
   }
   async publishFreshContext() {
     const snapshot = await this.application.refresh();

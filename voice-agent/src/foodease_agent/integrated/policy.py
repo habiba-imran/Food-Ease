@@ -9,6 +9,7 @@ from typing import Any
 from foodease_contract.models import CartSummary
 
 from foodease_agent.confirmation import ConfirmationMachine
+from foodease_agent.i18n import label, render, speech_text
 
 
 @dataclass
@@ -24,11 +25,13 @@ class Turn:
     blocked: bool = False
     steps: int = 0
     effects: set[str] = field(default_factory=set)
+    read_all: bool = False
+    control_done: bool = False
 
 
 def explicit_yes(text: str) -> bool:
     # Deliberately finite: additions/corrections/"yesterday" are never consent.
-    return text.strip().lower().rstrip(".!?").strip() in {
+    return text.strip().lower().rstrip(".!?۔؟").strip() in {
         "yes",
         "yes please",
         "yeah",
@@ -40,6 +43,12 @@ def explicit_yes(text: str) -> bool:
         "submit",
         "go ahead",
         "do it",
+        "ہاں",
+        "جی ہاں",
+        "جی",
+        "تصدیق کریں",
+        "آرڈر درج کر دیں",
+        "آرڈر کر دیں",
     }
 
 
@@ -47,25 +56,30 @@ def cart_hash(cart: CartSummary) -> str:
     return ConfirmationMachine.hash_summary(cart.model_dump(mode="json"))
 
 
-def money(value: float) -> str:
-    return f"{value:g} rupees"
+def money(value: float, language: str = "en") -> str:
+    return speech_text(f"{value:g} روپے", language) if language == "ur" else f"{value:g} rupees"
 
 
-def cart_speech(facts: dict[str, Any], *, confirmation=False) -> str:
+def cart_speech(facts: dict[str, Any], *, confirmation=False, language: str = "en") -> str:
     cart = CartSummary.model_validate({k: v for k, v in facts.items() if k != "summary_revision"})
     if not cart.lines:
-        return "Your cart is empty. You can choose something from the menu."
+        return render("Your cart is empty. You can choose something from the menu.", language)
     lines = "; ".join(
-        f"{line.quantity} {line.name}, {money(line.line_total)}" for line in cart.lines
+        f"{label(line.name, language)}، تعداد {line.quantity}، {money(line.line_total, language)}"
+        if language == "ur"
+        else f"{line.quantity} {line.name}, {money(line.line_total)}"
+        for line in cart.lines
     )
-    fees = "; ".join(f"{fee.label}, {money(fee.amount)}" for fee in cart.fees)
-    text = f"Your cart has {lines}. "
+    fees = "; ".join(
+        f"{label(fee.label, language)}, {money(fee.amount, language)}" for fee in cart.fees
+    )
+    text = render("Your cart has {lines}. ", language, lines=lines)
     if fees:
-        text += f"Fees: {fees}. "
-    text += f"The total is {money(cart.total)}."
+        text += render("Fees: {fees}. ", language, fees=fees)
+    text += render("The total is {total}.", language, total=money(cart.total, language))
     if confirmation:
-        text += " Shall I place this demo order?"
-    return text
+        text += render(" Shall I place this demo order?", language)
+    return speech_text(text, language)
 
 
 def safe_failure(reason: str) -> dict[str, Any]:
@@ -91,6 +105,10 @@ def safe_failure(reason: str) -> dict[str, Any]:
 def has_reference(text: str) -> bool:
     return bool(
         re.search(
-            r"\b(first|second|third|fourth|fifth|cheaper|cheapest|other|that|this|it)\b", text, re.I
+            r"\b(first|second|third|fourth|fifth|cheaper|cheapest|other|that|this|it|"
+            r"پہلا|دوسرا|تیسرا|چوتھا|پانچواں|پہلے|دوسرے|تیسرے|چوتھے|پانچویں|"
+            r"یہ|وہ|اسے|اسی|سستا|سستی)\b",
+            text,
+            re.I,
         )
     )

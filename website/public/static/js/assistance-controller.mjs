@@ -197,6 +197,7 @@ export class AssistanceController {
           return status;
         }
         if (["ended", "cleanup_pending"].includes(status.state)) throw new Error("Assistance unavailable.");
+        if (status.state === "waiting_worker") await run.seats.publishStartupContext?.();
         await new Promise((resolve) => setTimeout(resolve, this.pollMs));
       }
       this._check(run);

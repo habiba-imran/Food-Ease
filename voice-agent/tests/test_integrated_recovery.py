@@ -7,6 +7,7 @@ from types import SimpleNamespace
 
 import pytest
 from livekit.agents import llm, stt, tts
+from livekit.agents._exceptions import APIStatusError
 from livekit.agents.voice.events import ErrorEvent
 
 from test_integrated_runtime import call, turn
@@ -50,6 +51,24 @@ async def test_transient_provider_error_has_no_mode_change(runtime):
     error = tts.TTSError(timestamp=1, label="offline", error=TimeoutError(), recoverable=True)
     runtime.session.handlers["error"](ErrorEvent(error=error, source=object()))
     assert runtime.mode == "voice" and not runtime.closed
+
+
+@pytest.mark.asyncio
+async def test_llm_rate_limit_stops_only_the_reply_without_replaying_cart_actions(runtime):
+    await call(runtime, "cart_add_item", item_id="wrap-hot-chicken")
+    failed_turn = runtime.active_turn
+    error = llm.LLMError(
+        timestamp=1, label="offline", error=APIStatusError("rate limit", status_code=429),
+        recoverable=False,
+    )
+    runtime.session.handlers["error"](ErrorEvent(error=error, source=object()))
+    await asyncio.sleep(0)
+    assert error.recoverable and runtime.mode == "voice" and not runtime.closed
+    assert failed_turn.discarded and not runtime.authorized(failed_turn)
+    assert ("switch_mode", "manual") not in runtime.adapter.controls
+    assert "check your cart" in runtime.session.spoken[-1].lower()
+    assert len(runtime.adapter.requests) == 1
+    assert (await runtime.adapter.get_snapshot()).cart.lines[0].quantity == 1
 
 
 @pytest.mark.asyncio
@@ -186,7 +205,9 @@ async def test_actual_sdk_llm_stream_failure_reaches_runtime_without_fault_flags
     await runtime.select_mode("typed")
     try:
         await session.start(agent=runtime.agent)
-        handle = await runtime.input_text("read my cart", "outage", runtime.snapshot.revision)
+        handle = await runtime.input_text(
+            "Describe my order so far", "outage", runtime.snapshot.revision
+        )
         await asyncio.wait_for(handle.wait_for_playout(), 5)
         await asyncio.sleep(0)
         assert runtime.closed and ("switch_mode", "manual") in adapter.controls

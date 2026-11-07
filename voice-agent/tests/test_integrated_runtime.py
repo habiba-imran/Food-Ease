@@ -213,10 +213,18 @@ async def call(runtime, name, text="help me order", **arguments):
     return await getattr(runtime.agent, name)(context, **arguments)
 
 
+async def control(runtime, intent, text="conversation control", *, source="audio"):
+    """Supply a scripted model decision; do not simulate natural-language accuracy."""
+    context = await turn(runtime, text, source=source)
+    with pytest.raises(StopResponse):
+        await runtime.agent.conversation_control(context, intent)
+    return context
+
+
 @pytest.mark.asyncio
 async def test_thirteen_actual_tools_return_real_facts_and_cart_math(runtime):
     agent = runtime.agent
-    assert len(agent.tools) == 13
+    assert len(agent.tools) == 14  # thirteen application tools plus one local control
     assert (await call(runtime, "navigate", target="menu"))["status"] == "success"
     filtered = await call(runtime, "filter_menu", vegetarian=True, max_price_pkr=500.0)
     assert filtered["facts"]["items"]
@@ -342,21 +350,21 @@ async def test_controls_are_real_effects_and_modes_enforce_input_source(runtime)
     await turn(runtime, "tell me about the menu")
     old = runtime.session.handles[-1]
     generated = len(runtime.session.generated)
-    await runtime.input_text("stop", "stop-turn", runtime.snapshot.revision, source="audio")
-    assert old.interrupted and len(runtime.session.generated) == generated
+    await control(runtime, "stop", "stop")
+    assert old.interrupted and len(runtime.session.generated) == generated + 1
     runtime.on_delivered("Here is the menu.", runtime.snapshot.revision)
-    await runtime.input_text("repeat", "repeat-turn", runtime.snapshot.revision, source="audio")
+    await control(runtime, "repeat", "repeat")
     assert runtime.session.spoken[-1] == "Here is the menu."
-    await runtime.input_text("go back", "back-turn", runtime.snapshot.revision, source="audio")
+    await control(runtime, "go_back", "go back")
     assert runtime.adapter.requests[-1].payload.arguments == {"target": "back"}
-    await runtime.input_text("slower", "speed-turn", runtime.snapshot.revision, source="audio")
+    await control(runtime, "slower", "slower")
     assert runtime.session.speeds[-1]["speed"] < 1
-    await runtime.input_text("louder", "volume-turn", runtime.snapshot.revision, source="audio")
+    await control(runtime, "louder", "louder")
     assert "device" in runtime.session.spoken[-1].lower()
-    await runtime.input_text("manual", "manual-turn", runtime.snapshot.revision, source="audio")
+    await control(runtime, "manual", "manual")
     assert runtime.mode == "manual" and not runtime.session.input.enabled
     await runtime.input_text("add one", "late-audio", runtime.snapshot.revision, source="audio")
-    assert len(runtime.session.generated) == generated
+    assert len(runtime.session.generated) == generated + 6
 
 
 @pytest.mark.asyncio
@@ -472,20 +480,19 @@ async def test_idle_is_finite_and_tracks_real_activity_modes_and_disconnect(runt
 async def test_pause_resume_undo_and_tips_controls(runtime):
     item = runtime.snapshot.visible_items[0].item_id
     await call(runtime, "cart_add_item", item_id=item)
-    await runtime.input_text("undo", "undo-turn", runtime.snapshot.revision, source="audio")
+    await control(runtime, "undo", "undo")
     assert not (await runtime.adapter.get_snapshot()).cart.lines
-    await runtime.input_text("pause", "pause-turn", runtime.snapshot.revision, source="audio")
+    await control(runtime, "pause", "pause")
     assert runtime.paused and not runtime.session.output.enabled
     generated = len(runtime.session.generated)
     await runtime.input_text("find pizza", "paused-turn", runtime.snapshot.revision, source="audio")
-    assert len(runtime.session.generated) == generated
-    await runtime.input_text("resume", "resume-turn", runtime.snapshot.revision, source="audio")
+    assert len(runtime.session.generated) == generated + 1
+    assert runtime.session.generated[-1]["tools"] == ["conversation_control"]
+    await control(runtime, "resume", "resume")
     assert not runtime.paused and runtime.session.output.enabled
-    await runtime.input_text("pause tips", "tips-turn", runtime.snapshot.revision, source="audio")
+    await control(runtime, "pause_tips", "pause tips")
     assert runtime.tips_paused
-    await runtime.input_text(
-        "resume tips", "tips-resume", runtime.snapshot.revision, source="audio"
-    )
+    await control(runtime, "resume_tips", "resume tips")
     assert not runtime.tips_paused
 
 
@@ -554,7 +561,9 @@ async def test_actual_sdk_streaming_llm_and_tool_continuation_use_current_contex
     await runtime.select_mode("typed")
     try:
         await session.start(agent=agent)
-        handle = await runtime.input_text("read my cart", "sdk-turn", runtime.snapshot.revision)
+        handle = await runtime.input_text(
+            "Describe my order so far", "sdk-turn", runtime.snapshot.revision
+        )
         await asyncio.wait_for(handle.wait_for_playout(), timeout=10)
         assert handle.exception() is None
         assert len(adapter.requests) == 1
@@ -563,7 +572,7 @@ async def test_actual_sdk_streaming_llm_and_tool_continuation_use_current_contex
         assert all(
             "UNTRUSTED_APPLICATION_DATA" in json.dumps(ctx.to_dict()) for ctx in provider.contexts
         )
-        assert len(agent.tools) == 13
+        assert len(agent.tools) == 14
         assert any(
             isinstance(item, llm.ChatMessage)
             and item.role == "assistant"

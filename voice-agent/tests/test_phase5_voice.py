@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import asyncio
+
 import pytest
 
 from foodease_agent.adapters.mock import MockAdapter
@@ -13,7 +15,7 @@ from foodease_agent.greeting import GreetingCache
 from foodease_agent.idle import FakeClock, IdlePromptController, IdleStage
 from foodease_agent.interruption import InterruptionReconciler
 from foodease_agent.product_state import fatal_error_state, map_livekit_agent_state
-from foodease_agent.session import build_session_kwargs, turn_handling_options
+from foodease_agent.session import build_llm, build_session_kwargs, turn_handling_options
 from foodease_agent.turn_commit import TurnCommitGate, TurnNotCommittedError
 
 
@@ -25,6 +27,7 @@ def _settings(**overrides: object) -> Settings:
         deepgram_api_key="<dg-key>",
         cartesia_api_key="<cartesia-key>",
         google_api_key="<google-key>",
+        llm_provider="gemini",
         stt_model="flux-general-en",
         llm_model="gemini-3.1-flash-lite",
         llm_thinking_level="minimal",
@@ -47,6 +50,52 @@ def _settings(**overrides: object) -> Settings:
     )
     base.update(overrides)
     return Settings(**base)  # type: ignore[arg-type]
+
+
+@pytest.mark.parametrize("provider", ["groq", "gemini"])
+def test_llm_factory_uses_selected_provider_and_settings(monkeypatch, provider):
+    from foodease_agent import session
+
+    result = object()
+    expected = (
+        {"model": "openai/gpt-oss-20b", "api_key": "<groq-key>"}
+        if provider == "groq"
+        else {
+            "model": "gemini-3.1-flash-lite",
+            "api_key": "<google-key>",
+            "thinking_config": {"thinking_level": "minimal"},
+        }
+    )
+
+    def selected(**kwargs):
+        assert kwargs == expected
+        return result
+
+    def unexpected(**kwargs):
+        pytest.fail("Unselected LLM provider was initialized")
+
+    # LiveKit registers plugins at import time and requires the main thread.
+    # The factory must use the already imported plugin inside a Windows job thread.
+    monkeypatch.setattr(session.groq, "LLM", selected if provider == "groq" else unexpected)
+    monkeypatch.setattr(session.google, "LLM", selected if provider == "gemini" else unexpected)
+    settings = _settings(llm_provider=provider, llm_model=expected["model"], groq_api_key="<groq-key>")
+    assert build_llm(settings) is result
+
+
+@pytest.mark.asyncio
+async def test_groq_client_can_be_constructed_on_a_windows_style_job_thread():
+    async def build_and_close():
+        client = build_llm(_settings(
+            llm_provider="groq", llm_model="openai/gpt-oss-20b", groq_api_key="<groq-key>"
+        ))
+        try:
+            return client.provider, client.model
+        finally:
+            await client.aclose()
+
+    assert await asyncio.to_thread(lambda: asyncio.run(build_and_close())) == (
+        "api.groq.com", "openai/gpt-oss-20b"
+    )
 
 
 # --- V5.2 idle tips ---
@@ -221,6 +270,13 @@ def test_session_bundle_pipelines() -> None:
         assert "tts" in bundle.session_kwargs
         assert "llm" in bundle.session_kwargs
         assert bundle.preemptive_enabled is False
+
+
+def test_groq_session_limits_model_retries():
+    bundle = build_session_kwargs(_settings(
+        llm_provider="groq", llm_model="openai/gpt-oss-20b", groq_api_key="<groq-key>"
+    ))
+    assert bundle.session_kwargs["conn_options"].llm_conn_options.max_retry == 1
 
 
 # --- V5.11 soak (scripted, no providers) ---

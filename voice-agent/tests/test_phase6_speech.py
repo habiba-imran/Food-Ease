@@ -105,6 +105,14 @@ def test_verbalize_text_rewrites_money_and_qty() -> None:
     assert "850" not in out
 
 
+def test_currency_matching_does_not_change_numbered_menu_categories() -> None:
+    categories = "1. Biryani 2. Burgers 3. Desserts 4. Drinks 5. Karahi 6. Platters 7. Rolls"
+    assert verbalize_text(categories) == categories
+    assert verbalize_text("Rs. 850 or 850 PKR") == (
+        "eight hundred fifty rupees or eight hundred fifty rupees"
+    )
+
+
 def test_v65_spoken_display_parity() -> None:
     forms = shape_assistant_reply("Your total is PKR 1500. The second of four is ready.")
     assert forms.spoken_text == forms.display_text

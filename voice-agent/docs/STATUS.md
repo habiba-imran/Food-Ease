@@ -1,5 +1,67 @@
 # STATUS
 
+**Latency audit — 2026-11-07.** Current Urdu caller-heard p50/p95 and interruption
+latency remain unverified: saved Phase 9/final acceptance evidence has zero live
+audible samples. The offline audit confirms batched Urdu STT after the default
+550 ms VAD silence wait, sentence-gated model text, two model steps for ordinary
+tool replies and three application RPCs per successful broker action. Historical
+component CSVs measure completed requests, not true TTFT/TTFB. The legacy live
+runner cannot measure current Urdu audio/barge-in correctly; application-owned
+integrated stage telemetry is absent. See the
+[audit](../evidence/latency-audit-2026-11-07/report.md) and reproducible `audit.json`.
+Two native SDK structural tests passed. This audit changed evidence/docs only;
+no runtime tuning, credentials, provider request, restart or deployment was used.
+
+**Semantic conversation controls — 2026-11-07.** The active assistant's ending,
+mode-choice and page-control phrase lists have been removed. Free-form input uses
+model interpretation and a validated local conversation-control tool. The website
+still has thirteen business operations; controls cannot bypass cart/confirmation
+guards. Onboarding and pause/mute expose only controls, with server-side shopping
+rejection. A newly supplied catalog product/category works without voice keyword
+changes. Final full worker suite: 441 passed; the existing mock-boundary test
+failed. Scoped types passed; native SDK control execution is covered. See the
+[report](../evidence/semantic-controls-2026-11-07/report.md) and ADR-0025. No live
+provider call, worker restart, push or deployment occurred. Live model synonym
+accuracy and audible control latency remain unverified.
+
+**Urdu and semantic menu follow-up — 2026-11-07.** The integrated website assistant
+now defaults to Urdu: Groq Whisper recognition, Silero VAD, Cartesia Urdu speech,
+Urdu replies/captions, prices, greetings, exact cart summaries and recovery text.
+The earlier shopping keyword parser was removed; free-form menu wording now uses
+the LLM with actual category/product context. Code still owns price boundaries,
+bounded-list presentation, stop/reference controls and checkout consent. Final
+focused tests: 32 passed. Full worker suite: 414 passed, the existing mock-boundary
+test failed. Changed lint/types passed. See the
+[report](../evidence/urdu-2026-11-07/report.md) and ADR-0024 for precise limits.
+No provider request, worker restart, push or deployment occurred; real-model
+paraphrase handling and live Urdu audio remain unverified. This supersedes the
+initial menu-parser implementation described below.
+
+**Menu-list correction — 2026-11-07.** Clear budget/category listing questions now
+use verified website filter/search results without a model call. “List all items
+below 1000” reads all 25 current matches and “juice menu” returns Mango Juice at
+200 rupees. Explicit lists include every returned row; partial views are disclosed.
+Strict/inclusive budget boundaries, retained dietary filters and delivered-list
+references are covered. The focused menu/conversation/safety/dialogue suite passed
+128 tests; changed Python lint/types passed. See the
+[follow-up report](../evidence/menu-queries-2026-11-07/report.md). No provider call,
+worker restart, push or deployment was performed; live audio remains unverified.
+
+**Voice responsiveness follow-up — 2026-11-06.** A model rate limit now ends the
+failed turn while keeping assistance active. The worker tells the user to check
+their cart before repeating an order request. Direct menu-category and cart
+questions use the existing website authority without a model call. The focused
+suite passed 85 tests. A live Chromium follow-up reproduced a Groq `429` and
+stayed in voice mode.
+
+**Provider follow-up — 2026-11-06.** Groq GPT-OSS 20B is the default LLM and
+Gemini is available through `LLM_PROVIDER=gemini`. The worker uses its verified
+Cartesia voice when the configured ID is blank or malformed. A live Chromium
+session received audio for the greeting and a reply to a synthetic spoken menu
+question. A separate live session added one Hot Chicken Wrap and displayed a
+900 PKR cart total. A back-to-back turn reached Groq's 8,000-token-per-minute limit.
+The focused regression suite passed 163 tests. See [ADR-0023](decisions.md).
+
 **Voice entry follow-up — 2026-11-04:** The requested website welcome and floating
 controls now use the existing integrated lifecycle, actual microphone ownership,
 canonical captions/status and shared website cart. Precise full-sentence mode

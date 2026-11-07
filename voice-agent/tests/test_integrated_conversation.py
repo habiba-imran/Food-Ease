@@ -5,7 +5,7 @@ import json
 
 from foodease_agent.integrated.conversation import SemanticPage, heard_items
 from foodease_agent.integrated.output import guarded_output
-from test_integrated_runtime import call, turn
+from test_integrated_runtime import call, control, turn
 
 pytest_plugins = ("test_integrated_runtime",)
 
@@ -20,18 +20,16 @@ async def test_page_context_exposes_meaningful_actions_without_claiming_catalog_
 
 
 async def test_read_page_and_button_command_use_real_results_and_selected_item(runtime):
-    await runtime.input_text("read this page", "read", runtime.snapshot.revision, source="audio")
+    await control(runtime, "read_page", "read this page")
     assert runtime.adapter.requests[-1].payload.operation == "get_current_context"
     assert "home" in runtime.session.spoken[-1].lower()
-    assert not runtime.session.generated
+    assert len(runtime.session.generated) == 1
     runtime.on_delivered(runtime.session.spoken[-1], runtime.snapshot.revision)
     assert len(runtime.references.items) == 3
     expected = runtime.references.items[1].item_id
-    await runtime.input_text(
-        "open the second one", "open", runtime.snapshot.revision, source="audio"
-    )
+    await control(runtime, "open_reference", "open the second one")
     assert runtime.snapshot.focus_item_id == expected and runtime.snapshot.route == "item"
-    await runtime.input_text("press add to cart", "add", runtime.snapshot.revision, source="audio")
+    await control(runtime, "add_button", "press add to cart")
     assert runtime.snapshot.cart.lines[0].item_id == expected
     assert "total" in runtime.session.spoken[-1].lower()
 
@@ -45,9 +43,7 @@ async def test_unheard_results_are_not_references_and_heard_order_wins(runtime):
         rows[1]["item_id"],
         rows[0]["item_id"],
     ]
-    await runtime.input_text(
-        "open the second one", "select", runtime.snapshot.revision, source="audio"
-    )
+    await control(runtime, "open_reference", "open the second one")
     assert runtime.snapshot.focus_item_id == rows[0]["item_id"]
 
 
@@ -63,14 +59,14 @@ async def test_manual_edit_invalidates_deictic_reference_even_if_model_supplies_
 
 
 async def test_short_list_next_previous_and_repeat_follow_delivered_windows(runtime):
-    await runtime.input_text("read the page", "read", runtime.snapshot.revision, source="audio")
+    await control(runtime, "read_page", "read the page")
     await asyncio.sleep(0)
     first = [row.item_id for row in runtime.references.items]
-    await runtime.input_text("next", "next", runtime.snapshot.revision, source="audio")
+    await control(runtime, "next", "next")
     await asyncio.sleep(0)
     assert len(runtime.references.items) == 3
     assert not set(first).intersection(row.item_id for row in runtime.references.items)
-    await runtime.input_text("previous", "previous", runtime.snapshot.revision, source="audio")
+    await control(runtime, "previous", "previous")
     await asyncio.sleep(0)
     assert [row.item_id for row in runtime.references.items] == first
 
@@ -118,6 +114,28 @@ async def test_semantic_page_unknown_ingredients_are_not_invented(runtime):
     assert "ingredients" in json.dumps(data)
 
 
+def test_reasoning_context_keeps_cart_and_visible_items_in_one_place(runtime):
+    data = runtime.reasoning_data()
+    assert "cart" not in data["page"]
+    assert "results" not in data["semantic_page"]
+    assert data["semantic_page"]["cart"] == runtime.snapshot.cart.model_dump(mode="json")
+    assert [row["item_id"] for row in data["page"]["visible_items"]] == [
+        row.item_id for row in runtime.snapshot.visible_items
+    ]
+
+
+async def test_simple_catalog_and_cart_questions_use_read_only_authority(runtime):
+    await control(runtime, "read_categories", "What food categories are on the menu?")
+    categories = runtime.session.spoken[-1].lower()
+    assert "burgers" in categories and "wraps" in categories
+    assert "checkout" not in categories
+    assert runtime.adapter.requests[-1].payload.operation == "get_current_context"
+
+    await control(runtime, "read_cart", "What's in my cart?")
+    assert "cart is empty" in runtime.session.spoken[-1].lower()
+    assert runtime.adapter.requests[-1].payload.operation == "get_cart"
+
+
 async def test_streaming_shaping_keeps_numbers_and_tool_chunks_without_waiting_for_eof(runtime):
     await turn(runtime)
     finished = False
@@ -162,7 +180,7 @@ async def test_overlapping_filter_tools_merge_against_the_current_serialized_sta
 async def test_cart_page_reading_uses_actual_quantity_and_fee_inclusive_total(runtime):
     await call(runtime, "cart_add_item", item_id="wrap-hot-chicken", quantity=2)
     await call(runtime, "navigate", target="cart")
-    await runtime.input_text("read this page", "read-cart", runtime.snapshot.revision)
+    await control(runtime, "read_page", "read this page")
     assert "2 items" in runtime.session.spoken[-1] or "two items" in runtime.session.spoken[-1]
     assert "one thousand seven hundred fifty rupees" in runtime.session.spoken[-1]
 
@@ -190,6 +208,6 @@ async def test_comparison_tools_retain_separate_authoritative_facts_and_unknown_
 
 
 async def test_unsupported_button_explains_limit_without_a_domain_action(runtime):
-    await runtime.input_text("open the camera", "camera", runtime.snapshot.revision)
+    await control(runtime, "unsupported_button", "open the camera")
     assert "can’t activate a camera" in runtime.session.spoken[-1]
-    assert not runtime.adapter.requests and not runtime.session.generated
+    assert not runtime.adapter.requests and len(runtime.session.generated) == 1

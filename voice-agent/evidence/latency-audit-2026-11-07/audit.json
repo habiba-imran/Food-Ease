@@ -1,0 +1,73 @@
+{
+  "audit_date": "2026-11-07",
+  "provider_requests_made": 0,
+  "current_urdu_audible_latency_samples": 0,
+  "phase9_raw_jsonl_files": [],
+  "historical_components": {
+    "llm": {
+      "source": "voice-agent/evidence/phase-1/llm.csv",
+      "meaning": "historical non-streaming completion time; not TTFT or current Urdu E2E",
+      "groups": {
+        "gemini-3.1-flash-lite/minimal": {
+          "n": 30,
+          "p50_ms": 1032.81,
+          "p95_ms": 3783.8854999999953
+        },
+        "gemini-3.1-flash-lite/low": {
+          "n": 30,
+          "p50_ms": 1695.615,
+          "p95_ms": 4541.5905
+        }
+      }
+    },
+    "tts": {
+      "source": "voice-agent/evidence/phase-1/tts.csv",
+      "meaning": "historical English HTTP completed-body timing; not streaming TTFB; timing rows omit status/ok",
+      "groups": {
+        "jacqueline": {
+          "n": 10,
+          "p50_ms": 258.595,
+          "p95_ms": 349.20399999999995
+        },
+        "blake": {
+          "n": 10,
+          "p50_ms": 239.39,
+          "p95_ms": 308.6755
+        },
+        "robyn": {
+          "n": 10,
+          "p50_ms": 234.075,
+          "p95_ms": 332.42150000000004
+        },
+        "katie": {
+          "n": 10,
+          "p50_ms": 236.135,
+          "p95_ms": 283.2869999999999
+        }
+      }
+    }
+  },
+  "structural_probe": {
+    "provenance": "offline structural probe; no wall-clock/provider timing measured",
+    "application_action": {
+      "fresh_context_requests": 2,
+      "requested_action": 1,
+      "production_rpc_calls_per_successful_get_cart": 3
+    },
+    "sentence_gate": {
+      "input_chunks": 3,
+      "first_text_after_chunk": 3,
+      "release_required_sentence_punctuation": true
+    },
+    "request_footprint": {
+      "urdu_policy_characters": 6653,
+      "active_context_characters": 5278,
+      "active_context_utf8_bytes": 5544,
+      "tool_count": 14,
+      "all_tool_schema_characters": 5979,
+      "onboarding_context_characters": 88,
+      "note": "Exact character/byte counts only; not token estimates or a full chat size."
+    },
+    "integrated_metric_handlers_registered": []
+  }
+}

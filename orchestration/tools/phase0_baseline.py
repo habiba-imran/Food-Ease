@@ -68,7 +68,7 @@ def offline_environment() -> dict[str, str]:
     env = os.environ.copy()
     for key in (
         "LIVEKIT_URL", "LIVEKIT_API_KEY", "LIVEKIT_API_SECRET", "DEEPGRAM_API_KEY",
-        "CARTESIA_API_KEY", "GOOGLE_API_KEY", "GEMINI_API_KEY", "OPENAI_API_KEY",
+        "CARTESIA_API_KEY", "GROQ_API_KEY", "GOOGLE_API_KEY", "GEMINI_API_KEY", "OPENAI_API_KEY",
     ):
         env.pop(key, None)
     env.update(

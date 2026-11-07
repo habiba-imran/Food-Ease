@@ -12,6 +12,10 @@ from foodease_agent.speech_text.sanitizer import sanitize_assistant_text
 from foodease_agent.speech_text.shaping import shape_assistant_reply
 
 _OUTCOMES = (
+    (r"شامل\s*کر\s*(?:دیا|دی|چکا|چکی)", {"cart.add_item"}),
+    (r"(?:ہٹا|نکال|حذف)\s*(?:دیا|دی|کر\s*(?:دیا|دی))", {"cart.remove_item"}),
+    (r"تعداد.{0,40}(?:بدل|تبدیل|کر دی|کر دیا)", {"cart.set_quantity"}),
+    (r"آرڈر.{0,35}(?:درج\s*(?:ہو|کر\s*دیا)|مکمل ہو|تصدیق ہو)", {"checkout.submit_demo_order"}),
     (r"\b(?:added|put .+ (?:in|into) (?:your|the) cart)\b", {"cart.add_item"}),
     (r"\b(?:removed|deleted)\b", {"cart.remove_item"}),
     (r"\b(?:updated|changed|set) .{0,40}quantity\b", {"cart.set_quantity"}),
@@ -24,7 +28,7 @@ _OUTCOMES = (
 
 
 def checked_sentence(runtime: Any, turn: Any, text: str) -> str:
-    if turn is None or not runtime.authorized(turn):
+    if turn is None or turn.control_done or not runtime.authorized(turn, conversation=True):
         return ""
     text = sanitize_assistant_text(
         text,
@@ -42,8 +46,11 @@ def checked_sentence(runtime: Any, turn: Any, text: str) -> str:
         if re.search(pattern, text, re.I) and (
             not witnesses if not operations else not witnesses.intersection(operations)
         ):
-            return "I haven’t verified that change yet. Please check the page."
-    return shape_assistant_reply(text).spoken_text
+            return shape_assistant_reply(
+                "I haven’t verified that change yet. Please check the page.",
+                language=runtime.language,
+            ).spoken_text
+    return shape_assistant_reply(text, language=runtime.language).spoken_text
 
 
 async def guarded_output(source: AsyncIterable, runtime: Any, turn: Any):
@@ -68,7 +75,7 @@ async def guarded_output(source: AsyncIterable, runtime: Any, turn: Any):
                 yield checked_sentence(runtime, turn, buffered)
                 buffered = ""
             yield chunk
-        while match := re.search(r"[.!?](?:\s|$)", buffered):
+        while match := re.search(r"[.!?۔؟](?:\s|$)", buffered):
             sentence, buffered = buffered[: match.end()], buffered[match.end() :]
             if checked := checked_sentence(runtime, turn, sentence):
                 yield checked + " "

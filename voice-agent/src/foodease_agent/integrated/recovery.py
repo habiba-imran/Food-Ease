@@ -3,9 +3,12 @@
 from __future__ import annotations
 
 import asyncio
+import logging
 import time
 from collections import deque
 from typing import Any
+
+logger = logging.getLogger(__name__)
 
 
 class RuntimeRecovery:
@@ -39,7 +42,22 @@ class RuntimeRecovery:
             return
         kind = getattr(error, "type", "unknown")
         self.observe("provider_error", component=kind)
+        cause = getattr(error, "error", None)
+        status = getattr(cause, "status_code", None)
+        logger.warning("provider failed component=%s error_type=%s status=%s",
+                       kind, type(cause).__name__, status if isinstance(status, int) else None)
         self.revoke()
+        if kind == "llm_error" and status == 429:
+            # Keep the room and microphone available. The failed turn is revoked
+            # because it may already have committed a cart action before the 429.
+            error.recoverable = True
+            message = "I’m busy right now. Check your cart before repeating an order request."
+            message = runtime.t(message)
+            runtime._publish(
+                "agent.error", {"code": "not_available", "message": message, "fatal": False}
+            )
+            runtime.say(message)
+            return
         speech = kind in {"stt_error", "tts_error"}
         if speech:
             # The SDK emits before deciding to close. Retain a silent text lane;
@@ -54,6 +72,7 @@ class RuntimeRecovery:
             runtime.mode = "manual"
             runtime.end_local()
             message = "Assistance is unavailable. Please continue using the page controls."
+        message = runtime.t(message)
         runtime._publish(
             "agent.error", {"code": "not_available", "message": message, "fatal": not speech}
         )

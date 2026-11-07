@@ -24,6 +24,23 @@ def test_worker_loads_environment_before_constructing_cli_options(monkeypatch):
     assert calls == ["environment", "cli"]
 
 
+def test_worker_start_reports_missing_provider_before_registration(monkeypatch):
+    from foodease_agent.config import ConfigError
+
+    monkeypatch.setattr(worker.sys, "argv", ["foodease-worker", "start"])
+    monkeypatch.setattr(worker, "load_dotenv", lambda *args, **kwargs: None)
+
+    def invalid_config():
+        raise ConfigError("Missing required environment variable(s): GROQ_API_KEY")
+
+    monkeypatch.setattr(worker, "load_config", invalid_config)
+    monkeypatch.setattr(
+        worker.cli, "run_app", lambda _: pytest.fail("Worker registered before validation")
+    )
+    with pytest.raises(SystemExit, match="GROQ_API_KEY"):
+        worker.main()
+
+
 @pytest.mark.asyncio
 async def test_action_trace_contains_correlation_without_arguments_or_tokens(
     runtime, caplog, monkeypatch

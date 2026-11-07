@@ -5,6 +5,7 @@ from __future__ import annotations
 import asyncio
 import contextlib
 import json
+import re
 from collections.abc import Callable
 from typing import Any
 
@@ -13,15 +14,15 @@ from livekit.agents import llm
 
 from foodease_agent.adapters.integrated import IntegratedAppAdapter, new_id
 from foodease_agent.confirmation import ConfirmationMachine, ConfirmState
-from foodease_agent.controls import match_control
+from foodease_agent.i18n import label, render, speech_text
 from foodease_agent.idle import IdlePromptController
 from foodease_agent.integrated.broker import IntegratedActionBroker
+from foodease_agent.integrated.control_intents import CONVERSATION_INTENTS, PAGE_INTENTS
 from foodease_agent.integrated.conversation import (
     BrowseMemory,
     SemanticPage,
     list_speech,
     reference_item,
-    semantic_command,
 )
 from foodease_agent.integrated.policy import (
     Turn,
@@ -50,6 +51,7 @@ class LiveConversationRuntime:
         speech_controls: frozenset[str] = frozenset(),
     ):
         self.agent, self.session, self.adapter, self.gate = agent, session, adapter, gate
+        self.language = agent.language
         agent.runtime = self
         self.snapshot: ContextSnapshot
         self.mode: str | None = None
@@ -118,6 +120,9 @@ class LiveConversationRuntime:
             for event, callback in self._room_handlers.items():
                 gate.room.on(event, callback)
 
+    def t(self, template: str, **values) -> str:
+        return render(template, self.language, **values)
+
     async def prepare(self) -> None:
         self.snapshot = await self.adapter.get_snapshot()
         self._sync_preferences()
@@ -164,7 +169,9 @@ class LiveConversationRuntime:
         if self.mode != "choosing" or self._choice_clarified or self.closed:
             return
         self._choice_clarified = True
-        self.say("Say use voice or manual please. You can also choose typing on the page.")
+        self.say(
+            "Would you like to talk through your order, type your request, or browse yourself?"
+        )
 
     async def activate_mode(self, mode: str, *, resuming=False) -> None:
         if mode == "voice" and self.recovery.speech_failed:
@@ -229,18 +236,21 @@ class LiveConversationRuntime:
         self.idle.reset_after_activity()
         self._set_audio()
 
-    def authorized(self, turn: Turn, *, revision=True) -> bool:
+    def authorized(self, turn: Turn, *, revision=True, conversation=False) -> bool:
         return bool(
             not self.closed
             and not self.paused
-            and self.mode in {"voice", "typed"}
+            and self.mode in (
+                {"voice", "typed", "choosing"} if conversation else {"voice", "typed"}
+            )
             and self.active_turn is turn
             and turn.epoch == self.epoch
             and turn.committed
             and not turn.discarded
             and (turn.speech is None or not turn.speech.interrupted)
             and (not revision or turn.revision == self.snapshot.revision)
-            and (turn.source == "text" or self.mode == "voice")
+            and (turn.source == "text" or self.mode == "voice"
+                 or conversation and self.mode == "choosing")
         )
 
     def uncommit_turn(self, turn_id: str) -> None:
@@ -303,15 +313,26 @@ class LiveConversationRuntime:
         self.details.clear()
 
     def reasoning_data(self) -> dict:
+        if self.mode == "choosing":
+            return {
+                "response_language": self.language,
+                "mode": self.mode,
+                "ordering_modes": ["voice", "typed", "manual"],
+            }
         # All rows are contract bounded; cap untrusted free text further for prompts.
-        data = self.snapshot.model_dump(mode="json")
+        data = self.snapshot.model_dump(mode="json", exclude={"cart"})
         data["visible_items"] = [
-            {**row, "name": row["name"][:120], "descriptors": [s[:80] for s in row["descriptors"]]}
+            {**row, "name": row["name"][:120], "descriptors": [s[:80] for s in row["descriptors"]],
+             "speech_name": label(row["name"], self.language)}
             for row in data["visible_items"]
         ]
+        semantic_page = SemanticPage(self.snapshot, self.details).data()
+        # The complete ordered list is already in page.visible_items.
+        del semantic_page["results"]
         return {
+            "response_language": self.language,
             "page": data,
-            "semantic_page": SemanticPage(self.snapshot, self.details).data(),
+            "semantic_page": semantic_page,
             "mode": self.mode,
             "preferences": {
                 "vegetarian": self.preferences.vegetarian,
@@ -348,35 +369,15 @@ class LiveConversationRuntime:
         turn = Turn(turn_id, revision, self.epoch, source, text)
         self.active_turn = turn
         self.idle.reset_after_activity()
-        control = self.control_name(text)
-        if self.mode == "choosing":
-            # No model or action lane exists during onboarding, even for clear orders.
-            if control in {"manual", "browse_self", "goodbye", "end"}:
-                await self.handle_control(control, turn)
-            elif control in {"voice", "typed", "switch_typing"}:
-                await self.activate_mode("typed" if control != "voice" else "voice")
-                await self.adapter.publish_control("switch_mode", self.mode)
-            elif control in {"stop", "pause", "mute"}:
-                await self.handle_control(control, turn)
-                self._choice_clarified = True
-            else:
-                await self.choice_timeout()
-            return None
-        if control is not None:
-            await self.handle_control(control, turn)
-            return None
-        if self.paused or revision != self.snapshot.revision:
+        if revision != self.snapshot.revision:
             turn.discarded = True
-            return None
-        if command := semantic_command(text):
-            await self.handle_semantic(command, turn)
             return None
         if self.confirmation.state == ConfirmState.AWAITING:
             if (
                 explicit_yes(text)
                 and self.confirm_cart == cart_hash(self.snapshot.cart)
                 and self.confirmation.try_confirm(
-                    text.rstrip(".!?"), current_revision=self.confirmation.revision or 0
+                    "yes", current_revision=self.confirmation.revision or 0
                 )
             ):
                 self.confirm_turn = turn.id
@@ -390,6 +391,8 @@ class LiveConversationRuntime:
                 "user_input": message or llm.ChatMessage(role="user", content=[text], id=turn_id),
                 "input_modality": source,
             }
+            if self.mode == "choosing" or self.paused or self.muted:
+                kwargs["tools"] = ["conversation_control"]
             if chat_ctx is not None:
                 kwargs["chat_ctx"] = chat_ctx
             handle = self.session.generate_reply(**kwargs)
@@ -400,55 +403,36 @@ class LiveConversationRuntime:
         finally:
             self._generating_turn = None
 
-    @staticmethod
-    def control_name(text: str) -> str | None:
-        normalized = " ".join(text.strip().lower().replace("’", "'").split()).rstrip(".!?")
-        if normalized in {
-            "manual",
-            "manual please",
-            "manual input",
-            "manual mode",
-            "switch to manual",
-            "i want to order manually",
-            "i'll order myself",
-            "i’ll order myself",
-            "i will order myself",
-            "browse myself",
-            "i want to browse myself",
-            "manual ordering",
-            "order manually",
-            "i'd like to order manually",
-            "i would like to order manually",
-            "i'll order manually",
-            "i want to order by myself",
-            "please switch to manual ordering",
-        }:
-            return "manual"
-        if normalized in {
-            "voice",
-            "voice please",
-            "use voice",
-            "use voice please",
-            "talk me through it",
-            "voice input",
-            "voice mode",
-            "switch to voice",
-            "voice ordering",
-            "i'd like to order using voice",
-            "i would like to order using voice",
-            "i want to order by voice",
-            "i want to order using voice",
-            "use the voice assistant",
-            "i'd like to use the voice assistant",
-            "please switch to voice ordering",
-        }:
-            return "voice"
-        if normalized in {"typing", "typed", "switch to typing"}:
-            return "typed"
-        if normalized in {"pause tips", "stop tips", "resume tips"}:
-            return normalized.replace(" ", "_")
-        match = match_control(text)
-        return match.intent.value if match else None
+    async def execute_control(self, context: Any, intent: str) -> dict:
+        speech = context.speech_handle
+        turn = self.speech_turns.get(speech.id)
+        if (
+            context.session is not self.session or turn is None or self.closed
+            or self.active_turn is not turn or turn.discarded or not turn.committed
+            or turn.epoch != self.epoch or turn.revision != self.snapshot.revision
+            or speech.interrupted or turn.control_done
+            or self.mode not in {"voice", "typed", "choosing"}
+            or (turn.source == "audio" and self.mode not in {"voice", "choosing"})
+        ):
+            return safe_failure("inactive_turn")
+        if intent not in CONVERSATION_INTENTS:
+            return safe_failure("invalid_arguments")
+        choosing = self.mode == "choosing"
+        if choosing and intent not in {"voice", "typed", "manual", "end", "stop", "pause", "mute"}:
+            return safe_failure("invalid_arguments")
+        if (self.paused or self.muted) and intent in (
+            PAGE_INTENTS | {"go_back", "undo", "more_detail"}
+        ):
+            return safe_failure("inactive_turn")
+        turn.control_done = True  # before any await; duplicate effects cannot race
+        if intent in {"voice", "typed"}:
+            await self.activate_mode(intent)
+            await self.adapter.publish_control("switch_mode", self.mode)
+        elif intent in PAGE_INTENTS:
+            await self.handle_semantic(intent, turn)
+        else:
+            await self.handle_control(intent, turn)
+        return {"status": "success", "facts": None, "say": ""}
 
     async def handle_semantic(self, command: str, turn: Turn) -> None:
         # Read-only refresh and subsequent semantic operations share the owned lane.
@@ -458,13 +442,28 @@ class LiveConversationRuntime:
                 "I can’t activate a camera or make a real payment."
             )
             return
-        if command in {"read_page", "next", "previous", "add_button"}:
+        if command == "read_cart":
+            result = await self.broker.run(turn, "get_cart", {})
+            if self.authorized(turn):
+                self.say(result["say"])
+            return
+        if command in {"read_page", "read_categories", "next", "previous", "add_button"}:
             fresh = await self.broker.run(turn, "get_current_context", {})
             if fresh["status"] != "success" or not self.authorized(turn):
                 if self.authorized(turn):
                     self.say(fresh["say"])
                 return
-        if command == "read_page":
+        if command == "read_categories":
+            categories = [
+                target.replace("-", " ") for target in self.snapshot.valid_navigation_targets
+                if target not in {"home", "menu", "back", "cart", "checkout"}
+            ]
+            self.say(
+                self.t("The menu categories are {categories}.",
+                       categories=", ".join(label(row, self.language) for row in categories))
+                if categories else "I couldn’t find any menu categories on the site."
+            )
+        elif command == "read_page":
             if self.snapshot.focus_item_id:
                 result = await self.broker.run(
                     turn, "get_item_details", {"item_id": self.snapshot.focus_item_id}
@@ -472,11 +471,11 @@ class LiveConversationRuntime:
                 if result["status"] != "success":
                     self.say(result["say"])
                     return
-            self.say(SemanticPage(self.snapshot, self.details).speech())
+            self.say(SemanticPage(self.snapshot, self.details).speech(language=self.language))
         elif command in {"next", "previous"}:
             rows = self.browse.window(command)
             self.say(
-                list_speech(rows) + " Would you like to open one?"
+                list_speech(rows, language=self.language) + self.t(" Would you like to open one?")
                 if rows
                 else "There are no more options in this view. You can change the search or filters."
             )
@@ -505,7 +504,7 @@ class LiveConversationRuntime:
             await self.select_mode(
                 {"browse_self": "manual", "switch_typing": "typed"}.get(control, control)
             )
-        elif control in {"goodbye", "end"}:
+        elif control == "end":
             self.end_local()
         elif control in {"mute", "unmute"} and self.mode == "typed":
             self.typed_audio = control == "unmute"
@@ -562,7 +561,8 @@ class LiveConversationRuntime:
                 self.say("I’ll use that volume for my next reply.")
         elif control in {"more_detail", "less_detail"}:
             self.preferences.detail_level = "more" if control == "more_detail" else "brief"
-            if control == "more_detail" and self.snapshot.focus_item_id and turn is not None:
+            if (control == "more_detail" and self.language == "en"
+                    and self.snapshot.focus_item_id and turn is not None):
                 result = await self.broker.run(
                     turn, "get_item_details", {"item_id": self.snapshot.focus_item_id}
                 )
@@ -593,7 +593,6 @@ class LiveConversationRuntime:
                 "voice": "switch_mode",
                 "typed": "switch_mode",
                 "switch_typing": "switch_mode",
-                "goodbye": "end",
                 "end": "end",
                 "pause": "pause",
                 "resume": "resume",
@@ -611,14 +610,19 @@ class LiveConversationRuntime:
             self.end_local()
 
     async def execute(
-        self, context: Any, operation: str, arguments: dict | Callable[[], dict]
+        self, context: Any, operation: str, arguments: dict | Callable[[], dict],
+        *, read_all: bool = False,
     ) -> dict:
         speech = context.speech_handle
         turn = self.speech_turns.get(speech.id)
         if context.session is not self.session or turn is None or speech.interrupted:
             return safe_failure("inactive_turn")
-        if not self.authorized(turn):
+        if not self.authorized(turn) or self.muted:
             return safe_failure("inactive_turn")
+        if turn.control_done:
+            return safe_failure("inactive_turn")
+        if operation in {"search_menu", "filter_menu"}:
+            turn.read_all = read_all
         if not isinstance(arguments, dict):
             if operation != "filter_menu":
                 return safe_failure("invalid_arguments")
@@ -629,7 +633,9 @@ class LiveConversationRuntime:
             names = [(row.item_id, row.name) for row in self.snapshot.visible_items]
             names += [(row.item_id, row.name) for row in self.snapshot.cart.lines]
             explicit_name = any(
-                candidate == item and name.lower() in turn.text.lower() for candidate, name in names
+                candidate == item and any(value.lower() in turn.text.lower()
+                                         for value in {name, label(name, self.language)})
+                for candidate, name in names
             )
             if has_reference(turn.text) and not explicit_name:
                 if self.references_stale:
@@ -699,7 +705,16 @@ class LiveConversationRuntime:
             self.references_stale = False
         say = "The page is ready. What would you like to do next?"
         if "lines" in facts:
-            say = cart_speech(facts, confirmation=operation == "checkout.get_summary")
+            # Exact checkout delivery may not silently fall back to an untranslated item name.
+            if self.language == "ur" and operation == "checkout.get_summary" and any(
+                re.search(r"[A-Za-z]", label(value, "ur"))
+                for value in [line["name"] for line in facts["lines"]]
+                + [fee["label"] for fee in facts["fees"]]
+            ):
+                self._invalidate_confirmation()
+                return safe_failure("not_available")
+            say = cart_speech(facts, confirmation=operation == "checkout.get_summary",
+                              language=self.language)
         if operation == "checkout.get_summary":
             self._invalidate_confirmation()
             summary_id = self.summary_id = new_id()
@@ -735,16 +750,28 @@ class LiveConversationRuntime:
         elif operation == "checkout.submit_demo_order":
             say = "Your demo order was placed. No payment was taken."
         elif operation in {"get_item_details", "select_item"}:
-            say = f"{facts['name']} costs {facts['price']:g} rupees."
+            say = self.t("{name} costs {price} rupees.", name=facts["name"],
+                         price=f"{facts['price']:g}")
         elif operation in {"search_menu", "filter_menu"}:
-            say = f"I found {facts['result_count']} options. " + list_speech(self.browse.rows[:3])
+            rows = self.browse.rows
+            say = self.t("I found {count} options. ", count=facts["result_count"]) + list_speech(
+                rows, language=self.language, read_all=turn.read_all,
+            )
+            if facts["result_count"] > len(rows):
+                say += self.t(
+                    " More matches exist beyond this view; "
+                    "narrow the category or price to see them."
+                )
+            elif not turn.read_all and len(rows) > 3:
+                say += self.t(" Say next for more options.")
         elif operation == "navigate":
-            say = f"You’re on the {facts['route']} page."
+            say = self.t("You’re on the {route} page.", route=facts["route"])
         elif operation == "get_current_context":
-            say = SemanticPage(self.snapshot, self.details).speech()
+            say = SemanticPage(self.snapshot, self.details).speech(language=self.language)
+        say = speech_text(say, self.language)
         # Bound model output from all adapters; never expose app tokens to the LLM.
         answer = {"status": "success", "facts": facts, "say": say}
-        if len(json.dumps(answer).encode()) > 14000:
+        if len(json.dumps(answer, ensure_ascii=False).encode()) > 14000:
             return safe_failure("not_available")
         return answer
 
@@ -759,7 +786,8 @@ class LiveConversationRuntime:
         revision, epoch = self.snapshot.revision, self.epoch
         voice_deliverable = self.mode == "voice" and self._voice_output_available()
         text = shape_assistant_reply(
-            text, known_item_ids={i.item_id for i in self.snapshot.visible_items}
+            text, known_item_ids={i.item_id for i in self.snapshot.visible_items},
+            language=self.language,
         ).spoken_text
         handle = self.session.say(text, allow_interruptions=True)
 

@@ -7,6 +7,8 @@ from dataclasses import dataclass, field
 
 from foodease_contract.models import ContextSnapshot, VisibleItem
 
+from foodease_agent.i18n import label, render
+from foodease_agent.reference_language import reference_text
 from foodease_agent.speech_text.pronunciation import apply_pronunciations
 
 
@@ -14,7 +16,7 @@ def heard_items(text: str, rows: list[VisibleItem]) -> list[VisibleItem]:
     """Match complete product names in actual completed output, in delivered order."""
     matches = []
     for row in rows:
-        for name in {row.name, apply_pronunciations(row.name)}:
+        for name in {row.name, apply_pronunciations(row.name), label(row.name, "ur")}:
             for match in re.finditer(r"(?<!\w)" + re.escape(name) + r"(?!\w)", text, re.I):
                 matches.append((match.start(), match.end(), row))
     matches.sort(key=lambda item: (item[0], -(item[1] - item[0])))
@@ -103,8 +105,30 @@ class SemanticPage:
             "note": "Visible count is bounded; it is not the whole catalog count.",
         }
 
-    def speech(self) -> str:
+    def speech(self, *, language: str = "en") -> str:
         data = self.data()
+        if language == "ur":
+            text = render("You’re on the {route} page.", language, route=data["location"]) + " "
+            if selected := data["selection"]:
+                text += render(
+                    "{name} costs {price} rupees.",
+                    language,
+                    name=selected["name"],
+                    price=f"{selected['price']:g}",
+                )
+            elif self.snapshot.route in {"cart", "checkout"}:
+                from foodease_agent.integrated.policy import cart_speech
+
+                text += cart_speech(data["cart"], language=language)
+            else:
+                text += list_speech(self.snapshot.visible_items[:3], language=language)
+            if self.snapshot.max_price_pkr is not None:
+                text += f" قیمت کی حد {self.snapshot.max_price_pkr:g} روپے ہے۔"
+            if self.snapshot.category:
+                text += " منتخب قسم: " + label(self.snapshot.category, language) + "۔"
+            if self.snapshot.filter_tags:
+                text += " آپ کی غذائی ترجیحات لاگو ہیں۔"
+            return text + " آپ کھانے دیکھ سکتے ہیں یا ٹوکری سن سکتے ہیں۔"
         text = f"You’re on the {data['location']} page. "
         if selected := data["selection"]:
             text += f"{selected['name']} is selected, at {selected['price']:g} rupees. "
@@ -130,9 +154,19 @@ class SemanticPage:
         return text
 
 
-def list_speech(rows: list[VisibleItem]) -> str:
+def list_speech(rows: list[VisibleItem], *, language: str = "en", read_all=False) -> str:
     if not rows:
-        return "There are no matching options on this view."
+        return render("There are no matching options on this view.", language)
+    if read_all or language == "ur":
+        return " ".join(
+            render(
+                "{name}, {price} rupees." if row.available else "{name}, {price} rupees; sold out.",
+                language,
+                name=row.name,
+                price=f"{row.price:g}",
+            )
+            for row in (rows if read_all else rows[:3])
+        )
     labels = ("First", "Second", "Third")
     return " ".join(
         f"{labels[index]}: {row.name}, {row.price:g} rupees"
@@ -141,38 +175,8 @@ def list_speech(rows: list[VisibleItem]) -> str:
     )
 
 
-def semantic_command(text: str) -> str | None:
-    value = text.strip().lower().rstrip(".!?")
-    value = re.sub(r"^(?:please|could you|can you)\s+", "", value)
-    value = re.sub(r",?\s+please$", "", value)
-    if value in {"open the camera", "turn on the camera", "click the camera button", "press pay"}:
-        return "unsupported_button"
-    if value in {
-        "where am i",
-        "read this page",
-        "read the page",
-        "what can i do here",
-        "what can i do",
-        "what's selected",
-        "what is selected",
-    }:
-        return "read_page"
-    if value in {"next", "next options", "more options", "show more options"}:
-        return "next"
-    if value in {"previous", "previous options", "previous ones"}:
-        return "previous"
-    if value in {"press add to cart", "click add to cart", "press the add to cart button"}:
-        return "add_button"
-    if re.fullmatch(
-        r"(?:open|select|show me) (?:the )?(?:first|second|third|fourth|fifth) (?:one|item|option)",
-        value,
-    ):
-        return "open_reference"
-    return None
-
-
 def reference_item(text: str, rows: list, focus: str | None = None) -> str | None:
-    value = text.lower()
+    value = reference_text(text.lower())
     ordinals = re.findall(r"\b(first|second|third|fourth|fifth)\b", value)
     if len(set(ordinals)) == 1:
         index = ("first", "second", "third", "fourth", "fifth").index(ordinals[0])

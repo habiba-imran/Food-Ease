@@ -7,7 +7,7 @@ const env = { ...process.env, PYTHON_DOTENV_DISABLED: "1", RECORD_AUDIO: "false"
   FOODEASE_SESSION_API: "http://127.0.0.1:8186", HF_HUB_OFFLINE: "1", TRANSFORMERS_OFFLINE: "1",
   PYTHONPATH: ["tests", "src", "../voice-agent/src", "../contracts/src"].join(delimiter) };
 for (const key of ["LIVEKIT_URL", "LIVEKIT_API_KEY", "LIVEKIT_API_SECRET", "DEEPGRAM_API_KEY",
-                   "CARTESIA_API_KEY", "GOOGLE_API_KEY", "GEMINI_API_KEY", "OPENAI_API_KEY"]) delete env[key];
+                   "CARTESIA_API_KEY", "GROQ_API_KEY", "GOOGLE_API_KEY", "GEMINI_API_KEY", "OPENAI_API_KEY"]) delete env[key];
 if (await fetch("http://127.0.0.1:8186/healthz").then(() => true, () => false)) {
   throw new Error("Port 8186 is already in use; refusing to reuse an unknown test server.");
 }

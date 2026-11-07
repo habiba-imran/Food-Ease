@@ -3,14 +3,23 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Literal
+from typing import Any, Literal, TypedDict, cast
 
-from livekit.agents import AgentSession, TurnHandlingOptions, inference
-from livekit.plugins import cartesia, deepgram, google, silero
+from google.genai.types import ThinkingConfigDict
+from livekit.agents import AgentSession, TurnHandlingOptions, inference, llm
+from livekit.agents.types import APIConnectOptions
+from livekit.agents.voice.agent_session import SessionConnectOptions
+from livekit.plugins import cartesia, deepgram, google, groq, silero
 
 from foodease_agent.config import Settings
 
 PipelineConfig = Literal["A", "B"]
+
+
+class _InterruptionOptions(TypedDict):
+    interruption_min_duration: float
+    interruption_min_words: int
+    interruption_false_timeout: float
 
 
 @dataclass(frozen=True)
@@ -51,6 +60,12 @@ def turn_handling_options(
 
 
 def build_stt(settings: Settings, pipeline: PipelineConfig) -> Any:
+    if settings.assistant_language == "ur":
+        return groq.STT(
+            model=settings.urdu_stt_model,
+            language="ur",
+            api_key=settings.groq_api_key,
+        )
     if pipeline == "A":
         # Flux via STTv2 + STT-based turn detection (ADR-0005 provisional).
         return deepgram.STTv2(
@@ -71,15 +86,18 @@ def build_tts(settings: Settings) -> cartesia.TTS:
         model=settings.tts_model,
         voice=settings.tts_voice_id,
         api_key=settings.cartesia_api_key,
-        word_timestamps=True,
+        language=settings.assistant_language,
+        word_timestamps=settings.assistant_language == "en",
     )
 
 
-def build_llm(settings: Settings) -> google.LLM:
+def build_llm(settings: Settings) -> llm.LLM:
+    if settings.llm_provider == "groq":
+        return groq.LLM(model=settings.llm_model, api_key=settings.groq_api_key)
     return google.LLM(
         model=settings.llm_model,
         api_key=settings.google_api_key,
-        thinking_config={"thinking_level": settings.llm_thinking_level},
+        thinking_config=cast(ThinkingConfigDict, {"thinking_level": settings.llm_thinking_level}),
     )
 
 
@@ -89,7 +107,8 @@ def build_session_kwargs(
     pipeline: PipelineConfig | None = None,
 ) -> SessionBundle:
     """Assemble kwargs for ``AgentSession(**kwargs)`` without starting I/O."""
-    chosen: PipelineConfig = pipeline or settings.voice_pipeline_config
+    urdu = settings.assistant_language == "ur"
+    chosen = "B" if urdu else cast(PipelineConfig, pipeline or settings.voice_pipeline_config)
     preemptive = settings.preemptive_generation
 
     stt = build_stt(settings, chosen)
@@ -98,11 +117,11 @@ def build_session_kwargs(
 
     ep_min = 0.0 if chosen == "A" else settings.endpointing_min
     ep_max = settings.endpointing_max
-    intr = dict(
-        interruption_min_duration=settings.interruption_min_duration,
-        interruption_min_words=settings.interruption_min_words,
-        interruption_false_timeout=settings.interruption_false_timeout,
-    )
+    intr: _InterruptionOptions = {
+        "interruption_min_duration": settings.interruption_min_duration,
+        "interruption_min_words": settings.interruption_min_words,
+        "interruption_false_timeout": settings.interruption_false_timeout,
+    }
     if chosen == "A":
         # Flux owns EOT; endpointing min_delay 0 so STT endpointing dominates.
         turn = turn_handling_options(
@@ -124,7 +143,9 @@ def build_session_kwargs(
     else:
         vad = silero.VAD.load()
         turn = turn_handling_options(
-            turn_detection=inference.TurnDetector(),
+            # Whisper is non-streaming; SDK adapts it with Silero VAD. The
+            # English semantic turn detector must not judge Urdu end-of-turn.
+            turn_detection="vad" if urdu else inference.TurnDetector(),
             endpointing_min=ep_min,
             endpointing_max=ep_max,
             preemptive_enabled=preemptive,
@@ -136,8 +157,15 @@ def build_session_kwargs(
             "tts": tts,
             "vad": vad,
             "turn_handling": turn,
-            "use_tts_aligned_transcript": True,
+            "use_tts_aligned_transcript": not urdu,
         }
+
+    if settings.llm_provider == "groq":
+        # Keep a brief retry for transport hiccups without waiting through the
+        # full SDK retry sequence when the free-tier quota is exhausted.
+        kwargs["conn_options"] = SessionConnectOptions(
+            llm_conn_options=APIConnectOptions(max_retry=1)
+        )
 
     return SessionBundle(
         session_kwargs=kwargs,

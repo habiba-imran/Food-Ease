@@ -6,7 +6,7 @@ import pytest
 
 from foodease_agent.integrated.agent import IntegratedFoodEaseAgent
 from foodease_agent.integrated.runtime import LiveConversationRuntime
-from test_integrated_runtime import Session, Speech, WebsiteAdapter
+from test_integrated_runtime import Session, Speech, WebsiteAdapter, control
 
 
 @pytest.fixture
@@ -33,7 +33,7 @@ async def opening():
     ],
 )
 async def test_manual_choice_closes_without_shopping(opening, text):
-    await opening.input_text(text, "choice", opening.snapshot.revision, source="audio")
+    await control(opening, "manual", text)
     assert opening.closed
     assert not opening.session.input.enabled
     assert not opening.adapter.requests
@@ -54,10 +54,10 @@ async def test_manual_choice_closes_without_shopping(opening, text):
     ],
 )
 async def test_voice_choice_enables_once(opening, text):
-    await opening.input_text(text, "choice", opening.snapshot.revision, source="audio")
+    await control(opening, "voice", text)
     assert opening.mode == "voice"
     assert len(opening.session.spoken) == 2
-    assert not opening.session.generated
+    assert len(opening.session.generated) == 1
     assert not opening.adapter.requests
 
 
@@ -78,7 +78,8 @@ async def test_ambiguous_order_and_silence_have_one_clarification(opening):
     await opening.choice_timeout()
     assert opening.mode == "choosing"
     assert len(opening.session.spoken) == 2
-    assert not opening.session.generated
+    assert len(opening.session.generated) == 7
+    assert all(call["tools"] == ["conversation_control"] for call in opening.session.generated)
     assert not opening.adapter.requests
     assert await opening.poll_idle() is None
 
@@ -114,7 +115,7 @@ async def test_manual_interrupts_unfinished_opening_and_prevents_late_welcome(mo
     runtime = LiveConversationRuntime(IntegratedFoodEaseAgent(), session, adapter)
     await runtime.prepare()
     await runtime.open_mode_choice()
-    await runtime.input_text("manual please", "manual", runtime.snapshot.revision, source="audio")
+    await control(runtime, "manual", "manual please")
     await runtime.activate_mode("voice")
     await asyncio.sleep(0)
     assert speech.interrupted and runtime.closed

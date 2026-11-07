@@ -8,6 +8,24 @@ MockApp/handover notes below are retained for development and historical evidenc
 The integrated session explicitly disables SDK recording and remote session hosting;
 all thirteen website operations remain behind the bound action/confirmation gates.
 
+The integrated website assistant now defaults to **Urdu** (`ASSISTANT_LANGUAGE=ur`).
+It uses Groq Whisper with `language=ur` for recognition, Silero VAD for turn endings,
+and Cartesia Sonic 3.6 with `language=ur` for speech. Greetings, captions, prices,
+cart summaries, confirmations and recovery messages use Urdu script. Existing
+English Flux/Nova settings are ignored in Urdu mode; select `ASSISTANT_LANGUAGE=en`
+to use the retained English pipeline. The legacy standalone MockApp/CLI sections
+below describe the original English development harness.
+
+Menu meaning is interpreted by the LLM against actual catalog/category data.
+There is no shopping-synonym whitelist. Urdu catalog display names live in
+`src/foodease_agent/locales/ur.json`; these translate verified product labels and
+do not choose search/filter operations. Spoken/typed endings, mode choices, pause,
+repeat and page-reading requests also use model interpretation through one local
+`conversation_control` tool. Users can express these in their own words. The code
+validates the selected effect, session, turn and permissions; direct UI controls
+and explicit checkout consent remain deterministic. See the
+[semantic-controls follow-up](evidence/semantic-controls-2026-11-07/report.md).
+
 **Owner (agent):** Habiba · **Website:** Zainab
 **Handover docs:** [`docs/handover/`](docs/handover/) — start with [`INTEGRATION_NOTE.md`](docs/handover/INTEGRATION_NOTE.md) and [`FRONTEND_QUICKSTART.md`](docs/handover/FRONTEND_QUICKSTART.md).
 
@@ -18,7 +36,8 @@ all thirteen website operations remain behind the bound action/confirmation gate
 cd voice-agent
 uv sync
 cp .env.example .env
-# Fill LIVEKIT_* / DEEPGRAM_* / CARTESIA_* / GOOGLE_* in .env (never commit .env)
+# Fill LIVEKIT_* / CARTESIA_API_KEY / GROQ_API_KEY in .env.
+# DEEPGRAM_API_KEY is used only for the retained English recognition pipeline.
 
 # Smoke (no paid provider calls):
 uv run python tools/smoke.py
@@ -26,6 +45,12 @@ uv run python tools/smoke.py
 # Full automated suite:
 uv run pytest -q
 ```
+
+Groq defaults to `openai/gpt-oss-20b`. Set `GROQ_MODEL` to select another Groq
+model. To run Gemini, set `LLM_PROVIDER=gemini` and configure `GOOGLE_API_KEY`,
+`LLM_MODEL` and `LLM_THINKING_LEVEL`. Urdu recognition still needs `GROQ_API_KEY`.
+`TTS_VOICE_ID` takes a Cartesia voice UUID.
+The worker uses the FoodEase default voice if that setting is blank or malformed.
 
 ### Live demo (needs filled `.env` + LiveKit Cloud)
 
