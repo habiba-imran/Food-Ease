@@ -45,6 +45,12 @@ test('desktop float and parallax respect live motion preference changes', async 
   const hero = page.locator('.hero');
   const product = page.locator('.hero-product');
   await expect(product).toHaveCSS('animation-name', 'hero-object-float');
+  await expect(product).toHaveCSS('animation-iteration-count', 'infinite');
+  // The earlier animation silently finished after 14 seconds.
+  await product.evaluate(el => { el.getAnimations()[0].currentTime = 16000; });
+  await expect.poll(() => product.evaluate(el => el.getAnimations()[0]?.playState)).toBe('running');
+  const rotation = await product.evaluate(el => getComputedStyle(el).transform);
+  await expect.poll(() => product.evaluate(el => getComputedStyle(el).transform)).not.toBe(rotation);
   await hero.scrollIntoViewIfNeeded();
   const box = await hero.boundingBox();
   await page.mouse.move(box.x + box.width * .7, Math.max(100, box.y + box.height * .4));
@@ -57,16 +63,22 @@ test('desktop float and parallax respect live motion preference changes', async 
   await expect(product).toHaveCSS('animation-name', 'none');
 });
 
-test('mobile hero stays still and never captures touch rotation', async ({ browser }) => {
+test('mobile hero gently rotates without capturing touch gestures and respects reduced motion', async ({ browser }) => {
   const context = await browser.newContext({ viewport: { width: 375, height: 812 }, hasTouch: true, isMobile: true });
   try {
     const page = await context.newPage();
     await page.goto('/');
-    await expect(page.locator('.hero-product')).toHaveCSS('animation-name', 'none');
+    const product = page.locator('.hero-product');
+    await expect(product).toHaveCSS('animation-name', 'hero-object-float');
+    await expect(product).toHaveCSS('animation-iteration-count', 'infinite');
+    const rotation = await product.evaluate(el => getComputedStyle(el).transform);
+    await expect.poll(() => product.evaluate(el => getComputedStyle(el).transform)).not.toBe(rotation);
     const hero = page.locator('.hero');
     await hero.dispatchEvent('pointerdown', {pointerType:'touch',pointerId:1,clientX:100,clientY:350});
     await hero.dispatchEvent('pointermove', {pointerType:'touch',pointerId:1,clientX:250,clientY:350});
     expect(await hero.evaluate(el => el.style.cssText)).not.toContain('--scene-');
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await expect(product).toHaveCSS('animation-name', 'none');
   } finally { await context.close(); }
 });
 

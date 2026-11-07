@@ -213,9 +213,9 @@ html:has(dialog[open]) { overflow: hidden; scrollbar-gutter: stable; }
   :root body[data-experience] .menu-grid { gap: 20px 12px; }
   :root body[data-experience] .main-nav a { min-height: 44px; }
 }
-/* A still photograph on touch screens; motion preferences also stop hover zooms. */
+/* Touch screens get a smaller, slower rock without pointer-driven movement. */
 @media (max-width: 900px), (hover: none), (pointer: coarse) {
-  .hero-product { animation: none; }
+  .hero-product { --burger-tilt: -1.5deg; --burger-return: 1.5deg; --burger-lift: -4px; animation-duration: 11s; }
   .campaign-product { transform: none; }
 }
 :root[data-calm-motion=true] body[data-experience] :is(.hero-product, .campaign-product, .food-photo, .category-photo, .hero-food-rail img, .menu-card) { animation: none; transform: none; transition: none; }
