@@ -69,6 +69,7 @@ try {
     if (theme === 'contrast') await page.locator('[data-access-toggle=contrast]').click();
     await inspect(`${theme}-menu`, '#popular');
     await inspect(`${theme}-header`, '.site-header');
+    await inspect(`${theme}-footer`, '.restaurant-footer');
     await page.locator('[data-menu-item][data-id="wrap-hot-chicken"] [data-detail-item]').click();
     await page.waitForFunction(() => document.querySelector('[data-item-dialog]').open);
     await inspect(`${theme}-details`, '[data-item-dialog]');

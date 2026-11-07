@@ -146,7 +146,7 @@ if ('IntersectionObserver' in window) {
   document.querySelectorAll('[data-menu-item]').forEach(card => cardsEntering.observe(card));
 }
 
-// Acknowledge Add only after the authoritative cart count increases.
+// Acknowledge a visible cart addition immediately; app.js settles pending previews.
 let pendingAdd = null;
 document.addEventListener('click', event => {
   const button = event.target.closest('[data-add-item]');

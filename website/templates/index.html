@@ -13,9 +13,9 @@
     <link rel="preload" href="/static/fonts/bebas-neue-latin.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/static/fonts/dm-sans-latin.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" as="image" href="/static/img/editorial/fast-v7/chicken-burger-hero-768.webp" imagesrcset="/static/img/editorial/fast-v7/chicken-burger-hero-480.webp 480w, /static/img/editorial/fast-v7/chicken-burger-hero-768.webp 768w, /static/img/editorial/fast-v7/chicken-burger-hero-1024.webp 1024w" imagesizes="(max-width: 700px) 90vw, (max-width: 900px) 480px, 560px" fetchpriority="high" />
-    <link rel="stylesheet" href="/static/vendor/food-experience.css?v=menu-20" />
-    <script type="module" src="/static/js/app.js?v=menu-20"></script>
-    <script type="module" src="/static/js/experience.mjs?v=menu-20"></script>
+    <link rel="stylesheet" href="/static/vendor/food-experience.css?v=menu-21" />
+    <script type="module" src="/static/js/app.js?v=menu-21"></script>
+    <script type="module" src="/static/js/experience.mjs?v=menu-21"></script>
   </head>
   <body data-experience="immersive" data-orchestration-url="{{ orchestration_base_url }}">
     <a class="skip-link" href="#popular">Skip to menu</a>
@@ -402,7 +402,34 @@
       </section>
 
       </details>
-      <footer class="site-footer"><a class="footer-wordmark" href="#main">FoodEase<span>.</span></a><p>Good food. Your way.<br /><span>Designed with everyone at the table.</span></p><a href="#popular">Back to the menu ↗</a></footer>
+      <footer class="site-footer restaurant-footer" aria-labelledby="restaurant-footer-title">
+        <div class="footer-intro">
+          <h2 id="restaurant-footer-title">Flavorful Food, Ready for You at FoodEase in Lahore, Islamabad, Gujranwala</h2>
+          <p>From light bites to hearty meals, find bold flavors and something for every craving. Whether you are grabbing a quick meal or ordering from home, good food is always on the menu.</p>
+        </div>
+        <div class="footer-information">
+          <div class="footer-contact">
+            <section aria-labelledby="footer-address"><h3 id="footer-address">Branch Address</h3><address>318-B, Main Khayaban-e-Jinnah, Iqbal Avenue Housing Society, Lahore</address></section>
+            <section aria-labelledby="footer-email"><h3 id="footer-email">Email</h3><a href="mailto:support@megpakistan.com">support@megpakistan.com</a></section>
+            <section aria-labelledby="footer-phone"><h3 id="footer-phone">Call Us</h3><a href="tel:+9242111634111">042 111 634 111</a></section>
+            <section aria-labelledby="footer-social"><h3 id="footer-social">Follow Us</h3>
+              <div class="footer-social-links">
+                <a href="https://www.instagram.com/megpakistan/" target="_blank" rel="noopener noreferrer" aria-label="MEG Pakistan on Instagram (opens a new tab)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></a>
+                <a href="https://www.linkedin.com/company/meg-pakistan/" target="_blank" rel="noopener noreferrer" aria-label="MEG Pakistan on LinkedIn (opens a new tab)"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M5 3a2 2 0 1 0 0 4 2 2 0 0 0 0-4ZM3.3 9H7v12H3.3V9Zm6.2 0H13v1.6c.7-1.2 1.9-2 3.8-2 3.8 0 4.2 2.5 4.2 5.8V21h-3.7v-5.8c0-1.5 0-3.3-2-3.3s-2.2 1.6-2.2 3.2V21H9.5V9Z"/></svg></a>
+              </div>
+            </section>
+          </div>
+          <section class="footer-hours" aria-labelledby="footer-hours-title">
+            <h3 id="footer-hours-title">Our Operational Timings</h3>
+            <dl>
+              {% for day in ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] %}
+              <div><dt>{{ day }}</dt><dd><time datetime="11:00">11:00 AM</time> – <time datetime="03:50">03:50 AM</time></dd></div>
+              {% endfor %}
+            </dl>
+          </section>
+        </div>
+        <div class="footer-bottom"><a class="footer-home" href="#main" aria-label="FoodEase home">FoodEase<span>.</span></a><p>Good food. Your way.</p><a href="#popular">Back to the menu <span aria-hidden="true">↗</span></a></div>
+      </footer>
 
       <dialog class="item-dialog" data-item-dialog aria-labelledby="item-dialog-title">
         <div class="detail-shell">

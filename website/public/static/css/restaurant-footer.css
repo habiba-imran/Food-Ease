@@ -1,0 +1,39 @@
+/* Restaurant information follows the supplied footer reference. */
+:root body[data-experience] .restaurant-footer { display: block; margin-top: 72px; padding: 32px 32px 24px; border: 1px solid #303033; border-radius: 20px; background: #18181b; color: #f3f3f5; text-align: left; }
+.restaurant-footer .footer-intro { padding: 26px 28px; border-radius: 14px; background: #222225; }
+:root body[data-experience] .restaurant-footer h2 { margin: 0 0 14px; font: 700 clamp(1.3rem, 2vw, 1.8rem)/1.4 var(--font-sans); letter-spacing: -.02em; text-transform: none; }
+:root body[data-experience] .restaurant-footer p { margin: 0; font: 400 1rem/1.8 var(--font-sans); color: #d9d9df; }
+.restaurant-footer .footer-information { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(320px, 1fr); gap: 48px 80px; padding: 32px 0 40px; }
+.restaurant-footer .footer-contact { display: grid; align-content: start; gap: 24px; }
+:root body[data-experience] .restaurant-footer h3 { margin: 0 0 16px; color: #f3f3f5; font: 700 1.15rem/1.4 var(--font-sans); letter-spacing: -.015em; }
+.restaurant-footer address { font-style: normal; max-width: 580px; }
+:root body[data-experience] .restaurant-footer :is(address, a, dt, dd) { color: #e1e1e6; font: 400 .95rem/1.7 var(--font-sans); }
+.restaurant-footer a { text-underline-offset: 4px; overflow-wrap: anywhere; }
+:root body[data-experience] .restaurant-footer a:hover { color: #b9d69e; }
+.restaurant-footer a:focus-visible { outline: 3px solid #b9d69e; outline-offset: 5px; }
+.restaurant-footer .footer-social-links { display: flex; gap: 12px; }
+.restaurant-footer .footer-social-links a { display: grid; place-items: center; width: 48px; height: 48px; border-radius: 50%; background: #08080a; border: 1px solid #36363c; }
+.restaurant-footer .footer-hours dl { margin: 16px 0 0; }
+.restaurant-footer .footer-hours dl > div { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 0; border-bottom: 1px solid #303034; }
+.restaurant-footer .footer-hours dl > div:last-child { border: 0; }
+.restaurant-footer .footer-hours dd { margin: 0; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.restaurant-footer .footer-bottom { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px 32px; padding-top: 22px; border-top: 1px solid #303034; }
+:root body[data-experience] .restaurant-footer .footer-home { font: 400 2rem/1 var(--font-condensed); text-decoration: none; text-transform: uppercase; }
+.restaurant-footer .footer-home span { color: #ff713f; }
+.restaurant-footer .footer-bottom > a:last-child { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; }
+:root[data-high-contrast=true] body[data-experience] .restaurant-footer { border: 2px solid #fff; }
+@media (max-width: 800px) {
+  :root body[data-experience] .restaurant-footer { padding: 24px 20px; }
+  .restaurant-footer .footer-information { grid-template-columns: minmax(0, 1fr); gap: 32px; }
+}
+@media (max-width: 480px) {
+  :root body[data-experience] .restaurant-footer { margin-top: 44px; padding: 16px 16px 84px; border-radius: 16px; }
+  .restaurant-footer .footer-intro { padding: 20px 16px; }
+  :root body[data-experience] .restaurant-footer h2 { font-size: 1.3rem; }
+  :root body[data-experience] .restaurant-footer :is(address, a, dt, dd) { font-size: .85rem; }
+  :root body[data-experience] .restaurant-footer p { font-size: .9rem; }
+  .restaurant-footer .footer-hours dl > div { gap: 8px; }
+  .restaurant-footer .footer-bottom { display: grid; justify-content: start; gap: 12px; }
+}
+:root body[data-experience] .restaurant-footer { padding-bottom: 100px; }
+@media (max-width: 700px) { :root body[data-experience] .restaurant-footer { padding-bottom: 150px; } }

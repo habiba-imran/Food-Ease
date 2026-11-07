@@ -29,6 +29,9 @@ const checkoutButton = document.querySelector("[data-checkout-button]");
 const orderStatus = document.querySelector("[data-order-status]");
 const cartToast = document.querySelector("[data-cart-toast]");
 let cartToastTimer = 0;
+const pendingCartAdds = new Map();
+let catalogServiceFee = 0;
+let lastCartPreviewKey = '';
 const cartDialog = document.querySelector("[data-cart-dialog], #cart-preview");
 const cartButton = document.querySelector(".cart-button, [data-cart-trigger]");
 const cartCloseButtons = document.querySelectorAll("[data-cart-close], [data-cart-close-secondary]");
@@ -489,6 +492,7 @@ async function application() {
     const sessionId = await shoppingSession();
     const catalog = await (await checkedResponse(await fetch("/api/catalog/items"))).json();
     catalogItems = new Map(catalog.items.map((item) => [item.item_id, item]));
+    catalogServiceFee = catalog.service_fee_pkr || 0;
     const transport = {
       context: async () => (await shoppingFetch("/api/v2/app/context")).json(),
       action: async (request) => (await shoppingFetch("/api/v2/app/action", {
@@ -512,6 +516,7 @@ async function application() {
 
 async function renderApplication(snapshot, result = null, request = null) {
   appContext = snapshot;
+  if (result && result.status !== 'timeout_unknown') pendingCartAdds.delete(result.action_id);
   const menuState = menuPreview?.state || snapshot;
   activeCategory = menuState.category || "all";
   activeFilter = menuState.filter_tags[0] || (menuState.max_price_pkr !== null ? "budget" : "all");
@@ -531,7 +536,7 @@ async function renderApplication(snapshot, result = null, request = null) {
     const rows = Array.from(cartLines?.children || []);
     const rowIndex = rows.indexOf(active?.closest(".cart-line"));
     const scrollTop = cartDialog?.scrollTop || 0;
-    renderCart(snapshot.cart);
+    renderCart(projectedCart());
     lastRenderedCart = cartKey;
     if (label && active && !active.isConnected) {
       const same = Array.from(cartLines?.querySelectorAll("button") || []).find((b) => b.getAttribute("aria-label") === label);
@@ -589,16 +594,11 @@ async function renderApplication(snapshot, result = null, request = null) {
   syncVoiceUi();
   if (cartChanged && result?.status === "success" && result.operation === "cart.add_item") {
     const item = catalogItems.get(request?.payload?.arguments?.item_id);
-    const label = cartToast?.querySelector("[data-cart-toast-message]");
-    if (cartToast && label) {
-      clearTimeout(cartToastTimer);
-      label.textContent = `${item?.name || "Item"} added to cart`;
-      const quantity = snapshot.cart.lines.reduce((sum, line) => sum + line.quantity, 0);
-      cartToast.querySelector('[data-cart-toast-summary]').textContent = `${quantity} ${quantity === 1 ? 'item' : 'items'} · Total ${money(snapshot.cart.total)}`;
-      cartToast.hidden = false;
-      cartToastTimer = setTimeout(() => { cartToast.hidden = true; }, 3600);
-    }
+    showCartToast(`${item?.name || "Item"} added to cart`, projectedCart(), pendingCartAdds.size > 0);
   }
+  // A confirmed response can match the preview exactly, so always settle busy state.
+  syncCartPreview();
+  if (result?.operation === 'cart.add_item' && result.status !== 'success' && !pendingCartAdds.size && cartToast?.dataset.state === 'pending') cartToast.hidden = true;
 }
 
 async function refreshContext() {
@@ -624,12 +624,16 @@ async function submitRawAction(actionId, operation, argumentsObject = {}, contex
 }
 
 async function submitAction(operation, argumentsObject = {}) {
+  const actionId = nextActionId(operation);
+  if (operation === 'cart.add_item') previewCartAdd(actionId, argumentsObject);
   let result;
-  try { result = await submitRawAction(nextActionId(operation), operation, argumentsObject); }
+  try { result = await submitRawAction(actionId, operation, argumentsObject); }
   catch (error) {
+    settleCartPreview(actionId);
     setStatus(error.message || "The outcome could not be verified. Use Check pending changes before trying again.");
     return { status: "timeout_unknown", error_code: "timeout", verified_state: null };
   }
+  settleCartPreview(actionId);
   if (result.status === "timeout_unknown") setStatus("The outcome is unknown. Use Check pending changes; no action has been sent again.");
   else if (result.status !== "success") setStatus({
     out_of_stock: "This dish is sold out. Please choose another item.",
@@ -1115,7 +1119,62 @@ function renderReceipt(orderResult) {
   receiptId?.focus();
 }
 
+// Pending additions affect presentation only. Application/voice/checkout retain
+// the confirmed cart, and each preview is removed by its original action ID.
+function projectedCart() {
+  const base = appContext?.cart || { lines: [], currency: 'PKR', fees: [], subtotal: 0, total: 0 };
+  const lines = base.lines.map(line => ({ ...line }));
+  for (const addition of pendingCartAdds.values()) {
+    let line = lines.find(line => line.item_id === addition.item_id);
+    if (!line) {
+      line = { item_id: addition.item_id, name: addition.name, unit_price: addition.price, quantity: 0 };
+      lines.push(line);
+    }
+    line.quantity += addition.quantity;
+    line.line_total = line.unit_price * line.quantity;
+  }
+  const subtotal = lines.reduce((sum, line) => sum + line.quantity * line.unit_price, 0);
+  const fees = lines.length ? (base.fees.length ? base.fees : [{ code: 'service', label: 'Service fee', amount: catalogServiceFee }]) : [];
+  return { ...base, lines, fees, subtotal, total: subtotal + fees.reduce((sum, fee) => sum + fee.amount, 0) };
+}
+
+function showCartToast(message, cart, pending = false) {
+  if (!cartToast) return;
+  clearTimeout(cartToastTimer);
+  const quantity = cart.lines.reduce((sum, line) => sum + line.quantity, 0);
+  cartToast.dataset.state = pending ? 'pending' : 'confirmed';
+  cartToast.querySelector('.cart-toast-check').textContent = pending ? '…' : '✓';
+  cartToast.querySelector('[data-cart-toast-message]').textContent = message;
+  cartToast.querySelector('[data-cart-toast-summary]').textContent = `${quantity} ${quantity === 1 ? 'item' : 'items'} · Total ${money(cart.total)}${pending ? ' · Updating…' : ''}`;
+  cartToast.hidden = false;
+  if (!pending) cartToastTimer = setTimeout(() => { cartToast.hidden = true; }, 3600);
+}
+
+function syncCartPreview() {
+  const cart = projectedCart();
+  if (JSON.stringify(cart) !== lastCartPreviewKey) renderCart(cart);
+  cartButton?.setAttribute('aria-busy', String(pendingCartAdds.size > 0));
+  setCartBusy(cartBusy);
+}
+
+function previewCartAdd(actionId, args) {
+  const item = catalogItems.get(args.item_id);
+  if (!appContext || !item?.available || !Number.isInteger(args.quantity) || args.quantity < 1) return;
+  const existing = projectedCart().lines.find(line => line.item_id === item.item_id)?.quantity || 0;
+  if (existing + args.quantity > 99) return;
+  pendingCartAdds.set(actionId, { item_id: item.item_id, name: item.name, price: item.unit_price_pkr, quantity: args.quantity });
+  syncCartPreview();
+  showCartToast(`Adding ${item.name} to your cart`, projectedCart(), true);
+}
+
+function settleCartPreview(actionId) {
+  if (!pendingCartAdds.delete(actionId)) return;
+  syncCartPreview();
+  if (!pendingCartAdds.size && cartToast?.dataset.state === 'pending') cartToast.hidden = true;
+}
+
 function renderCart(cart) {
+  lastCartPreviewKey = JSON.stringify(cart);
   const lines = cart?.lines || [];
   const quantity = lines.reduce((sum, line) => sum + line.quantity, 0);
   const fee = cart?.fees?.[0]?.amount || 0;
@@ -1142,7 +1201,7 @@ function renderCart(cart) {
     cartTotal.textContent = money(cart?.total);
   }
   if (checkoutButton) {
-    checkoutButton.disabled = lines.length === 0 || cartBusy || checkoutBusy;
+    checkoutButton.disabled = lines.length === 0 || cartBusy || checkoutBusy || pendingCartAdds.size > 0;
   }
   if (!cartLines) {
     return;
@@ -1223,13 +1282,14 @@ function renderCart(cart) {
 }
 
 function setCartBusy(busy) {
+  busy = busy || pendingCartAdds.size > 0;
   cartLines?.setAttribute("aria-busy", String(busy));
   cartLines?.querySelectorAll("button").forEach(button => button.setAttribute("aria-disabled", String(busy)));
   if (checkoutButton) checkoutButton.disabled = busy || checkoutBusy || !appContext?.cart?.lines.length;
 }
 
 async function changeCart(line, quantity) {
-  if (cartBusy) return;
+  if (cartBusy || pendingCartAdds.size) return;
   cartBusy = true;
   setCartBusy(true);
   resetConfirmation();
@@ -1317,13 +1377,14 @@ detailAddButton?.addEventListener("click", async () => {
   resetConfirmation();
   detailAddButton.disabled = true;
   setStatus(`Adding ${quantity} ${item.name}.`);
-  const result = await submitAction("cart.add_item", {
+  const addition = submitAction("cart.add_item", {
     item_id: item.id,
     quantity,
   });
+  dismissDialog(itemDialog, 'back');
+  const result = await addition;
   detailAddButton.disabled = !selectedDetailItem?.available;
   if (result.status === "success") {
-    if (appContext?.route === "item" && appContext.focus_item_id === item.id) await navigateOnce("back");
     setStatus(`${quantity} ${item.name} added. Cart total is ${cartTotal?.textContent || "updated"}.`);
   }
 });

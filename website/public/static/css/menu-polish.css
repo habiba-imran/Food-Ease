@@ -113,3 +113,8 @@ html { scroll-padding-top: var(--header-clearance, 142px); }
 :root body[data-experience] .cart-button.is-floating-cart .cart-floating-summary,
 :root body[data-experience] .cart-button.is-floating-cart .cart-floating-summary > span { position: static; width: auto; height: auto; overflow: visible; clip: auto; clip-path: none; text-transform: none; white-space: nowrap; }
 :root body[data-experience] .cart-button.is-floating-cart .cart-floating-summary > strong { display: block; width: auto; height: auto; min-width: 0; min-height: 0; padding: 0; border-radius: 0; background: transparent; color: inherit; font: 700 .95rem/1.3 var(--font-sans); white-space: nowrap; }
+/* Nested spans must not inherit the old search label's bottom margin. */
+:root body[data-experience] .search-field .search-shell,
+:root body[data-experience] .search-field .search-shell span { margin: 0; }
+:root body[data-experience] .search-field input { display: block; margin: 0; }
+:root body[data-experience] .cart-toast[data-state=pending] .cart-toast-check { font-size: 1.15rem; }
