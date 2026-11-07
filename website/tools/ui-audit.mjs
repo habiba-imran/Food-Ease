@@ -65,7 +65,7 @@ try {
   await page.waitForFunction(() => /\d+/.test(document.documentElement.dataset.foodeaseRevision || ''));
   await page.locator('[data-order-manual]').click();
   for (const theme of ['light', 'dark', 'contrast']) {
-    if (theme === 'dark') await page.locator('[data-header-theme]').click();
+    if (theme !== 'contrast' && await page.locator('html').getAttribute('data-theme') !== theme) await page.locator('[data-header-theme]').click();
     if (theme === 'contrast') await page.locator('[data-access-toggle=contrast]').click();
     await inspect(`${theme}-menu`, '#popular');
     await inspect(`${theme}-header`, '.site-header');

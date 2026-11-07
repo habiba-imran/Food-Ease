@@ -259,12 +259,12 @@ let assistanceController = null;
 let assistancePaused = false;
 const displayModes = new Set();
 const themeStorageKey = "foodease-theme";
-let activeTheme = "light";
+let activeTheme = "dark";
 
 try {
-  activeTheme = window.localStorage.getItem(themeStorageKey) === "dark" ? "dark" : "light";
+  activeTheme = window.localStorage.getItem(themeStorageKey) === "light" ? "light" : "dark";
 } catch {
-  activeTheme = "light";
+  activeTheme = "dark";
 }
 
 function money(amount) {

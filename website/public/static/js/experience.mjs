@@ -3,13 +3,14 @@ const root = document.documentElement;
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 const calm = () => reducedMotion.matches || root.dataset.calmMotion === 'true';
 
-// The flat hero photograph gets only a few pixels of desktop parallax.
+// Horizontal pointer movement turns the photograph around its fixed center.
 const editorialHero = document.querySelector('.hero');
-const desktopMotion = window.matchMedia('(min-width: 901px) and (hover: hover) and (pointer: fine)');
+const desktopMotion = window.matchMedia('(min-width: 701px) and (hover: hover) and (pointer: fine)');
 let heroFrame = 0;
 function resetHeroMotion() {
   cancelAnimationFrame(heroFrame);
-  ['--scene-x', '--scene-y'].forEach(key => editorialHero?.style.removeProperty(key));
+  editorialHero?.style.removeProperty('--scene-angle');
+  if (editorialHero) delete editorialHero.dataset.pointerRotation;
 }
 editorialHero?.addEventListener('pointermove', event => {
   if (calm() || !desktopMotion.matches || event.pointerType === 'touch') return;
@@ -17,9 +18,8 @@ editorialHero?.addEventListener('pointermove', event => {
   heroFrame = requestAnimationFrame(() => {
     const rect = editorialHero.getBoundingClientRect();
     const x = Math.max(-.5, Math.min(.5, (event.clientX - rect.left) / rect.width - .5));
-    const y = Math.max(-.5, Math.min(.5, (event.clientY - rect.top) / rect.height - .5));
-    editorialHero.style.setProperty('--scene-x', `${x * 12}px`);
-    editorialHero.style.setProperty('--scene-y', `${y * 8}px`);
+    editorialHero.dataset.pointerRotation = 'true';
+    editorialHero.style.setProperty('--scene-angle', `${x * 20}deg`);
   });
 });
 editorialHero?.addEventListener('pointerleave', resetHeroMotion);

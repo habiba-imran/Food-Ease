@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { mkdir } from 'node:fs/promises';
-const evidence = '../artifacts/ui-polish-2026-11-07';
+const evidence = process.env.FOODEASE_UI_EVIDENCE || '../artifacts/ui-polish-2026-11-07';
 
 test.beforeEach(async ({ page }) => {
   await page.goto('/');
@@ -41,7 +41,7 @@ for (const [width, height] of [[320, 740], [375, 812], [667, 375], [768, 1024], 
   });
 }
 
-test('desktop float and parallax respect live motion preference changes', async ({ page }) => {
+test('mouse rotation keeps the burger center fixed and respects live motion preferences', async ({ page }) => {
   const hero = page.locator('.hero');
   const product = page.locator('.hero-product');
   await expect(product).toHaveCSS('animation-name', 'hero-object-float');
@@ -53,11 +53,20 @@ test('desktop float and parallax respect live motion preference changes', async 
   await expect.poll(() => product.evaluate(el => getComputedStyle(el).transform)).not.toBe(rotation);
   await hero.scrollIntoViewIfNeeded();
   const box = await hero.boundingBox();
-  await page.mouse.move(box.x + box.width * .7, Math.max(100, box.y + box.height * .4));
-  await expect.poll(() => hero.evaluate(el => el.style.getPropertyValue('--scene-x'))).not.toBe('');
+  const pointerY = Math.max(150, box.y + box.height * .4);
+  await page.mouse.move(box.x + box.width * .25, pointerY);
+  await expect.poll(() => hero.evaluate(el => Number.parseFloat(el.style.getPropertyValue('--scene-angle')))).toBeCloseTo(-5, 1);
+  const center = await product.evaluate(el => { const r = el.getBoundingClientRect(); return { x: r.x + r.width / 2, y: r.y + r.height / 2 }; });
+  await page.mouse.move(box.x + box.width * .75, pointerY);
+  await expect.poll(() => hero.evaluate(el => Number.parseFloat(el.style.getPropertyValue('--scene-angle')))).toBeCloseTo(5, 1);
+  const next = await product.evaluate(el => { const r = el.getBoundingClientRect(); return { x: r.x + r.width / 2, y: r.y + r.height / 2 }; });
+  expect(Math.abs(next.x - center.x)).toBeLessThan(1);
+  expect(Math.abs(next.y - center.y)).toBeLessThan(1);
+  await page.mouse.move(box.x + box.width * .75, pointerY + 60);
+  await expect.poll(() => hero.evaluate(el => Number.parseFloat(el.style.getPropertyValue('--scene-angle')))).toBeCloseTo(5, 1);
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await expect(product).toHaveCSS('animation-name', 'none');
-  await expect.poll(() => hero.evaluate(el => el.style.getPropertyValue('--scene-x'))).toBe('');
+  await expect.poll(() => hero.evaluate(el => el.style.getPropertyValue('--scene-angle'))).toBe('');
   await page.emulateMedia({ reducedMotion: 'no-preference' });
   await page.locator('[data-access-toggle=motion]').click();
   await expect(product).toHaveCSS('animation-name', 'none');

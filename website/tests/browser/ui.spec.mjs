@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { mkdir } from 'node:fs/promises';
 
 test.beforeEach(async ({ page }) => {
   await page.goto('/');
@@ -29,7 +30,6 @@ for (const [width, height] of [[375, 812], [667, 375], [768, 1024], [1024, 768],
 
 test('dark mobile browsing preserves filters, selection, and checkout', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.locator('[data-header-theme]').click();
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
   await page.locator('[data-filter=vegetarian]').click();
   await expect(page.locator('[data-menu-item][data-id="wrap-hot-chicken"]')).toBeHidden();
@@ -106,4 +106,45 @@ test('lower-page copy reveals on scroll and motion preferences keep it readable'
   await page.reload();
   await expect(page.locator('#ar-title')).toHaveCSS('opacity', '1');
   await expect(page.locator('.footer-wordmark')).toHaveCSS('opacity', '1');
+});
+for (const width of [375, 1440]) {
+  test(`dark default, saved theme, and centered icons work at ${width}px`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 900 });
+    const button = page.locator('[data-header-theme]');
+    await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+    for (const [theme, icon, label] of [['dark', '.theme-sun', 'Switch to light mode'], ['light', '.theme-moon', 'Switch to dark mode']]) {
+      await expect(page.locator('html')).toHaveAttribute('data-theme', theme);
+      await expect(button).toHaveAccessibleName(label);
+      await expect(button.locator(icon)).toBeVisible();
+      const offset = await button.evaluate((el, selector) => {
+        const b = el.getBoundingClientRect(), i = el.querySelector(selector).getBoundingClientRect();
+        return { x: Math.abs(b.x + b.width / 2 - i.x - i.width / 2), y: Math.abs(b.y + b.height / 2 - i.y - i.height / 2) };
+      }, icon);
+      expect(offset.x).toBeLessThan(1);
+      expect(offset.y).toBeLessThan(1);
+      if (process.env.FOODEASE_UI_EVIDENCE) {
+        await mkdir(process.env.FOODEASE_UI_EVIDENCE, { recursive: true });
+        await page.locator('.header-actions').screenshot({ path: `${process.env.FOODEASE_UI_EVIDENCE}/theme-${theme}-${width}.png` });
+      }
+      if (theme === 'dark') await button.click();
+    }
+    await page.reload();
+    await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
+    await button.click();
+    await page.reload();
+    await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+  });
+}
+
+test('dark default survives unavailable theme storage', async ({ page }) => {
+  await page.addInitScript(() => {
+    const original = Storage.prototype.getItem;
+    Storage.prototype.getItem = function(key) {
+      if (key === 'foodease-theme') throw new DOMException('Storage blocked', 'SecurityError');
+      return original.call(this, key);
+    };
+  });
+  await page.reload();
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+  await expect(page.locator('[data-header-theme]')).toHaveAccessibleName('Switch to light mode');
 });

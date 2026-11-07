@@ -1,16 +1,21 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="dark">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{{ app_name }} | Good food. Your way.</title>
     <meta name="description" content="Explore local favourites, browse the menu, and build your FoodEase order." />
+    <script>
+      try {
+        if (localStorage.getItem('foodease-theme') === 'light') document.documentElement.dataset.theme = 'light';
+      } catch { /* Dark remains the default when storage is unavailable. */ }
+    </script>
     <link rel="preload" href="/static/fonts/bebas-neue-latin.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/static/fonts/dm-sans-latin.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" as="image" href="/static/img/editorial/fast-v7/chicken-burger-hero-768.webp" imagesrcset="/static/img/editorial/fast-v7/chicken-burger-hero-480.webp 480w, /static/img/editorial/fast-v7/chicken-burger-hero-768.webp 768w, /static/img/editorial/fast-v7/chicken-burger-hero-1024.webp 1024w" imagesizes="(max-width: 700px) 90vw, (max-width: 900px) 480px, 560px" fetchpriority="high" />
-    <link rel="stylesheet" href="/static/vendor/food-experience.css?v=rotation-17" />
-    <script type="module" src="/static/js/app.js?v=voice-13"></script>
-    <script type="module" src="/static/js/experience.mjs?v=polish-16"></script>
+    <link rel="stylesheet" href="/static/vendor/food-experience.css?v=theme-18" />
+    <script type="module" src="/static/js/app.js?v=theme-18"></script>
+    <script type="module" src="/static/js/experience.mjs?v=theme-18"></script>
   </head>
   <body data-experience="immersive" data-orchestration-url="{{ orchestration_base_url }}">
     <a class="skip-link" href="#popular">Skip to menu</a>
@@ -28,7 +33,10 @@
           <span class="cart-button-text">Cart</span>
           <strong data-cart-count>0</strong>
         </button>
-        <button class="icon-button" type="button" data-header-theme aria-label="Switch to dark mode"></button>
+        <button class="icon-button" type="button" data-header-theme aria-label="Switch to light mode">
+          <svg class="theme-icon theme-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"/></svg>
+          <svg class="theme-icon theme-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.9 13A9 9 0 0 1 11 3.1 9 9 0 1 0 20.9 13Z"/></svg>
+        </button>
       </div>
     </header>
 

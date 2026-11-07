@@ -215,7 +215,7 @@ html:has(dialog[open]) { overflow: hidden; scrollbar-gutter: stable; }
 }
 /* Touch screens get a smaller, slower rock without pointer-driven movement. */
 @media (max-width: 900px), (hover: none), (pointer: coarse) {
-  .hero-product { --burger-tilt: -1.5deg; --burger-return: 1.5deg; --burger-lift: -4px; animation-duration: 11s; }
+  .hero-product { --burger-tilt: -1.5deg; --burger-return: 1.5deg; animation-duration: 11s; }
   .campaign-product { transform: none; }
 }
 :root[data-calm-motion=true] body[data-experience] :is(.hero-product, .campaign-product, .food-photo, .category-photo, .hero-food-rail img, .menu-card) { animation: none; transform: none; transition: none; }
