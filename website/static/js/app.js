@@ -1,5 +1,5 @@
 import { Application, newId } from "./application.mjs";
-import { AssistanceController } from "./assistance-controller.mjs?v=voice-15";
+import { AssistanceController } from "./assistance-controller.mjs?v=voice-16";
 import { LiveKitSeats } from "./livekit-bridge.mjs?v=voice-15";
 import { TranscriptView } from "./transcripts.mjs";
 import { acquireTabLease } from "./tab-lease.mjs";
@@ -1726,9 +1726,6 @@ async function controller() {
       const speechState = currentAgentState;
       setAgentStatus(state.modeState === "ended" ? "ended" : state.state === "active"
         ? ["assistant_speaking", "thinking"].includes(speechState) ? speechState : "ready/listening" : state.state);
-      if (state.state === "active") {
-        try { sessionStorage.setItem("foodease.assistance-used.v2", app.sessionId); } catch { /* Optional resume copy only. */ }
-      }
       if (state.serverCleanupPending) setStatus("Local assistance stopped. Server cleanup is pending; your cart is preserved.");
       else if (state.detail) setStatus(state.detail);
       else if (state.state === "active" && previousPhase !== state.modeState) {
@@ -1744,7 +1741,9 @@ async function controller() {
       if (app.snapshot) void renderApplication(app.snapshot).catch(() => setStatus("Could not refresh assistance controls. Your cart is preserved."));
     },
   });
-  try { assistanceController.hasActivated = sessionStorage.getItem("foodease.assistance-used.v2") === app.sessionId; } catch { /* No automatic activation. */ }
+  // Conversation activation belongs to this document only. Reload retains the cart
+  // and cleanup identity, but never reuses the previous conversation's resume flag.
+  try { sessionStorage.removeItem("foodease.assistance-used.v2"); } catch { /* Optional legacy cleanup. */ }
   return assistanceController;
 }
 async function startAssistance(mode) {
@@ -1947,6 +1946,11 @@ document.addEventListener("click", (event) => {
 });
 document.querySelector("[data-order-manual]")?.addEventListener("click", () => chooseManual());
 window.addEventListener("pagehide", () => { assistanceIntent++; void wakeListener.stop().catch(() => {}); void assistanceController?.end(); });
+window.addEventListener("pageshow", (event) => {
+  // BFCache restores the old JavaScript heap and UI. Reinitialize the document so
+  // an ended conversation, transcript or capture intent cannot be resurrected.
+  if (event.persisted) window.location.reload();
+});
 document.addEventListener("visibilitychange", () => {
   if (document.visibilityState !== "hidden") return;
   void wakeListener.stop().catch(() => {});

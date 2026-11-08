@@ -54,7 +54,11 @@ async def test_transient_provider_error_has_no_mode_change(runtime):
 
 
 @pytest.mark.asyncio
-async def test_llm_rate_limit_stops_only_the_reply_without_replaying_cart_actions(runtime):
+@pytest.mark.parametrize("language", ["en", "ur"])
+async def test_llm_rate_limit_stops_only_the_reply_without_replaying_cart_actions(
+    runtime, language,
+):
+    runtime.language = language
     await call(runtime, "cart_add_item", item_id="wrap-hot-chicken")
     failed_turn = runtime.active_turn
     error = llm.LLMError(
@@ -66,7 +70,8 @@ async def test_llm_rate_limit_stops_only_the_reply_without_replaying_cart_action
     assert error.recoverable and runtime.mode == "voice" and not runtime.closed
     assert failed_turn.discarded and not runtime.authorized(failed_turn)
     assert ("switch_mode", "manual") not in runtime.adapter.controls
-    assert "check your cart" in runtime.session.spoken[-1].lower()
+    expected = "check your cart" if language == "en" else "اپنی ٹوکری دیکھ لیں"
+    assert expected in runtime.session.spoken[-1].lower()
     assert len(runtime.adapter.requests) == 1
     assert (await runtime.adapter.get_snapshot()).cart.lines[0].quantity == 1
 

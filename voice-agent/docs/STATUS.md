@@ -1,5 +1,57 @@
 # STATUS
 
+**Actual Redis connectivity recovery — 2026-11-09.** Read the configured Redis URL
+privately and reproduced DNS SERVFAIL through the system, Cloudflare and Google paths.
+Ordinary Quad9 resolution enabled actual TCP, verified TLS 1.3, AUTH and PING. The
+old five-second sequential preflight deadline also proved too short. Added optional
+Redis-only DNS resolution (local `.env`: `GROQ_CAPACITY_DNS_SERVER=9.9.9.9`) preserving
+the URL, credentials, TLS identity and system DNS, plus bounded 20-second preflight /
+3-second ledger deadlines. Actual `check-capacity` now **passes** against the existing
+database, including native two-client WATCH/MULTI/EXEC and quota-reservation checks.
+Focused: **49 passed**; full worker: **521 passed / one inherited mock-import failure**;
+scoped lint/types passed. No database recreation, credential/security downgrade,
+paid service, Groq call or LiveKit deployment occurred. See
+[evidence](../evidence/redis-connection-2026-11-09/report.md) and ADR-0031. The earlier
+service-level consistency qualification remains separate from this connection fix.
+
+**Upstash Free audit — 2026-11-09.** Native TLS TCP WATCH/MULTI/EXEC support is
+documented; no Free-plan command blocker was identified. The provider's general
+eventual/connection-causal contract does not certify strict cross-worker failover
+accounting. Kept Redis and the existing Cloud deployment unchanged. Local fixes
+retain orphan/interrupted charges conservatively, reject TLS verification overrides,
+stop on ambiguous connection-origin WatchError, and strengthen preflight with two
+clients and forced conflicts. Final full suite: **514 passed / one inherited
+mock-import failure**; scoped lint/types passed. The 17 new coordination cases
+include a simulated rollback counterexample, not a certification of hosted safety.
+No Upstash URL was configured locally; no hosted endpoint or plan was tested or
+changed. See [audit/free alternatives](../../deployment/ZARA_UPSTASH_FREE_AUDIT.md),
+[evidence](../evidence/upstash-free-2026-11-09/report.md) and ADR-0030.
+
+**Proactive Groq capacity management — 2026-11-08.** Implemented primary-first
+admission for up to four configured keys, conservative serialized token estimates,
+bounded output, organization-aware shared Redis reservations and streamed usage/header
+settlement. Both SDK retry layers are disabled; only definitive pre-stream HTTP 429
+rejections can use the next Groq-approved independent account. Existing Urdu recovery
+and cart guards remain intact. Capacity tests: **23 passed**; final full worker suite:
+**497 passed / 1 inherited mock-import failure**. Scoped lint/types passed. Deployment
+preflight correctly refused to replace the existing Cloud worker without shared Redis.
+The current version remains deployed and was Sleeping at inspection; the new image
+build was blocked by Docker Hub DNS. Redis provisioning/configuration and actual Cloud
+rollout remain pending. See [evidence](../evidence/groq-capacity-2026-11-08/report.md),
+[setup guide](../../deployment/ZARA_REDIS_CAPACITY_SETUP.md) and ADR-0029.
+
+**Refresh/stop lifecycle audit — 2026-11-08.** Browser refresh now resets Zara's
+introduction/mode while preserving the retained cart and old-generation cleanup identity.
+Stop/disconnect/restart share one teardown; Back/Forward cache restores reload the
+document. Local capture stops immediately and replacement waits for confirmed cleanup.
+All 63 JavaScript tests passed, plus six new and eighteen existing browser scenarios
+across the verification runs. The Cloud worker remains Running at the same version;
+no worker deployment change is needed. Cloud's free-plan idle scaling can still cause
+cold starts despite prewarming; no account-plan upgrade was made. See the
+[audit](../../website/docs/ZARA_LIFECYCLE_AUDIT_2026-11-08.md). These browser changes
+need Vercel publication/redeployment. Render activation and live provider acceptance
+remain pending as recorded below.
+
 **Cloud deployment — 2026-11-08.** Agent `CA_gibAwTdK3sjn`, dispatch `foodease`,
 version `ckhnpPJ2Lg5h` is Running with one replica in `ap-south` (Mumbai). Final logs
 verify health startup, VAD prewarm and worker registration. A disposable actual RTC

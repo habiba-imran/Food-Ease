@@ -5,10 +5,12 @@ from __future__ import annotations
 import logging
 import os
 from collections.abc import Mapping
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from uuid import UUID
 
 from dotenv import load_dotenv
+
+from foodease_agent.groq_capacity import CapacityConfig
 
 logger = logging.getLogger(__name__)
 DEFAULT_CARTESIA_VOICE_ID = "9626c31c-bec5-4cca-baa8-f8ba9e84c8bc"
@@ -152,7 +154,9 @@ class Settings:
     endpointing_min: float
     endpointing_max: float
     llm_provider: str = "groq"
-    groq_api_key: str = ""
+    groq_api_key: str = field(default="", repr=False)
+    groq_api_keys: tuple[str, ...] = field(default=("", "", "", ""), repr=False)
+    groq_capacity: CapacityConfig = field(default_factory=CapacityConfig)
     assistant_language: str = "en"
     urdu_stt_model: str = "whisper-large-v3-turbo"
 
@@ -204,6 +208,10 @@ def load_config(
         )
 
     using_gemini = llm_provider == "gemini"
+    try:
+        capacity = CapacityConfig.from_env(environ)
+    except ValueError as error:
+        raise ConfigError(str(error)) from None
     return Settings(
         livekit_url=_require(environ, "LIVEKIT_URL"),
         livekit_api_key=_require(environ, "LIVEKIT_API_KEY"),
@@ -248,6 +256,9 @@ def load_config(
         llm_provider=llm_provider,
         groq_api_key=_require(environ, "GROQ_API_KEY")
         if not using_gemini or language == "ur" else "",
+        groq_api_keys=tuple(environ.get(name, "").strip() for name in (
+            "GROQ_API_KEY", "GROQ_API_KEY_2", "GROQ_API_KEY_3", "GROQ_API_KEY_4")),
+        groq_capacity=capacity,
         assistant_language=language,
         urdu_stt_model=environ["URDU_STT_MODEL"],
     )

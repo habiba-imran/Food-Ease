@@ -76,7 +76,8 @@ def test_llm_factory_uses_selected_provider_and_settings(monkeypatch, provider):
 
     # LiveKit registers plugins at import time and requires the main thread.
     # The factory must use the already imported plugin inside a Windows job thread.
-    monkeypatch.setattr(session.groq, "LLM", selected if provider == "groq" else unexpected)
+    monkeypatch.setattr(session, "CapacityGroqLLM",
+                        (lambda settings: result) if provider == "groq" else unexpected)
     monkeypatch.setattr(session.google, "LLM", selected if provider == "gemini" else unexpected)
     settings = _settings(llm_provider=provider, llm_model=expected["model"], groq_api_key="<groq-key>")
     assert build_llm(settings) is result
@@ -276,7 +277,7 @@ def test_groq_session_limits_model_retries():
     bundle = build_session_kwargs(_settings(
         llm_provider="groq", llm_model="openai/gpt-oss-20b", groq_api_key="<groq-key>"
     ))
-    assert bundle.session_kwargs["conn_options"].llm_conn_options.max_retry == 1
+    assert bundle.session_kwargs["conn_options"].llm_conn_options.max_retry == 0
 
 
 # --- V5.11 soak (scripted, no providers) ---

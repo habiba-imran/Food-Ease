@@ -5,10 +5,13 @@ from __future__ import annotations
 from pathlib import Path
 
 from foodease_agent.config import LLM_REQUIRED_ENV_VARS, REQUIRED_ENV_VARS, RUNTIME_ENV_DEFAULTS
+from foodease_agent.groq_capacity import CAPACITY_ENV_VARS
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 ENV_EXAMPLE = REPO_ROOT / ".env.example"
-DECLARED_KEYS = set(REQUIRED_ENV_VARS) | RUNTIME_ENV_DEFAULTS.keys() | {
+DECLARED_KEYS = set(REQUIRED_ENV_VARS) | RUNTIME_ENV_DEFAULTS.keys() | set(CAPACITY_ENV_VARS) | {
+    "GROQ_API_KEY_2", "GROQ_API_KEY_3", "GROQ_API_KEY_4",
+} | {
     name for fields in LLM_REQUIRED_ENV_VARS.values() for name in fields
 }
 

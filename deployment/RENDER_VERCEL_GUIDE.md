@@ -174,6 +174,22 @@ Explicit Urdu quantity guidance was strengthened, but the retest still did not a
 the item. Live shopping-language acceptance remains open; Running status and a short
 synthetic clarification timing do not establish reliable voice ordering.
 
+## 7. Keep the worker warm while resetting conversations
+
+Stopping Zara or refreshing the page ends only that visitor's assistance generation.
+It releases microphone/audio, room and dispatch. The shared Cloud worker is not stopped.
+Refresh starts a fresh introduction and mode choice while retaining the cart; starting
+voice or wake recognition still requires explicit activation.
+
+Cloud prewarming is already enabled. The inspected deployment reports one replica and
+minimum one, but this alone does not guarantee indefinite idle uptime: LiveKit's current
+Build/free plan can scale production agents to zero. Supported paid production plans
+keep agents warm. Confirm the FoodEase plan in LiveKit's dashboard if continuously warm
+hosting is required; no subscription was changed by this work. Do not hold a microphone
+or fake session open as a keepalive. See the
+[lifecycle audit](../website/docs/ZARA_LIFECYCLE_AUDIT_2026-11-08.md) and
+[official cold-start policy](https://docs.livekit.io/deploy/agents/managing-deployments/).
+
 References checked:
 [LiveKit deployment](https://docs.livekit.io/deploy/agents/quickstart/),
 [Cloud secrets](https://docs.livekit.io/deploy/agents/secrets/),

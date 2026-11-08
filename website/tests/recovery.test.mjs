@@ -35,6 +35,65 @@ test("unconfirmed cleanup on reload blocks replacement", async () => {
   await assert.rejects(c.start({ mode: "typed" }), /Cleanup/);
   assert.ok(saved.getItem("foodease.assistance-owner.v2:shop"));
 });
+
+test("reload cleanup discards conversation activation and never resumes the old session", async () => {
+  const saved = storage(), activations = [], calls = [];
+  let sequence = 0;
+  const options = { storage: saved, sessionId: "shop", newId: () => `r-${++sequence}`,
+    acquireMedia: async () => ({ getTracks: () => [] }),
+    api: async (name, body) => {
+      calls.push([name, body.request_id]);
+      return { state: name === "start" ? "preparing" : name === "end" ? "ended" : "active",
+        generation: `g-${sequence}` };
+    },
+    connectSeats: async () => ({ registerApp() {}, publishFreshContext: async () => ({ revision: 1 }),
+      playbackReady() {}, activate: (_mode, resuming) => activations.push(resuming), disconnect() {} }) };
+  const old = new AssistanceController(options);
+  await old.start({ mode: "typed" });
+  const fresh = new AssistanceController(options);
+  await fresh.recover();
+  assert.equal(fresh.hasActivated, false);
+  assert.equal(calls.filter(([name]) => name === "start").length, 1);
+  await fresh.start({ mode: "typed" });
+  assert.deepEqual(activations, [false, false]);
+  assert.deepEqual(calls.filter(([name]) => ["start", "end"].includes(name)),
+    [["start", "r-1"], ["end", "r-1"], ["start", "r-2"]]);
+  await fresh.end();
+});
+
+test("manual choice during reload cleanup wins over the fresh welcome state", async () => {
+  const saved = storage();
+  saved.setItem("foodease.assistance-owner.v2:shop", JSON.stringify({ request_id: "old", generation: "g" }));
+  let resolveCleanup, entered;
+  const reached = new Promise(resolve => { entered = resolve; });
+  const cleanup = new Promise(resolve => { resolveCleanup = resolve; });
+  const controller = new AssistanceController({ storage: saved, sessionId: "shop",
+    api: async () => { entered(); return cleanup; } });
+  const recovering = controller.recover();
+  await reached;
+  const manual = controller.end();
+  resolveCleanup({ state: "ended" });
+  await Promise.all([recovering, manual]);
+  assert.equal(controller.state, "manual");
+});
+
+test("manual choice while reload waits for the tab lease cannot restore welcome or capture", async () => {
+  const saved = storage();
+  saved.setItem("foodease.assistance-owner.v2:shop", JSON.stringify({ request_id: "old", generation: "g" }));
+  let grant;
+  const lease = new Promise(resolve => { grant = resolve; });
+  const calls = [];
+  const controller = new AssistanceController({ storage: saved, sessionId: "shop",
+    acquireLease: () => lease,
+    acquireMedia: () => { throw new Error("Capture must not start"); },
+    api: async name => { calls.push(name); return { state: "ended" }; } });
+  const recovering = controller.recover();
+  await controller.end();
+  grant(() => {});
+  await recovering;
+  assert.equal(controller.state, "manual");
+  assert.deepEqual(calls, ["end"]);
+});
 for (const state of ["not_seen", "pending", "expired"]) test(`lookup ${state} retains original identity and explains uncertainty`, async () => {
   const errors = [], request = actionRequest("shop", "turn", 1, "cart.add_item", { item_id: "wrap-veg", quantity: 1 });
   const app = new Application({ sessionId: "shop", render() {}, onError: s => errors.push(s), transport: {

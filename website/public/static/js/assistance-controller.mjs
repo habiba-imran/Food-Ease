@@ -42,9 +42,11 @@ export class AssistanceController {
   recover() {
     if (!this.orphan) return this.recoveryPromise || Promise.resolve();
     if (this.recoveryPromise) return this.recoveryPromise;
+    const stopEpoch = this.stopEpoch || 0;
     this.recoveryPromise = (async () => {
       const releaseLease = await this.acquireLease();
       const run = { ...this.orphan, cancelled: true, sent: true, serverPending: true,
+        stopPhase: (this.stopEpoch || 0) === stopEpoch ? "awaiting_spoken_choice_consent" : this.state,
         abort: new AbortController(), releaseLease };
       this.orphan = null;
       this.current = run;
@@ -132,7 +134,16 @@ export class AssistanceController {
     this._emit(run, { state: "manual", modeState: run.stopPhase || "manual", localStopped: true, serverCleanupPending: run.serverPending });
   }
 
-  async _serverStop(run) {
+  _serverStop(run) {
+    // Stop clicks, SDK disconnects, unload and a quick restart can overlap.
+    // One owned teardown settles before a replacement can acquire the session.
+    if (run.stopPromise) return run.stopPromise;
+    if (run.stopResult?.state === "ended") return Promise.resolve(run.stopResult);
+    run.stopPromise = this._endServer(run).finally(() => { run.stopPromise = null; });
+    return run.stopPromise;
+  }
+
+  async _endServer(run) {
     if (!run.sent) { await run.releaseLease?.(); return; }
     run.serverPending = true;
     this._save(run);
@@ -140,6 +151,7 @@ export class AssistanceController {
       const result = await this.api("end", { request_id: run.request_id,
         ...(run.generation ? { generation: run.generation } : {}) });
       run.serverPending = result.state !== "ended";
+      if (!run.serverPending) run.stopResult = result;
       this._save(run);
       if (!run.serverPending) { await run.releaseLease?.(); run.releaseLease = null; }
       this._emit(run, { state: "manual", modeState: run.stopPhase || "manual", localStopped: true, serverCleanupPending: run.serverPending });
@@ -215,8 +227,8 @@ export class AssistanceController {
     this.stopEpoch = (this.stopEpoch || 0) + 1;
     const run = this.current;
     if (!run) { this.state = state; this.onState({ state: "manual", modeState: state, localStopped: true }); return Promise.resolve({ state: "ended" }); }
+    if (!run.userEnded) run.stopPhase = state;
     run.userEnded = true;
-    run.stopPhase ||= state;
     this._localStop(run);
     return this._serverStop(run);
   }

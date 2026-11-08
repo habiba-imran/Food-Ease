@@ -12,6 +12,7 @@ from livekit.agents.voice.agent_session import SessionConnectOptions
 from livekit.plugins import cartesia, deepgram, google, groq, silero
 
 from foodease_agent.config import Settings
+from foodease_agent.groq_llm import CapacityGroqLLM
 
 PipelineConfig = Literal["A", "B"]
 
@@ -93,7 +94,7 @@ def build_tts(settings: Settings) -> cartesia.TTS:
 
 def build_llm(settings: Settings) -> llm.LLM:
     if settings.llm_provider == "groq":
-        return groq.LLM(model=settings.llm_model, api_key=settings.groq_api_key)
+        return CapacityGroqLLM(settings)
     return google.LLM(
         model=settings.llm_model,
         api_key=settings.google_api_key,
@@ -162,10 +163,10 @@ def build_session_kwargs(
         }
 
     if settings.llm_provider == "groq":
-        # Keep a brief retry for transport hiccups without waiting through the
-        # full SDK retry sequence when the free-tier quota is exhausted.
+        # Admission/rejected-request recovery is owned by the capacity transport.
+        # Never replay a partially emitted stream or its completed tools.
         kwargs["conn_options"] = SessionConnectOptions(
-            llm_conn_options=APIConnectOptions(max_retry=1)
+            llm_conn_options=APIConnectOptions(max_retry=0)
         )
 
     return SessionBundle(

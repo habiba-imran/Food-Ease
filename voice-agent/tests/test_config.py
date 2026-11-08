@@ -64,6 +64,14 @@ def test_groq_uses_only_its_own_settings() -> None:
     assert settings.groq_api_key == "<groq-key>"
 
 
+def test_optional_groq_credentials_are_trimmed_and_excluded_from_repr():
+    settings = load_config(environ=_complete_environ(GROQ_API_KEY_2=" <second-key> ",
+                                                    GROQ_API_KEY_4="<fourth-key>"))
+    assert settings.groq_api_keys == ("<groq-key>", "<second-key>", "", "<fourth-key>")
+    assert "<second-key>" not in repr(settings)
+    assert "<groq-key>" not in repr(settings)
+
+
 def test_gemini_still_uses_its_existing_settings_without_groq_key() -> None:
     environ = _complete_environ(LLM_PROVIDER="gemini")
     del environ["GROQ_API_KEY"]

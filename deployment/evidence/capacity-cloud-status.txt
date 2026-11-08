@@ -1,0 +1,32 @@
+{
+  "agents":  [
+    {
+      "agentId":  "CA_gibAwTdK3sjn",
+      "agentName":  "foodease",
+      "version":  "ckhnpPJ2Lg5h",
+      "agentDeployments":  [
+        {
+          "region":  "ap-south",
+          "status":  "Sleeping",
+          "minReplicas":  1,
+          "maxReplicas":  1,
+          "cpuReq":  "1",
+          "curCpu":  "0",
+          "curMem":  "0",
+          "memReq":  "1Gi",
+          "memLimit":  "4Gi",
+          "cpuLimit":  "2",
+          "serverRegion":  "osbxmum1b",
+          "version":  "ckhnpPJ2Lg5h",
+          "agentName":  "foodease",
+          "deploymentEnabled":  true,
+          "lastScrapedAt":  "2026-11-08T02:11:27.115174Z"
+        }
+      ],
+      "deployedAt":  "2026-11-07T21:39:09.041370Z"
+    }
+  ]
+}
+WARNING: config file C:\Users\habiba/.livekit/cli-config.yaml should have permissions 600
+Using url, api-key, api-secret from environment
+Using agent [CA_gibAwTdK3sjn]

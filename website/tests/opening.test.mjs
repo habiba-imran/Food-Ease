@@ -101,8 +101,9 @@ test('manual during a pending cleanup retry prevents a late microphone restart',
   await c.end();
   const retry = c.start({ mode: 'voice' });
   await waiting;
-  await c.end();
+  const ending = c.end(); // Shares the in-flight cleanup instead of sending another end.
   release();
+  await ending;
   await assert.rejects(retry, /cancelled/);
   assert.equal(calls.filter(([name]) => name === 'media').length, 1);
 });

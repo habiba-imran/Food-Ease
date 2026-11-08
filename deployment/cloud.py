@@ -7,6 +7,7 @@ a temporary file outside the build context and are deleted after the CLI exits.
 from __future__ import annotations
 
 import argparse
+import asyncio
 import json
 import os
 import re
@@ -14,10 +15,10 @@ import shutil
 import subprocess
 import sys
 import tempfile
+import tomllib
 from pathlib import Path
 from urllib.parse import urlsplit
 
-import tomllib
 from dotenv import dotenv_values
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -30,7 +31,7 @@ def local_environment() -> dict[str, str]:
 
 def redact(text: str, env: dict[str, str]) -> str:
     for key, value in env.items():
-        if value and any(part in key.upper() for part in ("SECRET", "TOKEN", "KEY")):
+        if value and any(part in key.upper() for part in ("SECRET", "TOKEN", "KEY", "REDIS_URL")):
             text = text.replace(value, "[REDACTED]")
     text = re.sub(r'("worker_proof"\s*:\s*)"[^"]+"', r'\1"[REDACTED]"', text)
     return re.sub(r"\beyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+", "[REDACTED_JWT]", text)
@@ -70,6 +71,7 @@ def main() -> int:
             "logs",
             "secrets",
             "configure-backend",
+            "check-capacity",
         ),
     )
     parser.add_argument("--backend-url")
@@ -118,14 +120,34 @@ def main() -> int:
             )
     if args.operation not in {"create", "list"} and not agent_id:
         raise SystemExit("No deployed agent ID in livekit.toml")
-    if args.operation in {"create", "deploy", "configure-backend"}:
+    if args.operation in {"create", "deploy", "configure-backend", "check-capacity"}:
         from foodease_agent.config import load_config
+        from foodease_agent.groq_capacity import CAPACITY_ENV_VARS, cloud_preflight
 
-        settings = load_config(environ=env)
+        settings = load_config(environ={**env, "FOODEASE_CLOUD_RUNTIME": "1"})
+        if args.operation in {"create", "deploy", "check-capacity"}:
+            if settings.llm_provider == "groq":
+                if not settings.groq_capacity.redis_url:
+                    raise SystemExit(
+                        "Set GROQ_CAPACITY_REDIS_URL (rediss://) before Cloud deployment"
+                    )
+                try:
+                    asyncio.run(cloud_preflight(settings.groq_capacity, settings.llm_model))
+                except ValueError as error:
+                    raise SystemExit(str(error)) from None
+            if args.operation == "check-capacity":
+                print(
+                    "Two-client Redis conflict/reservation checks passed; no Groq request was sent."
+                )
+                print("This does not certify provider failover durability or global consistency.")
+                return 0
         secrets = {
             name: env[name]
             for name in (
                 "GROQ_API_KEY",
+                "GROQ_API_KEY_2",
+                "GROQ_API_KEY_3",
+                "GROQ_API_KEY_4",
                 "CARTESIA_API_KEY",
                 "DEEPGRAM_API_KEY",
                 "GOOGLE_API_KEY",
@@ -154,6 +176,8 @@ def main() -> int:
                 "FOODEASE_AGENT_NAME": "foodease",
             }
         )
+        secrets.update({name: env[name] for name in CAPACITY_ENV_VARS
+                        if env.get(name) and name != "GROQ_CAPACITY_SQLITE_PATH"})
         if args.operation == "configure-backend":
             # Updating the callback must not overwrite provider keys changed in Cloud.
             secrets.clear()

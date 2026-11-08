@@ -9,3 +9,6 @@ __pycache__/
 .env
 .venv/
 .tools/
+.uv-cache/
+.cache/
+*.sqlite3*

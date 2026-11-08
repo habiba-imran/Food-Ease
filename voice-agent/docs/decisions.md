@@ -6,6 +6,98 @@ Newest entries at the top.
 
 ---
 
+## ADR-0031 — App-scoped DNS selection with original Redis TLS identity
+
+- **Context:** Actual `.env` Redis preflight failed. Cloudflare/Google and the system
+  resolver returned SERVFAIL, including for unrelated `.io` controls. Ordinary Quad9
+  resolution enabled successful TCP, certificate/hostname-verified TLS and AUTH/PING
+  against the same endpoint. The five-second sequential preflight also timed out
+  after DNS was isolated. The user forbids credential/database/TLS changes and deployment.
+- **Decision:** Support an optional literal Redis resolver IP using dnspython and a
+  small native SSL connection subclass. Preserve original hostname/SNI, full certificate
+  verification, credentials, quota ledger and system DNS; respect DNS TTLs and fail
+  closed. Set the verified Quad9 resolver only in the local environment. Permit
+  bounded cold-connection/preflight time and expose sanitized failure stage/type.
+  Do not pin IPs, set checking-disabled DNS flags, purchase services or change Cloud.
+- **Evidence:** [Actual connection report](../evidence/redis-connection-2026-11-09/report.md).
+  Real final `check-capacity` exit 0, including two-client transaction/reservation
+  checks. Focused 49 passed; full suite 521 passed / one inherited failure; lint/types
+  passed. Broader replica/failover consistency remains the separate ADR-0030 audit.
+- **Date:** 2026-11-09
+
+---
+
+## ADR-0030 — Qualify free shared storage without weakening reservation guarantees
+
+- **Context:** The user requires a $0 datastore, specifically an Upstash Free native
+  TCP audit, real concurrency checks, interruption/database-failure coverage and no
+  unapproved architecture or deployment change. Upstash documents TCP WATCH/CAS
+  support but also eventual consistency and connection-local causal guarantees;
+  those documents do not establish the strict failover/no-lost-history contract.
+- **Decision:** Preserve the Redis architecture, namespace, quota policy, cart tools
+  and deployed worker. Fix conservative aging and incomplete-stream settlement,
+  reject TLS verification overrides, and stop ambiguous network-origin WatchError
+  admission. Replace the one-client preflight with forced two-client conflicts and
+  quota checks. Explicitly separate command compatibility and finite test evidence
+  from service-level consistency/durability qualification. Propose free Durable
+  Objects or existing-hardware Redis before any architecture replacement; do not
+  purchase features, silently accept weaker accounting, or claim Upstash is broken
+  based solely on a simulated rollback counterexample.
+- **Evidence:** [Audit](../../deployment/ZARA_UPSTASH_FREE_AUDIT.md) and
+  [test report](../evidence/upstash-free-2026-11-09/report.md). Four initial adversarial
+  failures were reproduced; final full suite 514 passed / one inherited failure;
+  scoped lint/types passed. No configured local Redis URL or actual hosted test,
+  provisioning, billing change or Cloud rollout occurred.
+- **Date:** 2026-11-09
+
+---
+
+## ADR-0029 — Predictive admission against shared, authorized Groq quotas
+
+- **Context:** The user requested capacity selection before every Groq LLM request,
+  concurrency across workers, natural Urdu exhaustion recovery and Cloud deployment.
+  They reported Groq email approval for separate accounts and will configure Redis
+  after receiving a guide. Existing routing, prompts, providers and cart authority
+  must survive selection/recovery.
+- **Decision:** Admit fully serialized native Groq requests through atomic Redis
+  reservations per model/organization. Include prompts/history/tools in conservative
+  token predictions and bound output. Default all credentials to one shared pool;
+  separate pools require explicit approval configuration. Keep native LiveKit streams
+  and one connection pool. Disable both SDK retries; retry only a definitive HTTP 429
+  received before any stream output, once per authorized independent pool. Preserve
+  uncertain token charges, provider cooldowns and existing no-replay cart guards.
+  Use SQLite only for single-host local development, never as a Cloud fallback.
+  Require a functioning shared TLS ledger before replacing the existing Cloud worker.
+- **Evidence:** [Capacity report](../evidence/groq-capacity-2026-11-08/report.md):
+  23 capacity tests passed; full suite 497 passed / one inherited mock-import failure;
+  lint/types passed. Cloud deployment stopped at missing Redis preflight; local
+  image build failed on Docker Hub DNS. No live quota exhaustion or audio result is
+  claimed. [Redis guide](../../deployment/ZARA_REDIS_CAPACITY_SETUP.md) includes exact
+  configuration, secure secret upload and rollout commands.
+- **Date:** 2026-11-08
+
+---
+
+## ADR-0028 — Fresh page conversations and independent worker lifetime
+
+- **Context:** The user requires refresh to restart Zara's conversation while stopping
+  assistance must keep the shared worker available. Persisted activation could send
+  resume on a fresh page, and overlapping stop/disconnect/restart sent duplicate cleanup.
+- **Decision:** Keep conversation activation document-local, preserve only the cart
+  attachment and cleanup identity across refresh, and reload persisted BFCache views.
+  Coalesce generation teardown and block replacement until confirmed cleanup. An
+  explicit manual choice wins over automatic reload recovery. End only that caller's
+  room/dispatch; preserve the shared Cloud deployment and production prewarming.
+  Cloud plan idle-scaling policy remains external to session teardown; no billing
+  upgrade, fake keepalive session or permanently open microphone is introduced.
+- **Evidence:** [Lifecycle audit](../../website/docs/ZARA_LIFECYCLE_AUDIT_2026-11-08.md).
+  Authenticated status showed the existing worker Running with one replica. JavaScript
+  and Chromium fixtures cover refresh, cleanup races and activation boundaries; these
+  do not establish production audio acceptance or guaranteed idle hosting.
+- **Date:** 2026-11-08
+
+---
+
 ## ADR-0027 — Cloud worker with an explicitly hosted shared backend
 
 - **Context:** The user authorized actual FoodEase Cloud deployment and secure Vercel

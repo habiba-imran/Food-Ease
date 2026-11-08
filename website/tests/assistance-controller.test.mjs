@@ -106,3 +106,32 @@ test("late cancelled permission cannot change a newer active generation's state"
   assert.ok(stopped > 0);
   await controller.end();
 });
+
+test("overlapping stop, disconnect and restart share cleanup before a fresh generation", async () => {
+  const cleanup = deferred();
+  let starts = 0, ends = 0, disconnected;
+  const controller = new AssistanceController({
+    newId: () => `request-${starts + 1}`,
+    acquireMedia: async () => ({ getTracks: () => [] }),
+    api: async name => {
+      if (name === "start") return { state: "preparing", generation: `g-${++starts}` };
+      if (name === "end") { ends++; return cleanup.promise; }
+      return { state: "active" };
+    },
+    connectSeats: async () => ({ registerApp() {},
+      publishFreshContext: async () => ({ revision: 1 }), playbackReady() {},
+      onDisconnected(callback) { disconnected = callback; }, closeAudio() {}, disconnect() {} }),
+  });
+  await controller.start();
+  const first = controller.end();
+  disconnected(); // Can arrive while the end HTTP request is still pending.
+  const second = controller.end();
+  const restarting = controller.start();
+  assert.equal(ends, 1);
+  assert.equal(starts, 1);
+  cleanup.resolve({ state: "ended" });
+  await Promise.all([first, second, restarting]);
+  assert.equal(starts, 2);
+  assert.equal(controller.current.generation, "g-2");
+  await controller.end();
+});

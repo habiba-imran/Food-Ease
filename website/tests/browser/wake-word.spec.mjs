@@ -33,6 +33,16 @@ test.beforeEach(async ({ page }) => {
   await expect(page.locator('html')).toHaveAttribute('data-foodease-revision', /\d+/);
 });
 
+test('refresh resets wake opt-in and does not restart recognition or Zara', async ({ page }) => {
+  await enable(page);
+  await page.reload();
+  await expect(page.locator('html')).toHaveAttribute('data-foodease-revision', /\d+/);
+  await expect(toggle(page)).toHaveAttribute('aria-pressed', 'false');
+  expect(await page.evaluate(() => window.wakeInstances.length)).toBe(0);
+  expect(await page.evaluate(() => window.captureCount)).toBe(0);
+  await expect(page.locator('html')).toHaveAttribute('data-assistance-state', 'awaiting_spoken_choice_consent');
+});
+
 test('opt-in is keyboard accessible; ambient speech never dispatches; addressed command updates real cart once', async ({ page }) => {
   let starts = 0;
   page.on('request', r => { if (r.url().endsWith('/v2/assist/start')) starts++; });

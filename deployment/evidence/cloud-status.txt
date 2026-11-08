@@ -3,7 +3,7 @@
     {
       "agentId":  "CA_gibAwTdK3sjn",
       "agentName":  "foodease",
-      "version":  "ckhnpPJ2Lg5h",
+      "version":  "BwwtGc8eeGwp",
       "agentDeployments":  [
         {
           "region":  "ap-south",
@@ -12,19 +12,19 @@
           "minReplicas":  1,
           "maxReplicas":  1,
           "cpuReq":  "1",
-          "curCpu":  "60275331n",
-          "curMem":  "1138896897",
+          "curCpu":  "57231564n",
+          "curMem":  "1164947457",
           "memReq":  "1Gi",
           "memLimit":  "4Gi",
           "cpuLimit":  "2",
           "serverRegion":  "osbxmum1b",
-          "version":  "ckhnpPJ2Lg5h",
+          "version":  "BwwtGc8eeGwp",
           "agentName":  "foodease",
           "deploymentEnabled":  true,
-          "lastScrapedAt":  "2026-11-07T21:36:27.108425Z"
+          "lastScrapedAt":  "2026-11-08T21:31:27.108779Z"
         }
       ],
-      "deployedAt":  "2026-11-07T21:39:09.041370Z"
+      "deployedAt":  "2026-11-08T21:24:49.369342Z"
     }
   ]
 }
