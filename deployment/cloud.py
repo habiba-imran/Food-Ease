@@ -71,10 +71,15 @@ def main() -> int:
             "logs",
             "secrets",
             "configure-backend",
+            "configure-llm",
             "check-capacity",
         ),
     )
     parser.add_argument("--backend-url")
+    parser.add_argument("--llm-provider", choices=("gemini", "groq"), default="gemini")
+    parser.add_argument("--llm-model", default="gemini-2.5-flash")
+    parser.add_argument("--interruption-duration", default="1.2")
+    parser.add_argument("--interruption-words", default="1")
     parser.add_argument("--log-type", choices=("deploy", "build"), default="deploy")
     args = parser.parse_args()
     env = local_environment()
@@ -120,7 +125,7 @@ def main() -> int:
             )
     if args.operation not in {"create", "list"} and not agent_id:
         raise SystemExit("No deployed agent ID in livekit.toml")
-    if args.operation in {"create", "deploy", "configure-backend", "check-capacity"}:
+    if args.operation in {"create", "deploy", "configure-backend", "configure-llm", "check-capacity"}:        
         from foodease_agent.config import load_config
         from foodease_agent.groq_capacity import CAPACITY_ENV_VARS, cloud_preflight
 
@@ -162,8 +167,10 @@ def main() -> int:
                 "GROQ_MODEL": settings.llm_model
                 if settings.llm_provider == "groq"
                 else env.get("GROQ_MODEL", "openai/gpt-oss-20b"),
-                "LLM_MODEL": env.get("LLM_MODEL", "gemini-3.1-flash-lite"),
+                "LLM_MODEL": env.get("LLM_MODEL", "gemini-2.5-flash"),
                 "LLM_THINKING_LEVEL": env.get("LLM_THINKING_LEVEL", "minimal"),
+                "INTERRUPTION_MIN_DURATION": str(env.get("INTERRUPTION_MIN_DURATION", "1.2")),
+                "INTERRUPTION_MIN_WORDS": str(env.get("INTERRUPTION_MIN_WORDS", "1")),
                 "STT_MODEL": settings.stt_model,
                 "TTS_MODEL": settings.tts_model,
                 "TTS_VOICE_ID": settings.tts_voice_id,
@@ -181,6 +188,13 @@ def main() -> int:
         if args.operation == "configure-backend":
             # Updating the callback must not overwrite provider keys changed in Cloud.
             secrets.clear()
+        if args.operation == "configure-llm":
+            secrets.clear()
+            secrets["LLM_PROVIDER"] = args.llm_provider
+            secrets["LLM_MODEL"] = args.llm_model
+            secrets["LLM_THINKING_LEVEL"] = env.get("LLM_THINKING_LEVEL", "minimal")
+            secrets["INTERRUPTION_MIN_DURATION"] = str(args.interruption_duration)
+            secrets["INTERRUPTION_MIN_WORDS"] = str(args.interruption_words)
         if args.backend_url:
             url = urlsplit(args.backend_url)
             if (
@@ -203,7 +217,9 @@ def main() -> int:
                 encoding="utf-8",
             )
             operation = (
-                "update-secrets" if args.operation == "configure-backend" else args.operation
+                "update-secrets"
+                if args.operation in {"configure-backend", "configure-llm"}
+                else args.operation
             )
             command = ["agent", operation, "--secrets-file", str(secret_file)]
             if operation == "create":

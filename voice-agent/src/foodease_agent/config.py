@@ -246,8 +246,8 @@ def load_config(
             "NOISE_CANCELLATION", _require(environ, "NOISE_CANCELLATION")
         ),
         greeting_cache=_parse_bool("GREETING_CACHE", _require(environ, "GREETING_CACHE")),
-        interruption_min_duration=_optional_float(environ, "INTERRUPTION_MIN_DURATION", 0.5),
-        interruption_min_words=_optional_int(environ, "INTERRUPTION_MIN_WORDS", 0),
+        interruption_min_duration=_optional_float(environ, "INTERRUPTION_MIN_DURATION", 1.2),
+        interruption_min_words=_optional_int(environ, "INTERRUPTION_MIN_WORDS", 1),
         interruption_false_timeout=_optional_float(
             environ, "INTERRUPTION_FALSE_TIMEOUT", 2.0
         ),

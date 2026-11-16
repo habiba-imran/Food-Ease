@@ -1650,7 +1650,14 @@ async function controller() {
     acquireMedia: async (mode) => mode !== "typed" ? (() => {
       if (!window.isSecureContext) throw new Error("Voice needs HTTPS or localhost. You can still browse and order manually.");
       if (!navigator.mediaDevices?.getUserMedia) throw new Error("No microphone is available. You can use typing or browse yourself.");
-      return navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+      return navigator.mediaDevices.getUserMedia({
+        audio: {
+          echoCancellation: true,
+          noiseSuppression: true,
+          autoGainControl: true,
+        },
+        video: false,
+      });
     })()
       : { getTracks: () => [], getAudioTracks: () => [] },
     connectSeats: async (prepared, media, signal, mode) => {

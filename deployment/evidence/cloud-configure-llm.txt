@@ -1,0 +1,5 @@
+Incorrect Usage: flag provided but not defined: -id
+
+No help topic for 'agent'
+
+If this command is new, your lk may be out of date. Run `lk can-update` to check and `lk update` to update.

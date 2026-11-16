@@ -36,8 +36,8 @@ def turn_handling_options(
     endpointing_min: float = 0.45,
     endpointing_max: float = 3.0,
     preemptive_enabled: bool = False,
-    interruption_min_duration: float = 0.5,
-    interruption_min_words: int = 0,
+    interruption_min_duration: float = 1.2,
+    interruption_min_words: int = 1,
     interruption_false_timeout: float = 2.0,
 ) -> TurnHandlingOptions:
     """Starting turn-taking values (Phase 5.5); tune in Phase 9."""

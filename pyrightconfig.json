@@ -1,0 +1,5 @@
+{
+  "venvPath": "voice-agent",
+  "venv": ".venv",
+  "extraPaths": ["voice-agent/src"]
+}
