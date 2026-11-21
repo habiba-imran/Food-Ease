@@ -73,6 +73,17 @@ test('persistent wake recovers a transient network error after releasing and rea
   await f.listener.stop();
 });
 
+test('an aborted event from a planned native close does not cancel network recovery', async () => {
+  const f=fixture({persistIdle:true});
+  await f.listener.start();
+  f.instances[0].abort=function(){this.onerror({error:'aborted'});this.onend();};
+  f.instances[0].onerror({error:'network'});
+  await new Promise(resolve=>setTimeout(resolve,10));
+  assert.equal(f.instances.length,2);
+  assert.equal(f.listener.enabled,true);
+  await f.listener.stop();
+});
+
 test('persistent network recovery is bounded and permission errors never retry', async () => {
   const f=fixture({persistIdle:true});
   await f.listener.start();

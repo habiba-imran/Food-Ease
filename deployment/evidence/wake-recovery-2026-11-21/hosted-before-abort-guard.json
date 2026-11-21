@@ -1,0 +1,14 @@
+{
+  "target": "https://food-ease-seven.vercel.app",
+  "mode": "hosted_real_rtc_worker_synthetic_wake_and_microphone",
+  "errors": [],
+  "turns": [],
+  "source": "/static/js/app.js?v=zara-32",
+  "wake": {
+    "microphoneClearedDuringRecovery": true,
+    "recognizersAfterRecovery": 2,
+    "restartedSessions": 1,
+    "newVoiceSessionActive": true,
+    "greetingCompleted": true
+  }
+}

@@ -158,7 +158,11 @@ test('wake network recovery accepts Urdu Hey Zara and hands off one command once
   await expect(page.locator('html')).toHaveAttribute('data-wake-state','listening');
   let starts=0;
   page.on('request',r=>{if(r.url().endsWith('/v2/assist/start'))starts++;});
-  await page.evaluate(()=>window.wakeInstances.at(-1).onerror({error:'network'}));
+  await page.evaluate(()=>{
+    const r=window.wakeInstances.at(-1);
+    r.abort=function(){this.started=false;this.onerror?.({error:'aborted'});this.onend?.();};
+    r.onerror({error:'network'});
+  });
   await expect(panel(page).locator('[data-wake-status]')).toContainText('Reconnecting');
   await expect(panel(page).locator('[data-voice-microphone]')).toHaveText('Microphone off');
   await expect.poll(()=>page.evaluate(()=>window.wakeInstances.length)).toBe(2);

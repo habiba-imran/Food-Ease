@@ -31,7 +31,7 @@ if (profile === 'wake-recovery') {
     window.SpeechRecognition = class {
       constructor() { window.auditWakeRecognitions.push(this); }
       start() { this.active = true; this.onstart?.(); }
-      abort() { this.active = false; this.onend?.(); }
+      abort() { this.active = false; this.onerror?.({error:'aborted'}); this.onend?.(); }
       result(text) { this.onresult?.({resultIndex:0, results:[Object.assign([{transcript:text}], {isFinal:true})]}); }
     };
   });

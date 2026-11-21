@@ -22,14 +22,14 @@ for the user's earlier attempt was not retained, so its exact trigger is unknown
   Check up to three final browser alternatives, never interim speech.
 - Existing one-shot wake latching and command handoff remain. No ambient
   transcript logging, worker recording, providers, voice interruption or endpoint
-  settings changed. Static/public assets match; cache keys are zara-32,
-  persistent-wake wake-2 and wake-word wake-3.
+  settings changed. Static/public assets match; cache keys are zara-33,
+  persistent-wake wake-3 and wake-word wake-4.
 
 ## Verification
 
 - Before implementation, four new JavaScript cases failed and the browser
   indicator regression displayed Wake microphone on after permission failure.
-- Final JavaScript suite: **83 passed**. Browser build and syntax checks passed.
+- Final JavaScript suite: **84 passed**. Browser build and syntax checks passed.
 - **7 distinct browser checks passed** across targeted runs: corner widget on
   desktop/mobile, wake re-arm/reload, category menu preservation on desktop/mobile,
   truthful error indicator, and network recovery with an Urdu command applied
@@ -37,10 +37,20 @@ for the user's earlier attempt was not retained, so its exact trigger is unknown
   the widget correctly collapsed after wake; cleanup now opens it first, and
   both new browser cases passed on rerun.
 - Additional cases cover pending lease cancellation, missing native end, late
-  failing-recognizer callbacks, bounded retries and blocked permissions.
+  failing-recognizer callbacks, bounded retries and blocked permissions. An added
+  regression reproduced an aborted callback cancelling a deliberate recovery
+  close; expected aborted events while stopping are now ignored, and final
+  unit/browser/hosted fixtures include that callback.
 - These tests synthesize recognition, audio and RTC/model responses; they prove
   lifecycle/command mechanics, not native Urdu recognition accuracy on a real mic.
-- Publication and real hosted RTC handoff verification follow the source push.
+- Website Python: **49 passed**, with the existing Starlette dependency warning.
+- Initial hosted `zara-32` check completed the real RTC/worker/TTS end→wake→new
+  session flow exactly once with zero errors, using synthetic native wake events
+  and a silent microphone. `hosted-before-abort-guard.json` retains it. The
+  strengthened final hosted check includes the deliberate aborted callback and
+  follows publication of `zara-33`.
+- The original native recognition service's behavior and the user's physical
+  microphone accuracy cannot be reconstructed from worker logs.
 
 ## Sources checked
 

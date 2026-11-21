@@ -83,6 +83,7 @@ export class WakeWordListener {
       };
       recognition.onerror = event => {
         if (this.recognition !== recognition || !this.enabled) return;
+        if (event.error === 'aborted' && this.stopping) return;
         if (event.error === 'network' && this.recovering) return;
         if (event.error === 'network' && this.persistIdle && this.networkErrors < 3) {
           this.recoverNetwork(epoch);

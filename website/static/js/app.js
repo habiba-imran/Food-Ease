@@ -4,7 +4,7 @@ import { LiveKitSeats } from "./livekit-bridge.mjs?v=voice-16";
 import { TranscriptView } from "./transcripts.mjs?v=caption-2";
 import { acquireTabLease } from "./tab-lease.mjs";
 import { voicePresentation, voiceErrorMessage } from "./voice-ui.mjs?v=ui-2";
-import { PersistentWake } from "./persistent-wake.mjs?v=wake-2";
+import { PersistentWake } from "./persistent-wake.mjs?v=wake-3";
 import { VoiceWidget } from "./voice-widget.mjs";
 
 const root = document.documentElement;
