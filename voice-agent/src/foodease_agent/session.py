@@ -16,6 +16,17 @@ from foodease_agent.groq_llm import CapacityGroqLLM
 
 PipelineConfig = Literal["A", "B"]
 
+# One sustained-speech gate at detection AND interruption. A duration threshold
+# alone is insufficient: Silero's published speech duration includes its trailing
+# silence window, so a tiny detection could otherwise grow past that threshold.
+URDU_MIN_SPEECH_SECONDS = 0.35
+
+
+def build_vad(language: str = "en") -> Any:
+    if language == "ur":
+        return silero.VAD.load(min_speech_duration=URDU_MIN_SPEECH_SECONDS)
+    return silero.VAD.load()
+
 
 class _InterruptionOptions(TypedDict):
     interruption_min_duration: float
@@ -123,9 +134,11 @@ def build_session_kwargs(
     ep_min = 0.0 if chosen == "A" else settings.endpointing_min
     ep_max = settings.endpointing_max
     intr: _InterruptionOptions = {
-        # Urdu Whisper produces words only after the utterance. Waiting for a
-        # word or an adaptive backchannel decision defeats immediate barge-in.
-        "interruption_min_duration": 0.0 if urdu else settings.interruption_min_duration,
+        # Keep Urdu independent of non-streaming Whisper words, but require a
+        # short stretch of speech instead of reacting to the first detection.
+        "interruption_min_duration": (
+            URDU_MIN_SPEECH_SECONDS if urdu else settings.interruption_min_duration
+        ),
         "interruption_min_words": 0 if urdu else settings.interruption_min_words,
         "interruption_false_timeout": settings.interruption_false_timeout,
     }
@@ -140,7 +153,7 @@ def build_session_kwargs(
             resume_false_interruption=not urdu,
             **intr,
         )
-        vad = prewarmed_vad if prewarmed_vad is not None else silero.VAD.load()
+        vad = prewarmed_vad if prewarmed_vad is not None else build_vad(settings.assistant_language)
         kwargs: dict[str, Any] = {
             "stt": stt,
             "llm": llm,
@@ -150,7 +163,7 @@ def build_session_kwargs(
             "use_tts_aligned_transcript": True,
         }
     else:
-        vad = prewarmed_vad if prewarmed_vad is not None else silero.VAD.load()
+        vad = prewarmed_vad if prewarmed_vad is not None else build_vad(settings.assistant_language)
         turn = turn_handling_options(
             # Whisper is non-streaming; SDK adapts it with Silero VAD. The
             # English semantic turn detector must not judge Urdu end-of-turn.

@@ -1,0 +1,9 @@
+{"message": "starting worker", "level": "INFO", "name": "livekit.agents", "version": "1.8.4", "rtc-version": "1.1.20", "region": "ap-south", "pid": 1, "timestamp": "2026-11-21T14:16:32.479951+00:00"}
+{"message": "HTTP server listening on :8081", "level": "INFO", "name": "livekit.agents", "region": "ap-south", "pid": 1, "timestamp": "2026-11-21T14:16:32.496790+00:00"}
+{"message": "prewarm: silero VAD loaded language=ur", "level": "INFO", "name": "foodease_agent.worker", "region": "ap-south", "pid": 197, "timestamp": "2026-11-21T14:16:37.740469+00:00"}
+{"message": "prewarm: silero VAD loaded language=ur", "level": "INFO", "name": "foodease_agent.worker", "region": "ap-south", "pid": 200, "timestamp": "2026-11-21T14:16:37.740894+00:00"}
+{"message": "process initialized", "level": "INFO", "name": "livekit.agents", "pid": 197, "elapsed_time": 0.41, "region": "ap-south", "timestamp": "2026-11-21T14:16:37.742196+00:00"}
+{"message": "process initialized", "level": "INFO", "name": "livekit.agents", "pid": 200, "elapsed_time": 0.38, "region": "ap-south", "timestamp": "2026-11-21T14:16:37.742684+00:00"}
+{"message": "registered worker", "level": "INFO", "name": "livekit.agents", "agent_name": "foodease", "deployment": "", "id": "CAW_XhZ9RnWbubCF", "url": "https://foodease-nb0qr57x.livekit.cloud", "region": "India South", "protocol": 19, "pid": 1, "timestamp": "2026-11-21T14:16:37.933730+00:00"}
+{"message": "prewarm: silero VAD loaded language=ur", "level": "INFO", "name": "foodease_agent.worker", "region": "ap-south", "pid": 254, "timestamp": "2026-11-21T14:16:38.488315+00:00"}
+{"message": "process initialized", "level": "INFO", "name": "livekit.agents", "pid": 254, "elapsed_time": 0.43, "region": "ap-south", "timestamp": "2026-11-21T14:16:38.489652+00:00"}

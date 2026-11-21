@@ -251,6 +251,10 @@ class LiveConversationRuntime:
             and turn.committed
             and not turn.discarded
             and (turn.speech is None or not turn.speech.interrupted)
+            and not any(
+                speech.interrupted and self.speech_turns.get(speech.id) is turn
+                for speech in self.speeches.values()
+            )
             and (not revision or turn.revision == self.snapshot.revision)
             and (
                 turn.source == "text"
@@ -916,7 +920,9 @@ class LiveConversationRuntime:
         if event.source == "generate_reply" and self._generating_turn is not None:
             self.speech_turns[handle.id] = self._generating_turn
             self._generating_turn.speech = handle
-        turn = self.speech_turns.get(handle.id) or self.active_turn
+        turn = owner = self.speech_turns.get(handle.id) or self.active_turn
+        if turn is not None:
+            self.speech_turns[handle.id] = turn
         self._captions[handle.id] = {
             "turn_id": turn.id if turn is not None else handle.id,
             "revision": self.snapshot.revision,
@@ -927,6 +933,12 @@ class LiveConversationRuntime:
         def completed(speech):
             self.speeches.pop(speech.id, None)
             turn = self.speech_turns.pop(speech.id, None)
+            if speech.interrupted and owner is not None and self.active_turn is owner:
+                # Revoke only on a confirmed SDK interruption, never on a raw
+                # VAD onset. A late older handle cannot revoke a replacement turn.
+                owner.committed = False
+                if not self.confirmation.summary_spoken:
+                    self._invalidate_confirmation()
             delivered = " ".join(
                 item.text_content or ""
                 for item in speech.chat_items
@@ -1011,12 +1023,14 @@ class LiveConversationRuntime:
         )
 
     def on_user_state(self, event: Any) -> None:
+        # Urdu audio interruption belongs to the SDK's sustained-speech and AEC
+        # gates. A raw state notification must not bypass either of those gates.
         speaking = event.new_state == "speaking"
         if speaking and not self.closed:
             self.recovery.observe("user_speaking", assistant_speaking=self._agent_speaking)
         self._user_speaking = speaking
         self.idle.mark_user_busy(speaking or self._agent_speaking)
-        if speaking and not self.closed:
+        if speaking and not self.closed and self.language != "ur":
             # A new answer must not erase an already delivered summary. An
             # interruption *during* its delivery still invalidates it immediately.
             if self.active_turn:

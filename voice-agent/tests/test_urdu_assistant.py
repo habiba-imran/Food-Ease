@@ -61,7 +61,7 @@ def test_urdu_uses_vad_without_english_turn_detector(monkeypatch):
     marker = object()
     for name in ("build_stt", "build_tts", "build_llm"):
         monkeypatch.setattr(session, name, lambda *args: marker)
-    monkeypatch.setattr(session.silero.VAD, "load", lambda: marker)
+    monkeypatch.setattr(session.silero.VAD, "load", lambda **kwargs: marker)
     monkeypatch.setattr(session.inference, "TurnDetector", lambda: pytest.fail("English detector"))
     bundle = build_session_kwargs(replace(_settings(), assistant_language="ur"))
     assert bundle.session_kwargs["turn_handling"]["turn_detection"] == "vad"

@@ -6,6 +6,25 @@ Newest entries at the top.
 
 ---
 
+## ADR-0035 — Require sustained Urdu speech before interrupting
+
+- **Context:** The user reports repeated false interruptions in a quiet room.
+  ADR-0034's zero duration and raw-onset forced interruption bypassed SDK speech
+  filtering and echo warmup. Published Silero speech duration includes trailing
+  silence, so an SDK duration change alone would not reliably filter tiny onsets.
+- **Decision:** Use a shared 0.35 s minimum speech segment/interruption gate in
+  prewarm and fallback, with VAD interruption and no delayed Whisper word gate.
+  Let the SDK interrupt Urdu speech; raw state events track activity only. Revoke
+  the owning business turn on actual interruption, including independent replies,
+  without letting late old callbacks affect a new turn. Preserve mutation ownership,
+  review delivery guards, endpointing, providers, English and browser/SDK echo handling.
+- **Evidence:** [Regression and deployment report](../evidence/interruption-balance-2026-11-21/report.md).
+  Configured thresholds and scripted detector scenarios are not physical acoustic
+  accuracy or caller-heard interruption measurements.
+- **Date:** 2026-11-21. Supersedes ADR-0034's Urdu onset policy.
+
+---
+
 ## ADR-0034 — Urdu interruption on detected speech onset
 
 - **Context:** The user requested worker redeployment and interruption as soon as

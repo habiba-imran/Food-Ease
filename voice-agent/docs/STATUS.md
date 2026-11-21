@@ -1,5 +1,18 @@
 # STATUS
 
+**Balanced Urdu interruption — 2026-11-21.** Supersedes the zero-duration onset
+policy below. Urdu requires a shared 350 ms speech-segment/SDK interruption gate;
+raw user-state onset no longer forces audio interruption or revokes the turn.
+SDK-confirmed interruptions preserve submitted action ownership and review safety,
+including independent replies and late callbacks. Browser/SDK echo handling,
+endpointing, providers and the English profile remain intact. **91 focused tests
+passed; full worker 552 passed / one inherited mock-import failure** in unchanged
+`integration/scenarios.py`. Scoped lint/types pass. Production worker version
+**`rX7bpf3xKjrF`** deployed; Cloud reports Running after a successful hosted startup,
+with Urdu VAD prewarm and registration verified. Physical speaker/microphone
+false-interruption rates remain unmeasured.
+[Evidence and deployment](../evidence/interruption-balance-2026-11-21/report.md).
+
 **Speech-onset interruption and redeploy — 2026-11-21.** Urdu now interrupts on
 Silero speech detection using SDK VAD mode, with no extra duration/word-count wait.
 Greeting/queued playback is interrupted even before the first shopping turn.

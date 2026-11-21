@@ -22,7 +22,6 @@ from livekit.agents import (
     cli,
     room_io,
 )
-from livekit.plugins import silero
 
 from foodease_agent.adapters.dev_wiring import (
     app_transport_mode,
@@ -33,15 +32,16 @@ from foodease_agent.adapters.integrated_startup import IntegratedRoomGate, repor
 from foodease_agent.agent import FoodEaseAgent, apply_speech_speed
 from foodease_agent.config import ConfigError, load_config
 from foodease_agent.contract.enums import ProductState
-from foodease_agent.session import build_session_kwargs
+from foodease_agent.session import build_session_kwargs, build_vad
 
 logger = logging.getLogger("foodease_agent.worker")
 
 
 def prewarm(proc: JobProcess) -> None:
     """Load VAD early so the consented session starts warm (5.2)."""
-    proc.userdata["vad"] = silero.VAD.load()
-    logger.info("prewarm: silero VAD loaded")
+    language = os.environ.get("ASSISTANT_LANGUAGE", "en").strip().lower()
+    proc.userdata["vad"] = build_vad(language)
+    logger.info("prewarm: silero VAD loaded language=%s", language)
 
 
 def _job_assist_flag(ctx: JobContext) -> bool:

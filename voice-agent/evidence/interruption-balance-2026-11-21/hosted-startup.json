@@ -1,0 +1,28 @@
+{
+  "target": "https://food-ease-seven.vercel.app",
+  "failures": [],
+  "errors": [],
+  "consoleErrors": [],
+  "states": [
+    {
+      "state": "connecting",
+      "time": "2026-11-21T14:16:03.058Z"
+    },
+    {
+      "state": "voice_active",
+      "time": "2026-11-21T14:16:48.062Z"
+    }
+  ],
+  "orchestrationPath": "/assist",
+  "widget": {
+    "source": "/static/js/app.js?v=zara-28",
+    "welcomeCount": 0,
+    "typingCount": 0,
+    "ingredientCount": 0,
+    "wakeControlCount": 1,
+    "shortDescriptionCount": 28,
+    "panelTag": "ASIDE"
+  },
+  "message": "Voice assistant ready. Microphone on.",
+  "wakePreference": "on"
+}
