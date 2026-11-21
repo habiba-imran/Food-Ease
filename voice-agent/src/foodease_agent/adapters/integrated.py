@@ -141,6 +141,24 @@ class IntegratedRpcAdapter:
         assert_lookup_correlated(request.model_dump(mode="json"), result)
         return result
 
+    async def snapshot_after(self, result: ActionResultEvent) -> ContextSnapshot:
+        """Reuse the bound browser's already-published exact result revision, else fetch.
+
+        The action RPC acknowledges only after render/context publication. Data can
+        arrive later than the RPC, so a missing/older/newer context always falls back
+        to a fresh read. Never use a time-based cache or repeat a mutation.
+        """
+        latest = self.gate.latest
+        if (
+            not self.gate.closed
+            and self.gate.resolve_app_identity() is not None
+            and latest is not None
+            and latest.session_id == result.session_id == self.session_id
+            and latest.revision == result.context_revision
+        ):
+            return ContextSnapshot.model_validate(latest.model_dump(mode="json"))
+        return await self.get_snapshot()
+
     async def publish_control(self, intent: str, mode: str | None = None) -> None:
         event = AgentControlEvent.model_validate(
             {

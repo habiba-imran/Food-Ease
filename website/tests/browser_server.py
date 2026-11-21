@@ -55,6 +55,23 @@ class LocalStream(llm.LLMStream):
         message = items[last]
         assert isinstance(message, llm.ChatMessage)
         user = (message.text_content or "").lower()
+        # Explicit synthetic semantic decisions. This is not a language recognizer
+        # and is never imported by the deployed worker or website.
+        urdu_commands = {
+            "برگر دکھاؤ": ("navigate", {"target": "burgers"}),
+            "سب سے سستا برگر دکھاؤ": ("filter_menu", {"category": "burgers", "tags": ["available"], "sort_by": "price_asc"}),
+            "pehle wale do add kar do": ("cart_add_item", {"item_id": "burger-veg", "quantity": 2}),
+            "تعداد تین کر دو": ("cart_set_quantity", {"item_id": "burger-veg", "quantity": 3}),
+            "یہ والا ہٹا دو": ("cart_remove_item", {"item_id": "burger-veg"}),
+            "دو کولا شامل کرو": ("cart_add_item", {"item_id": "drink-cola", "quantity": 2}),
+            "زنگر شامل کرو": ("cart_add_item", {"item_id": "zinger-classic", "quantity": 1}),
+            "کارٹ دکھاؤ": ("navigate", {"target": "cart"}),
+            "کارٹ بند کرو": ("navigate", {"target": "menu"}),
+            "اوپر لے جاؤ": ("navigate", {"target": "home"}),
+            "کل کتنا ہوا": ("get_cart", {}),
+            "کارٹ خالی کرو": ("cart_get_clear_summary", {}),
+            "جی ہاں": ("cart_clear", {}),
+        }
         if user == "offline provider failure":
             raise APIConnectionError("local fixture model unavailable")
         outputs = [item for item in items[last:] if isinstance(item, llm.FunctionCallOutput)]
@@ -108,7 +125,11 @@ class LocalStream(llm.LLMStream):
                     ]
                 )
         else:
-            if "find burgers then add" in user:
+            if user in urdu_commands:
+                name, args = urdu_commands[user]
+                # Script the production model's final-step flag for these single-step cases.
+                args = {**args, "finish_turn": True}
+            elif "find burgers then add" in user:
                 name, args = "search_menu", {"query": "burger"}
             elif "spicy" in user:
                 name, args = "filter_menu", {"tags": ["spicy"], "max_price_pkr": 950}
@@ -219,6 +240,7 @@ async def start(request: Request):
         "request_id": body["request_id"],
         "binding": binding,
         "state": "preparing",
+        "language": "ur" if request.cookies.get("foodease_test_language") == "ur" else "en",
         "room": f"fake-{generation}",
         "livekit_url": "wss://offline.invalid",
         "tokens": {role: {"token": f"{sid}:{generation}:{role}"} for role in ("app", "user")},
@@ -262,7 +284,7 @@ async def ready(request: Request):
 
         session.start = local_start  # pyright: ignore[reportAttributeAccessIssue]
         runtime = LiveConversationRuntime(
-            IntegratedFoodEaseAgent(), session, IntegratedRpcAdapter(gate), gate=gate
+            IntegratedFoodEaseAgent(language=record["language"]), session, IntegratedRpcAdapter(gate), gate=gate
         )
         await runtime.prepare()
         record["runtime"] = runtime

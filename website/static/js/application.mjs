@@ -1,6 +1,7 @@
 // One authority lane and one renderer for manual input and bound worker RPCs.
 export const OPERATIONS = new Set(["navigate", "search_menu", "filter_menu", "select_item",
   "get_item_details", "get_cart", "cart.add_item", "cart.set_quantity", "cart.remove_item",
+  "cart.get_clear_summary", "cart.clear",
   "checkout.get_summary", "checkout.submit_demo_order", "undo_last_reversible_action", "get_current_context"]);
 export const newId = () => crypto.randomUUID();
 export const timestamp = () => new Date().toISOString();
@@ -54,7 +55,7 @@ export class Application {
     const currentResult = result?.context_revision === snapshot.revision ? result : null;
     if (!changed && !currentResult && !force) return false;
     if (this.snapshot && JSON.stringify(this.snapshot.cart) !== JSON.stringify(snapshot.cart)) this.summaries.clear();
-    if (currentResult?.payload.status === "success" && currentResult.payload.operation === "checkout.get_summary" && request) {
+    if (currentResult?.payload.status === "success" && ["checkout.get_summary", "cart.get_clear_summary"].includes(currentResult.payload.operation) && request) {
       this.summaries.set(currentResult.payload.action_id, { result: currentResult, request });
       while (this.summaries.size > 16) this.summaries.delete(this.summaries.keys().next().value);
     }

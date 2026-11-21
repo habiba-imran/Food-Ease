@@ -345,7 +345,7 @@ function downloadJson(filename, payload) {
   window.setTimeout(() => URL.revokeObjectURL(link.href), 300);
 }
 
-function setStatus(message) {
+function setStatus(message, { language = "en" } = {}) {
   if (shoppingSessionExpired) {
     message = expiredShoppingMessage;
     syncVoiceUi();
@@ -353,7 +353,11 @@ function setStatus(message) {
   // Only the active surface announces; background content is inert in a modal.
   const surface = voiceControls?.open ? voiceControls : document.querySelector("dialog[open]");
   const target = surface?.querySelector("[data-dialog-status]") || orderStatus;
-  if (target && target.textContent !== message) target.textContent = message;
+  if (target) {
+    target.lang = language;
+    target.dir = language === "ur" ? "rtl" : "ltr";
+    if (target.textContent !== message) target.textContent = message;
+  }
   if (/pending changes|unknown|unresolved|could not synchronize/i.test(message)) {
     const reconcile = surface?.querySelector("[data-reconcile-action]");
     if (reconcile) reconcile.hidden = false;
@@ -649,6 +653,24 @@ async function renderApplication(snapshot, result = null, request = null) {
   if (cartChanged && result?.status === "success" && result.operation === "cart.add_item") {
     const item = catalogItems.get(request?.payload?.arguments?.item_id);
     showCartToast(`${item?.name || "Item"} added to cart`, projectedCart(), pendingCartAdds.size > 0);
+  }
+  const voiceAction = request && !request.turn_id.startsWith("manual-") && result?.status === "success";
+  if (voiceAction) {
+    const browsing = snapshot.route === "menu" && ["navigate", "filter_menu", "search_menu"].includes(result.operation);
+    if (browsing || snapshot.route === "home" && result.operation === "navigate") {
+      const category = browsing && snapshot.category && document.getElementById(`menu-category-section-${snapshot.category}`);
+      const destination = category && !category.hidden ? category : document.querySelector(browsing ? "#popular" : "#main");
+      if (!destination) throw new Error("The requested website section is missing.");
+      destination.scrollIntoView({ block: "start", behavior: root.dataset.calmMotion === "true" || matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth" });
+    }
+    if (cartChanged && ["cart.add_item", "cart.set_quantity", "cart.remove_item", "cart.clear"].includes(result.operation)) {
+      const quantity = snapshot.cart.lines.reduce((sum, line) => sum + line.quantity, 0);
+      const count = new Intl.NumberFormat("ur-PK").format(quantity);
+      const total = new Intl.NumberFormat("ur-PK").format(snapshot.cart.total);
+      const message = result.operation === "cart.clear" ? "کارٹ خالی کر دیا ہے۔" : "کارٹ اپ ڈیٹ ہو گیا ہے۔";
+      showCartToast(message, snapshot.cart, false, "ur");
+      setStatus(`${message} کل تعداد ${count}، کل رقم ${total} روپے۔`, { language: "ur" });
+    }
   }
   // A confirmed response can match the preview exactly, so always settle busy state.
   syncCartPreview();
@@ -1192,14 +1214,18 @@ function projectedCart() {
   return { ...base, lines, fees, subtotal, total: subtotal + fees.reduce((sum, fee) => sum + fee.amount, 0) };
 }
 
-function showCartToast(message, cart, pending = false) {
+function showCartToast(message, cart, pending = false, language = "en") {
   if (!cartToast) return;
   clearTimeout(cartToastTimer);
   const quantity = cart.lines.reduce((sum, line) => sum + line.quantity, 0);
   cartToast.dataset.state = pending ? 'pending' : 'confirmed';
+  cartToast.lang = language;
+  cartToast.dir = language === "ur" ? "rtl" : "ltr";
   cartToast.querySelector('.cart-toast-check').textContent = pending ? '…' : '✓';
   cartToast.querySelector('[data-cart-toast-message]').textContent = message;
-  cartToast.querySelector('[data-cart-toast-summary]').textContent = `${quantity} ${quantity === 1 ? 'item' : 'items'} · Total ${money(cart.total)}${pending ? ' · Updating…' : ''}`;
+  cartToast.querySelector('[data-cart-toast-summary]').textContent = language === "ur"
+    ? `تعداد ${new Intl.NumberFormat("ur-PK").format(quantity)} · کل ${new Intl.NumberFormat("ur-PK").format(cart.total)} روپے`
+    : `${quantity} ${quantity === 1 ? 'item' : 'items'} · Total ${money(cart.total)}${pending ? ' · Updating…' : ''}`;
   cartToast.hidden = false;
   if (!pending) cartToastTimer = setTimeout(() => { cartToast.hidden = true; }, 3600);
 }

@@ -6,6 +6,42 @@ Newest entries at the top.
 
 ---
 
+## ADR-0033 — Avoid redundant model and application round trips
+
+- **Context:** The user reports 2–3 second responses and requests latency improvements
+  plus publishing the current work to `origin main`. Ordinary actions used a second
+  inference only to word verified results and a third RPC to reread published context.
+- **Decision:** Let semantic tool selection mark a final step with `finish_turn`;
+  deliver the verified localized result through the existing speech pipeline and
+  suppress the extra inference. Default false retains intermediate tool continuation.
+  Reuse only bound, validated context with the exact correlated result session/revision;
+  otherwise fetch it. Preserve pre-action refresh, confirmation delivery, stock checks,
+  turn revocation and no-write-retry policy. Do not change providers or endpointing.
+- **Evidence:** [Native SDK counts, regressions and limits](../evidence/latency-2026-11-21/report.md).
+  Request-count reductions are not caller-heard latency measurements.
+- **Date:** 2026-11-21.
+
+---
+
+## ADR-0032 — Extend the existing action lane for Urdu website controls
+
+- **Context:** The user explicitly requested the full website integration, preserving
+  Zara's Urdu providers/personality and the real shared cart. The old agent-only
+  phase scope is superseded for this request. Most shopping/RPC functionality already
+  existed; category scrolling, stock checks on quantity increases and confirmed clear
+  were missing.
+- **Decision:** Reuse the bound v2 RPC, application renderer, domain authority and
+  delivery-aware confirmation machine. Add only `cart.get_clear_summary` and `cart.clear`
+  to the allowlist. Bind server tokens and runtime consent to their purpose so clear
+  cannot authorize checkout. Keep the historical v1 and pinned v2 example exchanges;
+  regenerate current schemas. Deploy the updated backend/browser/worker together.
+  Menu meaning remains model-interpreted; no production phrase router or second cart.
+- **Evidence:** [Implementation and activation](../../website/docs/ZARA_INTERACTIVE_URDU_2026-11-21.md),
+  [tests and limits](../evidence/interactive-urdu-2026-11-21/report.md).
+- **Date:** 2026-11-21. No deployment or live speech-provider request.
+
+---
+
 ## ADR-0031 — App-scoped DNS selection with original Redis TLS identity
 
 - **Context:** Actual `.env` Redis preflight failed. Cloudflare/Google and the system

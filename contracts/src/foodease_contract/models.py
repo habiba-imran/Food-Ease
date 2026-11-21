@@ -121,6 +121,8 @@ ARG_MODELS: dict[str, type[Model]] = {
     "cart.add_item": AddArgs,
     "cart.set_quantity": SetQuantityArgs,
     "cart.remove_item": ItemArgs,
+    "cart.get_clear_summary": NoArgs,
+    "cart.clear": SubmitArgs,
     "checkout.get_summary": NoArgs,
     "checkout.submit_demo_order": SubmitArgs,
     "undo_last_reversible_action": NoArgs,
@@ -208,7 +210,7 @@ class ContextSnapshot(Model):
     revision: Revision
     route: Route
     focus_item_id: ItemId | None
-    valid_actions: list[Operation] = Field(max_length=13)
+    valid_actions: list[Operation] = Field(max_length=15)
     valid_navigation_targets: list[StrictStr] = Field(max_length=64)
     filter_tags: list[StrictStr] = Field(max_length=16)
     category: ItemId | None
@@ -267,6 +269,8 @@ RESULT_MODELS: dict[str, type[Model]] = {
     "cart.add_item": CartSummary,
     "cart.set_quantity": CartSummary,
     "cart.remove_item": CartSummary,
+    "cart.get_clear_summary": CheckoutSummary,
+    "cart.clear": CartSummary,
     "checkout.get_summary": CheckoutSummary,
     "checkout.submit_demo_order": DemoReceipt,
     "undo_last_reversible_action": CartSummary,
@@ -314,14 +318,18 @@ class ActionResult(Model):
                 )
                 .model_dump(mode="json")
             )
-            if self.operation == "checkout.get_summary" and not self.confirmation_token:
-                raise ValueError("checkout summary requires an app-issued token")
+            if (
+                self.operation in {"checkout.get_summary", "cart.get_clear_summary"}
+                and not self.confirmation_token
+            ):
+                raise ValueError("review summary requires an app-issued token")
         elif self.verified_state is not None or self.error_code is None:
             raise ValueError("non-success requires an error code and no verified success state")
         if self.confirmation_token is not None and (
-            self.operation != "checkout.get_summary" or self.status != "success"
+            self.operation not in {"checkout.get_summary", "cart.get_clear_summary"}
+            or self.status != "success"
         ):
-            raise ValueError("only successful checkout summaries carry a confirmation token")
+            raise ValueError("only successful review summaries carry a confirmation token")
         required_error = {
             "timeout_unknown": "timeout",
             "stale_context": "stale_context",

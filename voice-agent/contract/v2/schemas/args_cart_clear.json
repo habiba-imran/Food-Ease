@@ -1,0 +1,28 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "confirmed": {
+      "const": true,
+      "title": "Confirmed",
+      "type": "boolean"
+    },
+    "confirmation_token": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Confirmation Token",
+      "type": "string"
+    },
+    "summary_revision": {
+      "minimum": 0,
+      "title": "Summary Revision",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "confirmed",
+    "confirmation_token",
+    "summary_revision"
+  ],
+  "title": "SubmitArgs",
+  "type": "object"
+}

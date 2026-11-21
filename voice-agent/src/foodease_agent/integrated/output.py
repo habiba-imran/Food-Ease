@@ -12,6 +12,30 @@ from foodease_agent.speech_text.sanitizer import sanitize_assistant_text
 from foodease_agent.speech_text.shaping import shape_assistant_reply
 
 _OUTCOMES = (
+    (r"(?:کارٹ|ٹوکری).{0,20}خالی\s*(?:کر\s*(?:دیا|دی)|ہو\s*گیا)", {"cart.clear"}),
+    (
+        r"(?:کھول|بند|دکھا)\s*(?:دیا|دی)|(?:لے|لائی)\s*(?:آئی|آیا|گئی)",
+        {
+            "navigate",
+            "filter_menu",
+            "search_menu",
+            "select_item",
+            "checkout.get_summary",
+            "cart.get_clear_summary",
+        },
+    ),
+    (r"\b(?:cleared|emptied) .{0,20}cart\b|\bcart .{0,20}(?:cleared|emptied)\b", {"cart.clear"}),
+    (
+        r"\b(?:opened|closed|navigated|scrolled)\b",
+        {
+            "navigate",
+            "filter_menu",
+            "search_menu",
+            "select_item",
+            "checkout.get_summary",
+            "cart.get_clear_summary",
+        },
+    ),
     (r"ایڈ\s*کر\s*(?:دیا|دی|چکا|چکی)", {"cart.add_item"}),
     (r"(?:کارٹ|ٹوکری)\s*میں\s*(?:آ|آ)\s*(?:گیا|گئی|گئے)", {"cart.add_item"}),
     (r"آرڈر\s*(?:ہو\s*گیا|کر\s*دیا|دے\s*دیا)", {"checkout.submit_demo_order"}),

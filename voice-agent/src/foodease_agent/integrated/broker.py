@@ -78,8 +78,8 @@ class IntegratedActionBroker:
             if not runtime.authorized(turn) or turn.revision != fresh.revision:
                 return safe_failure("stale_context")
             args = arguments if isinstance(arguments, dict) else arguments()
-            if operation == "checkout.submit_demo_order":
-                args = runtime.consume_confirmation(turn)
+            if operation in {"checkout.submit_demo_order", "cart.clear"}:
+                args = runtime.consume_confirmation(turn, operation)
                 if args is None:
                     return safe_failure("confirmation_required")
             try:
@@ -190,7 +190,12 @@ class IntegratedActionBroker:
         if turn is None or not runtime.authorized(turn, revision=False):
             return safe_failure("inactive_turn")
         try:
-            fresh = await runtime.adapter.get_snapshot()
+            snapshot_after = getattr(runtime.adapter, "snapshot_after", None)
+            fresh = (
+                await snapshot_after(result)
+                if snapshot_after is not None
+                else await runtime.adapter.get_snapshot()
+            )
             runtime.on_context(
                 fresh, source_turn=turn.id if fresh.revision == result.context_revision else None
             )

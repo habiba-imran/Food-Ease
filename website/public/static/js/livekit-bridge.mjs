@@ -128,7 +128,8 @@ export class LiveKitSeats {
     const summary = [...this.application.summaries.values()].find(({ result, request: original }) =>
       original.turn_id === request.turn_id && result.payload.verified_state.summary_revision === request.summary_revision
       && result.context_revision === this.application.snapshot.revision);
-    if (!summary || this.application.snapshot.route !== "checkout") throw new Error("Summary is no longer current.");
+    const reviewRoute = summary?.result.payload.operation === "cart.get_clear_summary" ? "cart" : "checkout";
+    if (!summary || this.application.snapshot.route !== reviewRoute) throw new Error("Summary is no longer current.");
     // Verify the summary hash using the same canonical JSON as ConfirmationMachine.
     const canonical = (value) => value && typeof value === "object" && !Array.isArray(value)
       ? Object.fromEntries(Object.keys(value).sort().map((key) => [key, canonical(value[key])]))

@@ -1,5 +1,31 @@
 # STATUS
 
+**Response latency — 2026-11-21.** Final-step tools can deliver their verified Urdu
+result without a second LLM generation; intermediate requests retain continuation.
+The RPC adapter reuses only the bound browser's exact result revision and otherwise
+fetches fresh state. Native SDK tests confirm 2→1 model requests for the final reply
+and 3→2 application RPCs when context publication arrives. Stock, confirmation,
+turn-discard and unknown-outcome guards remain intact. Full worker: **530 passed /
+one inherited mock-import failure**; direct-path Urdu browser: **3 passed**; scoped
+lint/types pass. [Evidence and limits](../evidence/latency-2026-11-21/report.md).
+No caller-heard post-change latency or live-provider timing is claimed; worker
+restart/redeployment is required to activate these changes.
+
+**Interactive Urdu website actions — 2026-11-21.** Extended the existing bound v2
+RPC/shared-cart integration with visible category scrolling, Urdu cart feedback,
+availability rechecks on quantity increases and confirmed atomic clear-cart/undo.
+Clear reviews reuse the delivery/confirmation machine with purpose-bound server
+tokens, so checkout and clear consent cannot authorize each other. Existing
+providers, voice lifecycle, catalog and checkout behavior are preserved.
+Full worker: **525 passed / one inherited mock-import failure**; website: **49
+passed**; JavaScript: **63 passed**; **54 distinct browser checks passed** across
+scoped Urdu, voice, lifecycle, menu/cart and manual-checkout runs. Final scoped
+lint/types and asset build pass.
+See [implementation](../../website/docs/ZARA_INTERACTIVE_URDU_2026-11-21.md) and
+[verification](../evidence/interactive-urdu-2026-11-21/report.md) for browser results
+and exact limits. Backend/browser/worker need a matched restart/redeployment;
+no live provider call, deployment, push or listener acceptance was performed.
+
 **Actual Redis connectivity recovery — 2026-11-09.** Read the configured Redis URL
 privately and reproduced DNS SERVFAIL through the system, Cloudflare and Google paths.
 Ordinary Quad9 resolution enabled actual TCP, verified TLS 1.3, AUTH and PING. The

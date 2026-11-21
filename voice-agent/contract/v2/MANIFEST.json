@@ -3,6 +3,8 @@
   "canonical_models": "foodease_agent.contract.v2.models",
   "actual_website_operations": [
     "cart.add_item",
+    "cart.clear",
+    "cart.get_clear_summary",
     "cart.remove_item",
     "cart.set_quantity",
     "checkout.get_summary",

@@ -60,6 +60,8 @@ class Operation(StrEnum):
     CART_ADD_ITEM = "cart.add_item"
     CART_SET_QUANTITY = "cart.set_quantity"
     CART_REMOVE_ITEM = "cart.remove_item"
+    CART_GET_CLEAR_SUMMARY = "cart.get_clear_summary"
+    CART_CLEAR = "cart.clear"
     CHECKOUT_GET_SUMMARY = "checkout.get_summary"
     CHECKOUT_SUBMIT_DEMO_ORDER = "checkout.submit_demo_order"
     UNDO_LAST_REVERSIBLE_ACTION = "undo_last_reversible_action"

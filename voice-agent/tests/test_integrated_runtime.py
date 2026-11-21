@@ -224,7 +224,7 @@ async def control(runtime, intent, text="conversation control", *, source="audio
 @pytest.mark.asyncio
 async def test_thirteen_actual_tools_return_real_facts_and_cart_math(runtime):
     agent = runtime.agent
-    assert len(agent.tools) == 14  # thirteen application tools plus one local control
+    assert len(agent.tools) == 16  # fifteen application tools plus one local control
     assert (await call(runtime, "navigate", target="menu"))["status"] == "success"
     filtered = await call(runtime, "filter_menu", vegetarian=True, max_price_pkr=500.0)
     assert filtered["facts"]["items"]
@@ -572,7 +572,7 @@ async def test_actual_sdk_streaming_llm_and_tool_continuation_use_current_contex
         assert all(
             "UNTRUSTED_APPLICATION_DATA" in json.dumps(ctx.to_dict()) for ctx in provider.contexts
         )
-        assert len(agent.tools) == 14
+        assert len(agent.tools) == 16
         assert any(
             isinstance(item, llm.ChatMessage)
             and item.role == "assistant"

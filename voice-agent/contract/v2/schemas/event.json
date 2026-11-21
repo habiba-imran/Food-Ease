@@ -317,6 +317,66 @@
           "if": {
             "properties": {
               "operation": {
+                "const": "cart.get_clear_summary"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "arguments": {
+                "additionalProperties": false,
+                "properties": {},
+                "title": "NoArgs",
+                "type": "object"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "operation": {
+                "const": "cart.clear"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "arguments": {
+                "additionalProperties": false,
+                "properties": {
+                  "confirmed": {
+                    "const": true,
+                    "title": "Confirmed",
+                    "type": "boolean"
+                  },
+                  "confirmation_token": {
+                    "maxLength": 128,
+                    "minLength": 1,
+                    "title": "Confirmation Token",
+                    "type": "string"
+                  },
+                  "summary_revision": {
+                    "minimum": 0,
+                    "title": "Summary Revision",
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "confirmed",
+                  "confirmation_token",
+                  "summary_revision"
+                ],
+                "title": "SubmitArgs",
+                "type": "object"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "operation": {
                 "const": "checkout.get_summary"
               }
             }
@@ -1097,6 +1157,138 @@
           "if": {
             "properties": {
               "operation": {
+                "const": "cart.get_clear_summary"
+              },
+              "status": {
+                "const": "success"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "verified_state": {
+                "additionalProperties": false,
+                "properties": {
+                  "lines": {
+                    "items": {
+                      "$ref": "#/$defs/CartLine"
+                    },
+                    "maxItems": 32,
+                    "title": "Lines",
+                    "type": "array"
+                  },
+                  "currency": {
+                    "const": "PKR",
+                    "title": "Currency",
+                    "type": "string"
+                  },
+                  "subtotal": {
+                    "minimum": 0,
+                    "multipleOf": 0.01,
+                    "title": "Subtotal",
+                    "type": "number"
+                  },
+                  "fees": {
+                    "items": {
+                      "$ref": "#/$defs/Fee"
+                    },
+                    "maxItems": 16,
+                    "title": "Fees",
+                    "type": "array"
+                  },
+                  "total": {
+                    "minimum": 0,
+                    "multipleOf": 0.01,
+                    "title": "Total",
+                    "type": "number"
+                  },
+                  "summary_revision": {
+                    "minimum": 0,
+                    "title": "Summary Revision",
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "lines",
+                  "currency",
+                  "subtotal",
+                  "fees",
+                  "total",
+                  "summary_revision"
+                ],
+                "title": "CheckoutSummary",
+                "type": "object"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "operation": {
+                "const": "cart.clear"
+              },
+              "status": {
+                "const": "success"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "verified_state": {
+                "additionalProperties": false,
+                "properties": {
+                  "lines": {
+                    "items": {
+                      "$ref": "#/$defs/CartLine"
+                    },
+                    "maxItems": 32,
+                    "title": "Lines",
+                    "type": "array"
+                  },
+                  "currency": {
+                    "const": "PKR",
+                    "title": "Currency",
+                    "type": "string"
+                  },
+                  "subtotal": {
+                    "minimum": 0,
+                    "multipleOf": 0.01,
+                    "title": "Subtotal",
+                    "type": "number"
+                  },
+                  "fees": {
+                    "items": {
+                      "$ref": "#/$defs/Fee"
+                    },
+                    "maxItems": 16,
+                    "title": "Fees",
+                    "type": "array"
+                  },
+                  "total": {
+                    "minimum": 0,
+                    "multipleOf": 0.01,
+                    "title": "Total",
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "lines",
+                  "currency",
+                  "subtotal",
+                  "fees",
+                  "total"
+                ],
+                "title": "CartSummary",
+                "type": "object"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "operation": {
                 "const": "checkout.get_summary"
               },
               "status": {
@@ -1335,7 +1527,10 @@
                 "const": "success"
               },
               "operation": {
-                "const": "checkout.get_summary"
+                "enum": [
+                  "checkout.get_summary",
+                  "cart.get_clear_summary"
+                ]
               }
             }
           },
@@ -1407,7 +1602,10 @@
                   "const": "success"
                 },
                 "operation": {
-                  "const": "checkout.get_summary"
+                  "enum": [
+                    "checkout.get_summary",
+                    "cart.get_clear_summary"
+                  ]
                 }
               }
             }
@@ -2325,7 +2523,7 @@
           "items": {
             "$ref": "#/$defs/Operation"
           },
-          "maxItems": 13,
+          "maxItems": 15,
           "title": "Valid Actions",
           "type": "array"
         },
@@ -2532,6 +2730,8 @@
         "cart.add_item",
         "cart.set_quantity",
         "cart.remove_item",
+        "cart.get_clear_summary",
+        "cart.clear",
         "checkout.get_summary",
         "checkout.submit_demo_order",
         "undo_last_reversible_action",

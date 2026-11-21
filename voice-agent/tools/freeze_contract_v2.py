@@ -140,7 +140,7 @@ def event_schema() -> dict[str, Any]:
                 "if": {
                     "properties": {
                         "status": {"const": "success"},
-                        "operation": {"const": "checkout.get_summary"},
+                        "operation": {"enum": ["checkout.get_summary", "cart.get_clear_summary"]},
                     }
                 },
                 "then": {
@@ -167,7 +167,7 @@ def event_schema() -> dict[str, Any]:
                 "not": {
                     "properties": {
                         "status": {"const": "success"},
-                        "operation": {"const": "checkout.get_summary"},
+                        "operation": {"enum": ["checkout.get_summary", "cart.get_clear_summary"]},
                     }
                 }
             },
@@ -211,7 +211,7 @@ def build_artifacts() -> dict[str, str]:
         artifacts[f"schemas/{name}.json"] = dump(schema)
     for operation, model in ARG_MODELS.items():
         schema = model.model_json_schema()
-        if operation == "checkout.submit_demo_order":
+        if operation in {"checkout.submit_demo_order", "cart.clear"}:
             schema["properties"]["confirmed"]["const"] = True
         artifacts[f"schemas/args_{operation.replace('.', '_')}.json"] = dump(schema)
     for index, exchange in enumerate(captured["exchanges"], 1):

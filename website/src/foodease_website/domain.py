@@ -32,6 +32,8 @@ MUTATING_OPERATIONS = {
     "cart.add_item",
     "cart.set_quantity",
     "cart.remove_item",
+    "cart.get_clear_summary",
+    "cart.clear",
     "checkout.get_summary",
     "checkout.submit_demo_order",
     "undo_last_reversible_action",
@@ -47,6 +49,8 @@ ALL_OPERATIONS = [
     "cart.add_item",
     "cart.set_quantity",
     "cart.remove_item",
+    "cart.get_clear_summary",
+    "cart.clear",
     "checkout.get_summary",
     "checkout.submit_demo_order",
     "undo_last_reversible_action",
@@ -75,6 +79,7 @@ class FoodEaseDomain:
     action_log: dict[str, dict[str, Any]] = field(default_factory=dict)
     undo_stack: list[dict[str, CartLineState]] = field(default_factory=list)
     pending_confirmation_token: str | None = None
+    pending_confirmation_purpose: str | None = None
     pending_confirmation_revision: int | None = None
     pending_confirmation_cart: dict[str, Any] | None = None
     demo_order_count: int = 0
@@ -260,6 +265,10 @@ class FoodEaseDomain:
             )
         if operation == "cart.remove_item":
             return self._remove_item(action_id, str(args.get("item_id", "")))
+        if operation == "cart.get_clear_summary":
+            return self._checkout_summary(action_id, purpose="clear")
+        if operation == "cart.clear":
+            return self._submit_demo_order(action_id, args, purpose="clear")
         if operation == "checkout.get_summary":
             return self._checkout_summary(action_id)
         if operation == "checkout.submit_demo_order":
@@ -276,13 +285,20 @@ class FoodEaseDomain:
                 setattr(self, key, value)
             self._bump()
             return self._result(action_id, SUCCESS, verified_state={"route": self.route})
-        if target not in {*self.catalog.categories, "home", "menu", "cart", "checkout"}:
+        if target not in {*self.catalog.categories, "home", "menu", "popular", "cart", "checkout"}:
             return self._result(action_id, REJECTED, error_code="invalid_arguments")
         self._save_view()
         self.focus_item_id = None
         if target in self.catalog.categories:
             self.category = target
+            self.search_query = None
             self.route = "menu"
+        elif target == "popular":
+            # The existing #popular section contains the catalog, not a popularity ranking.
+            self.route = "menu"
+            self.category = self.search_query = None
+            self.filter_tags = []
+            self.max_price_pkr = None
         elif target in {"home", "menu", "cart", "checkout"}:
             self.route = target
             if target == "home":
@@ -341,6 +357,8 @@ class FoodEaseDomain:
     def _set_quantity(self, action_id: str, item_id: str, quantity: int) -> dict[str, Any]:
         if item_id not in self.cart or quantity < 1 or quantity > 99:
             return self._result(action_id, REJECTED, error_code="invalid_arguments")
+        if quantity > self.cart[item_id].quantity and not self.menu_by_id[item_id].available:
+            return self._result(action_id, REJECTED, error_code="out_of_stock")
         self._save_undo()
         self.cart[item_id] = CartLineState(item_id=item_id, quantity=quantity)
         self._invalidate_confirmation()
@@ -356,15 +374,16 @@ class FoodEaseDomain:
         self._bump()
         return self._result(action_id, SUCCESS, verified_state=self.cart_summary())
 
-    def _checkout_summary(self, action_id: str) -> dict[str, Any]:
+    def _checkout_summary(self, action_id: str, *, purpose: str = "checkout") -> dict[str, Any]:
         if not self.cart:
             return self._result(action_id, REJECTED, error_code="not_available")
         self._save_view()
-        self.route = "checkout"
+        self.route = "cart" if purpose == "clear" else "checkout"
         self.focus_item_id = None
         self.pending_confirmation_revision = self.cart_revision
         self.pending_confirmation_cart = copy.deepcopy(self.cart_summary())
         self.pending_confirmation_token = secrets.token_urlsafe(32)
+        self.pending_confirmation_purpose = purpose
         self.confirmation_expires_at = self.clock() + self.confirmation_ttl
         self._bump()
         state = self.cart_summary()
@@ -376,7 +395,9 @@ class FoodEaseDomain:
             confirmation_token=self.pending_confirmation_token,
         )
 
-    def _submit_demo_order(self, action_id: str, args: dict[str, Any]) -> dict[str, Any]:
+    def _submit_demo_order(
+        self, action_id: str, args: dict[str, Any], *, purpose: str = "checkout"
+    ) -> dict[str, Any]:
         if not self.cart:
             return self._result(action_id, REJECTED, error_code="not_available")
         if not args.get("confirmed"):
@@ -386,6 +407,7 @@ class FoodEaseDomain:
         token = args.get("confirmation_token")
         if (
             not token
+            or self.pending_confirmation_purpose != purpose
             or not self.pending_confirmation_token
             or not secrets.compare_digest(token.encode(), self.pending_confirmation_token.encode())
             or args.get("summary_revision") != self.pending_confirmation_revision
@@ -399,6 +421,14 @@ class FoodEaseDomain:
                 action_id, REQUIRES_CONFIRMATION, error_code="confirmation_required"
             )
         order = self.cart_summary()
+        if purpose == "clear":
+            self._save_undo()
+            self.cart.clear()
+            self.route = "cart"
+            self.focus_item_id = None
+            self._invalidate_confirmation()
+            self._bump()
+            return self._result(action_id, SUCCESS, verified_state=self.cart_summary())
         self.demo_order_count += 1
         order_id = f"DEMO-{secrets.token_hex(12)}"
         self.cart.clear()
@@ -436,6 +466,7 @@ class FoodEaseDomain:
     def _invalidate_confirmation(self) -> None:
         self.cart_revision += 1
         self.pending_confirmation_token = None
+        self.pending_confirmation_purpose = None
         self.pending_confirmation_revision = None
         self.pending_confirmation_cart = None
         self.confirmation_expires_at = 0
@@ -465,7 +496,7 @@ class FoodEaseDomain:
             self.focus_item_id = None
 
     def _navigation_targets(self) -> list[str]:
-        return ["home", "menu", "back", "cart", "checkout", *self.catalog.categories]
+        return ["home", "menu", "popular", "back", "cart", "checkout", *self.catalog.categories]
 
     def _bump(self) -> None:
         self.revision += 1

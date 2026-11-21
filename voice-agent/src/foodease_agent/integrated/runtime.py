@@ -73,6 +73,7 @@ class LiveConversationRuntime:
         self.speech_controls = speech_controls
         self._volume = 1.0
         self.confirmation = ConfirmationMachine()
+        self.confirm_operation: str | None = None
         self.confirm_cart: str | None = None
         self.confirm_turn: str | None = None
         self.summary_id: str | None = None
@@ -220,6 +221,7 @@ class LiveConversationRuntime:
 
     def _invalidate_confirmation(self) -> None:
         self.confirmation.invalidate()
+        self.confirm_operation = None
         self.confirm_cart = self.confirm_turn = self.summary_id = None
 
     async def select_mode(self, mode: str) -> None:
@@ -352,6 +354,7 @@ class LiveConversationRuntime:
             "presented_revision": self.references.revision,
             "references_invalidated_by_manual_change": self.references_stale,
             "checkout_summary_delivered": self.confirmation.summary_spoken,
+            "confirmation_operation": self.confirm_operation,
         }
 
     async def input_text(
@@ -472,7 +475,7 @@ class LiveConversationRuntime:
             categories = [
                 target.replace("-", " ")
                 for target in self.snapshot.valid_navigation_targets
-                if target not in {"home", "menu", "back", "cart", "checkout"}
+                if target not in {"home", "menu", "popular", "back", "cart", "checkout"}
             ]
             self.say(
                 self.t(
@@ -696,10 +699,13 @@ class LiveConversationRuntime:
                 arguments["item_id"] = resolved.item_id
         return await self.broker.run(turn, operation, arguments)
 
-    def consume_confirmation(self, turn: Turn) -> dict | None:
+    def consume_confirmation(
+        self, turn: Turn, operation: str = "checkout.submit_demo_order"
+    ) -> dict | None:
         confirmation = self.confirmation
         if (
             self.confirm_turn != turn.id
+            or self.confirm_operation != operation
             or confirmation.state != ConfirmState.CONFIRMED
             or not confirmation.summary_spoken
             or self.confirm_cart != cart_hash(self.snapshot.cart)
@@ -752,7 +758,7 @@ class LiveConversationRuntime:
             # Exact checkout delivery may not silently fall back to an untranslated item name.
             if (
                 self.language == "ur"
-                and operation == "checkout.get_summary"
+                and operation in {"checkout.get_summary", "cart.get_clear_summary"}
                 and any(
                     re.search(r"[A-Za-z]", label(value, "ur"))
                     for value in [line["name"] for line in facts["lines"]]
@@ -764,8 +770,19 @@ class LiveConversationRuntime:
             say = cart_speech(
                 facts, confirmation=operation == "checkout.get_summary", language=self.language
             )
-        if operation == "checkout.get_summary":
+        if operation in {"checkout.get_summary", "cart.get_clear_summary"}:
             self._invalidate_confirmation()
+            self.confirm_operation = (
+                "cart.clear"
+                if operation == "cart.get_clear_summary"
+                else "checkout.submit_demo_order"
+            )
+            if operation == "cart.get_clear_summary":
+                say += (
+                    " کیا کارٹ کی تمام چیزیں ہٹا کر اسے خالی کر دوں؟"
+                    if self.language == "ur"
+                    else " Shall I remove every item and clear your cart?"
+                )
             summary_id = self.summary_id = new_id()
             self.confirm_cart = cart_hash(self.snapshot.cart)
             self.confirmation.begin_awaiting(
@@ -818,6 +835,8 @@ class LiveConversationRuntime:
                 say += self.t(" Say next for more options.")
         elif operation == "navigate":
             say = self.t("You’re on the {route} page.", route=facts["route"])
+            if self.snapshot.route == "menu" and self.snapshot.category:
+                say += " " + list_speech(self.snapshot.visible_items, language=self.language)
         elif operation == "get_current_context":
             say = SemanticPage(self.snapshot, self.details).speech(language=self.language)
         say = speech_text(say, self.language)
@@ -826,6 +845,19 @@ class LiveConversationRuntime:
         if len(json.dumps(answer, ensure_ascii=False).encode()) > 14000:
             return safe_failure("not_available")
         return answer
+
+    def finish_response(self, context: Any, operation: str, result: dict) -> None:
+        """Deliver a final verified tool response without another inference round trip."""
+        turn = self.speech_turns.get(context.speech_handle.id)
+        if context.session is not self.session or turn is None or not self.authorized(turn):
+            return
+        # Reviews have their own delivery receipt and must never be spoken twice.
+        if result["status"] == "success" and operation in {
+            "checkout.get_summary",
+            "cart.get_clear_summary",
+        }:
+            return
+        self.say(result["say"])
 
     def say(self, text: str, *, on_complete=None) -> Any:
         if (

@@ -66,8 +66,11 @@ def test_original_website_mismatches_are_reproduced(captured: dict) -> None:
 
 
 def test_all_real_operations_validate_in_canonical_contract(captured: dict) -> None:
-    assert len(captured["exchanges"]) == len(ARG_MODELS) == 13
-    assert {x["request"]["payload"]["operation"] for x in captured["exchanges"]} == set(ARG_MODELS)
+    # Preserve the pinned historical exchanges; clear-cart extensions have current-authority tests.
+    assert len(captured["exchanges"]) == 13
+    assert {x["request"]["payload"]["operation"] for x in captured["exchanges"]} == set(
+        ARG_MODELS
+    ) - {"cart.clear", "cart.get_clear_summary"}
     for exchange in captured["exchanges"]:
         request = decode_event(exchange["request"])
         result = decode_event(exchange["result"])

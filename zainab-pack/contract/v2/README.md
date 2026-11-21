@@ -1,5 +1,18 @@
 # FoodEase integration contract 2.0
 
+**21 November 2026 extension:** The active integrated worker/browser use v2.
+The allowlist now also includes `cart.get_clear_summary` (no arguments) and
+`cart.clear` (`confirmed`, app-issued `confirmation_token`, `summary_revision`).
+The clear review returns the same verified cart/summary shape as checkout, opens
+the existing cart, and does not remove anything. Its token is bound to clearing;
+it cannot authorize checkout, or survive a cart mutation or expiry. The worker
+requires later consent after completed review delivery. A clear is atomic,
+idempotent by action ID, and reversible through the existing undo operation.
+`popular` is a navigation alias for the existing menu section, not a ranking.
+Update the backend, browser and worker together: older validators capped the
+advertised action list at 13. Historical hash-pinned exchanges remain unchanged;
+generated schemas include the extensions. The notes below are historical.
+
 **Phase 2 addendum:** The website now enforces this contract through its shared
 application authority. Canonical models live in `foodease_contract.models`; the
 agent path below remains a compatibility import. Schemas are unchanged. Examples,
