@@ -3,7 +3,7 @@
   "mode": "hosted_real_rtc_worker_synthetic_wake_and_microphone",
   "errors": [],
   "turns": [],
-  "source": "/static/js/app.js?v=zara-32",
+  "source": "/static/js/app.js?v=zara-33",
   "wake": {
     "microphoneClearedDuringRecovery": true,
     "recognizersAfterRecovery": 2,

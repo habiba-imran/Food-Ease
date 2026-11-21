@@ -47,8 +47,14 @@ for the user's earlier attempt was not retained, so its exact trigger is unknown
 - Initial hosted `zara-32` check completed the real RTC/worker/TTS end→wake→new
   session flow exactly once with zero errors, using synthetic native wake events
   and a silent microphone. `hosted-before-abort-guard.json` retains it. The
-  strengthened final hosted check includes the deliberate aborted callback and
-  follows publication of `zara-33`.
+  strengthened final hosted check on published `zara-33` also passed, including
+  the deliberate aborted callback: microphone indication cleared during recovery,
+  recognition restarted, repeated ہائے زارا events started exactly one new real
+  LiveKit voice session, and its greeting completed. Zero page errors occurred.
+  [Final hosted result](../../deployment/evidence/wake-recovery-2026-11-21/hosted-questions.json)
+  and [published-source check](../../deployment/evidence/wake-recovery-2026-11-21/site-status.json)
+  record this. Source commits `0de4ad0` and `80900b5` are pushed to origin/main;
+  the Cloud worker source/settings were not changed.
 - The original native recognition service's behavior and the user's physical
   microphone accuracy cannot be reconstructed from worker logs.
 

@@ -1,9 +1,10 @@
 {
   "target": "https://food-ease-seven.vercel.app",
-  "checkedAt": "2026-11-21T16:02:42.107570+00:00",
-  "assetVersion": "zara-32",
+  "checkedAt": "2026-11-21T16:06:49.984393+00:00",
+  "assetVersion": "zara-33",
   "wakeModuleVersioned": true,
   "microphonePresentationRefresh": true,
   "boundedNetworkRecovery": true,
+  "expectedAbortGuard": true,
   "finalAlternatives": true
 }
