@@ -46,6 +46,12 @@ Urdu wake accuracy. The widget explains browser speech-service audio processing.
   fixture's absent TTS. The voice test now verifies that a transcript without
   audio delivery cannot authorize clearing the cart; the cart stays unchanged.
 - Source/public JavaScript copies match. Entry assets use `zara-28`.
+- After pushing `51e0406` to `origin/main`, a production Chromium check loaded
+  `zara-28`, found all 28 short descriptions, zero ingredient/typing controls,
+  one wake control and the non-modal widget. Actual LiveKit startup reached
+  `voice_active` in 12.8 seconds and saved the wake preference as `on`. It recorded
+  zero failed resources, page errors or matched closed-connection console errors.
+  This synthetic-microphone check proves startup, not human speech/wake accuracy.
 
 ## Worker deployment
 
@@ -55,5 +61,7 @@ FoodEase worker `CA_gibAwTdK3sjn` was redeployed through `deployment/cloud.py de
 Image staging uploaded 92 files, 1,007,356 bytes, with no local environment files.
 Cloud confirmed production version `z2LN4W7zmMhg`, Running in `ap-south`, deployed
 at 2026-11-21 11:43:34 UTC. Previous version: `XJw3A9BRfgiK`.
+Startup logs show health listening on port 8081, two initialized processes with
+Silero VAD prewarmed, and registration as `foodease` at 11:44:04 UTC.
 
 Evidence: `deployment/evidence/persistent-wake-2026-11-21/`.
