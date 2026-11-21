@@ -1,15 +1,19 @@
 # STATUS
 
-**Reply generation and truthful failure captions — 2026-11-21.** Logs confirmed
-Gemini 2.5's unsupported thinking-level setting. Model-compatible budgets now
-fix the actual chat path; failures have a distinct shared/UI caption outcome.
-The 350 ms speech gate and AEC are preserved. **606 Python checks passed / one
-inherited mock-import failure; 72 JS and 4 browser checks passed.** Build and
-scoped lint/types pass. Production questions exposed the old model's 404; Cloud
-now uses verified Gemini 3.5 Flash-Lite/minimal on version THgPWfNyTXZ7. Live
-category and price replies completed without failure/interruption. An exact
-context-receipt reuse optimization removes one duplicate browser fetch; final
-post-publication timings follow.
+**Reply generation, failure captions and menu latency — 2026-11-21.** Logs
+confirmed Gemini 2.5's unsupported thinking-level setting; real questions also
+exposed its account-level model unavailability. Production now uses verified
+Gemini 3.5 Flash-Lite/minimal, with model-compatible configuration and distinct
+failed captions. The 350 ms speech gate and AEC remain active. Exact context
+receipt reuse and a menu-only revision-checked path remove redundant reads;
+cart/checkout pre-reads and mutation guards remain intact. **611 Python checks
+passed / one inherited mock-import failure; 76 JS and 4 browser checks passed.**
+Build and scoped lint/types pass. Final worker **wHsS5nC83K3V is Running in
+ap-south**; source is published through `b689ce8`, website assets `zara-30`.
+Both real hosted Urdu questions completed without failure/interruption; category
+and all-five-burger-price speaking status arrived in **2.117 s / 3.356 s**.
+The price request used one successful authority RPC. These recognized-text tests
+bypass microphone/STT and do not measure caller-heard latency or acoustic echo.
 [Report](../evidence/reply-recovery-2026-11-21/report.md).
 
 **Balanced Urdu interruption — 2026-11-21.** Supersedes the zero-duration onset

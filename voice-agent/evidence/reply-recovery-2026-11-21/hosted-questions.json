@@ -6,29 +6,24 @@
     {
       "question": "السلام علیکم، مینیو میں کون کون سی کیٹیگریز ہیں؟",
       "phase": "completed",
-      "text": "وعلیکم السلام۔ مینو میں بریانی، برگر، کڑاہی، رول، پلیٹر، ریپ، سائیڈز، ڈرنکس اور ڈیزرٹس کی کیٹیگریز موجود ہیں۔ آپ کیا دیکھنا چاہیں گی؟ ",
-      "requestToCaptionMs": 13299,
-      "requestToSpeakingStatusMs": 2713,
+      "text": "وعلیکم السلام۔ ہمارے مینو میں بریانی، برگر، ڈیزرٹس، ڈرنکس، کڑاہی، پلیٹرز، رولز، سائیڈز اور ریپس کی کیٹیگریز موجود ہیں۔ آپ کیا دیکھنا چاہیں گی؟ ",
+      "requestToCaptionMs": 14214,
+      "requestToSpeakingStatusMs": 2117,
       "failures": 0,
       "actions": []
     },
     {
       "question": "برگر کی تمام اقسام قیمتوں کے ساتھ بتائیں۔",
       "phase": "completed",
-      "text": "پانچ کھانے ملے ہیں۔ زنگر برگر، چھ سو پچاس روپے۔ زنگر برگر سپریم، آٹھ سو پچاس روپے۔ بیف سمیش برگر، سات سو پچاس روپے۔ مزید کھانوں کے لیے اگلا کہیں۔",
-      "requestToCaptionMs": 15892,
-      "requestToSpeakingStatusMs": 5423,
+      "text": "پانچ کھانے ملے ہیں۔ زنگر برگر، چھ سو پچاس روپے۔ زنگر برگر سپریم، آٹھ سو پچاس روپے۔ بیف سمیش برگر، سات سو پچاس روپے۔ سبزی کی پیٹی والا برگر، پانچ سو پچاس روپے۔ سموکی باربی کیو برگر، سات سو روپے۔",
+      "requestToCaptionMs": 17680,
+      "requestToSpeakingStatusMs": 3356,
       "failures": 0,
       "actions": [
         {
-          "operation": "get_current_context",
-          "status": "success",
-          "durationMs": 1103
-        },
-        {
           "operation": "filter_menu",
           "status": "success",
-          "durationMs": 1295
+          "durationMs": 1416
         }
       ]
     }

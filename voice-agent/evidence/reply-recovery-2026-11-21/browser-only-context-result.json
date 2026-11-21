@@ -1,0 +1,37 @@
+{
+  "target": "https://food-ease-seven.vercel.app",
+  "mode": "hosted_real_providers_synthetic_recognized_requests",
+  "errors": [],
+  "turns": [
+    {
+      "question": "السلام علیکم، مینیو میں کون کون سی کیٹیگریز ہیں؟",
+      "phase": "completed",
+      "text": "وعلیکم السلام۔ مینو میں بریانی، برگر، کڑاہی، رول، پلیٹر، ریپ، سائیڈز، ڈرنکس اور ڈیزرٹس کی کیٹیگریز موجود ہیں۔ آپ کیا دیکھنا چاہیں گی؟ ",
+      "requestToCaptionMs": 13299,
+      "requestToSpeakingStatusMs": 2713,
+      "failures": 0,
+      "actions": []
+    },
+    {
+      "question": "برگر کی تمام اقسام قیمتوں کے ساتھ بتائیں۔",
+      "phase": "completed",
+      "text": "پانچ کھانے ملے ہیں۔ زنگر برگر، چھ سو پچاس روپے۔ زنگر برگر سپریم، آٹھ سو پچاس روپے۔ بیف سمیش برگر، سات سو پچاس روپے۔ مزید کھانوں کے لیے اگلا کہیں۔",
+      "requestToCaptionMs": 15892,
+      "requestToSpeakingStatusMs": 5423,
+      "failures": 0,
+      "actions": [
+        {
+          "operation": "get_current_context",
+          "status": "success",
+          "durationMs": 1103
+        },
+        {
+          "operation": "filter_menu",
+          "status": "success",
+          "durationMs": 1295
+        }
+      ]
+    }
+  ],
+  "source": "/static/js/app.js?v=zara-30"
+}

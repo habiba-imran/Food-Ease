@@ -40,7 +40,7 @@ cause is inferred from the user's pasted transcript.
 - Five regressions failed before implementation, including actual installed
   plugin `chat()` setup rather than only factory construction, and error captions.
 - Focused Gemini/caption/interruption/latency suite: 34 passed.
-- Worker + website Python: **606 passed / 1 inherited failure** in
+- Initial worker + website Python: **606 passed / 1 inherited failure** in
   `test_no_mock_imports_outside_adapters`, flagging unchanged `integration/scenarios.py`.
   An intermediate run caught contract regeneration and shutdown-observation issues;
   both were fixed before this final run.
@@ -70,7 +70,7 @@ New tests cover one-RPC filtering, a deliberately unpublished manual change,
 missing-context fallback and strict binding/revision/pending guards. Focused
 runtime/RPC/latency/interruption: 63 passed before adding two fallback cases.
 Final full Python: **611 passed / the same 1 inherited failure**. Scoped lint/types
-pass. This source change requires the second worker rollout recorded below.
+pass. This source change is active in the final worker rollout recorded below.
 
 ## Production verification
 
@@ -98,8 +98,20 @@ pass. This source change requires the second worker rollout recorded below.
   attempt 2 captured the real model 404, and attempt 3 successfully answered
   categories but hit an overly strict test-only RPC assertion (category facts were
   already in verified context). The corrected audit completed both turns.
-- Final `zara-30` timing verification after removal of the duplicate fetch follows
-  publication of that browser optimization.
+- Final source commit `b689ce8` deployed code-only as **wHsS5nC83K3V**, Running in
+  `ap-south`, at **2026-11-21 15:08:43 UTC**. Cloud model settings were preserved.
+  The hosted website served `zara-30`. `final-worker-status.json` records the rollout.
+- The final hosted audit completed both Urdu requests with **zero errors, failures
+  or interrupted replies**. Category request-to-speaking-status was **2.117 s**.
+  The burger request took **3.356 s** to speaking status and quoted all five menu
+  items with actual prices; it issued **one successful filter_menu RPC (1.416 s)**,
+  with no separate context RPC. Caption completion was 14.214 s / 17.680 s and
+  includes the entire response; it is not time to first response.
+- `hosted-questions.json` records the final run. The slower browser-only result is
+  retained in `browser-only-context-result.json`. These two-question samples show
+  successful real-provider operation and removal of the redundant round trip,
+  not a p50/p95 performance benchmark. Physical microphone/STT, caller-heard
+  latency and quiet-room false-interruption rates remain unmeasured.
 
 ## Sources consulted
 
