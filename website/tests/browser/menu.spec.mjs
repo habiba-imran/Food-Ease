@@ -80,6 +80,10 @@ test('category jumps recover a hidden category without losing the complete catal
   await expect(page.locator('[data-menu-item]:visible')).toHaveCount(2);
   await page.locator('[data-category-jump=wraps]').click();
   await expect(page.locator('[data-menu-item]:visible')).toHaveCount(28);
+  await expect.poll(()=>page.evaluate(async()=>{
+    const sid=sessionStorage.getItem('foodease.shopping-session.v2');
+    return (await (await fetch('/api/v2/app/context',{headers:{'X-FoodEase-Session':sid}})).json()).category;
+  })).toBe('wraps');
   await expect(page.locator('#menu-search')).toHaveValue('');
   await card(page, 'burger-soldout').locator('[data-add-item]').click();
   await expect(page.locator('[data-cart-count]')).toHaveText('1');

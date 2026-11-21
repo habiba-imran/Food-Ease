@@ -10,7 +10,7 @@ from collections.abc import Callable
 from typing import Any
 
 from foodease_contract.models import ActionResultEvent, ContextSnapshot, VisibleItem
-from livekit.agents import llm
+from livekit.agents import AgentSession, llm
 
 from foodease_agent.adapters.integrated import IntegratedAppAdapter, new_id
 from foodease_agent.confirmation import ConfirmationMachine, ConfirmState
@@ -24,6 +24,7 @@ from foodease_agent.integrated.conversation import (
     list_speech,
     reference_item,
 )
+from foodease_agent.integrated.manual import ManualCoexistence, operation_scope
 from foodease_agent.integrated.policy import (
     Turn,
     cart_hash,
@@ -98,6 +99,9 @@ class LiveConversationRuntime:
         self._speed = 1.0
         self._user_speaking = self._agent_speaking = False
         self.recovery = RuntimeRecovery(self)
+        self.manual = ManualCoexistence(self)
+        self.authored_speeches: dict[str, str] = {}
+        self._saying: tuple[str, str, bool] | None = None
         self._handlers = {
             "conversation_item_added": log_metrics,
             "speech_created": self.on_speech_created,
@@ -215,6 +219,7 @@ class LiveConversationRuntime:
         )
 
     def _interrupt(self) -> None:
+        self.manual.cancel()
         # Public interruption stops generation/audio. Owned broker tasks are shielded.
         with contextlib.suppress(RuntimeError):
             self.session.interrupt(force=True)
@@ -240,7 +245,7 @@ class LiveConversationRuntime:
         self.idle.reset_after_activity()
         self._set_audio()
 
-    def authorized(self, turn: Turn, *, revision=True, conversation=False) -> bool:
+    def authorized(self, turn: Turn, *, revision=True, conversation=False, output=False) -> bool:
         return bool(
             not self.closed
             and not self.paused
@@ -250,9 +255,12 @@ class LiveConversationRuntime:
             and turn.epoch == self.epoch
             and turn.committed
             and not turn.discarded
-            and (turn.speech is None or not turn.speech.interrupted)
+            and (not turn.effects_revoked or output and turn.id in self.manual.output_turns)
+            and (turn.speech is None or not turn.speech.interrupted
+                 or output and turn.speech.id in self.manual.stopped)
             and not any(
                 speech.interrupted and self.speech_turns.get(speech.id) is turn
+                and not (output and speech.id in self.manual.stopped)
                 for speech in self.speeches.values()
             )
             and (not revision or turn.revision == self.snapshot.revision)
@@ -263,6 +271,16 @@ class LiveConversationRuntime:
                 and self.mode == "choosing"
             )
         )
+
+    def can_speak(self, turn: Turn) -> bool:
+        return self.authorized(
+            turn, revision=not turn.effects_revoked, conversation=True, output=True
+        )
+
+    def response_scope(self, operation: str) -> str:
+        if operation in {"navigate", "get_current_context"}:
+            return "cart" if self.snapshot.route in {"cart", "checkout"} else "view"
+        return operation_scope(operation)
 
     def uncommit_turn(self, turn_id: str) -> None:
         if self.active_turn and self.active_turn.id == turn_id:
@@ -283,8 +301,10 @@ class LiveConversationRuntime:
             or snapshot.revision <= self.snapshot.revision
         ):
             return
-        old_cart = cart_hash(self.snapshot.cart)
-        old_items = self.snapshot.visible_items
+        before = self.snapshot
+        review_was_active = self.confirm_operation is not None
+        old_cart = cart_hash(before.cart)
+        old_items = before.visible_items
         self.snapshot = snapshot
         self._sync_preferences()
         self.references.clear()
@@ -314,9 +334,12 @@ class LiveConversationRuntime:
             self.browse.reset([], snapshot.revision)
             self.references_stale = True
             self.last_cart_item = None
-            if self.active_turn:
-                self.discard_turn(self.active_turn.id)
-            self._interrupt()
+            if any(getattr(before, k) != getattr(snapshot, k) for k in (
+                "route", "focus_item_id", "category", "search_query",
+                "filter_tags", "max_price_pkr",
+            )):
+                self._invalidate_confirmation()
+            self.manual.changed(before, snapshot, review_was_active=review_was_active)
         elif old_items == snapshot.visible_items:
             self.browse.revision = snapshot.revision
         else:
@@ -467,7 +490,7 @@ class LiveConversationRuntime:
         if command == "read_cart":
             result = await self.broker.run(turn, "get_cart", {})
             if self.authorized(turn):
-                self.say(result["say"])
+                self.say(result["say"], scope="cart")
             return
         if command in {"read_page", "read_categories", "next", "previous", "add_button"}:
             fresh = await self.broker.run(turn, "get_current_context", {})
@@ -487,7 +510,8 @@ class LiveConversationRuntime:
                     categories=", ".join(label(row, self.language) for row in categories),
                 )
                 if categories
-                else "I couldn’t find any menu categories on the site."
+                else "I couldn’t find any menu categories on the site.",
+                scope="menu",
             )
         elif command == "read_page":
             if self.snapshot.focus_item_id:
@@ -497,13 +521,18 @@ class LiveConversationRuntime:
                 if result["status"] != "success":
                     self.say(result["say"])
                     return
-            self.say(SemanticPage(self.snapshot, self.details).speech(language=self.language))
+            self.say(
+                SemanticPage(self.snapshot, self.details).speech(language=self.language),
+                scope=self.response_scope("get_current_context"),
+            )
         elif command in {"next", "previous"}:
             rows = self.browse.window(command)
             self.say(
                 list_speech(rows, language=self.language) + self.t(" Would you like to open one?")
                 if rows
-                else "There are no more options in this view. You can change the search or filters."
+                else ("There are no more options in this view. "
+                      "You can change the search or filters."),
+                scope="menu",
             )
         elif command == "add_button":
             item = self.snapshot.focus_item_id
@@ -512,7 +541,7 @@ class LiveConversationRuntime:
                 return
             result = await self.broker.run(turn, "cart.add_item", {"item_id": item, "quantity": 1})
             if self.authorized(turn):
-                self.say(result["say"])
+                self.say(result["say"], scope="cart")
         elif command == "open_reference":
             item = reference_item(turn.text, self.references.items)
             if not item or self.references.revision != self.snapshot.revision:
@@ -522,7 +551,7 @@ class LiveConversationRuntime:
                 return
             result = await self.broker.run(turn, "select_item", {"item_id": item})
             if self.authorized(turn):
-                self.say(result["say"])
+                self.say(result["say"], scope="item")
 
     async def handle_control(self, control: str, turn: Turn | None = None) -> None:
         self.idle.reset_after_activity()
@@ -799,7 +828,7 @@ class LiveConversationRuntime:
             def delivered():
                 if (
                     self.summary_id == summary_id
-                    and self.authorized(turn)
+                    and self.can_speak(turn)
                     and self.confirm_cart == cart_hash(self.snapshot.cart)
                 ):
                     self.confirmation.mark_summary_delivered()
@@ -816,7 +845,7 @@ class LiveConversationRuntime:
             else:
                 # Queue a separate exact utterance. Awaiting it inside a tool would
                 # deadlock SDK speech scheduling; its public done callback proves delivery.
-                self.say(say, on_complete=delivered)
+                self.say(say, on_complete=delivered, scope="review")
         elif operation == "checkout.submit_demo_order":
             say = "Your demo order was placed. No payment was taken."
         elif operation in {"get_item_details", "select_item"}:
@@ -861,9 +890,9 @@ class LiveConversationRuntime:
             "cart.get_clear_summary",
         }:
             return
-        self.say(result["say"])
+        self.say(result["say"], scope=self.response_scope(operation))
 
-    def say(self, text: str, *, on_complete=None) -> Any:
+    def say(self, text: str, *, on_complete=None, scope="general", detached=False) -> Any:
         if (
             self.closed
             or self.mode not in {"voice", "typed", "choosing"}
@@ -872,19 +901,32 @@ class LiveConversationRuntime:
         ):
             return None
         revision, epoch = self.snapshot.revision, self.epoch
+        owner = None if detached else self.active_turn
         voice_deliverable = self.mode == "voice" and self._voice_output_available()
         text = shape_assistant_reply(
             text,
             known_item_ids={i.item_id for i in self.snapshot.visible_items},
             language=self.language,
         ).spoken_text
-        handle = self.session.say(text, allow_interruptions=True)
+        self._saying = (text, scope, detached)
+        try:
+            if isinstance(self.session, AgentSession):
+                # Use the SDK's segmented output pipeline, without invoking the
+                # provider: llm_node returns the authored text for this handle.
+                handle = self.session.generate_reply(
+                    tools=[], tool_choice="none", allow_interruptions=True
+                )
+            else:
+                handle = self.session.say(text, allow_interruptions=True)
+        finally:
+            self._saying = None
 
         def done(speech):
             if (
                 not self.closed
                 and epoch == self.epoch
-                and revision == self.snapshot.revision
+                and (revision == self.snapshot.revision
+                     or owner is not None and self.can_speak(owner))
                 and not speech.interrupted
                 and speech.exception() is None
             ):
@@ -920,7 +962,13 @@ class LiveConversationRuntime:
         if event.source == "generate_reply" and self._generating_turn is not None:
             self.speech_turns[handle.id] = self._generating_turn
             self._generating_turn.speech = handle
-        turn = owner = self.speech_turns.get(handle.id) or self.active_turn
+        turn = owner = (
+            None if self._saying and self._saying[2]
+            else self.speech_turns.get(handle.id) or self.active_turn
+        )
+        if self._saying:
+            self.authored_speeches[handle.id] = self._saying[0]
+        self.manual.bind(handle, self._saying[1] if self._saying else "unknown")
         if turn is not None:
             self.speech_turns[handle.id] = turn
         self._captions[handle.id] = {
@@ -932,7 +980,9 @@ class LiveConversationRuntime:
 
         def completed(speech):
             self.speeches.pop(speech.id, None)
+            self.authored_speeches.pop(speech.id, None)
             turn = self.speech_turns.pop(speech.id, None)
+            self.manual.completed(speech, owner)
             failure = speech.exception()
             if not self.closed:
                 self.recovery.observe("speech_finished", speech_id=speech.id,
@@ -940,6 +990,7 @@ class LiveConversationRuntime:
             if (
                 (speech.interrupted or failure is not None)
                 and owner is not None and self.active_turn is owner
+                and speech.id not in self.manual.stopped
             ):
                 # Revoke confirmed interruptions/failures, never raw VAD onset.
                 # A late older handle cannot revoke a replacement turn.
@@ -1044,6 +1095,7 @@ class LiveConversationRuntime:
         if speaking and not self.closed:
             self.recovery.observe("user_speaking", assistant_speaking=self._agent_speaking)
         self._user_speaking = speaking
+        self.manual.user_changed(speaking)
         self.idle.mark_user_busy(speaking or self._agent_speaking)
         if speaking and not self.closed and self.language != "ur":
             # A new answer must not erase an already delivered summary. An
@@ -1201,6 +1253,7 @@ class LiveConversationRuntime:
         await self.broker.drain()
 
     async def close(self) -> None:
+        self.manual.close()
         self.end_local()
         if self.gate:
             self.gate.unsubscribe(self.on_room_event, self.end_local)

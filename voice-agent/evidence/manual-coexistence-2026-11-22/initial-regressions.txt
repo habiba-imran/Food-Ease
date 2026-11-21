@@ -1,0 +1,85 @@
+........................................................................ [ 11%]
+........................................................................ [ 23%]
+........................................................................ [ 34%]
+..........................F............................................. [ 46%]
+........................F............................................... [ 57%]
+........................................................................ [ 69%]
+........................................................................ [ 80%]
+........................................................................ [ 92%]
+..................................................                       [100%]
+================================== FAILURES ===================================
+____________ test_manual_edit_wins_over_a_delayed_committed_result ____________
+
+runtime = <foodease_agent.integrated.runtime.LiveConversationRuntime object at 0x000001D3774B4680>
+
+    @pytest.mark.asyncio
+    async def test_manual_edit_wins_over_a_delayed_committed_result(runtime):
+        committed, released = asyncio.Event(), asyncio.Event()
+        submit = runtime.adapter.submit
+
+        async def delayed(request):
+            result = await submit(request)
+            committed.set()
+            await released.wait()
+            return result
+
+        runtime.adapter.submit = delayed
+        context = await turn(runtime)
+        task = asyncio.create_task(
+            runtime.agent.cart_add_item(context, item_id="wrap-hot-chicken", quantity=2)
+        )
+        await committed.wait()
+        await runtime.adapter.manual(
+            "cart.set_quantity", {"item_id": "wrap-hot-chicken", "quantity": 1}
+        )
+        runtime.on_context(await runtime.adapter.get_snapshot(), source_turn="manual")
+        before = len(runtime.session.spoken)
+        released.set()
+        assert (await task)["status"] == "inactive_turn"
+        assert runtime.snapshot.cart.lines[0].quantity == 1
+>       assert len(runtime.session.spoken) == before and not runtime.pending
+E       AssertionError: assert (1 == 0)
+E        +  where 1 = len(['Your cart has 1 Hot Chicken Wrap, eight hundred fifty rupees. Fees: Service fee, fifty rupees. The total is nine hundred rupees.'])
+E        +    where ['Your cart has 1 Hot Chicken Wrap, eight hundred fifty rupees. Fees: Service fee, fifty rupees. The total is nine hundred rupees.'] = <test_integrated_runtime.Session object at 0x000001D3774B79E0>.spoken
+E        +      where <test_integrated_runtime.Session object at 0x000001D3774B79E0> = <foodease_agent.integrated.runtime.LiveConversationRuntime object at 0x000001D3774B4680>.session
+
+voice-agent\tests\test_integrated_recovery.py:340: AssertionError
+____________________ test_no_mock_imports_outside_adapters ____________________
+
+    def test_no_mock_imports_outside_adapters() -> None:
+        offenders: list[str] = []
+        for path in SRC.rglob("*.py"):
+            if "adapters" in path.parts:
+                continue
+            tree = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
+            for node in ast.walk(tree):
+                if isinstance(node, ast.ImportFrom):
+                    mod = node.module or ""
+                    if mod == "foodease_agent.adapters.mock" or mod.endswith(".adapters.mock"):
+                        offenders.append(str(path.relative_to(ROOT)))
+                    if mod == "foodease_agent.adapters" and any(
+                        alias.name == "mock" for alias in node.names
+                    ):
+                        offenders.append(str(path.relative_to(ROOT)))
+                if isinstance(node, ast.Import):
+                    for alias in node.names:
+                        if alias.name.endswith("adapters.mock"):
+                            offenders.append(str(path.relative_to(ROOT)))
+>       assert offenders == [], f"mock imported outside adapters/: {offenders}"
+E       AssertionError: mock imported outside adapters/: ['src\\foodease_agent\\integration\\scenarios.py']
+E       assert ['src\\foodea...scenarios.py'] == []
+E
+E         Left contains one more item: 'src\\foodease_agent\\integration\\scenarios.py'
+E         Use -v to get more diff
+
+voice-agent\tests\test_no_mock_leak.py:31: AssertionError
+============================== warnings summary ===============================
+voice-agent\.venv\Lib\site-packages\fastapi\testclient.py:1
+  C:\HCI-PROJECT\voice-agent\.venv\Lib\site-packages\fastapi\testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED voice-agent\tests\test_integrated_recovery.py::test_manual_edit_wins_over_a_delayed_committed_result
+FAILED voice-agent\tests\test_no_mock_leak.py::test_no_mock_imports_outside_adapters
+2 failed, 624 passed, 1 warning in 53.59s

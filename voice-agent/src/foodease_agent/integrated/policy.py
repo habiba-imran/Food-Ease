@@ -29,6 +29,7 @@ class Turn:
     read_all: bool = False
     sort_by: str | None = None
     control_done: bool = False
+    effects_revoked: bool = False
 
 
 def explicit_yes(text: str) -> bool:

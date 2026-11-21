@@ -1,5 +1,20 @@
 # STATUS
 
+**Manual controls and Zara speech — 2026-11-22.** Manual state revisions now
+revoke old tool authority while preserving unrelated speech. Real SDK sentence
+segments let navigation finish the current sentence before a fresh-context
+acknowledgment. Cart totals/reviews stop immediately after cart changes, and old
+confirmation cannot submit an order. Private model scope hints never reach TTS
+or grant action permissions; verified cart receipts constrain them. Manual category
+buttons now publish their selected section while preserving the full visual menu.
+**632 full Python checks passed / one inherited mock-import failure; 12 focused
+manual/native playout checks passed.** Nine distinct browser checks passed across
+targeted runs (one mobile fixture was corrected to await actual SDK reply completion).
+Scoped lint/types and 84 JavaScript checks/build pass. Source publication, code-only deployment and hosted checks
+are being completed; no physical listening or new latency claim is made.
+[Implementation and verification](../evidence/manual-coexistence-2026-11-22/report.md).
+
+
 **Further browsing latency reduction — 2026-11-21.** Latest production logs show
 752–790 ms transcription delays and 50–61 ms TTS first-byte, without provider
 failures. Removed a redundant context pre-read from bound current cart/details

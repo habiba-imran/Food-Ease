@@ -6,8 +6,8 @@ import { mkdir, writeFile } from 'node:fs/promises';
 const target = 'https://food-ease-seven.vercel.app';
 const evidence = process.env.FOODEASE_AUDIT_EVIDENCE || '../voice-agent/evidence/reply-recovery-2026-11-21';
 const profile = process.env.FOODEASE_AUDIT_PROFILE || 'menu';
-if (!['menu', 'latency', 'category-scroll', 'wake-recovery'].includes(profile)) throw new Error('Unknown audit profile');
-const questions = profile === 'wake-recovery' ? [] : profile === 'category-scroll' ? [
+if (!['menu', 'latency', 'category-scroll', 'wake-recovery', 'manual-coexistence'].includes(profile)) throw new Error('Unknown audit profile');
+const questions = ['wake-recovery','manual-coexistence'].includes(profile) ? [] : profile === 'category-scroll' ? [
   {kind:'category-jump', category:'karahi', text:'کڑاہی کے کھانے دکھاؤ۔'},
   {kind:'category-jump', category:'burgers', text:'برگر کے کھانے دکھاؤ۔'},
 ] : profile === 'latency' ? [
@@ -92,6 +92,78 @@ try {
   await page.waitForFunction(() => (window.auditEvents || []).some(({event}) =>
     event.type==='transcript.assistant' && event.payload.phase==='completed' && event.payload.text));
   await page.waitForTimeout(300);
+  if (profile === 'manual-coexistence') {
+    report.manual = {};
+    await page.locator('[data-voice-panel-close]').click();
+    const begin = async text => page.evaluate(async text => {
+      const sid=sessionStorage.getItem('foodease.shopping-session.v2');
+      const snapshot=await (await fetch('/api/v2/app/context',{headers:{'X-FoodEase-Session':sid}})).json();
+      const turnId=crypto.randomUUID(), baseline=window.auditEvents.length;
+      const event={schema_version:'2.0',session_id:sid,event_id:crypto.randomUUID(),turn_id:turnId,
+        timestamp:new Date().toISOString(),context_revision:snapshot.revision,type:'app.text_input',payload:{text}};
+      await window.auditRooms[1].localParticipant.publishData(new TextEncoder().encode(JSON.stringify(event)),
+        {reliable:true,topic:'foodease.text_input.v2'});
+      return {baseline,turnId};
+    }, text);
+    const speaking = async (sent, word) => page.waitForFunction(({baseline,turnId,word}) => {
+      const events=window.auditEvents.slice(baseline);
+      return events.some(({event})=>event.type==='agent.status' && event.payload.state==='assistant_speaking') &&
+        events.some(({event})=>event.type==='transcript.assistant' && event.turn_id===turnId &&
+          event.payload.phase==='updated' && event.payload.text.includes(word));
+    }, {...sent,word}, {timeout:60000});
+    const completed = async (sent, followup=false, after=sent.baseline) => {
+      await page.waitForFunction(({turnId,after,followup})=>window.auditEvents.slice(after).some(({event})=>
+        event.type==='transcript.assistant' && event.payload.phase==='completed' && event.payload.text.trim() &&
+        (followup ? event.turn_id!==turnId : event.turn_id===turnId)), {...sent,after,followup}, {timeout:60000});
+      return page.evaluate(({turnId,after,followup})=>window.auditEvents.slice(after).find(({event})=>
+        event.type==='transcript.assistant' && event.payload.phase==='completed' && event.payload.text.trim() &&
+        (followup ? event.turn_id!==turnId : event.turn_id===turnId)).event.payload.text, {...sent,after,followup});
+    };
+    const context = async () => page.evaluate(async()=>{
+      const sid=sessionStorage.getItem('foodease.shopping-session.v2');
+      return (await fetch('/api/v2/app/context',{headers:{'X-FoodEase-Session':sid}})).json();
+    });
+    const interrupted = async sent => page.evaluate(({baseline,turnId})=>window.auditEvents.slice(baseline)
+      .filter(({event})=>event.type==='transcript.assistant' && event.turn_id===turnId &&
+        event.payload.phase==='interrupted' && event.payload.text.trim()).map(({event})=>event.payload.text), sent);
+
+    const menu=await begin('برگر کی تمام اقسام قیمتوں کے ساتھ بتائیں۔');
+    await speaking(menu,'روپے');
+    await page.locator('[data-menu-item][data-id="drink-cola"] [data-add-item]').click();
+    await page.waitForFunction(()=>document.querySelector('[data-cart-count]').textContent==='1');
+    const menuText=await completed(menu);
+    const menuInterrupted=await interrupted(menu);
+    if(menuInterrupted.length) throw new Error('Unrelated manual cart add interrupted menu speech');
+    report.manual.menuWithCartAdd={completed:true,interruptedReplies:menuInterrupted.length,text:menuText};
+
+    await page.locator('[data-cart-trigger]:visible').first().click();
+    await page.waitForFunction(()=>document.documentElement.dataset.foodeaseRoute==='cart');
+    const cart=await begin('کارٹ میں کیا ہے؟');
+    await speaking(cart,'کولا');
+    const cartAfter=await page.evaluate(()=>window.auditEvents.length);
+    await page.getByRole('button',{name:'Increase Cola Can',exact:true}).click();
+    await page.waitForFunction(()=>document.querySelector('[data-cart-count]').textContent==='2');
+    const cartNotice=await completed(cart,true,cartAfter);
+    const oldCartInterrupted=await interrupted(cart);
+    const updated=await context();
+    if(!oldCartInterrupted.length || updated.cart.lines[0]?.quantity!==2)
+      throw new Error('Manual quantity change did not stop the old cart reply or update the cart');
+    report.manual.cartQuantityChange={oldReplyInterrupted:true,quantity:updated.cart.lines[0].quantity,updatedReply:cartNotice};
+
+    await page.locator('[data-cart-close]').click();
+    await page.waitForFunction(()=>document.documentElement.dataset.foodeaseRoute==='menu');
+    const navigation=await begin('کڑاہی کے تمام کھانوں کی قیمتیں بتائیں۔');
+    await speaking(navigation,'روپے');
+    const navigationAfter=await page.evaluate(()=>window.auditEvents.length);
+    await page.locator('[data-category-jump="burgers"]').click();
+    const notice=await completed(navigation,true,navigationAfter);
+    const oldNavigationInterrupted=await interrupted(navigation);
+    const current=await context();
+    if(!oldNavigationInterrupted.length || current.category!=='burgers' || !notice.includes('برگر'))
+      throw new Error('Manual category selection did not follow the new authoritative selection');
+    report.manual.categorySelection={oldReplyStoppedAtBoundary:true,category:current.category,reply:notice};
+    if(JSON.stringify(report.manual).includes('voice_scope')) throw new Error('Private response metadata leaked');
+  }
   if (profile === 'wake-recovery') {
     await page.locator('[data-voice-end]').click();
     await page.waitForFunction(() => document.documentElement.dataset.wakeState === 'listening');

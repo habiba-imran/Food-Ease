@@ -6,7 +6,7 @@ import re
 from collections.abc import AsyncIterable
 from typing import Any
 
-from livekit.agents import llm
+from livekit.agents import FlushSentinel, llm
 
 from foodease_agent.speech_text.sanitizer import sanitize_assistant_text
 from foodease_agent.speech_text.shaping import shape_assistant_reply
@@ -56,7 +56,7 @@ _OUTCOMES = (
 
 
 def checked_sentence(runtime: Any, turn: Any, text: str) -> str:
-    if turn is None or turn.control_done or not runtime.authorized(turn, conversation=True):
+    if turn is None or turn.control_done or not runtime.can_speak(turn):
         return ""
     text = sanitize_assistant_text(
         text,
@@ -67,7 +67,7 @@ def checked_sentence(runtime: Any, turn: Any, text: str) -> str:
         result.payload.operation
         for result in runtime.broker.results.values()
         if result.turn_id == turn.id
-        and result.context_revision == runtime.snapshot.revision
+        and result.context_revision == turn.revision
         and result.payload.status == "success"
     }
     for pattern, operations in _OUTCOMES:
@@ -88,6 +88,7 @@ async def guarded_output(source: AsyncIterable, runtime: Any, turn: Any):
     fact verifier. Authoritative tool facts and the instruction boundary remain required.
     """
     buffered = ""
+    scope_checked = False
     async for chunk in source:
         if isinstance(chunk, llm.ChatChunk):
             delta = chunk.delta
@@ -103,13 +104,27 @@ async def guarded_output(source: AsyncIterable, runtime: Any, turn: Any):
                 yield checked_sentence(runtime, turn, buffered)
                 buffered = ""
             yield chunk
+        if not scope_checked and buffered:
+            if match := re.match(r"^\s*<voice_scope:([a-z]+)>\s*", buffered):
+                scope = match[1]
+                if scope in {"general", "menu", "item", "cart", "view", "unknown"}:
+                    runtime.manual.generated_scope(turn, scope)
+                buffered = buffered[match.end():]
+                scope_checked = True
+            elif buffered.lstrip().startswith("<") and ">" not in buffered and len(buffered) < 80:
+                continue  # private marker may span several provider chunks
+            else:
+                scope_checked = True  # missing/invalid metadata stays conservative
         while match := re.search(r"[.!?۔؟](?:\s|$)", buffered):
             sentence, buffered = buffered[: match.end()], buffered[match.end() :]
             if checked := checked_sentence(runtime, turn, sentence):
                 yield checked + " "
+                yield FlushSentinel()
         if len(buffered) > 1200:
             if checked := checked_sentence(runtime, turn, buffered[:1200]):
                 yield checked + " "
             buffered = ""  # bounded pathological provider fragments
+    if buffered.startswith("<voice_scope:"):
+        return  # never speak an incomplete private marker
     if buffered and (checked := checked_sentence(runtime, turn, buffered)):
         yield checked

@@ -337,7 +337,11 @@ async def test_manual_edit_wins_over_a_delayed_committed_result(runtime):
     released.set()
     assert (await task)["status"] == "inactive_turn"
     assert runtime.snapshot.cart.lines[0].quantity == 1
-    assert len(runtime.session.spoken) == before and not runtime.pending
+    # The outdated write stays silent. A separately verified acknowledgment of
+    # the user's latest manual cart is now allowed; it must describe quantity 1.
+    assert not runtime.pending
+    assert all("2 Hot Chicken Wrap" not in text for text in runtime.session.spoken[before:])
+    assert all("1 Hot Chicken Wrap" in text for text in runtime.session.spoken[before:])
 
 
 @pytest.mark.asyncio

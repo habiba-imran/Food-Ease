@@ -9,10 +9,17 @@ from typing import Any, Literal
 from livekit.agents import Agent, RunContext, StopResponse, function_tool, llm
 
 from foodease_agent.integrated.control_intents import ConversationIntent
+from foodease_agent.integrated.manual import sentence_segments
 from foodease_agent.integrated.output import guarded_output
 from foodease_agent.integrated.policy import safe_failure
 
 POLICY = """You are FoodEase's friendly voice assistant. Be warm, natural, concise and helpful.
+Before an ordinary spoken reply, emit <voice_scope:general>, <voice_scope:menu>,
+<voice_scope:item>, <voice_scope:cart>, or <voice_scope:view> as private metadata.
+Use general for greetings/small talk without app facts; menu for catalog/categories;
+item for a dish's details; cart for quantities/totals/order review; view for page controls.
+Use <voice_scope:unknown> for combined or uncertain dependencies. This marker is
+removed before speech. Do not add markers to tool arguments or tool results.
 Ask one useful question at a time. Follow the user's pace. Never pretend to be human.
 When a user selects a dish without specifying quantity, ask how many before adding it.
 Resolve multiple matching dishes with a short clarification before making a cart change.
@@ -176,6 +183,8 @@ class IntegratedFoodEaseAgent(Agent):
 
     def llm_node(self, chat_ctx, tools, model_settings):
         speech = self.session.current_speech
+        if speech is not None and speech.id in self.runtime.authored_speeches:
+            return sentence_segments(self.runtime.authored_speeches[speech.id], speech)
         turn = self.runtime.speech_turns.get(speech.id) if speech is not None else None
         return guarded_output(
             Agent.default.llm_node(

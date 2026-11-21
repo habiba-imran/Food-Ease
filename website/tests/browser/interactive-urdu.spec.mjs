@@ -6,7 +6,7 @@ const panel = page => page.locator('[data-voice-controls]');
 // Inject a synthetic recognized request through the existing worker data path;
 // no typing controls are exposed by the production UI. This is not an audio test.
 async function say(page, text) {
-  await page.evaluate(async text => {
+  const id = await page.evaluate(async text => {
     const user = window.fakeLiveKit.rooms.find(r => r.role === 'user' && !r.closed);
     const context = window.fakeLiveKit.contexts.at(-1);
     const event = {schema_version:'2.0', session_id:user.sid, event_id:crypto.randomUUID(),
@@ -14,7 +14,13 @@ async function say(page, text) {
       context_revision:context.context_revision, payload:{text}};
     await user.localParticipant.publishData(new TextEncoder().encode(JSON.stringify(event)),
       {reliable:true, topic:'foodease.text_input.v2'});
+    return event.turn_id;
   }, text);
+  // Ordinary dialogue waits for the reply's real SDK completion, not just an
+  // optimistic DOM mutation before its action acknowledgment reaches the worker.
+  // Deliberate mid-speech manual actions have separate native playout tests.
+  await page.waitForFunction(id => [...document.querySelectorAll('[data-agent-transcript] [data-turn-id]')]
+    .some(row => row.dataset.turnId===id && row.dataset.phase==='completed' && row.textContent.trim()), id);
 }
 async function snapshot(page) {
   return page.evaluate(async () => (await fetch('/api/v2/app/context', {

@@ -6,6 +6,30 @@ Newest entries at the top.
 
 ---
 
+## ADR-0038 — Manual actions revoke effects without indiscriminate speech cancellation
+
+- **Context:** Every newer manual page revision discarded the whole turn and
+  interrupted output, including menu speech unaffected by a cart edit.
+- **Decision:** Keep strict action/revision ownership, with a separate output-only
+  lease for speech whose dependencies remain valid. Scoped tool replies use
+  authoritative provenance; ordinary model replies provide a private typed scope
+  hint, stripped before synthesis. Cart/review receipts override optimistic hints;
+  missing/uncertain hints remain conservative. No scope hint authorizes an action.
+  General/menu speech survives unrelated cart edits. Navigation uses native
+  FlushSentinel sentence segments and AudioOutput playback-finished events before
+  dropping old remaining segments and reading fresh context for a short acknowledgment.
+  Cart totals/reviews stop immediately on cart change; old consent is invalidated.
+  Stop/pause/end, real barge-in, new input and changed attachments cancel pending
+  handoffs. Owned submitted writes stay shielded, with no mutation retries.
+- **Details:** Authored responses use the same segmented SDK output node without
+  calling the model again; original receipt callbacks still require actual successful
+  full playout. Manual category jumps publish their category while keeping all visual
+  sections present. No providers, voice thresholds, recordings or dependencies changed.
+- **Evidence:** [Manual coexistence report](../evidence/manual-coexistence-2026-11-22/report.md).
+- **Date:** 2026-11-22. Supersedes blanket manual-context speech revocation.
+
+---
+
 ## ADR-0037 — Fresh reads and navigation without a redundant pre-read
 
 - **Context:** The latest production audio session has no provider failures. Its

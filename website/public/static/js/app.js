@@ -1486,8 +1486,8 @@ async function jumpToCategory(id) {
   if (searchInput) searchInput.value = '';
   const state = menuPreview?.state || appContext;
   const search = state?.search_query ? previewMenuAction('search_menu', { query: '' }) : Promise.resolve();
-  const filters = state?.category || state?.filter_tags?.length || state?.max_price_pkr != null
-    ? previewMenuAction('filter_menu', { tags: [], category: null, max_price_pkr: null }) : Promise.resolve();
+  const filters = state?.category !== id || state?.filter_tags?.length || state?.max_price_pkr != null
+    ? previewMenuAction('filter_menu', { tags: [], category: id, max_price_pkr: null }) : Promise.resolve();
   // Both previews begin after application readiness, before either network reply.
   await Promise.resolve();
   group.querySelectorAll('img').forEach((img, index) => {
