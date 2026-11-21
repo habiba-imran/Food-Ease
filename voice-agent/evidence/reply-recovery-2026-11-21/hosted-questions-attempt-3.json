@@ -1,0 +1,19 @@
+{
+  "target": "https://food-ease-seven.vercel.app",
+  "mode": "hosted_real_providers_synthetic_recognized_requests",
+  "errors": [
+    "Question was not grounded in application tools"
+  ],
+  "turns": [
+    {
+      "question": "السلام علیکم، مینیو میں کون کون سی کیٹیگریز ہیں؟",
+      "phase": "completed",
+      "text": "مینو میں بریانی، برگر، ڈیزرٹس، ڈرنکس، کڑاہی، پلیٹرز، رولز، سائیڈز اور ریپس موجود ہیں۔ آپ کس کیٹیگری کو دیکھنا چاہیں گی؟ ",
+      "requestToCaptionMs": 12568,
+      "requestToSpeakingStatusMs": 3184,
+      "failures": 0,
+      "actions": []
+    }
+  ],
+  "source": "/static/js/app.js?v=zara-29"
+}

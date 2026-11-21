@@ -1,0 +1,19 @@
+{
+  "target": "https://food-ease-seven.vercel.app",
+  "mode": "hosted_real_providers_synthetic_recognized_requests",
+  "errors": [
+    "Real question failed"
+  ],
+  "turns": [
+    {
+      "question": "السلام علیکم، مینیو میں کون کون سی کیٹیگریز ہیں؟",
+      "phase": "error",
+      "text": "معاون دستیاب نہیں ہے۔ براہِ کرم صفحے کے بٹن استعمال کریں۔",
+      "requestToCaptionMs": 671,
+      "requestToSpeakingStatusMs": null,
+      "failures": 1,
+      "actions": []
+    }
+  ],
+  "source": "/static/js/app.js?v=zara-29"
+}

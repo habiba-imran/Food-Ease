@@ -108,7 +108,7 @@ def main() -> int:
     )
     parser.add_argument("--backend-url")
     parser.add_argument("--llm-provider", choices=("gemini", "groq"), default="gemini")
-    parser.add_argument("--llm-model", default="gemini-2.5-flash")
+    parser.add_argument("--llm-model", default="gemini-3.5-flash-lite")
     parser.add_argument("--interruption-duration", default="1.2")
     parser.add_argument("--interruption-words", default="1")
     parser.add_argument("--log-type", choices=("deploy", "build"), default="deploy")
@@ -206,7 +206,7 @@ def main() -> int:
                 "GROQ_MODEL": settings.llm_model
                 if settings.llm_provider == "groq"
                 else env.get("GROQ_MODEL", "openai/gpt-oss-20b"),
-                "LLM_MODEL": env.get("LLM_MODEL", "gemini-2.5-flash"),
+                "LLM_MODEL": env.get("LLM_MODEL", "gemini-3.5-flash-lite"),
                 "LLM_THINKING_LEVEL": env.get("LLM_THINKING_LEVEL", "minimal"),
                 "INTERRUPTION_MIN_DURATION": str(env.get("INTERRUPTION_MIN_DURATION", "1.2")),
                 "INTERRUPTION_MIN_WORDS": str(env.get("INTERRUPTION_MIN_WORDS", "1")),

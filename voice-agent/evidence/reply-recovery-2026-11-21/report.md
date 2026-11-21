@@ -11,7 +11,7 @@ cause is inferred from the user's pasted transcript.
 
 - Gemini 2.5 Flash/Flash-Lite now use the supported `thinking_budget=0` to avoid
   unnecessary reasoning latency. Gemini 2.5 Pro uses its supported minimum 128;
-  Gemini 3+ retains explicit thinking levels. Model/provider selection is preserved.
+  Gemini 3+ retains explicit thinking levels. Provider selection is preserved; production now uses the available Gemini 3.5 Flash-Lite model with minimal thinking after a real API check found Gemini 2.5 Flash unavailable for this account.
   This supersedes the older blanket thinking-level requirement for Gemini 2.5.
 - A provider exception terminates its caption as `failed`, not `interrupted`.
   Genuine interruptions retain their original phase and actual partial text.
@@ -25,6 +25,11 @@ cause is inferred from the user's pasted transcript.
 - Bounded runtime observations now log state-only speech-finish/failure and user
   activity metadata. Existing per-message provider timing logs remain in use.
   No transcript/audio recording or secret settings are enabled or changed.
+- A fresh `get_current_context` action already contains the authority's complete
+  snapshot. The browser now reuses that exact correlated session/revision receipt
+  instead of fetching it again. Missing, foreign, mismatched or older snapshots
+  retain the fresh-read path. Mutating actions and uncertain outcomes are unchanged.
+  Four regressions cover both reuse and fallback; entry assets are `zara-30`.
 - A bounded hosted question audit exercises the actual website, RTC, Cloud worker,
   provider and tools. It supplies a synthetic silent microphone and recognized
   requests through the existing wake-handoff lane; no production debug hook is
@@ -39,17 +44,45 @@ cause is inferred from the user's pasted transcript.
   `test_no_mock_imports_outside_adapters`, flagging unchanged `integration/scenarios.py`.
   An intermediate run caught contract regeneration and shutdown-observation issues;
   both were fixed before this final run.
-- JavaScript: **72 passed**. Browser build passed.
+- JavaScript: **76 passed** after context reuse. Browser build passed.
+- Replacement-model/deployment guards: **5 passed** after the model selection update.
 - Browser: **4 passed** (Urdu/Roman Urdu cart use at desktop/mobile, missing audio
   delivery guard, distinct failed/interrupted captions).
 - Changed Python Ruff and scoped Pyright passed; shared v2 schemas regenerated.
 
 ## Production verification
 
-Deployment and real question-answer results will be appended after rollout.
+- Code pushed as `00c0961`, then deployed with `deploy --code-only` to existing
+  worker `CA_gibAwTdK3sjn`. Version **THgPWfNyTXZ7**, Running in `ap-south`, was
+  deployed at 2026-11-21 14:40:37 UTC (92 staged files, 1,010,330 bytes).
+- Real question testing then exposed a second provider failure: Google returned
+  404 because Gemini 2.5 Flash is no longer available to new users on this account.
+  This could not be found by constructor/no-network tests. Both failures are retained.
+- Google model metadata and one native SDK Urdu request verified
+  `gemini-3.5-flash-lite` with `thinking_level=minimal`. Only `LLM_MODEL` and
+  `LLM_THINKING_LEVEL` were updated in Cloud; credentials and all other settings
+  were preserved. The deployment helper defaults now use the available model.
+- On `zara-29`, the actual hosted worker answered both category and burger-price
+  questions. The price reply used successful `get_current_context` and `filter_menu`
+  application actions and quoted all five actual burger prices. Neither reply
+  failed or was interrupted. Browser request-to-speaking-status was 1.748 s and
+  4.433 s respectively. Caption completion includes the entire spoken reply and
+  must not be read as initial-response latency. These recognized-text tests bypass
+  microphone/STT; neither their timings nor local scripted VAD tests establish
+  caller-heard full speech latency or physical room echo performance.
+- Corresponding agent logs show 1.156 s LLM first-token and 64 ms TTS first-byte
+  on the category turn. These fields are stage metrics, not audible latency.
+- Intermediate audits are retained: attempt 1 had test instrumentation failure,
+  attempt 2 captured the real model 404, and attempt 3 successfully answered
+  categories but hit an overly strict test-only RPC assertion (category facts were
+  already in verified context). The corrected audit completed both turns.
+- Final `zara-30` timing verification after removal of the duplicate fetch follows
+  publication of that browser optimization.
 
 ## Sources consulted
 
 - [LiveKit Gemini thinking configuration](https://docs.livekit.io/agents/models/llm/gemini/#thinking)
 - [Google thinking budget support](https://docs.cloud.google.com/gemini-enterprise-agent-platform/models/thinking)
 - Installed LiveKit Google plugin 1.8.4 chat setup and speech-handle outcome APIs.
+
+- [Available Flash-Lite model and tool support](https://aistudio.google.com/docs/models/gemini-3.5-flash-lite)

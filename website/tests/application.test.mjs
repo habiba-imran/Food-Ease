@@ -7,6 +7,28 @@ const snapshot = (revision = 1) => ({ schema_version: "2.0", session_id: "shop",
   max_price_pkr: null, search_query: "", cart: { lines: [], currency: "PKR", subtotal: 0, fees: [], total: 0 },
   valid_actions: [], valid_navigation_targets: [], checkout_available: false, action_pending: false, language: "en" });
 
+for (const variant of ['exact', 'wrong session', 'wrong revision', 'older than current']) {
+  test(`fresh context action snapshot reuse: ${variant}`, async () => {
+    let reads = 0;
+    const current = variant === 'older than current' ? 3 : 1;
+    const embedded = {...snapshot(2), ...(variant === 'wrong session' ? {session_id:'foreign'} : {}),
+      ...(variant === 'wrong revision' ? {revision:1} : {})};
+    const app = new Application({sessionId:'shop',render:()=>{},transport:{
+      context:async()=>{reads++;return snapshot(Math.max(2,current));},
+      action:async request=>({schema_version:'2.0',session_id:'shop',type:'app.action_result',
+        turn_id:request.turn_id,reply_to:request.event_id,context_revision:2,
+        payload:{action_id:request.payload.action_id,operation:'get_current_context',status:'success',verified_state:{snapshot:embedded}}}),
+    }});
+    await app.accept(snapshot(current));
+    // For the last case simulate a newer manual update while an older read returns.
+    const request=actionRequest('shop','read-turn',1,'get_current_context');
+    await app.execute(request);
+    assert.equal(reads,variant === 'exact' ? 0 : 1);
+    assert.equal(app.snapshot.session_id,'shop');
+    assert.equal(app.snapshot.revision,Math.max(2,current));
+  });
+}
+
 test("manual shutdown rejects queued assistance work while retaining the submitted outcome", async () => {
   let release, entered, closed = false, submissions = 0;
   const hold = new Promise(resolve => { release = resolve; });

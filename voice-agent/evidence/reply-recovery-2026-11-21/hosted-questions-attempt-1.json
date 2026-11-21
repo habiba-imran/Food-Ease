@@ -1,0 +1,9 @@
+{
+  "target": "https://food-ease-seven.vercel.app",
+  "mode": "hosted_real_providers_synthetic_recognized_requests",
+  "errors": [
+    "page.evaluate: TypeError: Cannot read properties of undefined (reading 'sid')\n    at eval (eval at evaluate (:370:30), <anonymous>:3:60)\n    at UtilityScript.evaluate (<anonymous>:372:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)"
+  ],
+  "turns": [],
+  "source": "/static/js/app.js?v=zara-29"
+}

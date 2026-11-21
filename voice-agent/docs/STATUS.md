@@ -5,7 +5,11 @@ Gemini 2.5's unsupported thinking-level setting. Model-compatible budgets now
 fix the actual chat path; failures have a distinct shared/UI caption outcome.
 The 350 ms speech gate and AEC are preserved. **606 Python checks passed / one
 inherited mock-import failure; 72 JS and 4 browser checks passed.** Build and
-scoped lint/types pass. Production question-answer verification follows rollout.
+scoped lint/types pass. Production questions exposed the old model's 404; Cloud
+now uses verified Gemini 3.5 Flash-Lite/minimal on version THgPWfNyTXZ7. Live
+category and price replies completed without failure/interruption. An exact
+context-receipt reuse optimization removes one duplicate browser fetch; final
+post-publication timings follow.
 [Report](../evidence/reply-recovery-2026-11-21/report.md).
 
 **Balanced Urdu interruption — 2026-11-21.** Supersedes the zero-duration onset

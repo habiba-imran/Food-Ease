@@ -1,4 +1,4 @@
-import { Application, newId } from "./application.mjs";
+import { Application, newId } from "./application.mjs?v=context-2";
 import { AssistanceController } from "./assistance-controller.mjs?v=voice-18";
 import { LiveKitSeats } from "./livekit-bridge.mjs?v=voice-16";
 import { TranscriptView } from "./transcripts.mjs?v=caption-2";

@@ -1,0 +1,278 @@
+Using url, api-key, api-secret from environment
+Using agent [CA_gibAwTdK3sjn]
+Detected agent language [python.pip]
+Loading client settings...
+This deploy continues even if you disconnect; run `lk agent status` to check.
+#1 Starting build
+#1 DONE 0.0s
+
+#2 [internal] load remote build context
+#2 DONE 1.3s
+
+#2 [internal] load remote build context
+#2 DONE 1.3s
+
+#3 copy /context /
+#3 DONE 0.0s
+
+#4 resolve image config for docker-image://docker.io/docker/dockerfile:1
+#4 DONE 2.7s
+
+#5 docker-image://docker.io/docker/dockerfile:1@sha256:572cebbc2b15e6f84c077742952674889cb63cd5e9b80abdffcbe587b6f19183
+#5 resolve docker.io/docker/dockerfile:1@sha256:572cebbc2b15e6f84c077742952674889cb63cd5e9b80abdffcbe587b6f19183 done
+#5 DONE 0.0s
+
+#5 docker-image://docker.io/docker/dockerfile:1@sha256:572cebbc2b15e6f84c077742952674889cb63cd5e9b80abdffcbe587b6f19183
+#5 sha256:03f648a05b5780c2a0e4b43c93eb1838c6b9b32131b25f4199f42a788d106315 15.19MB / 15.19MB 0.3s done
+#5 extracting sha256:03f648a05b5780c2a0e4b43c93eb1838c6b9b32131b25f4199f42a788d106315
+#5 extracting sha256:03f648a05b5780c2a0e4b43c93eb1838c6b9b32131b25f4199f42a788d106315 0.4s done
+#5 DONE 0.7s
+
+#6 [internal] load metadata for docker.io/library/python:3.12-slim-bookworm
+#6 ...
+
+#7 [internal] load metadata for ghcr.io/astral-sh/uv:0.10.6
+#7 DONE 2.2s
+
+#6 [internal] load metadata for docker.io/library/python:3.12-slim-bookworm
+#6 DONE 2.9s
+
+#8 FROM ghcr.io/astral-sh/uv:0.10.6@sha256:2f2ccd27bbf953ec7a9e3153a4563705e41c852a5e1912b438fc44d88d6cb52c
+#8 resolve ghcr.io/astral-sh/uv:0.10.6@sha256:2f2ccd27bbf953ec7a9e3153a4563705e41c852a5e1912b438fc44d88d6cb52c
+#8 resolve ghcr.io/astral-sh/uv:0.10.6@sha256:2f2ccd27bbf953ec7a9e3153a4563705e41c852a5e1912b438fc44d88d6cb52c done
+#8 DONE 0.0s
+
+#9 [stage-0  1/12] FROM docker.io/library/python:3.12-slim-bookworm@sha256:935c3c5b12357a7e10caa9c1e6ca5692344d97cf229832ef584be2cec9fc03df
+#9 resolve docker.io/library/python:3.12-slim-bookworm@sha256:935c3c5b12357a7e10caa9c1e6ca5692344d97cf229832ef584be2cec9fc03df 0.0s done
+#9 DONE 0.0s
+
+#10 [stage-0  6/12] COPY --chown=agent:agent website/pyproject.toml website/README.md ./website/
+#10 CACHED
+
+#11 [stage-0  7/12] COPY --chown=agent:agent voice-agent/pyproject.toml voice-agent/uv.lock voice-agent/README.md ./voice-agent/
+#11 CACHED
+
+#12 [stage-0  8/12] WORKDIR /app/voice-agent
+#12 CACHED
+
+#13 [stage-0  2/12] COPY --from=ghcr.io/astral-sh/uv:0.10.6 /uv /uvx /bin/
+#13 CACHED
+
+#14 [stage-0  3/12] RUN useradd --create-home --uid 10001 agent && mkdir -p /app/.cache && chown -R agent:agent /app
+#14 CACHED
+
+#15 [stage-0  4/12] WORKDIR /app
+#15 CACHED
+
+#16 [stage-0  5/12] COPY --chown=agent:agent contracts/pyproject.toml contracts/README.md ./contracts/
+#16 CACHED
+
+#17 [stage-0  9/12] RUN uv sync --locked --no-dev --no-install-project --no-install-package foodease-contract
+#17 CACHED
+
+#17 [stage-0  9/12] RUN uv sync --locked --no-dev --no-install-project --no-install-package foodease-contract
+#17 sha256:3a7ca5afdc6c2baf19230d9c5d728e094044e77258efc26da7892c4274fbf985 0B / 388.97MB 0.2s
+#17 sha256:2c1ce468d9f3d941396801f6e3afc8921466650dd05430fe644cd3537713d27f 0B / 16B 0.2s
+#17 sha256:774df498ef852efe35c7c2c85b999480b27f3fdc98a638462d0900760602aafa 0B / 163.88kB 0.2s
+#17 sha256:b999610e6fc5595790e4429a9082283b41def55f0e8aec8291430eca0546eae5 4.91kB / 4.91kB 0.2s done
+#17 sha256:3a7ca5afdc6c2baf19230d9c5d728e094044e77258efc26da7892c4274fbf985 23.16MB / 388.97MB 0.5s
+#17 sha256:774df498ef852efe35c7c2c85b999480b27f3fdc98a638462d0900760602aafa 163.88kB / 163.88kB 0.4s done
+#17 sha256:057ada1d5cc9535b0ce91bdb0cab17a661c66b92a4cf98dfa23e2275947b9cbc 1.04kB / 1.04kB 0.2s done
+#17 sha256:85b957644e9c8178063cc7432ca53511df1ee26a956dc5f317f42e736b4194b8 3.43kB / 3.43kB 0.1s done
+#17 sha256:d91dcaaf797021551885f8078ddda07fd3b93fb6f504e0a5ccdee87fd9e0917f 1.05MB / 20.96MB 0.3s
+#17 sha256:0a442fdbc64707f5fece7495f47e68af4812d706bfeb6f83404be98e6e930ffa 0B / 207B 0.2s
+#17 sha256:3a7ca5afdc6c2baf19230d9c5d728e094044e77258efc26da7892c4274fbf985 46.42MB / 388.97MB 0.8s
+#17 sha256:2c1ce468d9f3d941396801f6e3afc8921466650dd05430fe644cd3537713d27f 16B / 16B 0.9s done
+#17 sha256:d91dcaaf797021551885f8078ddda07fd3b93fb6f504e0a5ccdee87fd9e0917f 10.91MB / 20.96MB 0.6s
+#17 sha256:0a442fdbc64707f5fece7495f47e68af4812d706bfeb6f83404be98e6e930ffa 207B / 207B 0.4s done
+#17 sha256:3a7ca5afdc6c2baf19230d9c5d728e094044e77258efc26da7892c4274fbf985 67.11MB / 388.97MB 1.1s
+#17 sha256:d91dcaaf797021551885f8078ddda07fd3b93fb6f504e0a5ccdee87fd9e0917f 20.96MB / 20.96MB 0.7s done
+#17 sha256:9d1d712c0ba294989471d2d691a8e27a877091333266439ebb9cba4e8b67dda7 0B / 13.21MB 0.3s
+#17 sha256:cfe5b5a54e1b785e543ddd4a7e67daf8adff74d6c3e01b005b4eb36024716e68 0B / 3.34MB 0.3s
+#17 sha256:12a8613b0c2a50e11ef9f9dd43530820d3f95268ce01ad311a5338ea1da339f0 0B / 24.02MB 0.2s
+#17 sha256:3a7ca5afdc6c2baf19230d9c5d728e094044e77258efc26da7892c4274fbf985 87.03MB / 388.97MB 1.4s
+#17 sha256:cfe5b5a54e1b785e543ddd4a7e67daf8adff74d6c3e01b005b4eb36024716e68 3.34MB / 3.34MB 0.4s done
+#17 sha256:12a8613b0c2a50e11ef9f9dd43530820d3f95268ce01ad311a5338ea1da339f0 3.15MB / 24.02MB 0.5s
+#17 sha256:3a7ca5afdc6c2baf19230d9c5d728e094044e77258efc26da7892c4274fbf985 110.36MB / 388.97MB 1.7s
+#17 sha256:9d1d712c0ba294989471d2d691a8e27a877091333266439ebb9cba4e8b67dda7 11.53MB / 13.21MB 0.9s
+#17 sha256:12a8613b0c2a50e11ef9f9dd43530820d3f95268ce01ad311a5338ea1da339f0 7.25MB / 24.02MB 0.6s
+#17 sha256:9d1d712c0ba294989471d2d691a8e27a877091333266439ebb9cba4e8b67dda7 13.21MB / 13.21MB 1.0s done
+#17 sha256:12a8613b0c2a50e11ef9f9dd43530820d3f95268ce01ad311a5338ea1da339f0 15.23MB / 24.02MB 0.8s
+#17 sha256:3a7ca5afdc6c2baf19230d9c5d728e094044e77258efc26da7892c4274fbf985 146.35MB / 388.97MB 2.3s
+#17 sha256:12a8613b0c2a50e11ef9f9dd43530820d3f95268ce01ad311a5338ea1da339f0 24.02MB / 24.02MB 0.9s done
+#17 extracting sha256:12a8613b0c2a50e11ef9f9dd43530820d3f95268ce01ad311a5338ea1da339f0
+#17 sha256:3a7ca5afdc6c2baf19230d9c5d728e094044e77258efc26da7892c4274fbf985 167.77MB / 388.97MB 2.7s
+#17 sha256:3a7ca5afdc6c2baf19230d9c5d728e094044e77258efc26da7892c4274fbf985 195.61MB / 388.97MB 3.6s
+#17 extracting sha256:12a8613b0c2a50e11ef9f9dd43530820d3f95268ce01ad311a5338ea1da339f0 1.8s done
+#17 extracting sha256:cfe5b5a54e1b785e543ddd4a7e67daf8adff74d6c3e01b005b4eb36024716e68
+#17 sha256:3a7ca5afdc6c2baf19230d9c5d728e094044e77258efc26da7892c4274fbf985 224.40MB / 388.97MB 4.2s
+#17 extracting sha256:cfe5b5a54e1b785e543ddd4a7e67daf8adff74d6c3e01b005b4eb36024716e68 0.2s done
+#17 extracting sha256:9d1d712c0ba294989471d2d691a8e27a877091333266439ebb9cba4e8b67dda7
+#17 sha256:3a7ca5afdc6c2baf19230d9c5d728e094044e77258efc26da7892c4274fbf985 246.69MB / 388.97MB 4.7s
+#17 sha256:3a7ca5afdc6c2baf19230d9c5d728e094044e77258efc26da7892c4274fbf985 268.44MB / 388.97MB 5.0s
+#17 extracting sha256:9d1d712c0ba294989471d2d691a8e27a877091333266439ebb9cba4e8b67dda7 1.0s done
+#17 extracting sha256:0a442fdbc64707f5fece7495f47e68af4812d706bfeb6f83404be98e6e930ffa done
+#17 extracting sha256:d91dcaaf797021551885f8078ddda07fd3b93fb6f504e0a5ccdee87fd9e0917f
+#17 sha256:3a7ca5afdc6c2baf19230d9c5d728e094044e77258efc26da7892c4274fbf985 290.77MB / 388.97MB 5.4s
+#17 sha256:3a7ca5afdc6c2baf19230d9c5d728e094044e77258efc26da7892c4274fbf985 369.10MB / 388.97MB 7.1s
+#17 extracting sha256:d91dcaaf797021551885f8078ddda07fd3b93fb6f504e0a5ccdee87fd9e0917f 0.8s done
+#17 extracting sha256:85b957644e9c8178063cc7432ca53511df1ee26a956dc5f317f42e736b4194b8 done
+#17 extracting sha256:2c1ce468d9f3d941396801f6e3afc8921466650dd05430fe644cd3537713d27f done
+#17 extracting sha256:057ada1d5cc9535b0ce91bdb0cab17a661c66b92a4cf98dfa23e2275947b9cbc done
+#17 extracting sha256:b999610e6fc5595790e4429a9082283b41def55f0e8aec8291430eca0546eae5 0.0s done
+#17 extracting sha256:774df498ef852efe35c7c2c85b999480b27f3fdc98a638462d0900760602aafa 0.1s done
+#17 sha256:3a7ca5afdc6c2baf19230d9c5d728e094044e77258efc26da7892c4274fbf985 388.97MB / 388.97MB 9.3s done
+#17 extracting sha256:3a7ca5afdc6c2baf19230d9c5d728e094044e77258efc26da7892c4274fbf985
+#17 extracting sha256:3a7ca5afdc6c2baf19230d9c5d728e094044e77258efc26da7892c4274fbf985 18.1s done
+#17 DONE 27.5s
+
+#18 [stage-0 10/12] COPY --chown=agent:agent contracts/src /app/contracts/src
+#18 DONE 0.8s
+
+#19 [stage-0 11/12] COPY --chown=agent:agent voice-agent/src /app/voice-agent/src
+#19 DONE 0.0s
+
+#20 [stage-0 12/12] RUN uv sync --locked --no-dev --no-editable     && python -c "import tiktoken; tiktoken.get_encoding('o200k_base')"     && python -m livekit.agents download-files
+#20 0.278 Resolved 136 packages in 1ms
+#20 0.285    Building foodease-agent @ file:///app/voice-agent
+#20 0.285    Building foodease-contract @ file:///app/contracts
+#20 0.287       Built foodease-contract @ file:///app/contracts
+#20 0.299       Built foodease-agent @ file:///app/voice-agent
+#20 0.304 Prepared 2 packages in 20ms
+#20 0.324 Installed 2 packages in 19ms
+#20 0.928 Bytecode compiled 10125 files in 603ms
+#20 0.928  + foodease-agent==0.1.0 (from file:///app/voice-agent)
+#20 0.928  + foodease-contract==2.0.0 (from file:///app/contracts)
+#20 11.92 discovered 7 plugin package(s): livekit.plugins.cartesia, livekit.plugins.deepgram, livekit.plugins.google, livekit.plugins.groq, livekit.plugins.openai, livekit.plugins.silero, livekit.plugins.turn_detector
+#20 11.92 downloading files for livekit.plugins.cartesia
+#20 11.92 finished downloading files for livekit.plugins.cartesia
+#20 11.92 downloading files for livekit.plugins.deepgram
+#20 11.92 finished downloading files for livekit.plugins.deepgram
+#20 11.92 downloading files for livekit.plugins.google
+#20 11.92 finished downloading files for livekit.plugins.google
+#20 11.92 downloading files for livekit.plugins.openai
+#20 11.92 finished downloading files for livekit.plugins.openai
+#20 11.92 downloading files for livekit.plugins.groq
+#20 11.92 finished downloading files for livekit.plugins.groq
+#20 11.92 downloading files for livekit.plugins.silero
+#20 11.92 finished downloading files for livekit.plugins.silero
+#20 11.92 downloading files for livekit.plugins.turn_detector
+#20 12.86 [transformers] PyTorch was not found. Models won't be available and only tokenizers, configuration and file/data utilities can be used.
+#20 13.50 HTTP Request: GET https://huggingface.co/api/agent-harnesses "HTTP/1.1 200 OK"
+#20 13.73 HTTP Request: GET https://huggingface.co/api/models/livekit/turn-detector/revision/v1.2.2-en "HTTP/1.1 200 OK"
+#20 13.97 HTTP Request: HEAD https://huggingface.co/livekit/turn-detector/resolve/ebcab0c09c2b62d926e92180d364df3aaae68a09/config.json "HTTP/1.1 307 Temporary Redirect"
+#20 13.97 Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+#20 13.97 Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+#20 13.98 HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/livekit/turn-detector/ebcab0c09c2b62d926e92180d364df3aaae68a09/config.json?%2Flivekit%2Fturn-detector%2Fresolve%2Febcab0c09c2b62d926e92180d364df3aaae68a09%2Fconfig.json=&etag=%22dfb729fb3d6b00690efacca890d11cdaf5b15e02%22 "HTTP/1.1 200 OK"
+#20 13.99 HTTP Request: GET https://huggingface.co/api/resolve-cache/models/livekit/turn-detector/ebcab0c09c2b62d926e92180d364df3aaae68a09/config.json?%2Flivekit%2Fturn-detector%2Fresolve%2Febcab0c09c2b62d926e92180d364df3aaae68a09%2Fconfig.json=&etag=%22dfb729fb3d6b00690efacca890d11cdaf5b15e02%22 "HTTP/1.1 200 OK"
+#20 14.22 HTTP Request: HEAD https://huggingface.co/livekit/turn-detector/resolve/ebcab0c09c2b62d926e92180d364df3aaae68a09/tokenizer_config.json "HTTP/1.1 307 Temporary Redirect"
+#20 14.22 HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/livekit/turn-detector/ebcab0c09c2b62d926e92180d364df3aaae68a09/tokenizer_config.json?%2Flivekit%2Fturn-detector%2Fresolve%2Febcab0c09c2b62d926e92180d364df3aaae68a09%2Ftokenizer_config.json=&etag=%22993dd2bad28ead01bd8ee8bcced049cc0a77c600%22 "HTTP/1.1 200 OK"
+#20 14.23 HTTP Request: GET https://huggingface.co/api/resolve-cache/models/livekit/turn-detector/ebcab0c09c2b62d926e92180d364df3aaae68a09/tokenizer_config.json?%2Flivekit%2Fturn-detector%2Fresolve%2Febcab0c09c2b62d926e92180d364df3aaae68a09%2Ftokenizer_config.json=&etag=%22993dd2bad28ead01bd8ee8bcced049cc0a77c600%22 "HTTP/1.1 200 OK"
+#20 14.47 HTTP Request: GET https://huggingface.co/api/models/livekit/turn-detector/tree/v1.2.2-en/additional_chat_templates?recursive=false&expand=false "HTTP/1.1 404 Not Found"
+#20 14.71 HTTP Request: GET https://huggingface.co/api/models/livekit/turn-detector/tree/v1.2.2-en?recursive=true&expand=false "HTTP/1.1 200 OK"
+#20 14.93 HTTP Request: HEAD https://huggingface.co/livekit/turn-detector/resolve/ebcab0c09c2b62d926e92180d364df3aaae68a09/vocab.json "HTTP/1.1 307 Temporary Redirect"
+#20 14.93 HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/livekit/turn-detector/ebcab0c09c2b62d926e92180d364df3aaae68a09/vocab.json?%2Flivekit%2Fturn-detector%2Fresolve%2Febcab0c09c2b62d926e92180d364df3aaae68a09%2Fvocab.json=&etag=%220ad5ecc2035b7031b88afb544ee95e2d49baa484%22 "HTTP/1.1 200 OK"
+#20 14.94 HTTP Request: GET https://huggingface.co/api/resolve-cache/models/livekit/turn-detector/ebcab0c09c2b62d926e92180d364df3aaae68a09/vocab.json?%2Flivekit%2Fturn-detector%2Fresolve%2Febcab0c09c2b62d926e92180d364df3aaae68a09%2Fvocab.json=&etag=%220ad5ecc2035b7031b88afb544ee95e2d49baa484%22 "HTTP/1.1 200 OK"
+#20 15.17 HTTP Request: HEAD https://huggingface.co/livekit/turn-detector/resolve/ebcab0c09c2b62d926e92180d364df3aaae68a09/merges.txt "HTTP/1.1 307 Temporary Redirect"
+#20 15.18 HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/livekit/turn-detector/ebcab0c09c2b62d926e92180d364df3aaae68a09/merges.txt?%2Flivekit%2Fturn-detector%2Fresolve%2Febcab0c09c2b62d926e92180d364df3aaae68a09%2Fmerges.txt=&etag=%2269503b13f727ba3812b6803e97442a6de05ef5eb%22 "HTTP/1.1 200 OK"
+#20 15.19 HTTP Request: GET https://huggingface.co/api/resolve-cache/models/livekit/turn-detector/ebcab0c09c2b62d926e92180d364df3aaae68a09/merges.txt?%2Flivekit%2Fturn-detector%2Fresolve%2Febcab0c09c2b62d926e92180d364df3aaae68a09%2Fmerges.txt=&etag=%2269503b13f727ba3812b6803e97442a6de05ef5eb%22 "HTTP/1.1 200 OK"
+#20 15.43 HTTP Request: HEAD https://huggingface.co/livekit/turn-detector/resolve/ebcab0c09c2b62d926e92180d364df3aaae68a09/added_tokens.json "HTTP/1.1 307 Temporary Redirect"
+#20 15.44 HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/livekit/turn-detector/ebcab0c09c2b62d926e92180d364df3aaae68a09/added_tokens.json?%2Flivekit%2Fturn-detector%2Fresolve%2Febcab0c09c2b62d926e92180d364df3aaae68a09%2Fadded_tokens.json=&etag=%224d36c49ff5d13268f4285dfd72c3badd273183aa%22 "HTTP/1.1 200 OK"
+#20 15.44 HTTP Request: GET https://huggingface.co/api/resolve-cache/models/livekit/turn-detector/ebcab0c09c2b62d926e92180d364df3aaae68a09/added_tokens.json?%2Flivekit%2Fturn-detector%2Fresolve%2Febcab0c09c2b62d926e92180d364df3aaae68a09%2Fadded_tokens.json=&etag=%224d36c49ff5d13268f4285dfd72c3badd273183aa%22 "HTTP/1.1 200 OK"
+#20 15.68 HTTP Request: HEAD https://huggingface.co/livekit/turn-detector/resolve/ebcab0c09c2b62d926e92180d364df3aaae68a09/special_tokens_map.json "HTTP/1.1 307 Temporary Redirect"
+#20 15.68 HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/livekit/turn-detector/ebcab0c09c2b62d926e92180d364df3aaae68a09/special_tokens_map.json?%2Flivekit%2Fturn-detector%2Fresolve%2Febcab0c09c2b62d926e92180d364df3aaae68a09%2Fspecial_tokens_map.json=&etag=%22e44b8e0769b12074aa32c0002f96d840e4a27ee4%22 "HTTP/1.1 200 OK"
+#20 15.69 HTTP Request: GET https://huggingface.co/api/resolve-cache/models/livekit/turn-detector/ebcab0c09c2b62d926e92180d364df3aaae68a09/special_tokens_map.json?%2Flivekit%2Fturn-detector%2Fresolve%2Febcab0c09c2b62d926e92180d364df3aaae68a09%2Fspecial_tokens_map.json=&etag=%22e44b8e0769b12074aa32c0002f96d840e4a27ee4%22 "HTTP/1.1 200 OK"
+#20 15.92 HTTP Request: HEAD https://huggingface.co/livekit/turn-detector/resolve/ebcab0c09c2b62d926e92180d364df3aaae68a09/tokenizer.json "HTTP/1.1 307 Temporary Redirect"
+#20 15.93 HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/livekit/turn-detector/ebcab0c09c2b62d926e92180d364df3aaae68a09/tokenizer.json?%2Flivekit%2Fturn-detector%2Fresolve%2Febcab0c09c2b62d926e92180d364df3aaae68a09%2Ftokenizer.json=&etag=%22e5e872187cde5896bbcc1f0bcff0274076b03431%22 "HTTP/1.1 200 OK"
+#20 15.94 HTTP Request: GET https://huggingface.co/api/resolve-cache/models/livekit/turn-detector/ebcab0c09c2b62d926e92180d364df3aaae68a09/tokenizer.json?%2Flivekit%2Fturn-detector%2Fresolve%2Febcab0c09c2b62d926e92180d364df3aaae68a09%2Ftokenizer.json=&etag=%22e5e872187cde5896bbcc1f0bcff0274076b03431%22 "HTTP/1.1 200 OK"
+#20 16.17 HTTP Request: HEAD https://huggingface.co/livekit/turn-detector/resolve/ebcab0c09c2b62d926e92180d364df3aaae68a09/chat_template.jinja "HTTP/1.1 404 Not Found"
+#20 16.74 HTTP Request: HEAD https://huggingface.co/livekit/turn-detector/resolve/v1.2.2-en/onnx/model_q8.onnx "HTTP/1.1 302 Found"
+#20 16.98 HTTP Request: GET https://huggingface.co/api/models/livekit/turn-detector/xet-read-token/ebcab0c09c2b62d926e92180d364df3aaae68a09 "HTTP/1.1 200 OK"
+#20 22.15 HTTP Request: HEAD https://huggingface.co/livekit/turn-detector/resolve/v1.2.2-en/languages.json "HTTP/1.1 307 Temporary Redirect"
+#20 22.15 HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/livekit/turn-detector/ebcab0c09c2b62d926e92180d364df3aaae68a09/languages.json?%2Flivekit%2Fturn-detector%2Fresolve%2Fv1.2.2-en%2Flanguages.json=&etag=%2262630e97b039b5924516694535e79fe0b2c5fcb6%22 "HTTP/1.1 200 OK"
+#20 22.16 HTTP Request: GET https://huggingface.co/api/resolve-cache/models/livekit/turn-detector/ebcab0c09c2b62d926e92180d364df3aaae68a09/languages.json?%2Flivekit%2Fturn-detector%2Fresolve%2Fv1.2.2-en%2Flanguages.json=&etag=%2262630e97b039b5924516694535e79fe0b2c5fcb6%22 "HTTP/1.1 200 OK"
+#20 22.16 finished downloading files for livekit.plugins.turn_detector
+#20 22.16 downloading files for livekit.plugins.turn_detector
+#20 22.39 HTTP Request: GET https://huggingface.co/api/models/livekit/turn-detector/revision/v0.4.1-intl "HTTP/1.1 200 OK"
+#20 22.59 HTTP Request: HEAD https://huggingface.co/livekit/turn-detector/resolve/87e35fcb1e60a569bea70346191c4886ea92e281/config.json "HTTP/1.1 307 Temporary Redirect"
+#20 22.60 HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/livekit/turn-detector/87e35fcb1e60a569bea70346191c4886ea92e281/config.json?%2Flivekit%2Fturn-detector%2Fresolve%2F87e35fcb1e60a569bea70346191c4886ea92e281%2Fconfig.json=&etag=%2260af305e20c6b5d93c860439d5694cff1b4b0e3d%22 "HTTP/1.1 200 OK"
+#20 22.60 HTTP Request: GET https://huggingface.co/api/resolve-cache/models/livekit/turn-detector/87e35fcb1e60a569bea70346191c4886ea92e281/config.json?%2Flivekit%2Fturn-detector%2Fresolve%2F87e35fcb1e60a569bea70346191c4886ea92e281%2Fconfig.json=&etag=%2260af305e20c6b5d93c860439d5694cff1b4b0e3d%22 "HTTP/1.1 200 OK"
+#20 22.83 HTTP Request: HEAD https://huggingface.co/livekit/turn-detector/resolve/87e35fcb1e60a569bea70346191c4886ea92e281/tokenizer_config.json "HTTP/1.1 307 Temporary Redirect"
+#20 22.83 HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/livekit/turn-detector/87e35fcb1e60a569bea70346191c4886ea92e281/tokenizer_config.json?%2Flivekit%2Fturn-detector%2Fresolve%2F87e35fcb1e60a569bea70346191c4886ea92e281%2Ftokenizer_config.json=&etag=%22f2e8bec557cbb36f2867c64fa7c8fd7ec1c5d872%22 "HTTP/1.1 200 OK"
+#20 22.84 HTTP Request: GET https://huggingface.co/api/resolve-cache/models/livekit/turn-detector/87e35fcb1e60a569bea70346191c4886ea92e281/tokenizer_config.json?%2Flivekit%2Fturn-detector%2Fresolve%2F87e35fcb1e60a569bea70346191c4886ea92e281%2Ftokenizer_config.json=&etag=%22f2e8bec557cbb36f2867c64fa7c8fd7ec1c5d872%22 "HTTP/1.1 200 OK"
+#20 23.06 HTTP Request: GET https://huggingface.co/api/models/livekit/turn-detector/tree/v0.4.1-intl/additional_chat_templates?recursive=false&expand=false "HTTP/1.1 404 Not Found"
+#20 23.28 HTTP Request: GET https://huggingface.co/api/models/livekit/turn-detector/tree/v0.4.1-intl?recursive=true&expand=false "HTTP/1.1 200 OK"
+#20 23.49 HTTP Request: HEAD https://huggingface.co/livekit/turn-detector/resolve/87e35fcb1e60a569bea70346191c4886ea92e281/vocab.json "HTTP/1.1 307 Temporary Redirect"
+#20 23.50 HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/livekit/turn-detector/87e35fcb1e60a569bea70346191c4886ea92e281/vocab.json?%2Flivekit%2Fturn-detector%2Fresolve%2F87e35fcb1e60a569bea70346191c4886ea92e281%2Fvocab.json=&etag=%224783fe10ac3adce15ac8f358ef5462739852c569%22 "HTTP/1.1 200 OK"
+#20 23.51 HTTP Request: GET https://huggingface.co/api/resolve-cache/models/livekit/turn-detector/87e35fcb1e60a569bea70346191c4886ea92e281/vocab.json?%2Flivekit%2Fturn-detector%2Fresolve%2F87e35fcb1e60a569bea70346191c4886ea92e281%2Fvocab.json=&etag=%224783fe10ac3adce15ac8f358ef5462739852c569%22 "HTTP/1.1 200 OK"
+#20 23.74 HTTP Request: HEAD https://huggingface.co/livekit/turn-detector/resolve/87e35fcb1e60a569bea70346191c4886ea92e281/merges.txt "HTTP/1.1 307 Temporary Redirect"
+#20 23.75 HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/livekit/turn-detector/87e35fcb1e60a569bea70346191c4886ea92e281/merges.txt?%2Flivekit%2Fturn-detector%2Fresolve%2F87e35fcb1e60a569bea70346191c4886ea92e281%2Fmerges.txt=&etag=%2231349551d90c7606f325fe0f11bbb8bd5fa0d7c7%22 "HTTP/1.1 200 OK"
+#20 23.76 HTTP Request: GET https://huggingface.co/api/resolve-cache/models/livekit/turn-detector/87e35fcb1e60a569bea70346191c4886ea92e281/merges.txt?%2Flivekit%2Fturn-detector%2Fresolve%2F87e35fcb1e60a569bea70346191c4886ea92e281%2Fmerges.txt=&etag=%2231349551d90c7606f325fe0f11bbb8bd5fa0d7c7%22 "HTTP/1.1 200 OK"
+#20 23.99 HTTP Request: HEAD https://huggingface.co/livekit/turn-detector/resolve/87e35fcb1e60a569bea70346191c4886ea92e281/tokenizer.json "HTTP/1.1 302 Found"
+#20 24.21 HTTP Request: GET https://huggingface.co/api/models/livekit/turn-detector/xet-read-token/87e35fcb1e60a569bea70346191c4886ea92e281 "HTTP/1.1 200 OK"
+#20 26.80 HTTP Request: HEAD https://huggingface.co/livekit/turn-detector/resolve/87e35fcb1e60a569bea70346191c4886ea92e281/added_tokens.json "HTTP/1.1 307 Temporary Redirect"
+#20 26.81 HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/livekit/turn-detector/87e35fcb1e60a569bea70346191c4886ea92e281/added_tokens.json?%2Flivekit%2Fturn-detector%2Fresolve%2F87e35fcb1e60a569bea70346191c4886ea92e281%2Fadded_tokens.json=&etag=%22482ced4679301bf287ebb310bdd1790eb4514232%22 "HTTP/1.1 200 OK"
+#20 26.81 HTTP Request: GET https://huggingface.co/api/resolve-cache/models/livekit/turn-detector/87e35fcb1e60a569bea70346191c4886ea92e281/added_tokens.json?%2Flivekit%2Fturn-detector%2Fresolve%2F87e35fcb1e60a569bea70346191c4886ea92e281%2Fadded_tokens.json=&etag=%22482ced4679301bf287ebb310bdd1790eb4514232%22 "HTTP/1.1 200 OK"
+#20 27.03 HTTP Request: HEAD https://huggingface.co/livekit/turn-detector/resolve/87e35fcb1e60a569bea70346191c4886ea92e281/special_tokens_map.json "HTTP/1.1 307 Temporary Redirect"
+#20 27.04 HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/livekit/turn-detector/87e35fcb1e60a569bea70346191c4886ea92e281/special_tokens_map.json?%2Flivekit%2Fturn-detector%2Fresolve%2F87e35fcb1e60a569bea70346191c4886ea92e281%2Fspecial_tokens_map.json=&etag=%22ac23c0aaa2434523c494330aeb79c58395378103%22 "HTTP/1.1 200 OK"
+#20 27.05 HTTP Request: GET https://huggingface.co/api/resolve-cache/models/livekit/turn-detector/87e35fcb1e60a569bea70346191c4886ea92e281/special_tokens_map.json?%2Flivekit%2Fturn-detector%2Fresolve%2F87e35fcb1e60a569bea70346191c4886ea92e281%2Fspecial_tokens_map.json=&etag=%22ac23c0aaa2434523c494330aeb79c58395378103%22 "HTTP/1.1 200 OK"
+#20 27.27 HTTP Request: HEAD https://huggingface.co/livekit/turn-detector/resolve/87e35fcb1e60a569bea70346191c4886ea92e281/chat_template.jinja "HTTP/1.1 404 Not Found"
+#20 28.67 HTTP Request: GET https://huggingface.co/api/models/livekit/turn-detector "HTTP/1.1 200 OK"
+#20 28.91 HTTP Request: HEAD https://huggingface.co/livekit/turn-detector/resolve/v0.4.1-intl/onnx/model_q8.onnx "HTTP/1.1 302 Found"
+#20 38.03 HTTP Request: HEAD https://huggingface.co/livekit/turn-detector/resolve/v0.4.1-intl/languages.json "HTTP/1.1 307 Temporary Redirect"
+#20 38.04 HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/livekit/turn-detector/87e35fcb1e60a569bea70346191c4886ea92e281/languages.json?%2Flivekit%2Fturn-detector%2Fresolve%2Fv0.4.1-intl%2Flanguages.json=&etag=%22c2b2f5d8e1b52dd215a9a5c017b6096847c6bed0%22 "HTTP/1.1 200 OK"
+#20 38.05 HTTP Request: GET https://huggingface.co/api/resolve-cache/models/livekit/turn-detector/87e35fcb1e60a569bea70346191c4886ea92e281/languages.json?%2Flivekit%2Fturn-detector%2Fresolve%2Fv0.4.1-intl%2Flanguages.json=&etag=%22c2b2f5d8e1b52dd215a9a5c017b6096847c6bed0%22 "HTTP/1.1 200 OK"
+#20 38.05 finished downloading files for livekit.plugins.turn_detector
+#20 DONE 38.6s
+
+#21 exporting to image
+#21 exporting layers
+#21 exporting layers 2.2s done
+#21 exporting manifest sha256:035b63b8def4c35f7f85a3dcf11f5d1a5501fc15532264a12fcb260e59c84f4d done
+#21 exporting config sha256:96b6a3d2052dfd2edbcade14de505f49d92bd507a52cf1cc4b73de6126279f4e done
+#21 pushing layers
+#21 ...
+
+#22 exporting cache to registry
+#22 preparing build cache for export 0.7s done
+#22 sending cache export
+#22 writing layer sha256:2c1ce468d9f3d941396801f6e3afc8921466650dd05430fe644cd3537713d27f done
+#22 writing layer sha256:0a442fdbc64707f5fece7495f47e68af4812d706bfeb6f83404be98e6e930ffa 0.1s done
+#22 writing layer sha256:057ada1d5cc9535b0ce91bdb0cab17a661c66b92a4cf98dfa23e2275947b9cbc 0.1s done
+#22 writing layer sha256:12a8613b0c2a50e11ef9f9dd43530820d3f95268ce01ad311a5338ea1da339f0 0.1s done
+#22 writing layer sha256:3a7ca5afdc6c2baf19230d9c5d728e094044e77258efc26da7892c4274fbf985 0.0s done
+#22 writing layer sha256:774df498ef852efe35c7c2c85b999480b27f3fdc98a638462d0900760602aafa 0.1s done
+#22 writing layer sha256:78cd50818bc56b65af081ff8fb188122eaaf818302890e76a941a1c1c6f24895 0.8s done
+#22 writing layer sha256:85b957644e9c8178063cc7432ca53511df1ee26a956dc5f317f42e736b4194b8 0.0s done
+#22 writing layer sha256:99afc6cd263c823ad26e75617db0ad68e65a8beabbfd634202696792a06ed802 0.6s done
+#22 writing layer sha256:9d1d712c0ba294989471d2d691a8e27a877091333266439ebb9cba4e8b67dda7 0.0s done
+#22 writing layer sha256:b999610e6fc5595790e4429a9082283b41def55f0e8aec8291430eca0546eae5 0.0s done
+#22 writing layer sha256:bfef3c20669596a81c70c2bbbd5310a0b37321512912233c7589332719ae1669 0.7s done
+#22 writing layer sha256:cfe5b5a54e1b785e543ddd4a7e67daf8adff74d6c3e01b005b4eb36024716e68 0.1s done
+#22 writing layer sha256:d91dcaaf797021551885f8078ddda07fd3b93fb6f504e0a5ccdee87fd9e0917f 0.0s done
+#22 writing layer sha256:e8b910477d1bfab7955a5dc9f543f837e0c51b7d438d28fce7b0e5045788a7cf
+#22 ...
+
+#21 exporting to image
+#21 pushing layers 8.3s done
+#21 pushing manifest for localhost:5000/build/agent:oci@sha256:035b63b8def4c35f7f85a3dcf11f5d1a5501fc15532264a12fcb260e59c84f4d
+#21 pushing manifest for localhost:5000/build/agent:oci@sha256:035b63b8def4c35f7f85a3dcf11f5d1a5501fc15532264a12fcb260e59c84f4d 0.0s done
+#21 DONE 10.6s
+
+#22 exporting cache to registry
+#22 writing layer sha256:e8b910477d1bfab7955a5dc9f543f837e0c51b7d438d28fce7b0e5045788a7cf 25.4s done
+#22 writing config sha256:23d53f04b6e84a44edc324637bf12ecdc753b4851b80622f5a21fd783d1b9796
+#22 writing config sha256:23d53f04b6e84a44edc324637bf12ecdc753b4851b80622f5a21fd783d1b9796 0.8s done
+#22 writing cache image manifest sha256:e60d549646864e53ada44192eaf4e4ceef5c3196bb44d31f16d20616c1b44729
+#22 sending cache export 27.0s done
+#22 writing cache image manifest sha256:e60d549646864e53ada44192eaf4e4ceef5c3196bb44d31f16d20616c1b44729 0.6s done
+#22 DONE 27.8s
+
+#23 Publishing image
+#23 DONE 19.3s
+
+#1 Deploy complete
+#1 DONE 0.0s
+Completed deployment of agent foodease to production
+Agent details: https://cloud.livekit.io/projects/d_foodease-nb0qr57x/agents/CA_gibAwTdK3sjn
+Test in Agent Console: https://cloud.livekit.io/projects/d_foodease-nb0qr57x/agents/console?agentName=foodease&autoStart=false

@@ -145,7 +145,14 @@ export class Application {
     // A failed render/refresh is not a new business failure: let RPC reconciliation
     // recover the retained original result, never submit again.
     try {
-      let snapshot = await this.transport.context();
+      // A fresh get_current_context action already carries the authority's exact
+      // snapshot. Reuse that correlated receipt, never a timed/local cache.
+      const embedded = result.payload.status === "success" && result.payload.operation === "get_current_context"
+        ? result.payload.verified_state?.snapshot : null;
+      const exact = embedded?.schema_version === "2.0" && embedded.session_id === this.sessionId
+        && Number.isSafeInteger(embedded.revision) && embedded.revision === result.context_revision
+        && (!this.snapshot || embedded.revision >= this.snapshot.revision);
+      let snapshot = exact ? embedded : await this.transport.context();
       if (snapshot.revision < result.context_revision) snapshot = await this.transport.context();
       if (snapshot.revision < result.context_revision) throw new Error("The current page is not synchronized.");
       await this.accept(snapshot, { result, request });
