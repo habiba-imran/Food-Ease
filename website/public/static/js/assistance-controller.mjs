@@ -1,6 +1,6 @@
 // Bound lifecycle owner; the bridge supplies SDK seats and application rendering.
 export class AssistanceController {
-  constructor({ api, acquireMedia, connectSeats, onState = () => {}, timeoutMs = 30000,
+  constructor({ api, acquireMedia, connectSeats, onState = () => {}, timeoutMs = 90000,
                 pollMs = 1000, monitorMs = 15000, storage = null, sessionId = null,
                 acquireLease = () => null, newId = () => crypto.randomUUID() }) {
     Object.assign(this, { api, acquireMedia, connectSeats, onState, timeoutMs, pollMs, monitorMs, storage, acquireLease, newId });
@@ -11,7 +11,7 @@ export class AssistanceController {
           && (!saved.generation || typeof saved.generation === "string" && saved.generation.length <= 128)) this.orphan = saved;
     } catch { /* Storage unavailable; server admission still prevents duplicates. */ }
     this.current = null;
-    this.state = "awaiting_spoken_choice_consent";
+    this.state = "manual";
     this.hasActivated = false;
   }
 
@@ -46,7 +46,7 @@ export class AssistanceController {
     this.recoveryPromise = (async () => {
       const releaseLease = await this.acquireLease();
       const run = { ...this.orphan, cancelled: true, sent: true, serverPending: true,
-        stopPhase: (this.stopEpoch || 0) === stopEpoch ? "awaiting_spoken_choice_consent" : this.state,
+        stopPhase: (this.stopEpoch || 0) === stopEpoch ? "manual" : this.state,
         abort: new AbortController(), releaseLease };
       this.orphan = null;
       this.current = run;
@@ -97,7 +97,7 @@ export class AssistanceController {
   }
 
   _check(run) {
-    if (run.cancelled) throw new Error("Assistance start cancelled.");
+    if (run.cancelled) throw new Error(run.timedOut ? 'Zara took too long to start. Your microphone is off. Retry when ready.' : "Assistance start cancelled.");
   }
 
   _emit(run, state) {
@@ -105,7 +105,7 @@ export class AssistanceController {
     this.state = state.modeState || state.state;
     const microphoneActive = !run.cancelled && (run.media?.getAudioTracks?.() || [])
       .some(track => track.readyState !== "ended" && track.enabled !== false);
-    this.onState({ ...state, modeState: this.state, microphoneActive });
+    this.onState({ ...state, stage: state.stage || state.state, modeState: this.state, microphoneActive });
   }
 
   modeChanged(mode) {
@@ -163,7 +163,7 @@ export class AssistanceController {
   }
 
   async _start(run) {
-    const deadline = setTimeout(() => { this._localStop(run); void this._serverStop(run); }, this.timeoutMs);
+    const deadline = setTimeout(() => { run.timedOut = true; this._localStop(run); void this._serverStop(run); }, this.timeoutMs);
     try {
       const lease = this.acquireLease();
       run.releaseLease = typeof lease?.then === "function" ? await lease : lease;
@@ -171,7 +171,7 @@ export class AssistanceController {
       this._emit(run, { state: "requesting_permission", modeState: "connecting", localStopped: false });
       run.media = await this.acquireMedia(run.mode);
       this._check(run);
-      this._emit(run, { state: "connecting", localStopped: false });
+      this._emit(run, { state: "connecting", stage: "preparing_session", localStopped: false });
       run.sent = true;
       this._save(run);
       const prepared = await this.api("start", { request_id: run.request_id, consent: true }, run.abort.signal);
@@ -180,6 +180,7 @@ export class AssistanceController {
       this._save(run);
       this._check(run);
       if (prepared.state !== "preparing") throw new Error("Assistance generation is unavailable.");
+      this._emit(run, { state: "connecting", stage: "connecting", localStopped: false });
       run.seats = await this.connectSeats(prepared, run.media, run.abort.signal, run.mode);
       run.seats.onDisconnected?.(() => {
         this._localStop(run);
@@ -196,6 +197,7 @@ export class AssistanceController {
         context_revision: context.revision, media_ready: true, playback_ready: true,
         app_ready: true }, run.abort.signal);
       this._check(run);
+      this._emit(run, { state: "connecting", stage: "starting_agent", localStopped: false });
       while (!run.cancelled) {
         const status = await this.api("status", { request_id: run.request_id }, run.abort.signal);
         this._check(run);

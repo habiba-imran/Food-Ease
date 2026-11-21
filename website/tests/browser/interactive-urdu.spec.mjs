@@ -21,7 +21,7 @@ test.beforeEach(async ({ page, context }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.goto('/');
   await expect(page.locator('html')).toHaveAttribute('data-foodease-revision', /\d+/);
-  await page.locator('[data-welcome-typed]').click();
+  { await page.locator('[data-voice-launcher]').click(); await page.locator('[data-voice-typed]').click(); }
   await expect(page.locator('html')).toHaveAttribute('data-assistance-state', 'typed_active');
 });
 

@@ -25,8 +25,8 @@ test.beforeEach(async ({ page }) => {
 for (const mode of ['voice', 'paused', 'typed']) test(`refresh from ${mode} resets Zara and preserves the cart without reopening capture`, async ({ page }) => {
   await page.locator('[data-menu-item][data-id="drink-cola"] [data-add-item]').click();
   await expect(page.locator('[data-cart-count]')).toHaveText('1');
-  if (mode === 'typed') await page.locator('[data-welcome-typed]').click();
-  else await launcher(page).click();
+  if (mode === 'typed') { await page.locator('[data-voice-launcher]').click(); await page.locator('[data-voice-typed]').click(); }
+  else { await launcher(page).click(); await panel(page).locator('[data-voice-use]').click(); }
   await expect(root(page)).toHaveAttribute('data-assistance-state', mode === 'typed' ? 'typed_active' : 'voice_active');
   const old = await page.evaluate(() => {
     const sid = sessionStorage.getItem('foodease.shopping-session.v2');
@@ -39,7 +39,7 @@ for (const mode of ['voice', 'paused', 'typed']) test(`refresh from ${mode} rese
   await page.reload();
   await expect(root(page)).toHaveAttribute('data-foodease-revision', /\d+/);
   await expect.poll(() => page.evaluate(sid => sessionStorage.getItem(`foodease.assistance-owner.v2:${sid}`), old.sid)).toBeNull();
-  await expect(root(page)).toHaveAttribute('data-assistance-state', 'awaiting_spoken_choice_consent');
+  await expect(root(page)).toHaveAttribute('data-assistance-state', 'manual');
   await expect(page.locator('[data-cart-count]')).toHaveText('1');
   await expect(panel(page)).toBeHidden();
   expect(await page.evaluate(() => window.captured.length)).toBe(0);
@@ -47,7 +47,7 @@ for (const mode of ['voice', 'paused', 'typed']) test(`refresh from ${mode} rese
   expect((await page.request.get(`/_test/state/${old.sid}`)).ok()).toBe(true);
   await expect.poll(async () => (await (await page.request.get(`/_test/state/${old.sid}`)).json()).state).toBe('ended');
   await expect(page.locator('[data-agent-transcript] [data-utterance-id]')).toHaveCount(0);
-  await launcher(page).click();
+  await launcher(page).click(); await panel(page).locator('[data-voice-use]').click();
   await expect(root(page)).toHaveAttribute('data-assistance-state', 'voice_active');
   const fresh = await page.evaluate(() => ({
     generation: window.fakeLiveKit.rooms.find(room => room.role === 'user').generation,
@@ -60,7 +60,7 @@ for (const mode of ['voice', 'paused', 'typed']) test(`refresh from ${mode} rese
 });
 
 test('a restored Back/Forward page loads a fresh Zara view instead of frozen conversation state', async ({ page }) => {
-  await launcher(page).click();
+  await launcher(page).click(); await panel(page).locator('[data-voice-use]').click();
   await expect(root(page)).toHaveAttribute('data-assistance-state', 'voice_active');
   const loaded = page.waitForEvent('load');
   await page.evaluate(() => {
@@ -70,13 +70,13 @@ test('a restored Back/Forward page loads a fresh Zara view instead of frozen con
   });
   await loaded;
   await expect(root(page)).toHaveAttribute('data-foodease-revision', /\d+/);
-  await expect(root(page)).toHaveAttribute('data-assistance-state', 'awaiting_spoken_choice_consent');
+  await expect(root(page)).toHaveAttribute('data-assistance-state', 'manual');
   await expect(panel(page)).toBeHidden();
   expect(await page.evaluate(() => window.captured.length)).toBe(0);
 });
 
 test('failed unload cleanup survives refresh and blocks replacement until explicit retry confirms cleanup', async ({ page }) => {
-  await launcher(page).click();
+  await launcher(page).click(); await panel(page).locator('[data-voice-use]').click();
   await expect(root(page)).toHaveAttribute('data-assistance-state', 'voice_active');
   let cleanupAllowed = false, starts = 0;
   page.on('request', request => { if (request.url().endsWith('/v2/assist/start')) starts++; });
@@ -85,8 +85,8 @@ test('failed unload cleanup survives refresh and blocks replacement until explic
   await page.reload();
   await expect(launcher(page)).toContainText('Retry Voice Assistant');
   expect(await page.evaluate(() => window.captured.length)).toBe(0);
-  await launcher(page).click();
-  await expect(panel(page).getByRole('status')).toContainText('Cleanup is still pending');
+  await launcher(page).click(); await panel(page).locator('[data-voice-retry]').click();
+  await expect(panel(page).locator('[data-dialog-status]')).toContainText('Cleanup is still pending');
   expect(await page.evaluate(() => window.captured.length)).toBe(0);
   expect(starts).toBe(0);
   cleanupAllowed = true;

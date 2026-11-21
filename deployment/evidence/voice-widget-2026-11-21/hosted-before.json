@@ -1,0 +1,17 @@
+{
+  "target": "https://food-ease-seven.vercel.app",
+  "failures": [],
+  "errors": [],
+  "states": [
+    {
+      "state": "connecting",
+      "time": "2026-11-21T11:10:58.522Z"
+    },
+    {
+      "state": "voice_active",
+      "time": "2026-11-21T11:11:09.829Z"
+    }
+  ],
+  "orchestrationPath": "/assist",
+  "message": "Voice assistant ready. Microphone on."
+}

@@ -13,8 +13,8 @@
     <link rel="preload" href="/static/fonts/bebas-neue-latin.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/static/fonts/dm-sans-latin.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" as="image" href="/static/img/editorial/fast-v7/chicken-burger-hero-768.webp" imagesrcset="/static/img/editorial/fast-v7/chicken-burger-hero-480.webp 480w, /static/img/editorial/fast-v7/chicken-burger-hero-768.webp 768w, /static/img/editorial/fast-v7/chicken-burger-hero-1024.webp 1024w" imagesizes="(max-width: 700px) 90vw, (max-width: 900px) 480px, 560px" fetchpriority="high" />
-    <link rel="stylesheet" href="/static/vendor/food-experience.css?v=zara-24" />
-    <script type="module" src="/static/js/app.js?v=zara-26"></script>
+    <link rel="stylesheet" href="/static/vendor/food-experience.css?v=zara-27" />
+    <script type="module" src="/static/js/app.js?v=zara-27"></script>
     <script type="module" src="/static/js/experience.mjs?v=menu-23"></script>
   </head>
   <body data-experience="immersive" data-orchestration-url="{{ orchestration_base_url }}">
@@ -48,24 +48,6 @@
     <div class="cart-toast" data-cart-toast aria-hidden="true" hidden><span class="cart-toast-check">✓</span><span class="cart-toast-copy"><span data-cart-toast-message></span><small data-cart-toast-summary></small></span></div>
 
     <main id="main" class="shell">
-      <section class="voice-welcome" data-voice-welcome aria-labelledby="voice-welcome-title">
-        <div>
-          <h2 id="voice-welcome-title">Welcome to FoodEase</h2>
-          <p>Welcome! Would you like to order manually or use our voice assistant?</p>
-          <p class="voice-privacy">Your microphone stays off until you start voice assistance or enable Hey Zara. You can switch modes at any time.</p>
-        </div>
-        <div class="voice-welcome-actions">
-          <button class="button primary" type="button" data-welcome-manual>Order manually</button>
-          <button class="button ghost" type="button" data-welcome-voice>Start Voice Assistant</button>
-          <button class="voice-text-action" type="button" data-welcome-typed>Use typing instead</button>
-        </div>
-        <p class="voice-feedback" data-voice-feedback>Microphone off. Choose how you would like to order.</p>
-        <div class="wake-preference">
-          <button class="voice-text-action" type="button" data-wake-toggle aria-pressed="false" aria-describedby="wake-privacy">Enable Hey Zara</button>
-          <p id="wake-privacy" class="voice-privacy">Optional while browsing. Your browser listens for Zara and may send audio to its speech service. FoodEase receives only a request addressed to Zara. Urdu support depends on your browser. After a voice session, enable it again here.</p>
-          <p data-wake-status role="status" aria-atomic="true">Wake microphone off.</p>
-        </div>
-      </section>
       <section class="hero" aria-labelledby="hero-title">
         <div class="hero-coordinate" aria-hidden="true">FE—001<br />ORDERING / PKR</div>
         <div class="hero-rule" aria-hidden="true"><span>CRAVING SOMETHING GOOD?</span><i></i><span>SCROLL TO EXPLORE ↓</span></div>
@@ -494,48 +476,44 @@
           </footer>
         </div>
       </dialog>
-      <dialog id="voice-controls" class="voice-control-dialog" data-voice-controls aria-labelledby="voice-controls-title" aria-describedby="voice-controls-help">
+    </main>
+    <div class="voice-widget" data-voice-widget>
+    <button class="voice-launcher" type="button" data-voice-launcher aria-label="Start Voice Assistant" aria-controls="voice-controls" aria-expanded="false">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="8" y="3" width="8" height="12" rx="4"/><path d="M5 10v2a7 7 0 0 0 14 0v-2M12 19v3m-4 0h8" stroke-linecap="round"/></svg>
+      <i class="voice-state-dot" aria-hidden="true"></i><span data-voice-launcher-label>Start Voice Assistant</span>
+    </button>
+      <aside id="voice-controls" class="voice-control-card" data-voice-controls role="region" hidden aria-labelledby="voice-controls-title" aria-describedby="voice-controls-help">
         <div class="voice-control-shell">
-          <button class="dialog-close" type="button" data-voice-panel-close aria-label="Close voice controls" autofocus>Close</button>
-          <h2 id="voice-controls-title">Voice assistant</h2>
-          <p id="voice-controls-help">Speak to browse and order, or type below. End stops your microphone and playback.</p>
-          <p class="voice-feedback" data-voice-feedback>Ready when you are.</p>
+          <button class="dialog-close" type="button" data-voice-panel-close aria-label="Minimize Zara">−</button>
+          <h2 id="voice-controls-title">Zara <span>اردو اسسٹنٹ</span></h2>
+          <p id="voice-controls-help">Speak naturally in Urdu, or type a request. Your conversation stays here.</p>
+          <p class="voice-feedback" data-voice-feedback role="status" aria-atomic="true">Ready when you are.</p>
           <p class="voice-microphone" data-voice-microphone>Microphone off</p>
           <p class="dialog-status" data-dialog-status role="status" aria-atomic="true"></p>
           <div class="voice-control-actions">
-            <button class="button primary" type="button" data-voice-use>Use voice ordering</button>
+            <button class="button primary" type="button" data-voice-use>Start Zara</button>
             <button class="button primary" type="button" data-voice-retry hidden>Retry Voice Assistant</button>
             <button class="button primary" type="button" data-shopping-restart hidden>Start a new cart</button>
             <button class="button ghost" type="button" data-voice-pause hidden>Pause listening</button>
             <button class="button ghost" type="button" data-voice-typed>Use typing instead</button>
-            <button class="button ghost" type="button" data-voice-panel-manual>Order manually</button>
             <button class="button ghost" type="button" data-voice-end hidden>End voice session</button>
           </div>
-          <div class="wake-preference">
-            <button class="voice-text-action" type="button" data-wake-toggle aria-pressed="false" aria-describedby="wake-panel-help">Enable Hey Zara</button>
-            <p id="wake-panel-help" class="voice-privacy">Optional in manual mode. Your browser may send audio to its speech service. Say Hey Zara to start voice ordering. End or manual mode turns wake listening off too.</p>
-            <p data-wake-status>Wake microphone off.</p>
-          </div>
-          <div class="dialog-assistance" data-dialog-assistant hidden>
+          <div class="dialog-assistance" data-dialog-assistant>
             <p class="eyebrow">Conversation and typed requests</p>
             <div class="message-list" data-agent-transcript aria-live="polite" aria-label="Conversation transcript">
-              <p class="assistant-message">Choose an ordering mode. Spoken welcome enables listening for your voice/manual answer. Manual shopping is available immediately.</p>
+              <p class="assistant-message" lang="ur" dir="rtl">میں زارا ہوں۔ آواز سے بات کرنے کے لیے مائیک شروع کریں۔</p>
             </div>
             <form class="assistant-form" data-assistant-form>
               <label for="assistant-text">Type a request</label>
               <div>
-                <input id="assistant-text" name="assistant-text" placeholder="Try: show burgers" data-assistant-input />
-                <button type="submit">Send</button>
+                <input id="assistant-text" name="assistant-text" placeholder="مثلاً: برگر دکھاؤ" dir="auto" data-assistant-input />
+                <button type="submit" disabled>Send</button>
               </div>
             </form>
           </div>
           <button class="button ghost" type="button" data-reconcile-action hidden>Check pending changes</button>
         </div>
-      </dialog>
-    </main>
-    <button class="voice-launcher" type="button" data-voice-launcher aria-label="Start Voice Assistant" aria-haspopup="dialog" aria-controls="voice-controls" aria-expanded="false">
-      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="8" y="3" width="8" height="12" rx="4"/><path d="M5 10v2a7 7 0 0 0 14 0v-2M12 19v3m-4 0h8" stroke-linecap="round"/></svg>
-      <span data-voice-launcher-label>Start Voice Assistant</span>
-    </button>
+      </aside>
+    </div>
   </body>
 </html>

@@ -118,7 +118,7 @@ class AssistanceService:
         cloud: RoomCloud,
         *,
         clock: Callable[[], float] = time.monotonic,
-        startup_ttl: float = 30,
+        startup_ttl: float = 90,
         idle_ttl: float = 1800,
         absolute_ttl: float = 7200,
         max_records: int = 512,

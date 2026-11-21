@@ -15,7 +15,7 @@ function fixture({ permission, playback } = {}) {
 }
 test('fresh/manual requires no media or dispatch; chooser waits for explicit start', async () => {
   const { c, calls } = fixture();
-  assert.equal(c.state, 'awaiting_spoken_choice_consent');
+  assert.equal(c.state, 'manual');
   await c.end();
   assert.equal(c.state, 'manual');
   assert.deepEqual(calls, []);

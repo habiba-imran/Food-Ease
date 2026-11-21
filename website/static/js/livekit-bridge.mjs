@@ -37,7 +37,18 @@ export class LiveKitSeats {
     return { schema_version: "2.0", session_id: this.prepared.session_id, event_id: newId(),
       timestamp: timestamp(), type, payload, ...extra };
   }
-  async connect(signal) {
+  connect(signal) {
+    // Let an SDK join settle before closing its peer connection. Closing while
+    // createOffer/publish is in flight produces orphaned SDK rejections.
+    const cancelled = () => { void this.disconnect(); };
+    signal?.addEventListener('abort', cancelled, { once: true });
+    this.connectTask = this.join(signal);
+    return this.connectTask.catch(async error => {
+      await this.disconnect();
+      throw error;
+    }).finally(() => signal?.removeEventListener('abort', cancelled));
+  }
+  async join(signal) {
     const { RoomEvent: E } = this.sdk;
     const check = () => { if (signal?.aborted || this.closed) throw new Error("Assistance start cancelled."); };
     this.user.on(E.DataReceived, (raw, participant, _kind, topic) => this.receive(raw, participant, topic));
@@ -68,6 +79,7 @@ export class LiveKitSeats {
       });
     }
     try {
+      check();
       await this.app.connect(this.prepared.livekit_url, this.prepared.tokens.app.token, { autoSubscribe: false });
       check();
       await this.user.connect(this.prepared.livekit_url, this.prepared.tokens.user.token, { autoSubscribe: true });
@@ -82,7 +94,7 @@ export class LiveKitSeats {
         }
       }
       return this;
-    } catch (error) { this.closeAudio(); await this.disconnect(); throw error; }
+    } catch (error) { this.closeAudio(); throw error; }
   }
   async registerApp() {
     this.app.registerRpcMethod("foodease.action.v2", async (data) => {
@@ -212,7 +224,9 @@ export class LiveKitSeats {
   stopMicrophone() {
     for (const track of this.media?.getTracks() || []) {
       track.stop();
-      Promise.resolve(this.user.localParticipant?.unpublishTrack?.(track, true)).catch(() => {});
+      // Room.disconnect owns publication cleanup during teardown; do not start
+      // a renegotiation against the same PC that is being closed.
+      if (!this.closed) Promise.resolve(this.user.localParticipant?.unpublishTrack?.(track, true)).catch(() => {});
     }
   }
   async control(intent, mode = null, turnId = null) {
@@ -266,7 +280,9 @@ export class LiveKitSeats {
           return; // A stale recovery receipt is never a new user resume command.
         }
         if (this.recovering && ["resume", "unmute"].includes(event.payload.intent)) return;
-        this.onControl(event.payload);
+        Promise.resolve(this.onControl(event.payload)).catch(() => {
+          if (!this.closed) this.failConnection('The assistant control could not finish. Restart Zara when ready.');
+        });
       }
     } catch { /* Malformed or foreign output cannot change application state. */ }
   }
@@ -285,7 +301,6 @@ export class LiveKitSeats {
     if (this.closed) return;
     this.onStatus(message);
     this.closeAudio();
-    this.stopMicrophone();
     for (const listener of this.disconnectedListeners) listener();
     void this.disconnect();
   }
@@ -338,8 +353,8 @@ export class LiveKitSeats {
       await this.control("resume", this.mode, this.recoveryTurnId);
     } catch { if (current()) this.failConnection("The current page could not be checked. Manual ordering remains available."); }
   }
-  async disconnect() {
-    if (this.closed) return;
+  disconnect() {
+    if (this.disconnectTask) return this.disconnectTask;
     this.closed = true;
     this.recoverySerial++;
     this.recoveryReceipt = null;
@@ -348,6 +363,11 @@ export class LiveKitSeats {
     this.closeAudio();
     this.remoteAudio.clear();
     this.stopMicrophone();
-    await Promise.allSettled([this.app.disconnect(), this.user.disconnect()]);
+    this.disconnectTask = (async () => {
+      // Capture stops synchronously above; only remote teardown waits for a join.
+      if (this.connectTask) await Promise.allSettled([this.connectTask]);
+      await Promise.allSettled([this.app.disconnect(), this.user.disconnect()]);
+    })();
+    return this.disconnectTask;
   }
 }

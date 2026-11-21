@@ -15,6 +15,9 @@ test('voice labels derive from lifecycle, speech and actual microphone state', (
   assert.equal(voicePresentation({ phase: 'connecting', microphoneActive: true }).microphone, 'Microphone on');
   assert.equal(voicePresentation({ phase: 'reconnecting' }).canStart, false);
   assert.equal(voicePresentation({ phase: 'choosing_mode' }).canManage, true);
+  assert.equal(voicePresentation({ phase: 'connecting', stage: 'requesting_permission' }).label, 'Connecting microphone…');
+  assert.equal(voicePresentation({ phase: 'connecting', stage: 'starting_agent' }).label, 'Starting Zara…');
+  assert.equal(voicePresentation({ phase: 'voice_active', agentState: 'user_speaking' }).activity, 'user_speaking');
 });
 
 test('voice permission and network failures have useful, nontechnical messages', () => {

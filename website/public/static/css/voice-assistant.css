@@ -1,74 +1,42 @@
-/* Voice entry points reuse the existing FoodEase tokens and native dialogs. */
-:root body[data-experience] .voice-welcome {
-  display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 16px 28px;
-  align-items: center; margin: 24px 0; padding: 24px;
-  background: var(--paper); color: var(--ink); border: 1px solid var(--line); border-radius: 6px;
-}
-:root body[data-experience] .voice-welcome h2 { margin: 0 0 8px; font: 400 2.2rem/1.05 var(--font-condensed); }
-:root body[data-experience] .voice-welcome p { margin: 0; font-size: 1rem; line-height: 1.6; }
-:root body[data-experience] .voice-welcome .voice-privacy { margin-top: 8px; color: var(--muted); font-size: .85rem; }
-.voice-welcome-actions { display: flex; flex-wrap: wrap; justify-content: end; gap: 8px; max-width: 410px; }
-:root body[data-experience] .voice-welcome-actions .button { font-size: .85rem; min-height: 48px; }
-.voice-text-action { min-height: 44px; padding: 8px 12px; border: 0; background: transparent; color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
-:root body[data-experience] .voice-feedback { color: var(--muted); font-size: .9rem; line-height: 1.5; overflow-wrap: anywhere; }
-.voice-welcome > .voice-feedback { grid-column: 1 / -1; }
-.voice-launcher {
-  position: fixed; right: 20px; bottom: calc(20px + env(safe-area-inset-bottom, 0px)); z-index: 45;
-  display: inline-flex; align-items: center; justify-content: center; gap: 10px;
-  max-width: calc(100vw - 32px); min-height: 48px; padding: 12px 18px;
-  border: 1px solid var(--ink); border-radius: 6px;
-  background: var(--ink); color: var(--paper); box-shadow: 0 4px 16px #0002;
-  font: 650 .9rem/1.4 var(--font-sans); text-align: center; cursor: pointer;
-}
-.voice-launcher svg { flex: 0 0 22px; }
-.voice-launcher:hover { text-decoration: underline; text-underline-offset: 3px; }
-.voice-launcher[data-voice-state=active] { background: var(--paper); color: var(--ink); border: 2px solid var(--gold); }
-:root body[data-experience] .voice-launcher:focus-visible { outline-color: var(--gold); outline-offset: 4px; }
-:root body[data-experience] dialog .voice-launcher { position: static; width: 100%; max-width: 100%; margin-top: 16px; box-shadow: none; }
-:root body[data-experience] .voice-control-dialog {
-  position: fixed; inset: 0; margin: auto; padding: 0;
-  width: min(540px, calc(100vw - 24px)); max-width: calc(100vw - 24px);
-  max-height: calc(100dvh - 32px); overflow: auto; overscroll-behavior: contain;
-  background: var(--paper); color: var(--ink); border: 1px solid var(--line); border-radius: 6px;
-}
-.voice-control-dialog::backdrop { background: #101a14a6; }
-.voice-control-shell { display: grid; gap: 16px; padding: 24px; }
-:root body[data-experience] .voice-control-shell h2 { margin: 0; font: 400 2.5rem/1.05 var(--font-condensed); }
-.voice-control-shell > .dialog-close { position: sticky; top: 8px; z-index: 2; justify-self: end; }
-.voice-control-shell > p { margin: 0; line-height: 1.6; }
-.voice-control-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
-:root body[data-experience] .voice-control-actions .button { font-size: .85rem; min-height: 48px; padding-inline: 12px; white-space: normal; }
-.voice-microphone { font-size: .9rem; font-weight: 650; }
-.wake-preference { grid-column: 1 / -1; display: grid; gap: 6px; min-width: 0; }
-.wake-preference p { margin: 0; font-size: .85rem; line-height: 1.5; }
-.wake-preference .voice-text-action { justify-self: start; min-height: 44px; }
-.wake-preference [aria-pressed=true] { font-weight: 700; }
-.voice-microphone::before { content: ''; display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 8px; background: currentColor; }
+/* One non-modal assistant widget, anchored beside the existing shopping controls. */
+:root body[data-experience] .voice-widget { position: fixed; right: 20px; bottom: calc(20px + env(safe-area-inset-bottom, 0px)); z-index: 80; width: 56px; height: 56px; }
+:root body[data-experience] .voice-widget .voice-launcher { position: relative; inset: auto; display: grid; place-items: center; width: 56px; height: 56px; min-height: 56px; margin: 0; padding: 0; border: 1px solid #6c947e; border-radius: 50%; background: #173f33; color: #fff8ec; box-shadow: 0 6px 24px #0005; cursor: pointer; }
+.voice-launcher svg { width: 24px; height: 24px; }
+.voice-launcher [data-voice-launcher-label] { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.voice-state-dot { position: absolute; right: 1px; bottom: 1px; width: 12px; height: 12px; border: 2px solid var(--paper); border-radius: 50%; background: #9ca9a0; }
+.voice-launcher[data-voice-activity=listening] .voice-state-dot, .voice-launcher[data-voice-activity=user_speaking] .voice-state-dot { background: #88dfa6; }
+.voice-launcher[data-voice-activity=speaking] .voice-state-dot { background: #f1ab63; }
+.voice-launcher[data-voice-activity=thinking] .voice-state-dot, .voice-launcher[data-voice-activity=paused] .voice-state-dot { background: #e8cd7a; }
+.voice-launcher[data-voice-state=error] .voice-state-dot { background: #f27e70; }
+.voice-launcher[data-voice-state=connecting]::after { content: ''; position: absolute; inset: -4px; border: 2px solid transparent; border-top-color: #f1ab63; border-radius: 50%; animation: zara-connect 1s linear infinite; }
+.voice-launcher[data-voice-activity=speaking] svg { animation: zara-speaking 1.2s ease-in-out infinite; }
+:root body[data-experience] .voice-widget :focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; }
+:root body[data-experience] .voice-control-card { position: absolute; inset: auto 0 72px auto; margin: 0; width: min(360px, calc(100vw - 32px)); max-height: calc(100dvh - 112px); overflow: auto; overscroll-behavior: contain; background: var(--paper); color: var(--ink); border: 1px solid var(--line); border-radius: 20px; box-shadow: 0 14px 60px #0005; text-align: start; }
+.voice-control-card[hidden] { display: none !important; }
+.voice-control-shell { position: relative; display: grid; gap: 12px; padding: 18px; }
+:root body[data-experience] .voice-control-shell h2 { margin: 0; padding-right: 36px; font: 500 1.5rem/1.2 var(--font-sans); }
+.voice-control-shell h2 span { display: block; margin-top: 3px; color: var(--muted); font: 400 .85rem/1.5 var(--font-sans); }
+:root body[data-experience] .voice-control-shell > .dialog-close { position: absolute; inset: 10px 10px auto auto; width: 40px; height: 40px; min-width: 40px; padding: 0; border: 0; border-radius: 50%; color: var(--ink); background: var(--surface); font-size: 1.3rem; }
+:root body[data-experience] .voice-control-shell > p { margin: 0; font-size: .83rem; line-height: 1.5; overflow-wrap: anywhere; }
+.voice-feedback { font-weight: 650; }
+.voice-microphone { color: var(--muted); }
+.voice-microphone::before { content: ''; display: inline-block; width: 7px; height: 7px; margin-right: 7px; border-radius: 50%; background: currentColor; }
 .voice-microphone[data-microphone-active=true] { color: var(--mint); }
-.voice-control-dialog .dialog-assistance .message-list { max-height: 180px; }
-.voice-control-dialog .assistant-form > div { min-width: 0; }
-:root body[data-experience] dialog .dialog-assistance .assistant-form,
-:root body[data-experience] dialog .dialog-assistance .message-list { background: var(--surface); border-color: var(--line); }
-:root body[data-experience] .dialog-assistance .message-list p {
-  max-width: 100%; background: var(--paper); color: var(--ink) !important; font-size: .9rem;
-}
-:root body[data-experience] .dialog-assistance .assistant-form label { color: var(--ink); font-size: .9rem; }
-:root body[data-experience] .dialog-assistance .assistant-form input {
-  background: var(--paper); color: var(--ink); font-size: 1rem; border-color: var(--line);
-}
-:root body[data-experience] .dialog-assistance .assistant-form input::placeholder { color: var(--muted); opacity: 1; }
-:root body[data-experience] .dialog-assistance .assistant-form button {
-  background: var(--ink); color: var(--paper) !important; min-width: 48px; min-height: 48px;
-}
-@media (max-width: 700px) {
-  :root body[data-experience] .voice-welcome { grid-template-columns: minmax(0, 1fr); padding: 18px; margin-top: 16px; }
-  .voice-welcome-actions { justify-content: start; max-width: none; }
-  .voice-launcher { right: 12px; bottom: calc(82px + env(safe-area-inset-bottom, 0px)); font-size: .85rem; }
-  /* Keep the floating entry point clear of the narrow hero headline.
-     Dialogs retain the full label; aria-label names the floating button. */
-  :root body[data-experience] > .voice-launcher { width: 48px; height: 48px; min-height: 48px; padding: 12px; gap: 0; border-radius: 50%; }
-  :root body[data-experience] > .voice-launcher [data-voice-launcher-label] { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
-  .voice-control-shell { padding: 18px; }
-  :root body[data-experience] .site-footer { padding-bottom: 160px; }
-}
-@media (max-width: 380px) { .voice-control-actions { grid-template-columns: minmax(0, 1fr); } }
+.voice-control-actions { display: flex; flex-wrap: wrap; gap: 7px; }
+:root body[data-experience] .voice-control-actions .button { flex: 1 1 42%; min-height: 44px; padding: 9px 10px; font-size: .77rem; white-space: normal; }
+:root body[data-experience] .voice-control-card .dialog-assistance { min-width: 0; margin: 0; padding: 0; border: 0; }
+.voice-control-card .dialog-assistance > .eyebrow { margin: 0 0 8px; font-size: .65rem; }
+:root body[data-experience] .voice-control-card .message-list { display: grid; gap: 8px; min-height: 70px; max-height: min(220px, 30dvh); padding: 10px; overflow-y: auto; overscroll-behavior: contain; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; }
+:root body[data-experience] .voice-control-card .message-list p { margin: 0; max-width: 100%; padding: 9px 11px; background: var(--paper); color: var(--ink) !important; border-radius: 9px; font-size: .85rem; line-height: 1.6; overflow-wrap: anywhere; }
+:root body[data-experience] .voice-control-card .message-list .user-message { border-inline-start: 2px solid var(--gold); }
+:root body[data-experience] .voice-control-card .assistant-form { display: grid; gap: 5px; margin-top: 10px; padding: 0; background: transparent; border: 0; }
+:root body[data-experience] .voice-control-card .assistant-form label { color: var(--muted); font-size: .75rem; }
+.voice-control-card .assistant-form > div { display: flex; gap: 6px; min-width: 0; }
+:root body[data-experience] .voice-control-card .assistant-form input { width: 100%; min-width: 0; min-height: 44px; padding: 8px 10px; background: var(--surface); border: 1px solid var(--line); border-radius: 9px; color: var(--ink); font-size: 1rem; }
+:root body[data-experience] .voice-control-card .assistant-form button { min-width: 48px; min-height: 44px; padding: 8px; border: 0; border-radius: 9px; background: #173f33; color: #fff8ec; }
+:root body[data-experience] .cart-button.is-floating-cart { right: 90px; bottom: calc(20px + env(safe-area-inset-bottom, 0px)); }
+@keyframes zara-connect { to { transform: rotate(360deg); } }
+@keyframes zara-speaking { 50% { opacity: .55; transform: scale(.9); } }
+@media (max-width: 700px) { :root body[data-experience] .voice-widget { right: 12px; bottom: calc(14px + env(safe-area-inset-bottom, 0px)); } :root body[data-experience] .voice-control-card { width: min(360px, calc(100vw - 24px)); } :root body[data-experience] .cart-button.is-floating-cart { right: 80px; bottom: calc(14px + env(safe-area-inset-bottom, 0px)); } }
+@media (prefers-reduced-motion: reduce) { .voice-launcher::after, .voice-launcher svg { animation: none !important; } }
+:root[data-calm-motion=true] .voice-launcher::after, :root[data-calm-motion=true] .voice-launcher svg { animation: none !important; }
