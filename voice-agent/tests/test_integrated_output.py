@@ -5,7 +5,7 @@ import json
 from types import SimpleNamespace
 
 import pytest
-from foodease_contract.models import decode_event
+from foodease_contract.models import AssistantTranscriptEvent, decode_event
 
 from foodease_agent.adapters.integrated import IntegratedRpcAdapter
 from foodease_agent.adapters.integrated_startup import IntegratedRoomGate
@@ -65,3 +65,33 @@ async def test_assistant_interruption_replaces_intended_caption_with_actual_part
     events = [entry for entry in runtime.adapter.events if entry[0] == "transcript.assistant"]
     assert events[-1][1]["phase"] == "interrupted"
     assert events[-1][1]["text"] == "Your cart has two wraps"
+
+
+@pytest.mark.asyncio
+async def test_generation_exception_is_failed_not_user_interruption(runtime):
+    context = await turn(runtime)
+    handle = context.speech_handle
+    handle.error = ValueError("provider configuration rejected")
+    handle.future.set_result(None)
+    await asyncio.sleep(0)
+    await asyncio.sleep(0)
+    events = [entry for entry in runtime.adapter.events if entry[0] == "transcript.assistant"]
+    assert events[-1][1]["phase"] == "failed"
+    assert not handle.interrupted
+    assert runtime._last_completed is None
+
+
+@pytest.mark.asyncio
+async def test_failed_caption_is_accepted_by_shared_wire_contract():
+    room = Room()
+    gate = IntegratedRoomGate(room, room.startup)
+    adapter = IntegratedRpcAdapter(gate)
+    try:
+        await adapter.publish_event("transcript.assistant", {
+            "utterance_id": "failed", "text": "", "phase": "failed",
+        }, turn_id="failed-turn", revision=1)
+        event = decode_event(room.published[-1][0])
+        assert isinstance(event, AssistantTranscriptEvent)
+        assert event.payload.phase == "failed"
+    finally:
+        gate.close()

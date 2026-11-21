@@ -1,5 +1,13 @@
 # STATUS
 
+**Reply generation and truthful failure captions — 2026-11-21.** Logs confirmed
+Gemini 2.5's unsupported thinking-level setting. Model-compatible budgets now
+fix the actual chat path; failures have a distinct shared/UI caption outcome.
+The 350 ms speech gate and AEC are preserved. **606 Python checks passed / one
+inherited mock-import failure; 72 JS and 4 browser checks passed.** Build and
+scoped lint/types pass. Production question-answer verification follows rollout.
+[Report](../evidence/reply-recovery-2026-11-21/report.md).
+
 **Balanced Urdu interruption — 2026-11-21.** Supersedes the zero-duration onset
 policy below. Urdu requires a shared 350 ms speech-segment/SDK interruption gate;
 raw user-state onset no longer forces audio interruption or revokes the turn.

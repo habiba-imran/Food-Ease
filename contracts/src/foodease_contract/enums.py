@@ -99,6 +99,7 @@ class AssistantTranscriptPhase(StrEnum):
     UPDATED = "updated"
     COMPLETED = "completed"
     INTERRUPTED = "interrupted"
+    FAILED = "failed"
 
 
 class AgentControlIntent(StrEnum):

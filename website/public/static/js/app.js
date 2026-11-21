@@ -1,7 +1,7 @@
 import { Application, newId } from "./application.mjs";
 import { AssistanceController } from "./assistance-controller.mjs?v=voice-18";
 import { LiveKitSeats } from "./livekit-bridge.mjs?v=voice-16";
-import { TranscriptView } from "./transcripts.mjs";
+import { TranscriptView } from "./transcripts.mjs?v=caption-2";
 import { acquireTabLease } from "./tab-lease.mjs";
 import { voicePresentation, voiceErrorMessage } from "./voice-ui.mjs?v=ui-2";
 import { PersistentWake } from "./persistent-wake.mjs?v=wake-1";

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import asyncio
+import json
 import logging
 import time
 from collections import deque
@@ -22,6 +23,8 @@ class RuntimeRecovery:
 
     def observe(self, kind: str, **fields) -> None:
         self.observations.append({"kind": kind, "monotonic": time.monotonic(), **fields})
+        # Existing observations contain only state/timing metadata, never speech.
+        logger.info("foodease_runtime_event %s", json.dumps({"kind": kind, **fields}))
 
     def revoke(self) -> None:
         runtime = self.runtime

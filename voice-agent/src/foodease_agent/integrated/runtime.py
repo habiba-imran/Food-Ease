@@ -933,9 +933,16 @@ class LiveConversationRuntime:
         def completed(speech):
             self.speeches.pop(speech.id, None)
             turn = self.speech_turns.pop(speech.id, None)
-            if speech.interrupted and owner is not None and self.active_turn is owner:
-                # Revoke only on a confirmed SDK interruption, never on a raw
-                # VAD onset. A late older handle cannot revoke a replacement turn.
+            failure = speech.exception()
+            if not self.closed:
+                self.recovery.observe("speech_finished", speech_id=speech.id,
+                                      interrupted=speech.interrupted, failed=failure is not None)
+            if (
+                (speech.interrupted or failure is not None)
+                and owner is not None and self.active_turn is owner
+            ):
+                # Revoke confirmed interruptions/failures, never raw VAD onset.
+                # A late older handle cannot revoke a replacement turn.
                 owner.committed = False
                 if not self.confirmation.summary_spoken:
                     self._invalidate_confirmation()
@@ -948,11 +955,19 @@ class LiveConversationRuntime:
                 self._captions[speech.id]["text"] = delivered[:2000]
                 self._caption(
                     speech.id,
-                    "interrupted"
-                    if speech.interrupted or speech.exception() is not None
-                    else "completed",
+                    "failed" if failure is not None
+                    else "interrupted" if speech.interrupted else "completed",
                 )
                 self._captions.pop(speech.id, None)
+            if failure is not None and not self.closed:
+                # Never disguise a provider failure as microphone barge-in or
+                # retry a potentially submitted shopping operation.
+                self._publish("agent.error", {
+                    "code": "not_available",
+                    "message": "زارا یہ جواب مکمل نہیں کر سکی۔" if self.language == "ur"
+                    else "Zara could not finish this reply.",
+                    "fatal": False,
+                }, turn_id=owner.id if owner else speech.id, revision=self.snapshot.revision)
             if (
                 turn
                 and self.authorized(turn)

@@ -158,3 +158,20 @@ test('every item has a short description and no ingredient list or local voice o
   await expect(panel(page)).toBeHidden();
   await expect(page.locator('[data-cart-dialog] > [data-voice-use], [data-cart-dialog] [data-assist-voice]')).toHaveCount(0);
 });
+
+
+test('provider failure and actual interruption are distinct captions', async ({ page }) => {
+  await start(page);
+  await page.evaluate(() => {
+    const user = window.fakeLiveKit.rooms.find(r => r.role === 'user' && !r.closed);
+    for (const [phase,text] of [['failed',''], ['interrupted','آپ کے کارٹ']]) {
+      user.emit('DataReceived', new TextEncoder().encode(JSON.stringify({schema_version:'2.0', session_id:user.sid,
+        event_id:crypto.randomUUID(),turn_id:'audit-'+phase,timestamp:new Date().toISOString(),
+        type:'transcript.assistant',payload:{utterance_id:'audit-'+phase,text,phase}})), user.agent,null,'foodease.events.v2');
+    }
+  });
+  await expect(panel(page).locator('[data-phase="failed"]')).toHaveText('جواب مکمل نہیں ہو سکا۔');
+  await expect(panel(page).locator('[data-phase="failed"]')).not.toContainText('interrupted');
+  await expect(panel(page).locator('[data-phase="interrupted"]')).toContainText('آپ کے کارٹ (interrupted)');
+  await panel(page).locator('[data-voice-end]').click();
+});

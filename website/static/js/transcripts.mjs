@@ -7,12 +7,12 @@ export class TranscriptView {
   }
   update({ kind, turnId, utteranceId, text, phase = "completed", timestamp = "" }) {
     if (!this.container || !["user", "assistant", "system"].includes(kind)
-        || !["started", "updated", "completed", "interrupted"].includes(phase)
+        || !["started", "updated", "completed", "interrupted", "failed"].includes(phase)
         || typeof text !== "string" || text.length > 2000 || !utteranceId || !turnId) return false;
     const key = `${kind}:${turnId}:${utteranceId}`;
     const follow = this.container.scrollHeight - this.container.scrollTop - this.container.clientHeight < 48;
     let row = this.rows.get(key);
-    const terminal = (value) => ["completed", "interrupted"].includes(value);
+    const terminal = (value) => ["completed", "interrupted", "failed"].includes(value);
     if (row && ((terminal(row.phase) && !terminal(phase)) || timestamp < row.timestamp)) return false;
     if (!row) {
       const element = this.container.ownerDocument.createElement("p");
@@ -32,7 +32,9 @@ export class TranscriptView {
     row.phase = phase;
     row.timestamp = timestamp;
     row.element.dataset.phase = phase;
-    row.element.textContent = text + (phase === "interrupted" ? " (interrupted)" : "");
+    row.element.textContent = phase === "failed"
+      ? text ? `${text} (جواب مکمل نہیں ہو سکا)` : 'جواب مکمل نہیں ہو سکا۔'
+      : text + (phase === "interrupted" ? " (interrupted)" : "");
     if (follow) this.container.scrollTop = this.container.scrollHeight;
     return true; // textContent update never moves focus or replaces the input form
   }

@@ -6,6 +6,21 @@ Newest entries at the top.
 
 ---
 
+## ADR-0036 — Model-compatible thinking and truthful failed captions
+
+- **Context:** Production logs show Gemini 2.5 Flash repeatedly rejecting the
+  blanket `thinking_level` configuration during `chat()`. Speech exceptions were
+  also labeled interrupted, making failed generations resemble false barge-in.
+- **Decision:** Use explicit supported budgets for Gemini 2.5 (Flash/Lite 0, Pro
+  128), retaining levels for Gemini 3+. Add a distinct shared `failed` caption
+  outcome and Urdu UI label, without mutation retries. Retain the tested 350 ms
+  interruption policy and AEC until actual evidence warrants acoustic changes.
+  Validate real question answering after deployment, not only session startup.
+- **Evidence:** [Tests, production audit and limits](../evidence/reply-recovery-2026-11-21/report.md).
+- **Date:** 2026-11-21. Supersedes the blanket thinking-level rule for Gemini 2.5.
+
+---
+
 ## ADR-0035 — Require sustained Urdu speech before interrupting
 
 - **Context:** The user reports repeated false interruptions in a quiet room.

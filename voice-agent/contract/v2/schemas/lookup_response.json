@@ -2221,7 +2221,8 @@
         "started",
         "updated",
         "completed",
-        "interrupted"
+        "interrupted",
+        "failed"
       ],
       "title": "AssistantTranscriptPhase",
       "type": "string"

@@ -109,10 +109,18 @@ def build_tts(settings: Settings) -> cartesia.TTS:
 def build_llm(settings: Settings) -> llm.LLM:
     if settings.llm_provider == "groq":
         return CapacityGroqLLM(settings)
+    # The installed plugin validates this in chat(), not in LLM construction.
+    # Gemini 2.5 accepts a token budget; level is supported by Gemini 3+.
+    model = settings.llm_model.removeprefix("models/")
+    thinking: ThinkingConfigDict = (
+        {"thinking_budget": 128 if "pro" in model else 0}
+        if model.startswith("gemini-2.5")
+        else cast(ThinkingConfigDict, {"thinking_level": settings.llm_thinking_level})
+    )
     return google.LLM(
         model=settings.llm_model,
         api_key=settings.google_api_key,
-        thinking_config=cast(ThinkingConfigDict, {"thinking_level": settings.llm_thinking_level}),
+        thinking_config=thinking,
     )
 
 
