@@ -22,12 +22,11 @@ test.beforeEach(async ({ page }) => {
   await expect(root(page)).toHaveAttribute('data-foodease-revision', /\d+/);
 });
 
-for (const mode of ['voice', 'paused', 'typed']) test(`refresh from ${mode} resets Zara and preserves the cart without reopening capture`, async ({ page }) => {
+for (const mode of ['voice', 'paused']) test(`refresh from ${mode} resets Zara and preserves the cart without reopening capture`, async ({ page }) => {
   await page.locator('[data-menu-item][data-id="drink-cola"] [data-add-item]').click();
   await expect(page.locator('[data-cart-count]')).toHaveText('1');
-  if (mode === 'typed') { await page.locator('[data-voice-launcher]').click(); await page.locator('[data-voice-typed]').click(); }
-  else { await launcher(page).click(); await panel(page).locator('[data-voice-use]').click(); }
-  await expect(root(page)).toHaveAttribute('data-assistance-state', mode === 'typed' ? 'typed_active' : 'voice_active');
+  await launcher(page).click(); await panel(page).locator('[data-voice-use]').click();
+  await expect(root(page)).toHaveAttribute('data-assistance-state', 'voice_active');
   const old = await page.evaluate(() => {
     const sid = sessionStorage.getItem('foodease.shopping-session.v2');
     return { sid, ...JSON.parse(sessionStorage.getItem(`foodease.assistance-owner.v2:${sid}`)) };

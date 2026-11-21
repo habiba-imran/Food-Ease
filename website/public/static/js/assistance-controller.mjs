@@ -73,7 +73,7 @@ export class AssistanceController {
         this._localStop(run);
         void this._serverStop(run);
         this._emit(run, { state: "error", localStopped: true,
-          detail: "Assistance credentials expired. Choose voice or typing again when ready." });
+          detail: "Assistance credentials expired. Start Zara again when ready." });
       }, Math.min(ttl * 1000, 2147483647));
       run.expiry.unref?.();
     }

@@ -12,7 +12,13 @@ test.beforeEach(async ({ page }) => {
     const get = navigator.mediaDevices.getUserMedia.bind(navigator.mediaDevices);
     navigator.mediaDevices.getUserMedia = async args => { const stream = await get(args); window.captured.push(...stream.getTracks()); return stream; };
     window.wakeCreated = 0;
-    window.SpeechRecognition = class { constructor() { window.wakeCreated++; } };
+    window.wakeInstances = [];
+    window.SpeechRecognition = class {
+      constructor() { window.wakeCreated++; window.wakeInstances.push(this); }
+      start() { this.started = true; this.onstart?.(); }
+      abort() { this.started = false; this.onend?.(); }
+      result(text) { this.onresult?.({ resultIndex: 0, results: [Object.assign([{transcript:text}], {isFinal:true})] }); }
+    };
   });
   await page.goto('/');
   await expect(page.locator('html')).toHaveAttribute('data-foodease-revision', /\d+/);
@@ -30,7 +36,7 @@ for (const width of [390, 1440]) test(`one corner widget, no welcome or wake cap
   page.on('pageerror', error => errors.push(error.message));
   await page.setViewportSize({ width, height: 900 });
   await expect(page.locator('[data-voice-widget]')).toHaveCount(1);
-  await expect(page.locator('[data-voice-welcome], [data-wake-toggle]')).toHaveCount(0);
+  await expect(page.locator('[data-voice-welcome], [data-voice-typed], [data-assistant-form], [data-dialog-typing]')).toHaveCount(0);
   expect(await page.evaluate(() => window.captured.length + window.wakeCreated)).toBe(0);
   await open(page);
   await expect(panel(page)).toBeVisible();
@@ -54,6 +60,8 @@ for (const width of [390, 1440]) test(`one corner widget, no welcome or wake cap
   await open(page);
   await panel(page).locator('[data-voice-end]').click();
   await expect.poll(() => page.evaluate(() => window.captured.every(track => track.readyState === 'ended'))).toBe(true);
+  await expect(panel(page).locator('[data-wake-status]')).toContainText('Wake microphone on');
+  expect(await page.evaluate(() => window.wakeInstances.at(-1).started)).toBe(true);
   expect(errors).toEqual([]);
 });
 
@@ -74,18 +82,79 @@ test('connecting microphone, starting agent, speaking and paused are visible in 
   await expect(launcher(page)).toHaveAttribute('data-voice-activity', 'paused');
   await expect(panel(page).locator('[data-voice-microphone]')).toHaveText('Microphone off');
   await expect(panel(page).locator('[data-dialog-status]')).not.toContainText('could not be delivered');
-  await mkdir('../deployment/evidence/voice-widget-2026-11-21', { recursive: true });
-  await page.screenshot({ path:'../deployment/evidence/voice-widget-2026-11-21/widget-desktop.png' });
+  await mkdir('../deployment/evidence/persistent-wake-2026-11-21', { recursive: true });
+  await page.screenshot({ path:'../deployment/evidence/persistent-wake-2026-11-21/widget-desktop.png' });
   await panel(page).locator('[data-voice-end]').click();
 });
 
-test('blocked microphone is explained inside the widget; typing remains available', async ({ page }) => {
+test('blocked microphone is explained inside the widget without enabling wake or typing', async ({ page }) => {
   await page.evaluate(() => { navigator.mediaDevices.getUserMedia = async () => { throw new DOMException('blocked', 'NotAllowedError'); }; });
   await open(page);
   await panel(page).locator('[data-voice-use]').click();
   await expect(panel(page).locator('[data-dialog-status]')).toContainText('permission is blocked');
   await expect(panel(page).locator('[data-voice-retry]')).toBeVisible();
-  await panel(page).locator('[data-voice-typed]').click();
-  await expect(page.locator('html')).toHaveAttribute('data-assistance-state', 'typed_active');
-  await expect(panel(page).locator('[data-assistant-input]')).toBeVisible();
+  await expect(page.locator('[data-assistant-input], [data-voice-typed]')).toHaveCount(0);
+  expect(await page.evaluate(() => window.wakeCreated)).toBe(0);
+});
+
+test('Hey Zara re-arms, activates once, survives reload and can be turned off', async ({ page }) => {
+  const errors = [];
+  page.on('pageerror', error => errors.push(error.message));
+  await start(page);
+  expect(await page.evaluate(() => window.wakeCreated)).toBe(0);
+  await panel(page).locator('[data-voice-end]').click();
+  await expect(page.locator('html')).toHaveAttribute('data-wake-state', 'listening');
+  let starts = 0;
+  page.on('request', request => { if (request.url().endsWith('/v2/assist/start')) starts++; });
+  await page.evaluate(() => {
+    const r = window.wakeInstances.at(-1);
+    r.result('زارا، دو کولا شامل کرو'); r.result('زارا، دو کولا شامل کرو');
+  });
+  await expect(page.locator('html')).toHaveAttribute('data-assistance-state', 'voice_active', {timeout:15000});
+  expect(starts).toBe(1);
+  await expect(page.locator('[data-cart-count]')).toHaveText('2');
+  expect(await page.evaluate(() => window.fakeLiveKit.sent.filter(packet => packet.event.type === 'app.text_input').length)).toBe(1);
+  expect(await page.evaluate(() => window.wakeInstances.some(r => r.started))).toBe(false);
+  await page.evaluate(() => {
+    Object.defineProperty(document, 'hidden', {value:true, configurable:true});
+    document.dispatchEvent(new Event('visibilitychange'));
+  });
+  await expect.poll(() => page.evaluate(() => window.captured.every(track => track.readyState === 'ended'))).toBe(true);
+  expect(await page.evaluate(() => window.wakeInstances.some(r => r.started))).toBe(false);
+  await page.evaluate(() => {
+    Object.defineProperty(document, 'hidden', {value:false, configurable:true});
+    document.dispatchEvent(new Event('visibilitychange'));
+  });
+  await expect(page.locator('html')).toHaveAttribute('data-wake-state', 'listening');
+  await page.reload();
+  await expect(page.locator('html')).toHaveAttribute('data-wake-state', 'listening');
+  expect(await page.evaluate(() => window.captured.length)).toBe(0);
+  await open(page);
+  await panel(page).locator('[data-wake-toggle]').click();
+  await expect(panel(page).locator('[data-wake-status]')).toContainText('Hey Zara is off');
+  expect(await page.evaluate(() => window.wakeInstances.some(r => r.started))).toBe(false);
+  await page.reload();
+  await expect(page.locator('html')).toHaveAttribute('data-foodease-revision', /\d+/);
+  expect(await page.evaluate(() => window.wakeCreated)).toBe(0);
+  expect(errors).toEqual([]);
+});
+
+test('every item has a short description and no ingredient list or local voice or typing buttons', async ({ page }) => {
+  const ids = await page.locator('[data-menu-item]').evaluateAll(cards => cards.map(c => c.dataset.id));
+  expect(ids).toHaveLength(28);
+  for (const id of ids) {
+    const card = page.locator(`[data-menu-item][data-id="${id}"]`);
+    const description = await card.getAttribute('data-description');
+    expect(description.length).toBeGreaterThan(20);
+    expect(description.length).toBeLessThan(110);
+    await card.locator('[data-detail-item]').click();
+    await expect(page.locator('[data-detail-description]')).toHaveText(description);
+    await expect(page.locator('[data-detail-ingredients], [data-assist-voice], [data-dialog-typing]')).toHaveCount(0);
+    await expect(panel(page)).toBeHidden();
+    await page.locator('[data-detail-close]').click();
+  }
+  await page.locator('[data-cart-trigger]').click();
+  await expect(page.locator('[data-cart-dialog]')).toBeVisible();
+  await expect(panel(page)).toBeHidden();
+  await expect(page.locator('[data-cart-dialog] > [data-voice-use], [data-cart-dialog] [data-assist-voice]')).toHaveCount(0);
 });

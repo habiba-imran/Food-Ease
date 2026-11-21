@@ -18,7 +18,11 @@ try {
   await page.waitForFunction(() => document.documentElement.dataset.foodeaseRevision, { timeout: 30000 });
   report.orchestrationPath = await page.locator('body').getAttribute('data-orchestration-url');
   report.widget = { source: await page.locator('script[src*="app.js"]').getAttribute('src'),
-    welcomeCount: await page.locator('[data-voice-welcome], [data-wake-toggle]').count(),
+    welcomeCount: await page.locator('[data-voice-welcome]').count(),
+    typingCount: await page.locator('[data-voice-typed], [data-assistant-form], [data-dialog-typing]').count(),
+    ingredientCount: await page.locator('[data-detail-ingredients]').count(),
+    wakeControlCount: await page.locator('[data-wake-toggle]').count(),
+    shortDescriptionCount: await page.locator('[data-menu-item]').evaluateAll(cards => cards.filter(c => c.dataset.description.length > 20 && c.dataset.description.length < 110).length),
     panelTag: await page.locator('[data-voice-controls]').evaluate(node => node.tagName) };
   if (process.argv.includes('--start')) {
     await page.locator('[data-voice-launcher]').click();
@@ -32,10 +36,14 @@ try {
     }
     report.message = await page.locator('[data-voice-controls] [data-dialog-status]').textContent();
   }
-  await mkdir('../deployment/evidence/voice-widget-2026-11-21', { recursive: true });
-  await writeFile(`../deployment/evidence/voice-widget-2026-11-21/hosted-${process.argv.includes('--after') ? 'after' : 'before'}.json`, JSON.stringify(report, null, 2));
+  const evidence = process.argv.includes('--wake') ? '../deployment/evidence/persistent-wake-2026-11-21' : '../deployment/evidence/voice-widget-2026-11-21';
+  report.wakePreference = await page.evaluate(() => localStorage.getItem('foodease.hey-zara.v1'));
+  await mkdir(evidence, { recursive: true });
+  await writeFile(`${evidence}/hosted-${process.argv.includes('--after') ? 'after' : 'before'}.json`, JSON.stringify(report, null, 2));
   console.log(JSON.stringify(report, null, 2));
 } finally {
+  const wakeOff = page.locator('[data-wake-toggle]');
+  if (await wakeOff.isVisible().catch(() => false)) await wakeOff.click().catch(() => {});
   const stop = page.locator('[data-voice-end]');
   if (await stop.isVisible().catch(() => false)) await stop.click().catch(() => {});
   await page.waitForTimeout(1000).catch(() => {});

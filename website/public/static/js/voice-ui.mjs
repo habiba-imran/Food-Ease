@@ -24,11 +24,11 @@ export function voicePresentation({ phase = 'manual', stage = '', agentState = '
 
 export function voiceErrorMessage(error) {
   const messages = {
-    NotAllowedError: 'Microphone permission is blocked. Allow it in your browser settings, or choose typing or manual ordering.',
-    NotFoundError: 'No microphone was found. Connect one, or choose typing or manual ordering.',
-    NotReadableError: 'Your microphone may be in use by another app. Close that app and retry, or choose typing.',
+    NotAllowedError: 'Microphone permission is blocked. Allow it in your browser settings, or continue ordering manually.',
+    NotFoundError: 'No microphone was found. Connect one, or continue ordering manually.',
+    NotReadableError: 'Your microphone may be in use by another app. Close that app and retry, or continue ordering manually.',
     AbortError: 'Voice startup was interrupted. You can retry when ready or continue manually.',
-    TypeError: 'We could not reach the voice service. Retry Zara, or use typing while it recovers.',
+    TypeError: 'We could not reach the voice service. Retry Zara, or continue ordering manually.',
     UnexpectedConnectionState: 'Zara’s connection closed during setup. Your microphone is off. Retry Zara.',
   };
   return messages[error?.name] || error?.message || 'Voice assistance could not start. You can retry or order manually.';

@@ -1,0 +1,169 @@
+Using url, api-key, api-secret from environment
+Using agent [CA_gibAwTdK3sjn]
+Detected agent language [python.pip]
+Loading client settings...
+This deploy continues even if you disconnect; run `lk agent status` to check.
+#1 Starting build
+#1 DONE 0.0s
+
+#2 [internal] load remote build context
+#2 DONE 1.6s
+
+#2 [internal] load remote build context
+#2 DONE 1.6s
+
+#3 copy /context /
+#3 DONE 0.0s
+
+#4 resolve image config for docker-image://docker.io/docker/dockerfile:1
+#4 DONE 3.2s
+
+#5 docker-image://docker.io/docker/dockerfile:1@sha256:572cebbc2b15e6f84c077742952674889cb63cd5e9b80abdffcbe587b6f19183
+#5 resolve docker.io/docker/dockerfile:1@sha256:572cebbc2b15e6f84c077742952674889cb63cd5e9b80abdffcbe587b6f19183 done
+#5 sha256:03f648a05b5780c2a0e4b43c93eb1838c6b9b32131b25f4199f42a788d106315 0B / 15.19MB 0.2s
+#5 sha256:03f648a05b5780c2a0e4b43c93eb1838c6b9b32131b25f4199f42a788d106315 2.10MB / 15.19MB 0.3s
+#5 sha256:03f648a05b5780c2a0e4b43c93eb1838c6b9b32131b25f4199f42a788d106315 15.19MB / 15.19MB 0.4s done
+#5 extracting sha256:03f648a05b5780c2a0e4b43c93eb1838c6b9b32131b25f4199f42a788d106315
+#5 extracting sha256:03f648a05b5780c2a0e4b43c93eb1838c6b9b32131b25f4199f42a788d106315 0.3s done
+#5 DONE 0.8s
+
+#6 [internal] load metadata for docker.io/library/python:3.12-slim-bookworm
+#6 ...
+
+#7 [internal] load metadata for ghcr.io/astral-sh/uv:0.10.6
+#7 DONE 2.3s
+
+#6 [internal] load metadata for docker.io/library/python:3.12-slim-bookworm
+#6 DONE 3.5s
+
+#8 FROM ghcr.io/astral-sh/uv:0.10.6@sha256:2f2ccd27bbf953ec7a9e3153a4563705e41c852a5e1912b438fc44d88d6cb52c
+#8 resolve ghcr.io/astral-sh/uv:0.10.6@sha256:2f2ccd27bbf953ec7a9e3153a4563705e41c852a5e1912b438fc44d88d6cb52c 0.0s done
+#8 DONE 0.0s
+
+#9 [stage-0  1/12] FROM docker.io/library/python:3.12-slim-bookworm@sha256:935c3c5b12357a7e10caa9c1e6ca5692344d97cf229832ef584be2cec9fc03df
+#9 resolve docker.io/library/python:3.12-slim-bookworm@sha256:935c3c5b12357a7e10caa9c1e6ca5692344d97cf229832ef584be2cec9fc03df
+#9 resolve docker.io/library/python:3.12-slim-bookworm@sha256:935c3c5b12357a7e10caa9c1e6ca5692344d97cf229832ef584be2cec9fc03df 0.0s done
+#9 DONE 0.0s
+
+#10 [stage-0  6/12] COPY --chown=agent:agent website/pyproject.toml website/README.md ./website/
+#10 CACHED
+
+#11 [stage-0  7/12] COPY --chown=agent:agent voice-agent/pyproject.toml voice-agent/uv.lock voice-agent/README.md ./voice-agent/
+#11 CACHED
+
+#12 [stage-0  9/12] RUN uv sync --locked --no-dev --no-install-project --no-install-package foodease-contract
+#12 CACHED
+
+#13 [stage-0 10/12] COPY --chown=agent:agent contracts/src /app/contracts/src
+#13 CACHED
+
+#14 [stage-0  3/12] RUN useradd --create-home --uid 10001 agent && mkdir -p /app/.cache && chown -R agent:agent /app
+#14 CACHED
+
+#15 [stage-0  4/12] WORKDIR /app
+#15 CACHED
+
+#16 [stage-0 11/12] COPY --chown=agent:agent voice-agent/src /app/voice-agent/src
+#16 CACHED
+
+#17 [stage-0  8/12] WORKDIR /app/voice-agent
+#17 CACHED
+
+#18 [stage-0  2/12] COPY --from=ghcr.io/astral-sh/uv:0.10.6 /uv /uvx /bin/
+#18 CACHED
+
+#19 [stage-0  5/12] COPY --chown=agent:agent contracts/pyproject.toml contracts/README.md ./contracts/
+#19 CACHED
+
+#20 [stage-0 12/12] RUN uv sync --locked --no-dev --no-editable     && python -c "import tiktoken; tiktoken.get_encoding('o200k_base')"     && python -m livekit.agents download-files
+#20 CACHED
+
+#21 exporting to image
+#21 exporting layers
+#21 exporting layers 0.0s done
+#21 exporting manifest sha256:efd1558d34ec9348533b5764cac5333403771fc97f6c723aac78dc64b5218399 done
+#21 exporting config sha256:9b69faee09ecdb947342a7813b445736540e7a0fd651af561f818509e77fa878 done
+#21 pushing layers
+#21 ...
+
+#22 exporting cache to registry
+#22 preparing build cache for export 0.3s done
+#22 sending cache export 2.0s done
+#22 writing layer sha256:1cd6f9b96b74558f1a6f26a7fa1c7c10812b849a734e641d9ba9494228df3d92 1.0s done
+#22 writing layer sha256:0a442fdbc64707f5fece7495f47e68af4812d706bfeb6f83404be98e6e930ffa 0.1s done
+#22 writing layer sha256:057ada1d5cc9535b0ce91bdb0cab17a661c66b92a4cf98dfa23e2275947b9cbc 0.1s done
+#22 writing layer sha256:12a8613b0c2a50e11ef9f9dd43530820d3f95268ce01ad311a5338ea1da339f0 0.2s done
+#22 writing layer sha256:2c1ce468d9f3d941396801f6e3afc8921466650dd05430fe644cd3537713d27f 0.0s done
+#22 writing layer sha256:3a7ca5afdc6c2baf19230d9c5d728e094044e77258efc26da7892c4274fbf985 0.1s done
+#22 writing layer sha256:689e6d47531640a228335d3070074571c294c7d2ddc93b1c1b20dfea0e4e3c15 0.1s done
+#22 writing layer sha256:7583b6c79a98a5f768e7b8d01cf9b2f52c5b75937bbdac6bffee3dc9a1699792 0.2s done
+#22 writing layer sha256:774df498ef852efe35c7c2c85b999480b27f3fdc98a638462d0900760602aafa 0.1s done
+#22 writing layer sha256:85b957644e9c8178063cc7432ca53511df1ee26a956dc5f317f42e736b4194b8 0.2s done
+#22 writing layer sha256:94e344aa3a0b77eee34d1646cc352e794da9b18e324f2ad4f2b79e6b49939e3e 0.0s done
+#22 writing layer sha256:9d1d712c0ba294989471d2d691a8e27a877091333266439ebb9cba4e8b67dda7 0.0s done
+#22 writing layer sha256:b999610e6fc5595790e4429a9082283b41def55f0e8aec8291430eca0546eae5 0.1s done
+#22 writing layer sha256:cfe5b5a54e1b785e543ddd4a7e67daf8adff74d6c3e01b005b4eb36024716e68 0.3s done
+#22 writing layer sha256:d91dcaaf797021551885f8078ddda07fd3b93fb6f504e0a5ccdee87fd9e0917f 0.1s done
+#22 writing config sha256:c185be001f1c0947fc1bbbe9f308bb8acf872083c8dd0c7cb441be6c884c1d86 0.7s done
+#22 writing cache image manifest sha256:58578329fb59abf3e140f448042e3ce01ff25d43d5c3e4a1aebfa645e01a75f8 0.4s done
+#22 DONE 2.4s
+
+#20 [stage-0 12/12] RUN uv sync --locked --no-dev --no-editable     && python -c "import tiktoken; tiktoken.get_encoding('o200k_base')"     && python -m livekit.agents download-files
+#20 sha256:9d1d712c0ba294989471d2d691a8e27a877091333266439ebb9cba4e8b67dda7 13.21MB / 13.21MB 0.5s done
+#20 sha256:94e344aa3a0b77eee34d1646cc352e794da9b18e324f2ad4f2b79e6b49939e3e 118.63MB / 438.83MB 2.4s
+#20 sha256:2c1ce468d9f3d941396801f6e3afc8921466650dd05430fe644cd3537713d27f 16B / 16B 0.7s done
+#20 sha256:057ada1d5cc9535b0ce91bdb0cab17a661c66b92a4cf98dfa23e2275947b9cbc 1.04kB / 1.04kB 0.4s done
+#20 sha256:7583b6c79a98a5f768e7b8d01cf9b2f52c5b75937bbdac6bffee3dc9a1699792 8.07kB / 8.07kB 0.3s done
+#20 sha256:b999610e6fc5595790e4429a9082283b41def55f0e8aec8291430eca0546eae5 4.91kB / 4.91kB 0.2s done
+#20 sha256:12a8613b0c2a50e11ef9f9dd43530820d3f95268ce01ad311a5338ea1da339f0 24.02MB / 24.02MB 0.6s done
+#20 sha256:d91dcaaf797021551885f8078ddda07fd3b93fb6f504e0a5ccdee87fd9e0917f 20.96MB / 20.96MB 0.7s done
+#20 sha256:689e6d47531640a228335d3070074571c294c7d2ddc93b1c1b20dfea0e4e3c15 105.83kB / 105.83kB 0.1s done
+#20 sha256:0a442fdbc64707f5fece7495f47e68af4812d706bfeb6f83404be98e6e930ffa 207B / 207B 0.2s done
+#20 sha256:85b957644e9c8178063cc7432ca53511df1ee26a956dc5f317f42e736b4194b8 3.43kB / 3.43kB 0.2s done
+#20 sha256:3a7ca5afdc6c2baf19230d9c5d728e094044e77258efc26da7892c4274fbf985 33.55MB / 388.97MB 0.8s
+#20 sha256:774df498ef852efe35c7c2c85b999480b27f3fdc98a638462d0900760602aafa 0B / 163.88kB 0.2s
+#20 sha256:cfe5b5a54e1b785e543ddd4a7e67daf8adff74d6c3e01b005b4eb36024716e68 0B / 3.34MB 0.2s
+#20 sha256:774df498ef852efe35c7c2c85b999480b27f3fdc98a638462d0900760602aafa 163.88kB / 163.88kB 0.3s done
+#20 sha256:cfe5b5a54e1b785e543ddd4a7e67daf8adff74d6c3e01b005b4eb36024716e68 753.66kB / 3.34MB 0.5s
+#20 sha256:3a7ca5afdc6c2baf19230d9c5d728e094044e77258efc26da7892c4274fbf985 66.22MB / 388.97MB 1.2s
+#20 sha256:cfe5b5a54e1b785e543ddd4a7e67daf8adff74d6c3e01b005b4eb36024716e68 3.34MB / 3.34MB 0.5s done
+#20 sha256:94e344aa3a0b77eee34d1646cc352e794da9b18e324f2ad4f2b79e6b49939e3e 147.85MB / 438.83MB 3.3s
+#20 sha256:3a7ca5afdc6c2baf19230d9c5d728e094044e77258efc26da7892c4274fbf985 90.28MB / 388.97MB 1.7s
+#20 sha256:94e344aa3a0b77eee34d1646cc352e794da9b18e324f2ad4f2b79e6b49939e3e 173.45MB / 438.83MB 3.8s
+#20 sha256:94e344aa3a0b77eee34d1646cc352e794da9b18e324f2ad4f2b79e6b49939e3e 198.58MB / 438.83MB 4.1s
+#20 sha256:94e344aa3a0b77eee34d1646cc352e794da9b18e324f2ad4f2b79e6b49939e3e 234.25MB / 438.83MB 4.7s
+#20 sha256:3a7ca5afdc6c2baf19230d9c5d728e094044e77258efc26da7892c4274fbf985 129.25MB / 388.97MB 2.9s
+#20 sha256:94e344aa3a0b77eee34d1646cc352e794da9b18e324f2ad4f2b79e6b49939e3e 257.98MB / 438.83MB 5.0s
+#20 sha256:3a7ca5afdc6c2baf19230d9c5d728e094044e77258efc26da7892c4274fbf985 153.30MB / 388.97MB 3.5s
+#20 sha256:94e344aa3a0b77eee34d1646cc352e794da9b18e324f2ad4f2b79e6b49939e3e 303.04MB / 438.83MB 5.6s
+#20 sha256:94e344aa3a0b77eee34d1646cc352e794da9b18e324f2ad4f2b79e6b49939e3e 334.25MB / 438.83MB 6.0s
+#20 sha256:3a7ca5afdc6c2baf19230d9c5d728e094044e77258efc26da7892c4274fbf985 177.94MB / 388.97MB 4.2s
+#20 sha256:94e344aa3a0b77eee34d1646cc352e794da9b18e324f2ad4f2b79e6b49939e3e 357.88MB / 438.83MB 6.3s
+#20 sha256:3a7ca5afdc6c2baf19230d9c5d728e094044e77258efc26da7892c4274fbf985 198.18MB / 388.97MB 4.5s
+#20 sha256:94e344aa3a0b77eee34d1646cc352e794da9b18e324f2ad4f2b79e6b49939e3e 389.84MB / 438.83MB 6.8s
+#20 sha256:3a7ca5afdc6c2baf19230d9c5d728e094044e77258efc26da7892c4274fbf985 225.44MB / 388.97MB 4.9s
+#20 sha256:94e344aa3a0b77eee34d1646cc352e794da9b18e324f2ad4f2b79e6b49939e3e 416.95MB / 438.83MB 7.2s
+#20 sha256:3a7ca5afdc6c2baf19230d9c5d728e094044e77258efc26da7892c4274fbf985 246.16MB / 388.97MB 5.4s
+#20 sha256:3a7ca5afdc6c2baf19230d9c5d728e094044e77258efc26da7892c4274fbf985 266.84MB / 388.97MB 5.7s
+#20 sha256:94e344aa3a0b77eee34d1646cc352e794da9b18e324f2ad4f2b79e6b49939e3e 438.83MB / 438.83MB 7.7s done
+#20 sha256:3a7ca5afdc6c2baf19230d9c5d728e094044e77258efc26da7892c4274fbf985 297.89MB / 388.97MB 6.2s
+#20 sha256:3a7ca5afdc6c2baf19230d9c5d728e094044e77258efc26da7892c4274fbf985 322.12MB / 388.97MB 6.6s
+#20 sha256:3a7ca5afdc6c2baf19230d9c5d728e094044e77258efc26da7892c4274fbf985 353.37MB / 388.97MB 7.1s
+#20 sha256:3a7ca5afdc6c2baf19230d9c5d728e094044e77258efc26da7892c4274fbf985 375.76MB / 388.97MB 7.5s
+#20 sha256:3a7ca5afdc6c2baf19230d9c5d728e094044e77258efc26da7892c4274fbf985 388.97MB / 388.97MB 7.9s done
+#20 DONE 9.7s
+
+#21 exporting to image
+#21 pushing layers 18.7s done
+#21 pushing manifest for localhost:5000/build/agent:oci@sha256:efd1558d34ec9348533b5764cac5333403771fc97f6c723aac78dc64b5218399
+#21 pushing manifest for localhost:5000/build/agent:oci@sha256:efd1558d34ec9348533b5764cac5333403771fc97f6c723aac78dc64b5218399 0.0s done
+#21 DONE 18.8s
+
+#23 Publishing image
+#23 DONE 4.2s
+
+#1 Deploy complete
+#1 DONE 0.0s
+Completed deployment of agent foodease to production
+Agent details: https://cloud.livekit.io/projects/d_foodease-nb0qr57x/agents/CA_gibAwTdK3sjn
+Test in Agent Console: https://cloud.livekit.io/projects/d_foodease-nb0qr57x/agents/console?agentName=foodease&autoStart=false

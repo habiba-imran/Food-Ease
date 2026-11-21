@@ -38,5 +38,9 @@ def test_homepage_uses_ordering_design_language() -> None:
     assert "/static/vendor/food-experience.css" in response.text
     assert "data-immersive-stage" in response.text
     assert 'data-voice-welcome' not in response.text
-    assert 'data-wake-toggle' not in response.text
+    assert 'data-wake-toggle' in response.text
+    assert 'data-voice-typed' not in response.text
+    assert 'data-assistant-form' not in response.text
+    assert 'data-dialog-typing' not in response.text
+    assert 'data-detail-ingredients' not in response.text
     assert '<dialog id="voice-controls"' not in response.text

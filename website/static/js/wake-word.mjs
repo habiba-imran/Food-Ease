@@ -8,8 +8,8 @@ export function wakeRequest(text) {
 
 export class WakeWordListener {
   constructor({ createRecognition, acquireLease = async () => () => {}, onWake = () => {},
-                onState = () => {}, stopTimeoutMs = 2000, restartMs = 350 }) {
-    Object.assign(this, { createRecognition, acquireLease, onWake, onState, stopTimeoutMs, restartMs });
+                onState = () => {}, stopTimeoutMs = 2000, restartMs = 350, persistIdle = false }) {
+    Object.assign(this, { createRecognition, acquireLease, onWake, onState, stopTimeoutMs, restartMs, persistIdle });
     this.enabled = false;
     this.epoch = 0;
     this.emptyEnds = 0;
@@ -75,8 +75,8 @@ export class WakeWordListener {
         if (this.recognition !== recognition || !this.enabled) return;
         if (event.error === 'no-speech') return; // native end schedules a bounded restart
         const message = ['not-allowed', 'service-not-allowed'].includes(event.error)
-          ? 'Wake microphone permission is blocked. Allow it in browser settings, or use typing.'
-          : 'Wake listening stopped. Your browser may need a connection or support for Urdu. Use Start Voice Assistant or typing.';
+          ? 'Wake microphone permission is blocked. Allow it in browser settings, or order manually.'
+          : 'Wake listening stopped. Your browser may need a connection or support for Urdu. Use Start Zara or order manually.';
         this.enabled = false;
         ++this.epoch;
         void this.stopNative().catch(() => {}).finally(() => this.emit('error', message));
@@ -86,14 +86,15 @@ export class WakeWordListener {
         this.recognition = null;
         this.finishStop?.();
         if (!this.enabled || epoch !== this.epoch) { void this.releaseLease(); return; }
-        if (++this.emptyEnds > 3) {
+        if (++this.emptyEnds > 3 && !this.persistIdle) {
           this.enabled = false;
           void this.releaseLease();
           this.emit('error', 'Wake listening stopped repeatedly. Use Start Voice Assistant or turn wake listening on again.');
           return;
         }
         this.emit('starting', 'Wake microphone is restarting.');
-        this.restart = setTimeout(() => this.listen(epoch), this.restartMs);
+        this.restart = setTimeout(() => this.listen(epoch), this.persistIdle
+          ? Math.min(5000, this.restartMs * Math.max(1, this.emptyEnds)) : this.restartMs);
       };
       recognition.start();
     } catch (error) {

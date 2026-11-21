@@ -3,26 +3,34 @@ import { test, expect } from '@playwright/test';
 import { readFile } from 'node:fs/promises';
 const fake = await readFile(new URL('../fake-livekit.mjs', import.meta.url), 'utf8');
 const panel = page => page.locator('[data-voice-controls]');
+// Inject a synthetic recognized request through the existing worker data path;
+// no typing controls are exposed by the production UI. This is not an audio test.
 async function say(page, text) {
-  const input = page.locator('[data-assistant-input]');
-  // Closing a shopping dialog restores the compact launcher; reopen its typing panel.
-  if (!await input.isVisible()) await page.locator('[data-voice-launcher]').click();
-  await input.fill(text);
-  await page.locator('[data-assistant-form] button[type=submit]').click();
+  await page.evaluate(async text => {
+    const user = window.fakeLiveKit.rooms.find(r => r.role === 'user' && !r.closed);
+    const context = window.fakeLiveKit.contexts.at(-1);
+    const event = {schema_version:'2.0', session_id:user.sid, event_id:crypto.randomUUID(),
+      turn_id:crypto.randomUUID(), timestamp:new Date().toISOString(), type:'app.text_input',
+      context_revision:context.context_revision, payload:{text}};
+    await user.localParticipant.publishData(new TextEncoder().encode(JSON.stringify(event)),
+      {reliable:true, topic:'foodease.text_input.v2'});
+  }, text);
 }
 async function snapshot(page) {
   return page.evaluate(async () => (await fetch('/api/v2/app/context', {
     headers: { 'X-FoodEase-Session': sessionStorage.getItem('foodease.shopping-session.v2') },
   })).json());
 }
+test.use({permissions:['microphone'], launchOptions:{args:['--use-fake-device-for-media-stream','--use-fake-ui-for-media-stream']}});
+
 test.beforeEach(async ({ page, context }) => {
   await context.addCookies([{ name: 'foodease_test_language', value: 'ur', url: 'http://127.0.0.1:8186' }]);
   await page.route('**/static/vendor/livekit-client.2.15.4.mjs', r => r.fulfill({ body: fake, contentType: 'text/javascript' }));
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.goto('/');
   await expect(page.locator('html')).toHaveAttribute('data-foodease-revision', /\d+/);
-  { await page.locator('[data-voice-launcher]').click(); await page.locator('[data-voice-typed]').click(); }
-  await expect(page.locator('html')).toHaveAttribute('data-assistance-state', 'typed_active');
+  { await page.locator('[data-voice-launcher]').click(); await page.locator('[data-voice-use]').click(); }
+  await expect(page.locator('html')).toHaveAttribute('data-assistance-state', 'voice_active');
 });
 
 for (const width of [1440, 390]) test(`Urdu browsing and Roman Urdu followup update the actual cart at ${width}px`, async ({ page }) => {
@@ -52,7 +60,7 @@ for (const width of [1440, 390]) test(`Urdu browsing and Roman Urdu followup upd
   await expect(page.locator('[data-cart-count]')).toHaveText('0');
 });
 
-test('Urdu clear review is delivered before consent; manual cart and voice use one state', async ({ page }) => {
+test('manual and Urdu voice share a cart; missing audio delivery cannot authorize clear', async ({ page }) => {
   await say(page, 'دو کولا شامل کرو');
   await expect(page.locator('[data-cart-count]')).toHaveText('2');
   await panel(page).locator('[data-voice-panel-close]').click();
@@ -65,6 +73,9 @@ test('Urdu clear review is delivered before consent; manual cart and voice use o
   await expect(page.locator('[data-agent-transcript]')).toContainText('کیا کارٹ کی تمام چیزیں');
   await expect(page.locator('[data-cart-count]')).toHaveText('3');
   await say(page, 'جی ہاں');
-  await expect(page.locator('[data-cart-count]')).toHaveText('0');
-  expect((await snapshot(page)).cart.lines).toEqual([]);
+  // This fixture has a transcription sink but no TTS/playback receipt. A visible
+  // transcript alone cannot stand in for the spoken review in voice mode.
+  await expect(page.locator('[data-agent-transcript]')).toContainText('تصدیق سے پہلے');
+  await expect(page.locator('[data-cart-count]')).toHaveText('3');
+  expect((await snapshot(page)).cart.lines).toHaveLength(2);
 });

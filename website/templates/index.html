@@ -13,8 +13,8 @@
     <link rel="preload" href="/static/fonts/bebas-neue-latin.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/static/fonts/dm-sans-latin.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" as="image" href="/static/img/editorial/fast-v7/chicken-burger-hero-768.webp" imagesrcset="/static/img/editorial/fast-v7/chicken-burger-hero-480.webp 480w, /static/img/editorial/fast-v7/chicken-burger-hero-768.webp 768w, /static/img/editorial/fast-v7/chicken-burger-hero-1024.webp 1024w" imagesizes="(max-width: 700px) 90vw, (max-width: 900px) 480px, 560px" fetchpriority="high" />
-    <link rel="stylesheet" href="/static/vendor/food-experience.css?v=zara-27" />
-    <script type="module" src="/static/js/app.js?v=zara-27"></script>
+    <link rel="stylesheet" href="/static/vendor/food-experience.css?v=zara-28" />
+    <script type="module" src="/static/js/app.js?v=zara-28"></script>
     <script type="module" src="/static/js/experience.mjs?v=menu-23"></script>
   </head>
   <body data-experience="immersive" data-orchestration-url="{{ orchestration_base_url }}">
@@ -304,7 +304,7 @@
             <button class="dialog-close" type="button" data-detail-close aria-label="Close item details" autofocus>Close</button>
             <p class="eyebrow" data-detail-category>Menu item</p>
             <h2 id="item-dialog-title" data-detail-name>Item details</h2>
-            <p data-detail-description>Select an item to inspect price, availability, ingredients, and quantity.</p>
+            <p data-detail-description>A little about this dish.</p>
             <div class="detail-tags" data-detail-tags></div>
             <dl class="detail-facts">
               <div>
@@ -314,10 +314,6 @@
               <div>
                 <dt>Status</dt>
                 <dd data-detail-availability>Available</dd>
-              </div>
-              <div>
-                <dt>Ingredients</dt>
-                <dd data-detail-ingredients>No ingredient notes listed.</dd>
               </div>
             </dl>
             <div class="detail-order-controls">
@@ -334,9 +330,7 @@
               <button class="button ghost" type="button" data-detail-close-secondary>Keep browsing</button>
             </div>
             <p class="dialog-status" data-dialog-status role="status" aria-atomic="true"></p>
-            <div class="dialog-assistance" data-dialog-assistant hidden><p class="eyebrow">Typed assistance</p></div>
             <button class="button ghost" type="button" data-reconcile-action hidden>Check pending changes</button>
-            <button class="button ghost" type="button" data-dialog-typing hidden>Continue by typing</button>
             <button class="button ghost" type="button" data-dialog-end-assistance hidden>End assistance</button>
             <div data-voice-launcher-slot></div>
           </div>
@@ -408,9 +402,7 @@
             <button class="button primary" type="button" data-receipt-close>Back to menu</button>
           </section>
           <p class="dialog-status" data-dialog-status role="status" aria-atomic="true"></p>
-          <div class="dialog-assistance" data-dialog-assistant hidden><p class="eyebrow">Typed assistance</p></div>
           <button class="button ghost" type="button" data-reconcile-action hidden>Check pending changes</button>
-          <button class="button ghost" type="button" data-dialog-typing hidden>Continue by typing</button>
           <button class="button ghost" type="button" data-dialog-end-assistance hidden>End assistance</button>
           <div data-voice-launcher-slot></div>
         </div>
@@ -442,9 +434,7 @@
               <p class="empty-cart">Your next great meal starts here. Add something that catches your eye.</p>
             </div>
             <p class="dialog-status" data-dialog-status role="status" aria-atomic="true"></p>
-            <div class="dialog-assistance" data-dialog-assistant hidden><p class="eyebrow">Typed assistance</p></div>
             <button class="button ghost" type="button" data-reconcile-action hidden>Check pending changes</button>
-            <button class="button ghost" type="button" data-dialog-typing hidden>Continue by typing</button>
             <button class="button ghost" type="button" data-dialog-end-assistance hidden>End assistance</button>
             <div data-voice-launcher-slot></div>
           </div>
@@ -486,30 +476,25 @@
         <div class="voice-control-shell">
           <button class="dialog-close" type="button" data-voice-panel-close aria-label="Minimize Zara">−</button>
           <h2 id="voice-controls-title">Zara <span>اردو اسسٹنٹ</span></h2>
-          <p id="voice-controls-help">Speak naturally in Urdu, or type a request. Your conversation stays here.</p>
+          <p id="voice-controls-help">Speak naturally in Urdu. After your first voice start, Hey Zara stays enabled while you browse. Your browser may process wake audio through its speech service.</p>
           <p class="voice-feedback" data-voice-feedback role="status" aria-atomic="true">Ready when you are.</p>
           <p class="voice-microphone" data-voice-microphone>Microphone off</p>
           <p class="dialog-status" data-dialog-status role="status" aria-atomic="true"></p>
+          <p data-wake-status role="status" aria-atomic="true">Hey Zara turns on after your first voice start. Your browser may process wake audio through its speech service.</p>
           <div class="voice-control-actions">
             <button class="button primary" type="button" data-voice-use>Start Zara</button>
             <button class="button primary" type="button" data-voice-retry hidden>Retry Voice Assistant</button>
             <button class="button primary" type="button" data-shopping-restart hidden>Start a new cart</button>
             <button class="button ghost" type="button" data-voice-pause hidden>Pause listening</button>
-            <button class="button ghost" type="button" data-voice-typed>Use typing instead</button>
-            <button class="button ghost" type="button" data-voice-end hidden>End voice session</button>
+            <button class="button ghost" type="button" data-voice-end hidden>End conversation</button>
+            <button class="button ghost" type="button" data-wake-toggle hidden aria-pressed="false">Turn off Hey Zara</button>
           </div>
           <div class="dialog-assistance" data-dialog-assistant>
-            <p class="eyebrow">Conversation and typed requests</p>
+            <p class="eyebrow">Conversation</p>
             <div class="message-list" data-agent-transcript aria-live="polite" aria-label="Conversation transcript">
               <p class="assistant-message" lang="ur" dir="rtl">میں زارا ہوں۔ آواز سے بات کرنے کے لیے مائیک شروع کریں۔</p>
             </div>
-            <form class="assistant-form" data-assistant-form>
-              <label for="assistant-text">Type a request</label>
-              <div>
-                <input id="assistant-text" name="assistant-text" placeholder="مثلاً: برگر دکھاؤ" dir="auto" data-assistant-input />
-                <button type="submit" disabled>Send</button>
-              </div>
-            </form>
+
           </div>
           <button class="button ghost" type="button" data-reconcile-action hidden>Check pending changes</button>
         </div>

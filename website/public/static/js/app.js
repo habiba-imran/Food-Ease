@@ -1,9 +1,10 @@
 import { Application, newId } from "./application.mjs";
-import { AssistanceController } from "./assistance-controller.mjs?v=voice-17";
+import { AssistanceController } from "./assistance-controller.mjs?v=voice-18";
 import { LiveKitSeats } from "./livekit-bridge.mjs?v=voice-16";
 import { TranscriptView } from "./transcripts.mjs";
 import { acquireTabLease } from "./tab-lease.mjs";
-import { voicePresentation, voiceErrorMessage } from "./voice-ui.mjs";
+import { voicePresentation, voiceErrorMessage } from "./voice-ui.mjs?v=ui-2";
+import { PersistentWake } from "./persistent-wake.mjs?v=wake-1";
 import { VoiceWidget } from "./voice-widget.mjs";
 
 const root = document.documentElement;
@@ -105,7 +106,6 @@ const detailDescription = document.querySelector("[data-detail-description]");
 const detailTags = document.querySelector("[data-detail-tags]");
 const detailPrice = document.querySelector("[data-detail-price]");
 const detailAvailability = document.querySelector("[data-detail-availability]");
-const detailIngredients = document.querySelector("[data-detail-ingredients]");
 const detailQuantity = document.querySelector("[data-detail-quantity]");
 const detailAddButton = document.querySelector("[data-detail-add]");
 const detailPhoto = document.querySelector("[data-detail-photo]");
@@ -113,14 +113,11 @@ const agentStatus = document.querySelector("[data-agent-status]");
 const agentStateShell = document.querySelector("[data-agent-state]");
 let currentAgentState = 'idle';
 const agentTranscript = document.querySelector("[data-agent-transcript]");
-const assistStart = document.querySelector("[data-assist-start]");
 const assistPause = document.querySelector("[data-assist-pause]");
 const assistEnd = document.querySelector("[data-assist-end]");
 const scenarioButtons = document.querySelectorAll("[data-scenario]");
-const assistantForm = document.querySelector("[data-assistant-form]");
-const assistantInput = document.querySelector("[data-assistant-input]");
 function syncDialogAssistance() {
-  // The transcript and form always stay inside the one corner widget.
+  // The transcript always stays inside the one corner widget.
   document.querySelectorAll("[data-dialog-assistant]").forEach(slot => { slot.hidden = !voiceControls.contains(slot); });
   document.querySelectorAll("[data-dialog-end-assistance], [data-dialog-typing]").forEach(button => { button.hidden = true; });
   placeVoiceLauncher();
@@ -454,9 +451,8 @@ function syncVoiceUi() {
   pause.textContent = root.dataset.assistanceState === "paused" ? "Resume listening" : "Pause listening";
   pause.setAttribute("aria-pressed", String(root.dataset.assistanceState === "paused"));
   voiceControls.querySelector("[data-voice-end]").hidden = !view.canManage;
-  voiceControls.querySelector("[data-voice-typed]").hidden = shoppingSessionExpired;
-  voiceControls.querySelector("[data-voice-typed]").disabled = connecting;
   document.querySelectorAll("[data-shopping-restart]").forEach(button => { button.hidden = !shoppingSessionExpired; });
+  syncWakeUi();
 }
 
 function placeVoiceLauncher() { voiceWidget.place(); }
@@ -475,7 +471,7 @@ function finishManualUi() {
   syncVoiceUi();
   const target = document.querySelector("dialog[open]") ? voiceLauncher : document.querySelector("#popular");
   target?.focus({ preventScroll: false });
-  setStatus("Microphone off. Start Zara whenever you need help.");
+  setStatus(wake.enabled ? "Conversation ended. Hey Zara will listen again when cleanup finishes." : "Microphone off. Start Zara whenever you need help.");
 }
 
 function appendTranscript(kind, text) {
@@ -681,7 +677,7 @@ function renderItemDetails(item, details = {}) {
     detailCategory.textContent = item.category;
   }
   if (detailDescription) {
-    detailDescription.textContent = item.description;
+    detailDescription.textContent = cards.find(card => card.dataset.id === item.id)?.dataset.description || item.description;
   }
   if (detailPrice) {
     detailPrice.textContent = money(item.price);
@@ -692,16 +688,6 @@ function renderItemDetails(item, details = {}) {
   }
   if (detailAvailability) {
     detailAvailability.textContent = item.available ? "Available now" : "Sold out today";
-  }
-  if (detailIngredients) {
-    const ingredients = details.ingredients;
-    if (ingredients === null) {
-      detailIngredients.textContent = "No ingredient information is available for this item.";
-    } else if (Array.isArray(ingredients) && ingredients.length) {
-      detailIngredients.textContent = ingredients.join(", ");
-    } else {
-      detailIngredients.textContent = "No ingredient notes listed.";
-    }
   }
   if (detailTags) {
     const tags = item.tags ? item.tags.split(" ").filter(Boolean) : ["classic"];
@@ -972,15 +958,13 @@ async function runAcceptanceSmoke() {
 
   ["connecting", "listening", "assistant_speaking", "muted/paused", "error"].forEach(setAgentStatus);
   appendTranscript("system", "acceptance.status_trace -> connect/listen/speak/pause/error");
-  appendTranscript("user", "typed acceptance request");
-  appendTranscript("system", "app.text_input -> typed acceptance request");
   setAgentStatus("idle");
   recordAcceptance(
     results,
     "W16-W22",
-    "Assistance states, typed fallback and accessibility",
-    Boolean(agentStatus && assistantForm && accessToggles.length),
-    "Status lifecycle, typed input, manual fallback, large text/high contrast/calm motion controls are present.",
+    "Voice states and accessibility",
+    Boolean(voiceControls && agentTranscript && accessToggles.length),
+    "Voice controls, transcript, manual ordering and accessibility controls are present.",
   );
   setAcceptanceGroup("W16", "Pass");
 
@@ -1596,6 +1580,69 @@ checkoutDialog?.addEventListener("click", (event) => {
   }
 });
 
+let wakeStarting = 0;
+let wakeReady = false;
+let wakePageLeaving = false;
+let wakeTimer;
+let wakeStorage;
+try { wakeStorage = localStorage; } catch { /* Preference lasts for this page. */ }
+const wake = new PersistentWake({
+  storage: wakeStorage,
+  createRecognition: () => {
+    const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    return Recognition ? new Recognition() : null;
+  },
+  acquireLease: async () => acquireTabLease((await application()).sessionId),
+  onState: () => syncWakeUi(),
+  onWake: async command => {
+    const started = await startAssistance("voice");
+    if (started && command && assistanceActive) {
+      try { await liveSeats.text(command); }
+      catch { setStatus("Zara connected, but that request was not delivered. Please say it again."); }
+    }
+  },
+});
+function syncWakeUi() {
+  const listening = wake.state.state === "listening" && wake.listener.enabled;
+  root.dataset.wakeState = listening ? "listening" : wake.state.state;
+  const status = voiceControls.querySelector("[data-wake-status]");
+  status.textContent = !wake.enabled ? "Hey Zara is off. It turns on after you start Zara."
+    : root.dataset.assistanceState === "paused" ? "Hey Zara enabled. Resume listening to speak, or end this conversation for wake listening."
+    : assistanceActive ? "Hey Zara enabled. Keep speaking while you browse."
+    : wake.state.state === "error" ? wake.state.message
+    : listening ? "Hey Zara enabled. Wake microphone on. Say زارا, then your request."
+    : "Hey Zara enabled. Waiting for voice cleanup or for this tab to become visible.";
+  const toggle = voiceControls.querySelector("[data-wake-toggle]");
+  toggle.hidden = !wake.enabled;
+  toggle.setAttribute("aria-pressed", String(wake.enabled));
+  if (listening && !assistanceActive) {
+    voiceLauncher.dataset.voiceActivity = "listening";
+    voiceLauncher.title = "Hey Zara listening";
+    voiceLauncher.setAttribute("aria-label", "Hey Zara listening. Open voice controls");
+    voiceControls.querySelector("[data-voice-feedback]").textContent = "Hey Zara listening";
+    const microphone = voiceControls.querySelector("[data-voice-microphone]");
+    microphone.textContent = "Wake microphone on";
+    microphone.dataset.microphoneActive = "true";
+  }
+}
+function scheduleWake() {
+  clearTimeout(wakeTimer);
+  wakeTimer = setTimeout(() => {
+    const run = assistanceController?.current;
+    const available = wakeReady && !wakePageLeaving && !document.hidden && !wakeStarting
+      && !shoppingSessionExpired && !assistanceController?.orphan
+      && (!run || run.cancelled && !run.serverPending);
+    void wake.setAvailable(available).catch(error => setStatus(error.message));
+    syncVoiceUi();
+    syncWakeUi();
+  }, 0);
+}
+voiceControls.querySelector("[data-wake-toggle]").addEventListener("click", async () => {
+  await wake.setEnabled(false).catch(error => setStatus(error.message));
+  syncVoiceUi();
+  syncWakeUi();
+});
+
 async function controller() {
   if (assistanceController) return assistanceController;
   const app = await application();
@@ -1613,7 +1660,7 @@ async function controller() {
     },
     acquireMedia: async (mode) => mode !== "typed" ? (() => {
       if (!window.isSecureContext) throw new Error("Voice needs HTTPS or localhost. You can still browse and order manually.");
-      if (!navigator.mediaDevices?.getUserMedia) throw new Error("No microphone is available. You can use typing or browse yourself.");
+      if (!navigator.mediaDevices?.getUserMedia) throw new Error("No microphone is available. Connect one, or continue browsing manually.");
       return navigator.mediaDevices.getUserMedia({
         audio: {
           echoCancellation: true,
@@ -1648,13 +1695,8 @@ async function controller() {
             await assistanceController.end();
             finishManualUi();
           } else if (control.intent === "switch_mode" && control.mode === "typed") {
-            seats.stopMicrophone();
-            seats.mode = "typed";
-            seats.paused = assistancePaused = false;
-            if (assistPause) assistPause.textContent = "Pause";
-            seats.closeAudio();
-            seats.typedAudio = false;
-            assistanceController.modeChanged("typed");
+            setStatus("Zara is voice-only. You can keep speaking or browse manually.");
+            await seats.control("switch_mode", "voice");
           } else if (control.intent === "switch_mode" && control.mode === "voice") {
             if (seats.mode === "choice") {
               seats.mode = "voice";
@@ -1688,13 +1730,7 @@ async function controller() {
       const previousPhase = root.dataset.assistanceState;
       root.dataset.assistanceState = state.modeState;
       root.dataset.assistanceStage = state.stage || state.state;
-      const typedAudio = document.querySelector("[data-assist-typed-audio]");
-      if (typedAudio) {
-        typedAudio.disabled = !assistanceActive || liveSeats?.mode !== "typed";
-        if (typedAudio.disabled) typedAudio.checked = false;
-      }
-      const send = assistantForm?.querySelector("button[type=submit]");
-      if (send) send.disabled = !assistanceActive;
+      scheduleWake();
       const speechState = currentAgentState;
       setAgentStatus(state.modeState === "ended" ? "ended" : state.state === "active"
         ? ["assistant_speaking", "thinking"].includes(speechState) ? speechState : "ready/listening" : state.state);
@@ -1708,7 +1744,7 @@ async function controller() {
       else if (previousPhase !== state.modeState && ["connecting", "reconnecting", "paused"].includes(state.modeState)) {
         setStatus(state.modeState === "paused" ? "Assistance paused. Microphone muted."
           : state.modeState === "reconnecting" ? "Reconnecting assistance. Microphone muted until the connection is checked."
-          : "Connecting voice or typed assistance. You can end or choose manual ordering at any time.");
+          : "Connecting Zara. You can end the conversation at any time.");
       }
       if (app.snapshot) void renderApplication(app.snapshot).catch(() => setStatus("Could not refresh assistance controls. Your cart is preserved."));
     },
@@ -1724,7 +1760,9 @@ async function startAssistance(mode) {
     return;
   }
   const intent = ++assistanceIntent;
+  wakeStarting++;
   try {
+    await wake.setAvailable(false);
     if (intent !== assistanceIntent || document.hidden) return false;
     const owner = await controller();
     if (intent !== assistanceIntent) return;
@@ -1741,6 +1779,7 @@ async function startAssistance(mode) {
       for (const { element } of liveSeats.audio.values()) element.muted = false;
       owner.modeChanged(mode);
     } else await owner.start({ mode });
+    if (mode === "voice" && intent === assistanceIntent && owner.state === "voice_active") await wake.setEnabled(true);
     assistancePaused = false;
     if (assistPause) assistPause.textContent = "Pause";
     return intent === assistanceIntent;
@@ -1755,9 +1794,11 @@ async function startAssistance(mode) {
     root.dataset.assistanceState = "error";
     setAgentStatus("error");
     setStatus(voiceErrorMessage(error));
+  } finally {
+    wakeStarting--;
+    scheduleWake();
   }
 }
-assistStart?.addEventListener("click", () => { void startAssistance("typed"); });
 document.querySelector("[data-assist-voice]")?.addEventListener("click", () => { void startAssistance("voice"); });
 document.querySelector("[data-assist-choice]")?.addEventListener("click", () => { void startAssistance("choice"); });
 async function toggleAssistancePause() {
@@ -1786,19 +1827,6 @@ assistEnd?.addEventListener("click", () => chooseManual(true));
 document.querySelector("[data-assist-manual]")?.addEventListener("click", () => {
   chooseManual(); finishManualUi();
 });
-document.querySelector("[data-assist-typed-audio]")?.addEventListener("change", async (event) => {
-  const seats = liveSeats;
-  if (!assistanceActive || seats?.mode !== "typed") { event.target.checked = false; return; }
-  try {
-    await seats.setAudioPreference(event.target.checked);
-    await seats.control(event.target.checked ? "unmute" : "mute");
-  } catch {
-    event.target.checked = false;
-    await seats.setAudioPreference(false);
-    setStatus("Audio could not be enabled. Typed replies remain available.");
-  }
-});
-
 scenarioButtons.forEach((button) => {
   button.addEventListener("click", async () => {
     const scenario = button.dataset.scenario;
@@ -1817,20 +1845,6 @@ scenarioButtons.forEach((button) => {
   });
 });
 
-assistantForm?.addEventListener("submit", async (event) => {
-  event.preventDefault();
-  const text = assistantInput?.value.trim();
-  if (!text) {
-    return;
-  }
-  if (!assistanceActive || !liveSeats) { setStatus("Start typed guidance before sending your request."); return; }
-  try {
-    await liveSeats.text(text);
-    if (assistantInput) assistantInput.value = "";
-  } catch (error) { setStatus(error.message || "Your request could not be delivered. Please try again after reconnecting."); }
-});
-assistantInput?.addEventListener("focus", () => { if (assistanceActive) void liveSeats?.control("pause_tips"); });
-assistantInput?.addEventListener("blur", () => { if (assistanceActive) void liveSeats?.control("resume_tips"); });
 for (const dialog of [itemDialog, checkoutDialog, cartDialog]) dialog?.addEventListener("cancel", (event) => {
   event.preventDefault();
   dismissDialog(dialog, dialog === checkoutDialog ? appContext?.route === "confirmation" ? "menu" : "cart" : dialog === cartDialog ? "menu" : "back");
@@ -1851,7 +1865,6 @@ voiceLauncher?.addEventListener("click", () => {
 voiceControls?.querySelector("[data-voice-panel-close]").addEventListener("click", () => voiceWidget.hide());
 voiceControls?.querySelector("[data-voice-use]").addEventListener("click", () => { void startAssistance("voice"); });
 voiceControls?.querySelector("[data-voice-retry]").addEventListener("click", () => { void startAssistance("voice"); });
-voiceControls?.querySelector("[data-voice-typed]").addEventListener("click", () => { void startAssistance("typed"); });
 voiceControls?.querySelector("[data-voice-pause]").addEventListener("click", () => { void toggleAssistancePause(); });
 document.querySelectorAll("[data-shopping-restart]").forEach(button => {
   button.addEventListener("click", () => {
@@ -1882,17 +1895,20 @@ document.addEventListener("click", (event) => {
   }
 });
 document.querySelector("[data-order-manual]")?.addEventListener("click", () => chooseManual());
-window.addEventListener("pagehide", () => { assistanceIntent++; void assistanceController?.end(); });
+window.addEventListener("pagehide", () => { wakePageLeaving = true; void wake.setAvailable(false).catch(() => {}); assistanceIntent++; void assistanceController?.end(); });
 window.addEventListener("pageshow", (event) => {
   // BFCache restores the old JavaScript heap and UI. Reinitialize the document so
   // an ended conversation, transcript or capture intent cannot be resurrected.
   if (event.persisted) window.location.reload();
 });
 document.addEventListener("visibilitychange", () => {
-  if (document.visibilityState !== "hidden") return;
-  assistanceIntent++;
-  void assistanceController?.end();
+  if (document.hidden) {
+    void wake.setAvailable(false).catch(() => {});
+    assistanceIntent++;
+    void assistanceController?.end();
+  } else scheduleWake();
 });
+
 document.querySelectorAll("[data-dialog-end-assistance]").forEach(button => {
   button.addEventListener("click", () => {
     chooseManual();
@@ -1900,9 +1916,6 @@ document.querySelectorAll("[data-dialog-end-assistance]").forEach(button => {
     button.closest("dialog")?.querySelector("[autofocus]")?.focus();
     setStatus("Assistance ended. You can continue ordering manually.");
   });
-});
-document.querySelectorAll("[data-dialog-typing]").forEach(button => {
-  button.addEventListener("click", () => { void startAssistance("typed"); });
 });
 document.querySelectorAll("[data-reconcile-action]").forEach(button => button.addEventListener("click", async () => {
   try {
@@ -2045,9 +2058,11 @@ if (previewButtons.length) {
 }
 
 refreshContext().then(async () => {
-  // Reload recovers cleanup identity only; capture/dispatch require another gesture.
+  // Recover the previous conversation before restoring the saved wake preference.
   const owner = await controller();
   await owner.recover();
+  wakeReady = true;
+  scheduleWake();
 }).catch((error) => {
   setStatus(error.message || "Could not sync with the app state. Please refresh the page.");
 });

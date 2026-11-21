@@ -57,7 +57,34 @@ CATEGORY_LABELS = {
 }
 
 PUBLIC_DESCRIPTIONS = {
+    "zinger-classic": "A classic chicken burger with a spicy kick.",
+    "zinger-supreme": "Our Zinger burger, finished with cheese and sauce.",
+    "burger-beef": "A beef burger with two smash patties for a hearty bite.",
+    "burger-veg": "A chickpea patty burger for a meat-free pick.",
+    "burger-soldout": "A BBQ burger with a smoky flavour.",
+    "wrap-chicken": "Grilled chicken in a wrap, easy to enjoy on the go.",
+    "wrap-veg": "Fresh vegetables wrapped up for a lighter bite.",
+    "wrap-hot-chicken": "A hot chicken wrap finished with mayo.",
+    "roll-seekh": "Seekh kabab rolled in paratha for a hearty snack.",
+    "roll-paneer": "Paneer tikka in a roll for a meat-free favourite.",
+    "roll-chicken": "Chicken tikka wrapped in a roll for an easy bite.",
+    "karahi-chicken": "A half portion of chicken karahi for your main meal.",
+    "karahi-mutton": "A full portion of mutton karahi for a hearty meal.",
+    "biryani-chicken": "Chicken biryani made with basmati rice.",
+    "biryani-beef": "Beef biryani served with raita on the side.",
+    "drink-lassi-small": "A small sweet lassi to enjoy alongside your meal.",
+    "platter-family": "A large platter made for sharing around the table.",
+    "drink-chai": "Strong milk tea for a comforting chai break.",
+    "drink-cola": "Chilled cola to pair with your favourite meal.",
+    "drink-mango": "Fresh mango juice for a fruity refreshment.",
+    "dessert-gulab": "Warm gulab jamun for a sweet finish to your meal.",
+    "dessert-kheer": "Cardamom kheer for a comforting dessert.",
+    "dessert-brownie": "A walnut brownie for a sweet treat.",
+    "dessert-mystery": "A seasonal dessert surprise to round off your order.",
     "side-fries": "Crispy fries tossed with house masala.",
+    "side-salad": "A fresh salad bowl to enjoy beside your main.",
+    "side-raita": "Yogurt and mint raita to accompany your meal.",
+    "soup-corn": "Creamy corn soup for a comforting start.",
 }
 
 
