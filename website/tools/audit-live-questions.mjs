@@ -138,15 +138,24 @@ try {
 
     await page.locator('[data-cart-trigger]:visible').first().click();
     await page.waitForFunction(()=>document.documentElement.dataset.foodeaseRoute==='cart');
+    const general=await begin('مجھے حوصلہ افزائی کے چار مختصر جملے کہیں۔');
+    await speaking(general,'');
+    await page.getByRole('button',{name:'Increase Cola Can',exact:true}).click();
+    await page.waitForFunction(()=>document.querySelector('[data-cart-count]').textContent==='2');
+    const generalText=await completed(general);
+    const generalInterrupted=await interrupted(general);
+    if(generalInterrupted.length) throw new Error('Unrelated cart quantity change interrupted ordinary conversation');
+    report.manual.generalWithCartEdit={completed:true,interruptedReplies:0,text:generalText};
+
     const cart=await begin('کارٹ میں کیا ہے؟');
     await speaking(cart,'کولا');
     const cartAfter=await page.evaluate(()=>window.auditEvents.length);
     await page.getByRole('button',{name:'Increase Cola Can',exact:true}).click();
-    await page.waitForFunction(()=>document.querySelector('[data-cart-count]').textContent==='2');
+    await page.waitForFunction(()=>document.querySelector('[data-cart-count]').textContent==='3');
     const cartNotice=await completed(cart,true,cartAfter);
     const oldCartInterrupted=await interrupted(cart);
     const updated=await context();
-    if(!oldCartInterrupted.length || updated.cart.lines[0]?.quantity!==2)
+    if(!oldCartInterrupted.length || updated.cart.lines[0]?.quantity!==3)
       throw new Error('Manual quantity change did not stop the old cart reply or update the cart');
     report.manual.cartQuantityChange={oldReplyInterrupted:true,quantity:updated.cart.lines[0].quantity,updatedReply:cartNotice};
 
@@ -161,7 +170,7 @@ try {
     const current=await context();
     if(!oldNavigationInterrupted.length || current.category!=='burgers' || !notice.includes('برگر'))
       throw new Error('Manual category selection did not follow the new authoritative selection');
-    report.manual.categorySelection={oldReplyStoppedAtBoundary:true,category:current.category,reply:notice};
+    report.manual.categorySelection={oldReplyInterrupted:true,category:current.category,reply:notice};
     if(JSON.stringify(report.manual).includes('voice_scope')) throw new Error('Private response metadata leaked');
   }
   if (profile === 'wake-recovery') {

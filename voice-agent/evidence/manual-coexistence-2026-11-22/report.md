@@ -62,7 +62,30 @@ and reviews stop immediately; stop/pause/end remain immediate.
 
 ## Production
 
-Pending source push, code-only Cloud rollout and real-provider hosted interaction audit.
+Source **4a9f924** pushed to origin/main. The code-only rollout staged 93 files /
+1,027,700 bytes and preserved existing Cloud secrets/provider/voice settings.
+Worker **R5jugkk5xpmE** is **Running in ap-south**, deployed at
+**2026-11-21T20:16:06.950200Z**. The matched website serves **zara-34** and publishes
+manual category targets. Source hashes, deployment output, rollout status and
+published-site checks are retained beside this report.
+
+The real hosted provider/RTC audit passed all four checks with **zero page errors**:
+
+1. While Zara read burger prices, a manual Cola add left the menu reply running
+   to completion with **zero meaningful interrupted captions**.
+2. While Zara gave an ordinary Urdu conversational reply, a manual quantity edit
+   left it running to completion with **zero meaningful interrupted captions**.
+3. A subsequent manual quantity increase interrupted the old cart reply, and a
+   fresh-context reply correctly read **3 Cola cans / PKR 350 including the fee**.
+4. While Zara read Karahi prices, a manual Burgers category click interrupted the
+   old reply and completed the new-section acknowledgment: اب برگر کا حصہ کھلا ہے۔
+   The exact sentence-boundary mechanism is additionally proved by the native
+   driven-PCM test; the browser check does not measure physical audible timing.
+
+`hosted-questions.json` retains check outcomes and returned replies; exact
+recognized inputs and DOM clicks are in the committed hosted audit profile. No private scope marker appeared in the returned captions.
+The menu test quoted three options in that particular model/tool path; it does
+not claim an exhaustive five-item listing. No new latency improvement is claimed.
 The hosted audit uses a synthetic silent microphone plus recognized text, and
 manual DOM clicks during output. It bypasses microphone/STT and does not measure
 caller-heard latency or physical acoustic interruption accuracy.

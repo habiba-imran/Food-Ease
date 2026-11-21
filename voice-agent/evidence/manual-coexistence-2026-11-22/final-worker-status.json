@@ -1,0 +1,11 @@
+{
+  "agentId": "CA_gibAwTdK3sjn",
+  "version": "R5jugkk5xpmE",
+  "deployedAt": "2026-11-21T20:16:06.950200Z",
+  "deployments": [
+    {
+      "region": "ap-south",
+      "status": "Running"
+    }
+  ]
+}

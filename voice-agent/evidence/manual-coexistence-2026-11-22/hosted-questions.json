@@ -1,0 +1,29 @@
+{
+  "target": "https://food-ease-seven.vercel.app",
+  "mode": "hosted_real_providers_synthetic_recognized_requests",
+  "errors": [],
+  "turns": [],
+  "source": "/static/js/app.js?v=zara-34",
+  "manual": {
+    "menuWithCartAdd": {
+      "completed": true,
+      "interruptedReplies": 0,
+      "text": "آپ کھانوں کی فہرست کے صفحے پر ہیں۔ زنگر برگر، چھ سو پچاس روپے۔ زنگر برگر سپریم، آٹھ سو پچاس روپے۔ بیف سمیش برگر، سات سو پچاس روپے۔ "
+    },
+    "generalWithCartEdit": {
+      "completed": true,
+      "interruptedReplies": 0,
+      "text": "مشکل وقت میں حوصلہ رکھنا ہی کامیابی کی پہلی سیڑھی ہے۔ ہر نئی صبح نئی امید اور نئے مواقع لے کر آتی ہے۔ اپنی محنت پر بھروسہ رکھیں، آپ ضرور کامیاب ہوں گے۔ ہمت مت ہاریں، آپ ہر مشکل کا مقابلہ کر سکتے ہیں۔ مزید کوئی برگر پسند کرنا ہے؟ "
+    },
+    "cartQuantityChange": {
+      "oldReplyInterrupted": true,
+      "quantity": 3,
+      "updatedReply": "آپ کے کارٹ میں کولا کا کین، تعداد تین، تین سو روپے ہیں۔ فیس: خدمت کا معاوضہ, پچاس روپے۔ کل رقم تین سو پچاس روپے ہے۔ "
+    },
+    "categorySelection": {
+      "oldReplyInterrupted": true,
+      "category": "burgers",
+      "reply": "اب برگر کا حصہ کھلا ہے۔ "
+    }
+  }
+}

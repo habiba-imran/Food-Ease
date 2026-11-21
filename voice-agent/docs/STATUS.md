@@ -10,8 +10,12 @@ buttons now publish their selected section while preserving the full visual menu
 **632 full Python checks passed / one inherited mock-import failure; 12 focused
 manual/native playout checks passed.** Nine distinct browser checks passed across
 targeted runs (one mobile fixture was corrected to await actual SDK reply completion).
-Scoped lint/types and 84 JavaScript checks/build pass. Source publication, code-only deployment and hosted checks
-are being completed; no physical listening or new latency claim is made.
+Scoped lint/types and 84 JavaScript checks/build pass. Source `4a9f924` is pushed;
+worker **R5jugkk5xpmE is Running in ap-south**, with matched `zara-34` website.
+Four real hosted interactions passed: menu/small-talk replies survived unrelated
+cart edits, old cart totals stopped with a fresh 3-Cola/PKR-350 reply, and manual
+Burgers selection acknowledged the new section. These recognized-text/silent-mic
+checks do not establish physical listening quality or new latency improvements.
 [Implementation and verification](../evidence/manual-coexistence-2026-11-22/report.md).
 
 
