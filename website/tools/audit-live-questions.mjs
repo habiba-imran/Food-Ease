@@ -6,8 +6,11 @@ import { mkdir, writeFile } from 'node:fs/promises';
 const target = 'https://food-ease-seven.vercel.app';
 const evidence = process.env.FOODEASE_AUDIT_EVIDENCE || '../voice-agent/evidence/reply-recovery-2026-11-21';
 const profile = process.env.FOODEASE_AUDIT_PROFILE || 'menu';
-if (!['menu', 'latency'].includes(profile)) throw new Error('Unknown audit profile');
-const questions = profile === 'latency' ? [
+if (!['menu', 'latency', 'category-scroll'].includes(profile)) throw new Error('Unknown audit profile');
+const questions = profile === 'category-scroll' ? [
+  {kind:'category-jump', category:'karahi', text:'کڑاہی کے کھانے دکھاؤ۔'},
+  {kind:'category-jump', category:'burgers', text:'برگر کے کھانے دکھاؤ۔'},
+] : profile === 'latency' ? [
   {kind:'cart', text:'کارٹ میں کیا ہے؟'},
   {kind:'navigation', text:'کارٹ دکھاؤ۔'},
   {kind:'details', text:'کولا کی تفصیل بتاؤ۔'},
@@ -64,6 +67,7 @@ await page.addInitScript(() => {
 });
 try {
   await page.goto(target, {waitUntil:'domcontentloaded',timeout:60000});
+  await page.emulateMedia({reducedMotion:'reduce'});
   await page.waitForFunction(() => document.documentElement.dataset.foodeaseRevision);
   report.source = await page.locator('script[src*="app.js"]').getAttribute('src');
   await page.locator('[data-voice-launcher]').click();
@@ -74,7 +78,7 @@ try {
   await page.waitForFunction(() => (window.auditEvents || []).some(({event}) =>
     event.type==='transcript.assistant' && event.payload.phase==='completed' && event.payload.text));
   await page.waitForTimeout(300);
-  for (const {kind, text:question} of questions) {
+  for (const {kind, category, text:question} of questions) {
     const sent = await page.evaluate(async question => {
       const sid=sessionStorage.getItem('foodease.shopping-session.v2');
       const response=await fetch('/api/v2/app/context',{headers:{'X-FoodEase-Session':sid}});
@@ -104,7 +108,20 @@ try {
         failures:events.filter(({event}) => event.type==='transcript.assistant' && event.payload.phase==='failed').length,
         actions:(window.auditActions || []).slice(actionBaseline)};
     }, sent);
+    if (kind==='category-jump') {
+      result.ui = await page.evaluate(category => {
+        const group=document.getElementById(`menu-category-section-${category}`);
+        const top=group?.getBoundingClientRect().top;
+        return {
+          visibleItems:[...document.querySelectorAll('[data-menu-item]')].filter(el=>!el.classList.contains('is-hidden')).length,
+          visibleCategories:[...document.querySelectorAll('[data-menu-category-group]')].filter(el=>!el.hidden).length,
+          requestedHeadingInViewport:!!group && !group.hidden && top>=0 && top<innerHeight,
+        };
+      }, category);
+    }
     report.turns.push({kind,question,...result});
+    if (kind==='category-jump' && (result.ui.visibleItems!==28 || result.ui.visibleCategories!==9 || !result.ui.requestedHeadingInViewport))
+      throw new Error('Category request hid dishes or did not scroll to the requested section');
     if (result.phase !== 'completed') throw new Error('Real question failed');
     if (result.text.length < 15) throw new Error('Question received an empty or incomplete answer');
     // Category/navigation facts are already supplied by the verified reasoning context.

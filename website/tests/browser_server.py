@@ -59,6 +59,8 @@ class LocalStream(llm.LLMStream):
         # and is never imported by the deployed worker or website.
         urdu_commands = {
             "برگر دکھاؤ": ("navigate", {"target": "burgers"}),
+            "کڑاہی دکھاؤ": ("navigate", {"target": "karahi"}),
+            "کڑاہی کے کھانے دکھاؤ": ("filter_menu", {"category": "karahi"}),
             "سب سے سستا برگر دکھاؤ": ("filter_menu", {"category": "burgers", "tags": ["available"], "sort_by": "price_asc"}),
             "pehle wale do add kar do": ("cart_add_item", {"item_id": "burger-veg", "quantity": 2}),
             "تعداد تین کر دو": ("cart_set_quantity", {"item_id": "burger-veg", "quantity": 3}),

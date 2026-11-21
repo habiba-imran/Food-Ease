@@ -33,6 +33,29 @@ test.beforeEach(async ({ page, context }) => {
   await expect(page.locator('html')).toHaveAttribute('data-assistance-state', 'voice_active');
 });
 
+for (const width of [1440, 390]) test(`Urdu category requests scroll without hiding other dishes at ${width}px`, async ({ page }) => {
+  await page.setViewportSize({width, height:900});
+  const errors = [];
+  page.on('pageerror', error => errors.push(error.message));
+  for (const [text, category] of [
+    ['کڑاہی دکھاؤ', 'karahi'], ['برگر دکھاؤ', 'burgers'],
+    ['کڑاہی کے کھانے دکھاؤ', 'karahi'],
+  ]) {
+    await say(page, text);
+    await expect.poll(async () => (await snapshot(page)).category).toBe(category);
+    await expect(page.locator(`#menu-category-section-${category}`)).toBeInViewport();
+    await expect(page.locator('[data-menu-item]:visible')).toHaveCount(28);
+    await expect(page.locator('[data-menu-category-group]:not([hidden])')).toHaveCount(9);
+    await expect(page.locator('[data-filter=all]')).toHaveAttribute('aria-pressed', 'true');
+  }
+  // Dishes in other sections remain usable after a voice category request.
+  await page.locator('[data-menu-item][data-id="drink-cola"] [data-add-item]').click();
+  await expect(page.locator('[data-cart-count]')).toHaveText('1');
+  expect((await snapshot(page)).cart.lines[0].item_id).toBe('drink-cola');
+  await expect(page.locator('[data-menu-item]:visible')).toHaveCount(28);
+  expect(errors).toEqual([]);
+});
+
 for (const width of [1440, 390]) test(`Urdu browsing and Roman Urdu followup update the actual cart at ${width}px`, async ({ page }) => {
   await page.setViewportSize({ width, height: 900 });
   await panel(page).locator('[data-voice-panel-close]').click();

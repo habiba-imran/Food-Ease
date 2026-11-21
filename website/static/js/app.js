@@ -366,10 +366,10 @@ function updateContextSummary(showing = null) {
   const cartLinesCount = appContext?.cart?.lines?.length || 0;
   const count = showing ?? cards.filter((card) => !card.classList.contains("is-hidden")).length;
   const filterText = activeFilter === "all" ? "all dishes" : `${activeFilter} dishes`;
-  const categoryText = activeCategory === "all" ? "" : ` in ${activeCategory}`;
+  const categoryText = activeCategory === "all" ? "" : ` Current section: ${activeCategory}.`;
   const queryText = query ? ` matching "${query}"` : "";
   const cartText = cartLinesCount ? `${cartLinesCount} cart line${cartLinesCount === 1 ? "" : "s"}` : "cart is empty";
-  contextSummary.textContent = `Showing ${count} ${filterText}${categoryText}${queryText}. ${cartText}.`;
+  contextSummary.textContent = `Showing ${count} ${filterText}${queryText}.${categoryText} ${cartText}.`;
 }
 
 function applyDisplayModes() {
@@ -516,7 +516,7 @@ async function renderApplication(snapshot, result = null, request = null) {
   for (const button of filterButtons) {
     const filter = button.dataset.filter;
     const active = menuState.filter_tags.includes(filter) || filter === "budget" && menuState.max_price_pkr !== null
-      || filter === "all" && menuState.filter_tags.length === 0 && menuState.max_price_pkr === null && !menuState.category;
+      || filter === "all" && menuState.filter_tags.length === 0 && menuState.max_price_pkr === null;
     button.classList.toggle("is-active", active);
     button.setAttribute("aria-pressed", String(active));
   }
@@ -1012,12 +1012,13 @@ async function openItemDetails(card) {
 function applyMenuState() {
   if (!appContext) return;
   // Agent context is deliberately bounded to 25 rows. The full catalog plus the
-  // authority's accepted filter state drives the complete visual menu.
+  // authority's accepted search/dietary/price filters drive the visual menu.
+  // Category is a scroll target: keep other sections available while Zara uses
+  // the scoped authority results to describe the requested category accurately.
   const state = menuPreview?.state || appContext;
   const query = (state.search_query || '').toLowerCase();
   const tags = state.filter_tags || [];
   const visibleIds = new Set([...catalogItems.values()].filter(item =>
-    (!state.category || item.category === state.category) &&
     (!query || item.name.toLowerCase().includes(query) || item.description.toLowerCase().includes(query)) &&
     (state.max_price_pkr === null || item.unit_price_pkr <= state.max_price_pkr) &&
     tags.every(tag => tag === 'available' ? item.available : item.tags.includes(tag))
@@ -1457,7 +1458,7 @@ async function previewMenuAction(operation, args) {
   filterButtons.forEach(button => {
     const filter = button.dataset.filter;
     const active = state.filter_tags.includes(filter) || filter === 'budget' && state.max_price_pkr !== null
-      || filter === 'all' && !state.filter_tags.length && state.max_price_pkr === null && !state.category;
+      || filter === 'all' && !state.filter_tags.length && state.max_price_pkr === null;
     button.classList.toggle('is-active', active);
     button.setAttribute('aria-pressed', String(active));
   });
