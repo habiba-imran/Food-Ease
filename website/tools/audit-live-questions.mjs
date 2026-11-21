@@ -19,11 +19,12 @@ await page.route('**/static/vendor/livekit-client.2.15.4.mjs*', async route => {
         super(...args); (window.auditRooms ||= []).push(this);
         const register=this.registerRpcMethod.bind(this);
         this.registerRpcMethod=(method,handler) => register(method,async data => {
+          const started=performance.now();
           const result=await handler(data);
           if(method==='foodease.action.v2') {
             try {
               const response=JSON.parse(result);
-              (window.auditActions ||= []).push({operation:response.payload.operation,status:response.payload.status});
+              (window.auditActions ||= []).push({operation:response.payload.operation,status:response.payload.status,durationMs:Math.round(performance.now()-started)});
             } catch {}
           }
           return result;

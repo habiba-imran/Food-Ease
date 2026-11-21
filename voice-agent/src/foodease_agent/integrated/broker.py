@@ -71,7 +71,17 @@ class IntegratedActionBroker:
             if self.pending:
                 return safe_failure("pending")
             try:
-                fresh = await runtime.adapter.get_snapshot()
+                # Menu filters/searches have an exact-revision authority check on
+                # submission. Reuse only the bound context that produced this
+                # turn, saving a separate pre-read; cart/checkout keep theirs.
+                menu_context = getattr(runtime.adapter, "menu_context", None)
+                fresh = (
+                    menu_context(turn.revision)
+                    if operation in {"filter_menu", "search_menu"} and menu_context is not None
+                    else None
+                )
+                if fresh is None:
+                    fresh = await runtime.adapter.get_snapshot()
                 runtime.on_context(fresh)
             except Exception:
                 return safe_failure("not_available")

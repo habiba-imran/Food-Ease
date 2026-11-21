@@ -12,7 +12,13 @@ Newest entries at the top.
   blanket `thinking_level` configuration during `chat()`. Speech exceptions were
   also labeled interrupted, making failed generations resemble false barge-in.
 - **Decision:** Use explicit supported budgets for Gemini 2.5 (Flash/Lite 0, Pro
-  128), retaining levels for Gemini 3+. Add a distinct shared `failed` caption
+  128), retaining levels for Gemini 3+. Real API testing also exposed the old
+  model's account-level 404; production uses verified Gemini 3.5 Flash-Lite with
+  minimal thinking. Reuse only an exact correlated context snapshot to remove a
+  duplicate browser fetch. For menu filter/search only, use the exact bound turn
+  context and let the authority reject stale revisions, removing a separate
+  pre-read RPC. Preserve full cart/checkout pre-reads and no-retry behavior.
+  Add a distinct shared `failed` caption
   outcome and Urdu UI label, without mutation retries. Retain the tested 350 ms
   interruption policy and AEC until actual evidence warrants acoustic changes.
   Validate real question answering after deployment, not only session startup.

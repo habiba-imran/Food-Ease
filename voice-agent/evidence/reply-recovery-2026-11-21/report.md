@@ -50,6 +50,28 @@ cause is inferred from the user's pasted transcript.
   delivery guard, distinct failed/interrupted captions).
 - Changed Python Ruff and scoped Pyright passed; shared v2 schemas regenerated.
 
+## Additional measured tool-path optimization
+
+The first browser-only optimization passed both real questions but timings varied:
+2.713 s for category speaking status and 5.423 s for prices in that run. The two
+price RPCs consumed 1.103 s and 1.295 s. This unfavorable run is retained; no
+statistical improvement is claimed from the browser-only change.
+
+For **filter_menu/search_menu only**, the broker can now use the already-bound,
+validated context at the exact requesting turn revision. It still submits a new
+authority action whose exact revision is enforced server-side; this does not
+serve cached prices or authorize cart/checkout changes. A missed newer manual
+revision is rejected, with no retry. Missing/foreign/newer/pending/unbound context
+keeps the separate read. Cart, quantity, checkout and clear retain full pre-reads.
+The ordinary menu path goes from two authority RPCs to one. Actual results still
+render and publish before speech, and post-result context validation remains.
+
+New tests cover one-RPC filtering, a deliberately unpublished manual change,
+missing-context fallback and strict binding/revision/pending guards. Focused
+runtime/RPC/latency/interruption: 63 passed before adding two fallback cases.
+Final full Python: **611 passed / the same 1 inherited failure**. Scoped lint/types
+pass. This source change requires the second worker rollout recorded below.
+
 ## Production verification
 
 - Code pushed as `00c0961`, then deployed with `deploy --code-only` to existing

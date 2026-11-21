@@ -16,6 +16,88 @@ from test_integrated_rpc_worker import Room
 from test_integrated_runtime import Session, WebsiteAdapter, call, turn
 
 
+async def test_bound_menu_filter_needs_one_authority_rpc_not_a_separate_preread():
+    room = Room()
+    gate = IntegratedRoomGate(room, room.startup)
+    runtime = LiveConversationRuntime(
+        IntegratedFoodEaseAgent(language="ur"), Session(), IntegratedRpcAdapter(gate), gate=gate
+    )
+    await runtime.prepare()
+    await runtime.select_mode("voice")
+    room.calls.clear()
+    try:
+        result = await call(runtime, "filter_menu", category="burgers", read_all=True)
+        assert result["status"] == "success"
+        assert [r["payload"]["operation"] for _, r in room.calls] == ["filter_menu"]
+        assert runtime.snapshot.category == "burgers"
+        assert len(runtime.snapshot.visible_items) == 5
+    finally:
+        await runtime.close()
+        gate.close()
+
+
+async def test_unpublished_manual_revision_rejects_fast_filter_without_retry_or_cart_change():
+    room = Room()
+    gate = IntegratedRoomGate(room, room.startup)
+    runtime = LiveConversationRuntime(
+        IntegratedFoodEaseAgent(language="ur"), Session(), IntegratedRpcAdapter(gate), gate=gate
+    )
+    await runtime.prepare()
+    await runtime.select_mode("voice")
+    # A manual change commits, but its newer context has not reached the worker.
+    await room.website.manual("cart.add_item", {"item_id":"drink-cola", "quantity":1})
+    room.calls.clear()
+    try:
+        result = await call(runtime, "filter_menu", category="burgers")
+        assert result["status"] != "success"
+        assert [r["payload"]["operation"] for _, r in room.calls] == ["filter_menu"]
+        current = await room.website.get_snapshot()
+        assert current.category is None
+        assert current.cart.lines[0].quantity == 1
+    finally:
+        await runtime.close()
+        gate.close()
+
+
+async def test_missing_menu_context_keeps_fresh_preread_fallback():
+    room = Room()
+    gate = IntegratedRoomGate(room, room.startup)
+    runtime = LiveConversationRuntime(
+        IntegratedFoodEaseAgent(), Session(), IntegratedRpcAdapter(gate), gate=gate
+    )
+    await runtime.prepare()
+    await runtime.select_mode("voice")
+    room.calls.clear()
+    gate.latest = None
+    try:
+        result = await call(runtime, "filter_menu", category="burgers")
+        assert result["status"] == "success"
+        assert [r["payload"]["operation"] for _, r in room.calls] == [
+            "get_current_context", "filter_menu",
+        ]
+    finally:
+        await runtime.close()
+        gate.close()
+
+
+async def test_menu_context_requires_bound_session_exact_revision_and_no_pending_action():
+    room = Room()
+    gate = IntegratedRoomGate(room, room.startup)
+    adapter = IntegratedRpcAdapter(gate)
+    original = await adapter.get_snapshot()
+    try:
+        assert adapter.menu_context(original.revision) is not gate.latest
+        for values in ({"session_id":"foreign"}, {"revision":original.revision+1},
+                       {"action_pending":True}):
+            gate.latest = original.model_copy(update=values)
+            assert adapter.menu_context(original.revision) is None
+        gate.latest = original
+        room.remote_participants.pop("app")
+        assert adapter.menu_context(original.revision) is None
+    finally:
+        gate.close()
+
+
 @pytest.mark.parametrize("finish_turn,expected_generations", [(False, 2), (True, 1)])
 async def test_native_sdk_verified_cart_reply_can_skip_second_model_request(
     finish_turn, expected_generations

@@ -123,6 +123,21 @@ class IntegratedRpcAdapter:
         self.gate.latest = snapshot
         return snapshot
 
+    def menu_context(self, revision: int) -> ContextSnapshot | None:
+        """Inputs for a menu-only action; the server still admits its exact revision.
+
+        This does not authorize a business mutation or a time-based cache. A
+        missed manual update makes the server reject the filter/search request.
+        """
+        latest = self.gate.latest
+        if (
+            not self.gate.closed and self.gate.resolve_app_identity() is not None
+            and latest is not None and latest.session_id == self.session_id
+            and latest.revision == revision and not latest.action_pending
+        ):
+            return ContextSnapshot.model_validate(latest.model_dump(mode="json"))
+        return None
+
     async def lookup(self, action_id: str) -> LookupResponse:
         request = LookupRequest(
             schema_version="2.0",
