@@ -1,0 +1,50 @@
+{
+  "target": "https://food-ease-seven.vercel.app",
+  "mode": "hosted_real_providers_synthetic_recognized_requests",
+  "errors": [],
+  "turns": [
+    {
+      "kind": "category-jump",
+      "question": "کڑاہی کے کھانے دکھاؤ۔",
+      "phase": "completed",
+      "text": "آپ کھانوں کی فہرست کے صفحے پر ہیں۔ چکن کڑاہی، ایک ہزار دو سو روپے۔ مٹن کڑاہی، ایک ہزار آٹھ سو روپے۔",
+      "requestToCaptionMs": 10496,
+      "requestToSpeakingStatusMs": 3260,
+      "failures": 0,
+      "actions": [
+        {
+          "operation": "navigate",
+          "status": "success",
+          "durationMs": 1278
+        }
+      ],
+      "ui": {
+        "visibleItems": 28,
+        "visibleCategories": 9,
+        "requestedHeadingInViewport": true
+      }
+    },
+    {
+      "kind": "category-jump",
+      "question": "برگر کے کھانے دکھاؤ۔",
+      "phase": "completed",
+      "text": "آپ کھانوں کی فہرست کے صفحے پر ہیں۔ زنگر برگر، چھ سو پچاس روپے۔ زنگر برگر سپریم، آٹھ سو پچاس روپے۔ بیف سمیش برگر، سات سو پچاس روپے۔",
+      "requestToCaptionMs": 13632,
+      "requestToSpeakingStatusMs": 3218,
+      "failures": 0,
+      "actions": [
+        {
+          "operation": "navigate",
+          "status": "success",
+          "durationMs": 1155
+        }
+      ],
+      "ui": {
+        "visibleItems": 28,
+        "visibleCategories": 9,
+        "requestedHeadingInViewport": true
+      }
+    }
+  ],
+  "source": "/static/js/app.js?v=zara-31"
+}

@@ -22,5 +22,13 @@ Verification:
   and rapid manual filters. RTC/audio/model are synthetic in these regressions.
 - 76 JavaScript and 49 website Python checks passed; browser build and JavaScript
   syntax check passed. Existing Starlette test-client deprecation warning remains.
-- Live publication verification follows the Git push. No acoustic or new latency
-  claims are made.
+- Source `d4877fb` published to origin/main; production served `zara-31` with the
+  category-hiding predicate removed and matching static/public scripts.
+- Hosted real Zara checks completed both Urdu Karahi and Burgers requests with
+  successful navigate actions and zero errors/failures. After each request, all
+  28 dishes and 9 sections remained visible and the requested heading was in the
+  viewport. These used synthetic silent audio and recognized text through the
+  existing wake-handoff path; they verify UI/action behavior, not acoustic timing.
+  [Raw hosted checks](../../deployment/evidence/category-scroll-2026-11-21/hosted-questions.json)
+  and [published-source check](../../deployment/evidence/category-scroll-2026-11-21/site-status.json).
+  No new acoustic or latency claims are made.
