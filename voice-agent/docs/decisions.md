@@ -6,6 +6,31 @@ Newest entries at the top.
 
 ---
 
+## ADR-0039 — Conversational Urdu personality with context-driven vocal expression
+
+- **Context:** The user requests a lively, funny, emotionally expressive Zara instead
+  of robotic/receptionist language. The active Urdu policy was restrained and most
+  final shopping tools bypassed conversational interpretation for latency.
+- **Decision:** Add a warm, gently witty Urdu register with short contextual examples,
+  mood-sensitive humor and natural spoken punctuation. Permit a personal recommendation
+  or playful food discussion to continue through the LLM after fresh tool facts;
+  preserve the one-generation fast path for direct actions/reads/lists. Update authored
+  Urdu greetings/transitions so the fast path fits the same register. No forced jokes,
+  fake personal experiences, filler, laughter, stage directions or delays. Frustration,
+  allergy concerns, money concerns and exact consent reviews receive calm clarity.
+- **Delivery:** Keep Sonic 3.6/Jacqueline and the current pace. Cartesia documents
+  context-driven multilingual expression but explicit emotion tags only for English;
+  do not enable unsupported Urdu emotion controls or leak markup into captions.
+  No changes to VAD/interruption, manual coexistence, tool authority or consent gates.
+- **Scope:** The user's explicit request supersedes the older persona's “no jokes
+  unless the user jokes first” restraint. It does not supply a human listening score.
+- **Sources:** [Cartesia expression controls](https://docs.cartesia.ai/build-with-cartesia/capability-guides/volume-speed-emotion),
+  [Sonic 3.6 Urdu and context-driven intonation](https://docs.cartesia.ai/build-with-cartesia/tts-models/latest).
+- **Evidence:** [Personality verification](../evidence/personality-2026-11-22/report.md).
+- **Date:** 2026-11-22.
+
+---
+
 ## ADR-0038 — Manual actions revoke effects without indiscriminate speech cancellation
 
 - **Context:** Every newer manual page revision discarded the whole turn and

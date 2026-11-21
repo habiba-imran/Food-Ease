@@ -6,10 +6,16 @@ import { mkdir, writeFile } from 'node:fs/promises';
 const target = 'https://food-ease-seven.vercel.app';
 const evidence = process.env.FOODEASE_AUDIT_EVIDENCE || '../voice-agent/evidence/reply-recovery-2026-11-21';
 const profile = process.env.FOODEASE_AUDIT_PROFILE || 'menu';
-if (!['menu', 'latency', 'category-scroll', 'wake-recovery', 'manual-coexistence'].includes(profile)) throw new Error('Unknown audit profile');
+if (!['menu', 'latency', 'category-scroll', 'wake-recovery', 'manual-coexistence', 'personality'].includes(profile)) throw new Error('Unknown audit profile');
 const questions = ['wake-recovery','manual-coexistence'].includes(profile) ? [] : profile === 'category-scroll' ? [
   {kind:'category-jump', category:'karahi', text:'کڑاہی کے کھانے دکھاؤ۔'},
   {kind:'category-jump', category:'burgers', text:'برگر کے کھانے دکھاؤ۔'},
+] : profile === 'personality' ? [
+  {kind:'casual', text:'زارا، بھوک تو بہت لگی ہے مگر فیصلہ ہی نہیں ہو رہا، کچھ مزے سے بات کرو اور کھانا چننے میں مدد کرو۔'},
+  {kind:'recommendation', text:'دو سو روپے تک کوئی دستیاب مشروب تجویز کرو، قیمت بھی بتانا اور بتاؤ کیوں چنوں۔'},
+  {kind:'playful', text:'تم بھی میری طرح کھانا چننے میں اتنی دیر لگاتی ہو؟ تھوڑا ہلکا پھلکا جواب دو۔'},
+  {kind:'frustration', text:'اب مذاق چھوڑو، بس کولا کے کین کی صحیح قیمت بتاؤ۔'},
+  {kind:'add', text:'کولا کا ایک کین کارٹ میں شامل کرو۔'},
 ] : profile === 'latency' ? [
   {kind:'cart', text:'کارٹ میں کیا ہے؟'},
   {kind:'navigation', text:'کارٹ دکھاؤ۔'},
@@ -246,11 +252,15 @@ try {
     if (result.text.length < 15) throw new Error('Question received an empty or incomplete answer');
     // Category/navigation facts are already supplied by the verified reasoning context.
     // The explicit price/filter request below should exercise a real application action.
-    if (kind!=='categories' && !result.actions.length) throw new Error('Request did not exercise application tools');
+    if (!['categories','casual','playful'].includes(kind) && !result.actions.length) throw new Error('Request did not exercise application tools');
+    if (profile==='personality' && /[A-Za-z<>\[\]]/.test(result.text))
+      throw new Error('Personality reply leaked English or delivery markup');
+    if (['casual','playful'].includes(kind) && result.actions.some(a=>a.operation.startsWith('cart.') || a.operation==='checkout.submit_demo_order'))
+      throw new Error('Ordinary conversation changed the order');
     if (kind==='categories' && (result.text.match(/برگر|بریانی|کڑاہی|رول|مشروبات|میٹھے|ریپ|پلیٹر/g) || []).length < 3)
       throw new Error('Category question did not list category choices');
     if (kind==='prices' && !/روپے|روپیہ|PKR/.test(result.text)) throw new Error('Price question did not include prices');
-    const expected = {cart:'get_cart',navigation:'navigate',details:'get_item_details'}[kind];
+    const expected = {cart:'get_cart',navigation:'navigate',details:'get_item_details',add:'cart.add_item'}[kind];
     if (expected && !result.actions.some(a=>a.operation===expected && a.status==='success'))
       throw new Error(`Expected successful ${expected} for ${kind} request`);
     // Completion follows playout, so the next request does not interrupt this reply.

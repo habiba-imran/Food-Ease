@@ -1,5 +1,15 @@
 # STATUS
 
+**Conversational Urdu personality — 2026-11-22.** Zara now has a warm, gently
+witty Urdu register, contextual examples and mood-sensitive expression. Personal
+recommendations can use model wording after fresh tool facts; direct actions/lists
+retain the low-latency fast path. Authored Urdu phrases match the register. Current
+Sonic 3.6 context-driven delivery is retained: explicit emotion tags support English
+only. Consent, interruption and manual coexistence are unchanged. **632 Python
+checks passed / the same inherited mock-import failure**; scoped lint/types/syntax pass.
+Deployment and hosted provider verification are being completed.
+[Implementation and verification](../evidence/personality-2026-11-22/report.md).
+
 **Manual controls and Zara speech — 2026-11-22.** Manual state revisions now
 revoke old tool authority while preserving unrelated speech. Real SDK sentence
 segments let navigation finish the current sentence before a fresh-context
