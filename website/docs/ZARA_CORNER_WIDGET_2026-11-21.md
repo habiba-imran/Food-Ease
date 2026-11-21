@@ -70,6 +70,13 @@ Hosted diagnostics use actual RTC startup and a synthetic microphone; they do no
 establish physical microphone or human listening quality. Legacy browser specs for
 the removed welcome/wake UI are not the acceptance criteria for the new widget.
 
+After commit `abdd45f` was pushed to `origin/main`, Vercel reported a successful
+deployment. The production diagnostic loaded `app.js?v=zara-27`, found zero welcome
+elements and the non-modal `ASIDE`, and reached `voice_active` in 12.8 seconds.
+It recorded no failed HTTP resources, uncaught page errors or matched closed-peer-
+connection console errors. See `hosted-after.json`. This verifies connection startup,
+not caller-heard response latency or physical microphone quality.
+
 ## Files and activation
 
 - Template, `voice-assistant.css`, `voice-widget.mjs`, `voice-ui.mjs` and `app.js`:
