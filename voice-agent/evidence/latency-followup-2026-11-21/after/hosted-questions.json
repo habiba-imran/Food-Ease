@@ -1,0 +1,61 @@
+{
+  "target": "https://food-ease-seven.vercel.app",
+  "mode": "hosted_real_providers_synthetic_recognized_requests",
+  "errors": [],
+  "turns": [
+    {
+      "kind": "cart",
+      "question": "کارٹ میں کیا ہے؟",
+      "phase": "completed",
+      "text": "ابھی کارٹ خالی ہے۔ مینو سے کیا رکھنا ہے؟",
+      "requestToCaptionMs": 7202,
+      "requestToSpeakingStatusMs": 4877,
+      "failures": 0,
+      "actions": [
+        {
+          "operation": "get_cart",
+          "status": "success",
+          "durationMs": 3052
+        }
+      ]
+    },
+    {
+      "kind": "navigation",
+      "question": "کارٹ دکھاؤ۔",
+      "phase": "completed",
+      "text": "آپ خریداری کی ٹوکری کے صفحے پر ہیں۔",
+      "requestToCaptionMs": 6007,
+      "requestToSpeakingStatusMs": 3700,
+      "failures": 0,
+      "actions": [
+        {
+          "operation": "navigate",
+          "status": "success",
+          "durationMs": 1197
+        },
+        {
+          "operation": "get_current_context",
+          "status": "success",
+          "durationMs": 578
+        }
+      ]
+    },
+    {
+      "kind": "details",
+      "question": "کولا کی تفصیل بتاؤ۔",
+      "phase": "completed",
+      "text": "کولا کا کین ایک سو روپے کا ہے۔ کیا آپ اسے کارٹ میں شامل کرنا چاہتے ہیں؟ ",
+      "requestToCaptionMs": 10395,
+      "requestToSpeakingStatusMs": 6069,
+      "failures": 0,
+      "actions": [
+        {
+          "operation": "get_item_details",
+          "status": "success",
+          "durationMs": 1751
+        }
+      ]
+    }
+  ],
+  "source": "/static/js/app.js?v=zara-30"
+}

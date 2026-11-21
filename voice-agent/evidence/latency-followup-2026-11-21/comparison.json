@@ -1,0 +1,40 @@
+[
+  {
+    "kind": "cart",
+    "before_speaking_status_ms": 4516,
+    "after_speaking_status_ms": 4877,
+    "before_actions": [
+      "get_current_context",
+      "get_cart"
+    ],
+    "after_actions": [
+      "get_cart"
+    ]
+  },
+  {
+    "kind": "navigation",
+    "before_speaking_status_ms": 5285,
+    "after_speaking_status_ms": 3700,
+    "before_actions": [
+      "get_current_context",
+      "navigate",
+      "get_current_context"
+    ],
+    "after_actions": [
+      "navigate",
+      "get_current_context"
+    ]
+  },
+  {
+    "kind": "details",
+    "before_speaking_status_ms": 5564,
+    "after_speaking_status_ms": 6069,
+    "before_actions": [
+      "get_current_context",
+      "get_item_details"
+    ],
+    "after_actions": [
+      "get_item_details"
+    ]
+  }
+]

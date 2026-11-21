@@ -1,5 +1,21 @@
 # STATUS
 
+**Further browsing latency reduction — 2026-11-21.** Latest production logs show
+752–790 ms transcription delays and 50–61 ms TTS first-byte, without provider
+failures. Removed a redundant context pre-read from bound current cart/details
+reads and navigation. A new read still hits the authority; mismatched result
+revisions discard the turn. Cart mutations and checkout keep full pre-reads.
+Exact get_current_context receipts also avoid an additional context RPC.
+Interruption, endpointing and providers are unchanged. **79 focused checks and
+620 full Python checks passed, with the same inherited mock-import failure.**
+Scoped lint/types pass. Source `ac79408` pushed; worker **M4pgWsdf2rU9 is Running
+in ap-south**. All three hosted Urdu checks completed successfully with one fewer
+pre-read each. Navigation speaking status improved 5.285→3.700 s in this sample;
+cart/details varied upward despite fewer requests. Full caller-heard latency
+improvement is not established; recognized-text checks bypass STT/microphone.
+[Evidence and limits](../evidence/latency-followup-2026-11-21/report.md).
+
+
 **Reply generation, failure captions and menu latency — 2026-11-21.** Logs
 confirmed Gemini 2.5's unsupported thinking-level setting; real questions also
 exposed its account-level model unavailability. Production now uses verified
