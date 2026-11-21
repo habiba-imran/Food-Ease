@@ -16,6 +16,7 @@ import subprocess
 import sys
 import tempfile
 import tomllib
+from contextlib import contextmanager
 from pathlib import Path
 from urllib.parse import urlsplit
 
@@ -37,7 +38,9 @@ def redact(text: str, env: dict[str, str]) -> str:
     return re.sub(r"\beyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+", "[REDACTED_JWT]", text)
 
 
-def run_cli(arguments: list[str], env: dict[str, str], *, timeout=1200) -> int:
+def run_cli(
+    arguments: list[str], env: dict[str, str], *, timeout=1200, evidence_dir: Path | None = None
+) -> int:
     target = env["LIVEKIT_URL"]
     # Always select explicit FoodEase credentials; never use the CLI's unrelated default.
     result = subprocess.run(
@@ -52,11 +55,39 @@ def run_cli(arguments: list[str], env: dict[str, str], *, timeout=1200) -> int:
         check=False,
     )
     output = redact((result.stdout or "") + (result.stderr or ""), env)
-    evidence = ROOT / "deployment/evidence"
+    evidence = evidence_dir or ROOT / "deployment/evidence"
     evidence.mkdir(parents=True, exist_ok=True)
     (evidence / ("cloud-" + arguments[1] + ".txt")).write_text(output, encoding="utf-8")
     print(output, flush=True)
     return result.returncode
+
+
+@contextmanager
+def stage_image_inputs(config: Path):
+    """Upload image inputs only, with no .env/provider-secret files in the context."""
+    with tempfile.TemporaryDirectory(prefix="foodease-build-") as context:
+        stage = Path(context)
+        for name in ("Dockerfile", ".dockerignore", "requirements.txt"):
+            shutil.copy2(ROOT / name, stage / name)
+        if config.exists():
+            shutil.copy2(config, stage / "livekit.toml")
+        for package in ("voice-agent", "contracts", "website"):
+            target = stage / package
+            target.mkdir()
+            for name in ("pyproject.toml", "README.md"):
+                shutil.copy2(ROOT / package / name, target / name)
+            if package == "voice-agent":
+                shutil.copy2(ROOT / package / "uv.lock", target / "uv.lock")
+            if package != "website":
+                shutil.copytree(
+                    ROOT / package / "src", target / "src",
+                    ignore=shutil.ignore_patterns("__pycache__", "*.pyc", ".env*"),
+                )
+        print(json.dumps({
+            "build_context_files": sum(1 for path in stage.rglob("*") if path.is_file()),
+            "build_context_bytes": sum(path.stat().st_size for path in stage.rglob("*") if path.is_file()),
+        }), flush=True)
+        yield stage
 
 
 def main() -> int:
@@ -81,6 +112,8 @@ def main() -> int:
     parser.add_argument("--interruption-duration", default="1.2")
     parser.add_argument("--interruption-words", default="1")
     parser.add_argument("--log-type", choices=("deploy", "build"), default="deploy")
+    parser.add_argument("--code-only", action="store_true",
+                        help="Deploy code while preserving all existing Cloud provider secrets/settings")
     args = parser.parse_args()
     env = local_environment()
     for name in ("LIVEKIT_URL", "LIVEKIT_API_KEY", "LIVEKIT_API_SECRET"):
@@ -125,6 +158,12 @@ def main() -> int:
             )
     if args.operation not in {"create", "list"} and not agent_id:
         raise SystemExit("No deployed agent ID in livekit.toml")
+    if args.code_only:
+        if args.operation != "deploy":
+            raise SystemExit("--code-only is valid only for deploy")
+        # Deliberately do not load/copy local provider settings or update Cloud secrets.
+        with stage_image_inputs(config) as stage:
+            return run_cli(["agent", "deploy", "--id", agent_id, str(stage)], env)
     if args.operation in {"create", "deploy", "configure-backend", "configure-llm", "check-capacity"}:        
         from foodease_agent.config import load_config
         from foodease_agent.groq_capacity import CAPACITY_ENV_VARS, cloud_preflight
@@ -230,31 +269,7 @@ def main() -> int:
                 return run_cli(command, env)
             # CLI upload policies expire while walking large Windows checkouts.
             # Stage only image inputs before requesting an upload policy.
-            with tempfile.TemporaryDirectory(prefix="foodease-build-") as context:
-                stage = Path(context)
-                for name in ("Dockerfile", ".dockerignore", "requirements.txt"):
-                    shutil.copy2(ROOT / name, stage / name)
-                if config.exists():
-                    shutil.copy2(config, stage / "livekit.toml")
-                for package in ("voice-agent", "contracts", "website"):
-                    target = stage / package
-                    target.mkdir()
-                    for name in ("pyproject.toml", "README.md"):
-                        shutil.copy2(ROOT / package / name, target / name)
-                    if package == "voice-agent":
-                        shutil.copy2(ROOT / package / "uv.lock", target / "uv.lock")
-                    if package != "website":
-                        shutil.copytree(
-                            ROOT / package / "src",
-                            target / "src",
-                            ignore=shutil.ignore_patterns("__pycache__", "*.pyc", ".env*"),
-                        )
-                count = sum(1 for path in stage.rglob("*") if path.is_file())
-                size = sum(path.stat().st_size for path in stage.rglob("*") if path.is_file())
-                print(
-                    json.dumps({"build_context_files": count, "build_context_bytes": size}),
-                    flush=True,
-                )
+            with stage_image_inputs(config) as stage:
                 return run_cli([*command, str(stage)], env)
     command = ["agent", args.operation, "--id", agent_id]
     if args.operation == "status":

@@ -1,5 +1,17 @@
 # STATUS
 
+**Speech-onset interruption and redeploy — 2026-11-21.** Urdu now interrupts on
+Silero speech detection using SDK VAD mode, with no extra duration/word-count wait.
+Greeting/queued playback is interrupted even before the first shopping turn.
+Already-submitted cart actions remain owned and cannot announce late success after
+barge-in; exact review-delivery guards remain intact. Code-only Cloud redeployment
+preserved provider secrets/settings and included the earlier latency improvements.
+Version **`XJw3A9BRfgiK` is Running in ap-south**. Startup logs verify health listener,
+VAD prewarm and registered `foodease` worker. Full worker: **535 passed / one inherited
+mock-import failure**; focused deployment/interruption: **5 passed**; scoped lint/types
+pass. See [report](../../deployment/INTERRUPTION_REDEPLOY_2026-11-21.md).
+Physical microphone/caller-heard interruption timing remains unmeasured.
+
 **Response latency — 2026-11-21.** Final-step tools can deliver their verified Urdu
 result without a second LLM generation; intermediate requests retain continuation.
 The RPC adapter reuses only the bound browser's exact result revision and otherwise

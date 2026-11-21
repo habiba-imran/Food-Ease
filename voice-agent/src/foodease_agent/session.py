@@ -39,6 +39,8 @@ def turn_handling_options(
     interruption_min_duration: float = 1.2,
     interruption_min_words: int = 1,
     interruption_false_timeout: float = 2.0,
+    interruption_mode: Literal["adaptive", "vad"] = "adaptive",
+    resume_false_interruption: bool = True,
 ) -> TurnHandlingOptions:
     """Starting turn-taking values (Phase 5.5); tune in Phase 9."""
     return TurnHandlingOptions(
@@ -49,11 +51,12 @@ def turn_handling_options(
             "max_delay": endpointing_max,
         },
         interruption={
-            "mode": "adaptive",
+            "enabled": True,
+            "mode": interruption_mode,
             "min_duration": interruption_min_duration,
             "min_words": interruption_min_words,
             "false_interruption_timeout": interruption_false_timeout,
-            "resume_false_interruption": True,
+            "resume_false_interruption": resume_false_interruption,
         },
         # ADR-0008: default off; mutating tools also gated by TurnCommitGate.
         preemptive_generation={"enabled": preemptive_enabled},
@@ -120,8 +123,10 @@ def build_session_kwargs(
     ep_min = 0.0 if chosen == "A" else settings.endpointing_min
     ep_max = settings.endpointing_max
     intr: _InterruptionOptions = {
-        "interruption_min_duration": settings.interruption_min_duration,
-        "interruption_min_words": settings.interruption_min_words,
+        # Urdu Whisper produces words only after the utterance. Waiting for a
+        # word or an adaptive backchannel decision defeats immediate barge-in.
+        "interruption_min_duration": 0.0 if urdu else settings.interruption_min_duration,
+        "interruption_min_words": 0 if urdu else settings.interruption_min_words,
         "interruption_false_timeout": settings.interruption_false_timeout,
     }
     if chosen == "A":
@@ -131,6 +136,8 @@ def build_session_kwargs(
             endpointing_min=ep_min,
             endpointing_max=ep_max,
             preemptive_enabled=preemptive,
+            interruption_mode="vad" if urdu else "adaptive",
+            resume_false_interruption=not urdu,
             **intr,
         )
         vad = prewarmed_vad if prewarmed_vad is not None else silero.VAD.load()
@@ -151,6 +158,8 @@ def build_session_kwargs(
             endpointing_min=ep_min,
             endpointing_max=ep_max,
             preemptive_enabled=preemptive,
+            interruption_mode="vad" if urdu else "adaptive",
+            resume_false_interruption=not urdu,
             **intr,
         )
         kwargs = {

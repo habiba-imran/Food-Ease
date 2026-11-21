@@ -1016,12 +1016,14 @@ class LiveConversationRuntime:
             self.recovery.observe("user_speaking", assistant_speaking=self._agent_speaking)
         self._user_speaking = speaking
         self.idle.mark_user_busy(speaking or self._agent_speaking)
-        if speaking and self.active_turn:
+        if speaking and not self.closed:
             # A new answer must not erase an already delivered summary. An
             # interruption *during* its delivery still invalidates it immediately.
-            self.active_turn.committed = False
+            if self.active_turn:
+                self.active_turn.committed = False
             if not self.confirmation.summary_spoken:
                 self._invalidate_confirmation()
+            # Also stop the welcome/queued say() before a shopping turn exists.
             self._interrupt()
         elif not speaking:
             self.idle.reset_after_activity()

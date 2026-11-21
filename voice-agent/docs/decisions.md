@@ -6,6 +6,23 @@ Newest entries at the top.
 
 ---
 
+## ADR-0034 — Urdu interruption on detected speech onset
+
+- **Context:** The user requested worker redeployment and interruption as soon as
+  they speak. Urdu Whisper does not provide streaming words; the old adaptive mode
+  and configurable word/duration thresholds could delay barge-in. The greeting
+  runtime path also interrupted only when a shopping turn already existed.
+- **Decision:** Urdu uses `vad` interruption, enabled with zero additional duration
+  and zero word threshold, and does not auto-resume the old reply. Preserve the
+  existing detector, endpointing and providers. Interrupt welcome/queued audio on
+  speech onset as well. Keep submitted action ownership, delivered-summary guards
+  and English interruption behavior. Deploy code without copying local provider
+  secrets over the current Cloud configuration.
+- **Evidence:** [Tests, deployment and limits](../../deployment/INTERRUPTION_REDEPLOY_2026-11-21.md).
+- **Date:** 2026-11-21. Physical caller-heard interruption time remains unmeasured.
+
+---
+
 ## ADR-0033 — Avoid redundant model and application round trips
 
 - **Context:** The user reports 2–3 second responses and requests latency improvements

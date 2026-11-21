@@ -1,0 +1,31 @@
+{
+  "agents": [
+    {
+      "agentId": "CA_gibAwTdK3sjn",
+      "agentName": "foodease",
+      "version": "XJw3A9BRfgiK",
+      "agentDeployments": [
+        {
+          "region": "ap-south",
+          "status": "Running",
+          "minReplicas": 1,
+          "maxReplicas": 1,
+          "cpuReq": "1",
+          "curCpu": "0",
+          "curMem": "0",
+          "memReq": "1Gi",
+          "memLimit": "4Gi",
+          "cpuLimit": "2",
+          "serverRegion": "osbxmum1b",
+          "version": "XJw3A9BRfgiK",
+          "agentName": "foodease",
+          "deploymentEnabled": true,
+          "lastScrapedAt": "2026-11-16T21:16:28.634146Z"
+        }
+      ],
+      "deployedAt": "2026-11-21T09:05:44.997660Z"
+    }
+  ]
+}
+Using url, api-key, api-secret from environment
+Using agent [CA_gibAwTdK3sjn]

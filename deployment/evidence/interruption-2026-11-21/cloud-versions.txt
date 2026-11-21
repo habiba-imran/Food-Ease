@@ -1,0 +1,21 @@
+{
+  "versions": [
+    {
+      "version": "XJw3A9BRfgiK",
+      "current": true,
+      "createdAt": "2026-11-21T09:05:44.997660Z",
+      "deployedAt": "2026-11-21T09:05:43.962482Z",
+      "status": "Available",
+      "active": true
+    },
+    {
+      "version": "BwwtGc8eeGwp",
+      "createdAt": "2026-11-08T21:24:49.369342Z",
+      "deployedAt": "2026-11-08T21:24:48.339077Z",
+      "status": "Available",
+      "draining": true
+    }
+  ]
+}
+Using url, api-key, api-secret from environment
+Using agent [CA_gibAwTdK3sjn]
