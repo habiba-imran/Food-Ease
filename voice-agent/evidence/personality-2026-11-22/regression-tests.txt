@@ -24,4 +24,4 @@ E     Use -v to get more diff
 -- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
 =========================== short test summary info ===========================
 FAILED tests/test_no_mock_leak.py::test_no_mock_imports_outside_adapters - As...
-1 failed, 632 passed, 1 warning in 42.97s
+1 failed, 632 passed, 1 warning in 42.52s

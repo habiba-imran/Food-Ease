@@ -1,0 +1,13 @@
+{
+  "agentId": "CA_gibAwTdK3sjn",
+  "agentName": "foodease",
+  "version": "RiAhNeThCLyM",
+  "deployedAt": "2026-11-21T20:33:04.456399Z",
+  "deployments": [
+    {
+      "region": "ap-south",
+      "status": "Running",
+      "version": "RiAhNeThCLyM"
+    }
+  ]
+}

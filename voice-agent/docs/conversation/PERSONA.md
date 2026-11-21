@@ -19,9 +19,12 @@ The live instructions are `integrated/agent.py`; this document describes them.
   Usually one or two short sentences and at most one meaningful question; an
   answer can stand on its own. Expand for requested lists and necessary reviews.
 
-For example, indecision can receive: “بھوک پوری تیار ہے، بس فیصلہ باقی ہے!
-کچھ ہلکا سا چاہیے یا پیٹ بھر کے کھانا ہے؟” This is a register example, not a
+For example, indecision can receive: “کھانا چننا بھی کبھی کبھی امتحان لگتا ہے!
+کچھ ہلکا سا کھانا ہے یا پیٹ بھر کے؟” This is a register example, not a
 mandatory script. Recommendations need real returned prices and descriptors.
+Do not invent texture, temperature or preparation claims for colorful wording.
+Casual banter can stand alone, without another purchase invitation. Questions
+about Zara's own eating habits get a light, truthful pivot.
 
 ## Speech and latency
 

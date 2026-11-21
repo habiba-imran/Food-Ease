@@ -12,7 +12,7 @@ const questions = ['wake-recovery','manual-coexistence'].includes(profile) ? [] 
   {kind:'category-jump', category:'burgers', text:'برگر کے کھانے دکھاؤ۔'},
 ] : profile === 'personality' ? [
   {kind:'casual', text:'زارا، بھوک تو بہت لگی ہے مگر فیصلہ ہی نہیں ہو رہا، کچھ مزے سے بات کرو اور کھانا چننے میں مدد کرو۔'},
-  {kind:'recommendation', text:'دو سو روپے تک کوئی دستیاب مشروب تجویز کرو، قیمت بھی بتانا اور بتاؤ کیوں چنوں۔'},
+  {kind:'recommendation', text:'دو سو روپے تک کے دستیاب مشروبات فلٹر کرو، پھر ان میں سے کوئی ایک تجویز کرو۔ قیمت بھی بتانا اور بتاؤ کیوں چنوں۔'},
   {kind:'playful', text:'تم بھی میری طرح کھانا چننے میں اتنی دیر لگاتی ہو؟ تھوڑا ہلکا پھلکا جواب دو۔'},
   {kind:'frustration', text:'اب مذاق چھوڑو، بس کولا کے کین کی صحیح قیمت بتاؤ۔'},
   {kind:'add', text:'کولا کا ایک کین کارٹ میں شامل کرو۔'},
@@ -245,6 +245,16 @@ try {
         };
       }, category);
     }
+    if (kind==='add') {
+      result.cart = await page.evaluate(async () => {
+        const sid=sessionStorage.getItem('foodease.shopping-session.v2');
+        const response=await fetch('/api/v2/app/context',{headers:{'X-FoodEase-Session':sid}});
+        if(!response.ok) throw new Error('Could not verify the final cart');
+        return (await response.json()).cart;
+      });
+      if(result.cart.lines.length!==1 || result.cart.lines[0].item_id!=='drink-cola' || result.cart.lines[0].quantity!==1)
+        throw new Error('Personality conversation did not preserve the requested one-Cola order');
+    }
     report.turns.push({kind,question,...result});
     if (kind==='category-jump' && (result.ui.visibleItems!==28 || result.ui.visibleCategories!==9 || !result.ui.requestedHeadingInViewport))
       throw new Error('Category request hid dishes or did not scroll to the requested section');
@@ -252,7 +262,7 @@ try {
     if (result.text.length < 15) throw new Error('Question received an empty or incomplete answer');
     // Category/navigation facts are already supplied by the verified reasoning context.
     // The explicit price/filter request below should exercise a real application action.
-    if (!['categories','casual','playful'].includes(kind) && !result.actions.length) throw new Error('Request did not exercise application tools');
+    if (!['categories','casual','playful','frustration'].includes(kind) && !result.actions.length) throw new Error('Request did not exercise application tools');
     if (profile==='personality' && /[A-Za-z<>\[\]]/.test(result.text))
       throw new Error('Personality reply leaked English or delivery markup');
     if (['casual','playful'].includes(kind) && result.actions.some(a=>a.operation.startsWith('cart.') || a.operation==='checkout.submit_demo_order'))

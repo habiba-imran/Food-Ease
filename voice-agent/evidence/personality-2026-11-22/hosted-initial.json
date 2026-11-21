@@ -1,0 +1,30 @@
+{
+  "target": "https://food-ease-seven.vercel.app",
+  "mode": "hosted_real_providers_synthetic_recognized_requests",
+  "errors": [
+    "Request did not exercise application tools"
+  ],
+  "turns": [
+    {
+      "kind": "casual",
+      "question": "زارا، بھوک تو بہت لگی ہے مگر فیصلہ ہی نہیں ہو رہا، کچھ مزے سے بات کرو اور کھانا چننے میں مدد کرو۔",
+      "phase": "completed",
+      "text": "بھوک تیز ہو تو زنگر برگر یا چکن بریانی دونوں ہی زبردست رہتے ہیں۔ کیا ان میں سے کچھ پسند ہے یا کوئی خاص فلیور سوچا ہے؟ ",
+      "requestToCaptionMs": 8799,
+      "requestToSpeakingStatusMs": 1226,
+      "failures": 0,
+      "actions": []
+    },
+    {
+      "kind": "recommendation",
+      "question": "دو سو روپے تک کوئی دستیاب مشروب تجویز کرو، قیمت بھی بتانا اور بتاؤ کیوں چنوں۔",
+      "phase": "completed",
+      "text": "میٹھا آم کا جوس دو سو روپے میں دستیاب ہے، جو کھانے کے ساتھ تروتازہ احساس دے گا۔ ",
+      "requestToCaptionMs": 6606,
+      "requestToSpeakingStatusMs": 1243,
+      "failures": 0,
+      "actions": []
+    }
+  ],
+  "source": "/static/js/app.js?v=zara-34"
+}

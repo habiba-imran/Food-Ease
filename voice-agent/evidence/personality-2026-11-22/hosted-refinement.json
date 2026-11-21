@@ -1,0 +1,61 @@
+{
+  "target": "https://food-ease-seven.vercel.app",
+  "mode": "hosted_real_providers_synthetic_recognized_requests",
+  "errors": [
+    "Request did not exercise application tools"
+  ],
+  "turns": [
+    {
+      "kind": "casual",
+      "question": "زارا، بھوک تو بہت لگی ہے مگر فیصلہ ہی نہیں ہو رہا، کچھ مزے سے بات کرو اور کھانا چننے میں مدد کرو۔",
+      "phase": "completed",
+      "text": "بھوک پکی ہو تو پھر شروعات کراری سی کڑاہی سے کی جائے یا کسی گرما گرم بریانی سے؟ ",
+      "requestToCaptionMs": 5892,
+      "requestToSpeakingStatusMs": 1120,
+      "failures": 0,
+      "actions": []
+    },
+    {
+      "kind": "recommendation",
+      "question": "دو سو روپے تک کے دستیاب مشروبات فلٹر کرو، پھر ان میں سے کوئی ایک تجویز کرو۔ قیمت بھی بتانا اور بتاؤ کیوں چنوں۔",
+      "phase": "completed",
+      "text": "دو سو روپے میں آم کا جوس بہترین رہے گا، قیمت بھی بجٹ میں ہے اور یہ تازہ آم کے جوس سے تیار کیا گیا ہے۔ اسے شامل کر لوں؟ ",
+      "requestToCaptionMs": 13708,
+      "requestToSpeakingStatusMs": 6340,
+      "failures": 0,
+      "actions": [
+        {
+          "operation": "filter_menu",
+          "status": "success",
+          "durationMs": 1180
+        },
+        {
+          "operation": "get_item_details",
+          "status": "success",
+          "durationMs": 1670
+        }
+      ]
+    },
+    {
+      "kind": "playful",
+      "question": "تم بھی میری طرح کھانا چننے میں اتنی دیر لگاتی ہو؟ تھوڑا ہلکا پھلکا جواب دو۔",
+      "phase": "completed",
+      "text": "میری دیر تو بس ذائقہ پرفیکٹ بیٹھانے میں لگتی ہے، ورنہ بھوک کو زیادہ انتظار پسند نہیں۔ آم کا جوس شامل کر دوں یا کوئی اور چنیں؟ ",
+      "requestToCaptionMs": 8906,
+      "requestToSpeakingStatusMs": 1661,
+      "failures": 0,
+      "actions": []
+    },
+    {
+      "kind": "frustration",
+      "question": "اب مذاق چھوڑو، بس کولا کے کین کی صحیح قیمت بتاؤ۔",
+      "phase": "completed",
+      "text": "كولا كے كين كى قيمت ايك سو روپے ہے۔ ",
+      "requestToCaptionMs": 3291,
+      "requestToSpeakingStatusMs": 1105,
+      "failures": 0,
+      "actions": []
+    }
+  ],
+  "source": "/static/js/app.js?v=zara-34"
+}
