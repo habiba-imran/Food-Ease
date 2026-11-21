@@ -7,7 +7,10 @@ retain the low-latency fast path. Authored Urdu phrases match the register. Curr
 Sonic 3.6 context-driven delivery is retained: explicit emotion tags support English
 only. Consent, interruption and manual coexistence are unchanged. **632 Python
 checks passed / the same inherited mock-import failure**; scoped lint/types/syntax pass.
-Deployment and hosted provider verification are being completed.
+Source `b6f0381` is pushed; worker **sGUZJX5dppyG is Running in ap-south**.
+All five hosted Urdu turns completed without errors, including a real filtered
+recommendation and verified one-Cola cart addition. Playful role wording and
+plain price replies were observed; audible naturalness remains a listening judgment.
 [Implementation and verification](../evidence/personality-2026-11-22/report.md).
 
 **Manual controls and Zara speech — 2026-11-22.** Manual state revisions now

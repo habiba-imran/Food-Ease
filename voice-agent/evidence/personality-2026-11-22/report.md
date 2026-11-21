@@ -51,3 +51,29 @@ and avoid invented texture/temperature/preparation claims. The final audit permi
 a plain price reply from the current bound application facts, while the explicit
 filter request and cart addition must still exercise real application tools.
 Raw initial runs: [initial](hosted-initial.json), [refinement](hosted-refinement.json).
+
+## Final deployment and hosted result
+
+- Source **b6f0381**, pushed to origin/main, deployed code-only with existing
+  Cloud provider settings. Final worker **sGUZJX5dppyG**, **Running / ap-south**,
+  deployed at 2026-11-21 20:41:47 UTC (2026-11-22 local).
+  [Deployment output](cloud-deploy.txt), [status](cloud-status.json).
+- **All five hosted turns completed, zero audit errors and zero failed replies.**
+  Indecision received a playful Urdu opening and a food preference question.
+  Budgeted recommendation called filter_menu successfully and quoted returned
+  PKR-200 mango juice and PKR-150 lassi. Casual banter used a truthful role-based
+  line rather than claiming she tastes/cooks. The request to stop joking received
+  the correct PKR-100 Cola price. The explicit add made one successful cart mutation,
+  confirmed against authority: exactly one Cola, subtotal100, fee50, total150.
+  [Complete final questions, replies, actions and cart](hosted-questions.json).
+- Final bounded worker-log sample: **31 lines, zero ERROR/CRITICAL records**.
+  [Redacted runtime sample](cloud-runtime.txt). Full regressions were rerun after
+  the refinement: **632 passed / the same inherited mock-import failure**.
+- Actual playful examples included “کھانا چننا بھی کبھی کبھی امتحان لگتا ہے!”
+  and “میں تو مینو چھان لوں گی، مزے آپ نے لینے ہیں!” These are observed outputs,
+  not promises that every response will use those words. Humor and description
+  remain model-generated; this audit checks completion/actions and reviews text,
+  not a general natural-language fact verifier or a human naturalness score.
+- No website product assets, providers, recording controls, interruption thresholds
+  or dependencies were changed. The browser audit used matched zara-34 assets.
+  Restart an existing voice session to load the new agent instructions.

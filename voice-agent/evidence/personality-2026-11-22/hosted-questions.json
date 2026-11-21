@@ -1,0 +1,96 @@
+{
+  "target": "https://food-ease-seven.vercel.app",
+  "mode": "hosted_real_providers_synthetic_recognized_requests",
+  "errors": [],
+  "turns": [
+    {
+      "kind": "casual",
+      "question": "زارا، بھوک تو بہت لگی ہے مگر فیصلہ ہی نہیں ہو رہا، کچھ مزے سے بات کرو اور کھانا چننے میں مدد کرو۔",
+      "phase": "completed",
+      "text": "کھانا چننا بھی کبھی کبھی امتحان لگتا ہے! کچھ مصالحہ دار کھانے کا دل ہے، جیسے زنگر برگر یا چکن کڑاہی، یا پھر کچھ ہلکا پھلکا سوچ رہے ہیں؟ ",
+      "requestToCaptionMs": 9919,
+      "requestToSpeakingStatusMs": 1197,
+      "failures": 0,
+      "actions": []
+    },
+    {
+      "kind": "recommendation",
+      "question": "دو سو روپے تک کے دستیاب مشروبات فلٹر کرو، پھر ان میں سے کوئی ایک تجویز کرو۔ قیمت بھی بتانا اور بتاؤ کیوں چنوں۔",
+      "phase": "completed",
+      "text": "میٹھا کھانے کے بعد دل تازہ کرنا ہو تو دو سو روپے میں آم کا جوس بہترین رہے گا، اور اگر کچھ ہلکا سا چاہیے تو ایک سو پچاس روپے میں میٹھی لسی بھی موجود ہے۔ ان میں سے کون سا منگواؤں؟ ",
+      "requestToCaptionMs": 15003,
+      "requestToSpeakingStatusMs": 3771,
+      "failures": 0,
+      "actions": [
+        {
+          "operation": "filter_menu",
+          "status": "success",
+          "durationMs": 1200
+        }
+      ]
+    },
+    {
+      "kind": "playful",
+      "question": "تم بھی میری طرح کھانا چننے میں اتنی دیر لگاتی ہو؟ تھوڑا ہلکا پھلکا جواب دو۔",
+      "phase": "completed",
+      "text": "میں تو مینو چھان لوں گی، مزے آپ نے لینے ہیں! آم کا جوس یا میٹھی لسی میں سے کس کا موڈ ہے؟ ",
+      "requestToCaptionMs": 6802,
+      "requestToSpeakingStatusMs": 1192,
+      "failures": 0,
+      "actions": []
+    },
+    {
+      "kind": "frustration",
+      "question": "اب مذاق چھوڑو، بس کولا کے کین کی صحیح قیمت بتاؤ۔",
+      "phase": "completed",
+      "text": "کولا کا کین ایک سو روپے کا ہے۔ کیا اسے کارٹ میں شامل کروں؟ ",
+      "requestToCaptionMs": 5596,
+      "requestToSpeakingStatusMs": 1656,
+      "failures": 0,
+      "actions": []
+    },
+    {
+      "kind": "add",
+      "question": "کولا کا ایک کین کارٹ میں شامل کرو۔",
+      "phase": "completed",
+      "text": "کارٹ میں اب کولا کا کین، تعداد ایک، ایک سو روپے ہیں۔ فیس: خدمت کا معاوضہ, پچاس روپے۔ کل رقم ایک سو پچاس روپے ہے۔ ",
+      "requestToCaptionMs": 14178,
+      "requestToSpeakingStatusMs": 4601,
+      "failures": 0,
+      "actions": [
+        {
+          "operation": "get_current_context",
+          "status": "success",
+          "durationMs": 587
+        },
+        {
+          "operation": "cart.add_item",
+          "status": "success",
+          "durationMs": 2212
+        }
+      ],
+      "cart": {
+        "lines": [
+          {
+            "item_id": "drink-cola",
+            "name": "Cola Can",
+            "quantity": 1,
+            "unit_price": 100,
+            "line_total": 100
+          }
+        ],
+        "currency": "PKR",
+        "subtotal": 100,
+        "fees": [
+          {
+            "code": "service",
+            "label": "Service fee",
+            "amount": 50
+          }
+        ],
+        "total": 150
+      }
+    }
+  ],
+  "source": "/static/js/app.js?v=zara-34"
+}
