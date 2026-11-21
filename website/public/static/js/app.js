@@ -4,7 +4,7 @@ import { LiveKitSeats } from "./livekit-bridge.mjs?v=voice-16";
 import { TranscriptView } from "./transcripts.mjs?v=caption-2";
 import { acquireTabLease } from "./tab-lease.mjs";
 import { voicePresentation, voiceErrorMessage } from "./voice-ui.mjs?v=ui-2";
-import { PersistentWake } from "./persistent-wake.mjs?v=wake-1";
+import { PersistentWake } from "./persistent-wake.mjs?v=wake-2";
 import { VoiceWidget } from "./voice-widget.mjs";
 
 const root = document.documentElement;
@@ -1594,7 +1594,7 @@ const wake = new PersistentWake({
     return Recognition ? new Recognition() : null;
   },
   acquireLease: async () => acquireTabLease((await application()).sessionId),
-  onState: () => syncWakeUi(),
+  onState: () => syncVoiceUi(),
   onWake: async command => {
     const started = await startAssistance("voice");
     if (started && command && assistanceActive) {
@@ -1612,6 +1612,7 @@ function syncWakeUi() {
     : assistanceActive ? "Hey Zara enabled. Keep speaking while you browse."
     : wake.state.state === "error" ? wake.state.message
     : listening ? "Hey Zara enabled. Wake microphone on. Say زارا, then your request."
+    : wake.state.state === "starting" ? wake.state.message
     : "Hey Zara enabled. Waiting for voice cleanup or for this tab to become visible.";
   const toggle = voiceControls.querySelector("[data-wake-toggle]");
   toggle.hidden = !wake.enabled;

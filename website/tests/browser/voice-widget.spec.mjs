@@ -139,6 +139,45 @@ test('Hey Zara re-arms, activates once, survives reload and can be turned off', 
   expect(errors).toEqual([]);
 });
 
+test('wake recognition failure clears the microphone indicator immediately', async ({page}) => {
+  await start(page);
+  await panel(page).locator('[data-voice-end]').click();
+  await expect(page.locator('html')).toHaveAttribute('data-wake-state','listening');
+  await expect(panel(page).locator('[data-voice-microphone]')).toHaveText('Wake microphone on');
+  await page.evaluate(()=>window.wakeInstances.at(-1).onerror({error:'not-allowed'}));
+  await expect(page.locator('html')).toHaveAttribute('data-wake-state','error');
+  await expect(panel(page).locator('[data-voice-microphone]')).toHaveText('Microphone off');
+  await expect(panel(page).locator('[data-wake-status]')).toContainText('permission is blocked');
+});
+
+test('wake network recovery accepts Urdu Hey Zara and hands off one command once', async ({page}) => {
+  const errors=[];
+  page.on('pageerror',error=>errors.push(error.message));
+  await start(page);
+  await panel(page).locator('[data-voice-end]').click();
+  await expect(page.locator('html')).toHaveAttribute('data-wake-state','listening');
+  let starts=0;
+  page.on('request',r=>{if(r.url().endsWith('/v2/assist/start'))starts++;});
+  await page.evaluate(()=>window.wakeInstances.at(-1).onerror({error:'network'}));
+  await expect(panel(page).locator('[data-wake-status]')).toContainText('Reconnecting');
+  await expect(panel(page).locator('[data-voice-microphone]')).toHaveText('Microphone off');
+  await expect.poll(()=>page.evaluate(()=>window.wakeInstances.length)).toBe(2);
+  await expect(page.locator('html')).toHaveAttribute('data-wake-state','listening');
+  await page.evaluate(()=>{
+    const r=window.wakeInstances.at(-1);
+    r.result('ہائے زارا، دو کولا شامل کرو');
+    r.result('ہائے زارا، دو کولا شامل کرو');
+  });
+  await expect(page.locator('html')).toHaveAttribute('data-assistance-state','voice_active');
+  await expect(page.locator('[data-cart-count]')).toHaveText('2');
+  expect(starts).toBe(1);
+  expect(await page.evaluate(()=>window.fakeLiveKit.sent.filter(p=>p.event.type==='app.text_input').length)).toBe(1);
+  expect(await page.evaluate(()=>window.wakeInstances.some(r=>r.started))).toBe(false);
+  expect(errors).toEqual([]);
+  await open(page);
+  await panel(page).locator('[data-voice-end]').click();
+});
+
 test('every item has a short description and no ingredient list or local voice or typing buttons', async ({ page }) => {
   const ids = await page.locator('[data-menu-item]').evaluateAll(cards => cards.map(c => c.dataset.id));
   expect(ids).toHaveLength(28);

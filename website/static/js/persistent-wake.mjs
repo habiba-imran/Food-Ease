@@ -1,4 +1,4 @@
-import { WakeWordListener } from './wake-word.mjs?v=wake-2';
+import { WakeWordListener } from './wake-word.mjs?v=wake-3';
 
 // Keep the user's preference across conversations. Native wake recognition and
 // the voice session share the same tab lease and never capture together.

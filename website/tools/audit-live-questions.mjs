@@ -6,8 +6,8 @@ import { mkdir, writeFile } from 'node:fs/promises';
 const target = 'https://food-ease-seven.vercel.app';
 const evidence = process.env.FOODEASE_AUDIT_EVIDENCE || '../voice-agent/evidence/reply-recovery-2026-11-21';
 const profile = process.env.FOODEASE_AUDIT_PROFILE || 'menu';
-if (!['menu', 'latency', 'category-scroll'].includes(profile)) throw new Error('Unknown audit profile');
-const questions = profile === 'category-scroll' ? [
+if (!['menu', 'latency', 'category-scroll', 'wake-recovery'].includes(profile)) throw new Error('Unknown audit profile');
+const questions = profile === 'wake-recovery' ? [] : profile === 'category-scroll' ? [
   {kind:'category-jump', category:'karahi', text:'کڑاہی کے کھانے دکھاؤ۔'},
   {kind:'category-jump', category:'burgers', text:'برگر کے کھانے دکھاؤ۔'},
 ] : profile === 'latency' ? [
@@ -21,7 +21,21 @@ const questions = profile === 'category-scroll' ? [
 const report = {target, mode:'hosted_real_providers_synthetic_recognized_requests', errors:[], turns:[]};
 const browser = await chromium.launch();
 const page = await browser.newPage({permissions:['microphone']});
+let sessionStarts = 0;
+page.on('request', request => { if (request.url().endsWith('/v2/assist/start')) sessionStarts++; });
 page.on('pageerror', error => report.errors.push(error.message));
+if (profile === 'wake-recovery') {
+  report.mode = 'hosted_real_rtc_worker_synthetic_wake_and_microphone';
+  await page.addInitScript(() => {
+    window.auditWakeRecognitions = [];
+    window.SpeechRecognition = class {
+      constructor() { window.auditWakeRecognitions.push(this); }
+      start() { this.active = true; this.onstart?.(); }
+      abort() { this.active = false; this.onend?.(); }
+      result(text) { this.onresult?.({resultIndex:0, results:[Object.assign([{transcript:text}], {isFinal:true})]}); }
+    };
+  });
+}
 await page.route('**/static/vendor/livekit-client.2.15.4.mjs*', async route => {
   if (new URL(route.request().url()).searchParams.has('native-audit')) return route.continue();
   await route.fulfill({contentType:'text/javascript',body:`
@@ -78,6 +92,31 @@ try {
   await page.waitForFunction(() => (window.auditEvents || []).some(({event}) =>
     event.type==='transcript.assistant' && event.payload.phase==='completed' && event.payload.text));
   await page.waitForTimeout(300);
+  if (profile === 'wake-recovery') {
+    await page.locator('[data-voice-end]').click();
+    await page.waitForFunction(() => document.documentElement.dataset.wakeState === 'listening');
+    const during = await page.evaluate(() => {
+      window.auditWakeRecognitions.at(-1).onerror({error:'network'});
+      return {state:document.documentElement.dataset.wakeState,
+        microphone:document.querySelector('[data-voice-microphone]').textContent};
+    });
+    if (during.state !== 'starting' || during.microphone !== 'Microphone off')
+      throw new Error('Wake recovery left a stale microphone-on indicator');
+    await page.waitForFunction(() => window.auditWakeRecognitions.length === 2 &&
+      document.documentElement.dataset.wakeState === 'listening');
+    const baseline = await page.evaluate(() => window.auditEvents.length);
+    const beforeStarts = sessionStarts;
+    await page.evaluate(() => {
+      const r=window.auditWakeRecognitions.at(-1);
+      r.result('ہائے زارا'); r.result('ہائے زارا');
+    });
+    await page.waitForFunction(() => document.documentElement.dataset.assistanceState === 'voice_active', null, {timeout:100000});
+    await page.waitForFunction(baseline => window.auditEvents.slice(baseline).some(({event}) =>
+      event.type==='transcript.assistant' && event.payload.phase==='completed' && event.payload.text), baseline, {timeout:60000});
+    report.wake = {microphoneClearedDuringRecovery:true, recognizersAfterRecovery:2,
+      restartedSessions:sessionStarts-beforeStarts, newVoiceSessionActive:true, greetingCompleted:true};
+    if (report.wake.restartedSessions !== 1) throw new Error('Wake did not start exactly one new session');
+  }
   for (const {kind, category, text:question} of questions) {
     const sent = await page.evaluate(async question => {
       const sid=sessionStorage.getItem('foodease.shopping-session.v2');
@@ -139,6 +178,9 @@ try {
 } catch (error) {
   report.errors.push(error.message); process.exitCode=1;
 } finally {
+  if (await page.locator('html').getAttribute('data-assistance-state').catch(()=>null) === 'voice_active' &&
+      !await page.locator('[data-voice-end]').isVisible().catch(()=>false))
+    await page.locator('[data-voice-launcher]').click().catch(()=>{});
   const wake=page.locator('[data-wake-toggle]');
   if(await wake.isVisible().catch(()=>false)) await wake.click().catch(()=>{});
   const stop=page.locator('[data-voice-end]');

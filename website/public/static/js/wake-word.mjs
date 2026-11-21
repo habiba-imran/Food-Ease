@@ -1,8 +1,10 @@
 // Optional browser recognition. Ambient transcripts are discarded, never sent to FoodEase.
 // Browser recognition may itself use a remote service; the opt-in explains this.
 export function wakeRequest(text) {
-  const normalized = text.normalize('NFKC').trim();
-  const match = /^(?:(?:hey|hi|hello|ہے|ہی|ہیلو)\s+)?(?:zara|زارا)(?=$|[\s,،.!!?؟۔])(?:[\s,،]+(?:(?:meri\s+baat\s+)?suno|میری\s+بات\s+سنو|سنو))?[\s,،.!!?؟۔]*/iu.exec(normalized);
+  const normalized = text.normalize('NFKC').replace(/[\u064B-\u065F\u0670\u0640\u200C\u200D]/gu, '').trim();
+  // زرا is also an ordinary Urdu word, so accept that spelling only after an
+  // explicit address. Keep name boundaries and ignore mentions mid-sentence.
+  const match = /^(?:(?:hey|hi|hello|ہے|ہی|ہیلو|ہائے)[\s,،]+(?:zara|زارا|زارہ|زرا)|(?:zara|زارا|زارہ))(?=$|[\s,،.!?؟۔])(?:[\s,،]+(?:(?:meri\s+baat\s+)?suno|میری\s+بات\s+سنو|سنو))?[\s,،.!?؟۔]*/iu.exec(normalized);
   return match ? normalized.slice(match[0].length).trim() : null;
 }
 
@@ -35,6 +37,8 @@ export class WakeWordListener {
       if (!this.enabled || epoch !== this.epoch) { await release?.(); return; }
       this.release = release;
       this.emptyEnds = 0;
+      this.networkErrors = 0;
+      this.recovering = false;
       this.listen(epoch);
     } catch (error) {
       this.enabled = false;
@@ -51,17 +55,23 @@ export class WakeWordListener {
       recognition.lang = 'ur-PK';
       recognition.continuous = true;
       recognition.interimResults = false;
+      recognition.maxAlternatives = 3;
       recognition.onstart = () => {
-        if (this.enabled && this.recognition === recognition && epoch === this.epoch) {
+        if (this.enabled && !this.recovering && this.recognition === recognition && epoch === this.epoch) {
           this.emit('listening', 'Wake microphone on. Say the assistant’s name, then your request.');
         }
       };
       recognition.onresult = event => {
-        if (!this.enabled || this.recognition !== recognition || epoch !== this.epoch) return;
+        if (!this.enabled || this.recovering || this.recognition !== recognition || epoch !== this.epoch) return;
         this.emptyEnds = 0;
         for (let i = event.resultIndex; i < event.results.length; i++) {
           if (!event.results[i].isFinal) continue;
-          const command = wakeRequest(event.results[i][0].transcript);
+          this.networkErrors = 0;
+          let command = null;
+          for (let j = 0; j < Math.min(3, event.results[i].length); j++) {
+            command = wakeRequest(event.results[i][j].transcript);
+            if (command !== null) break;
+          }
           if (command === null) continue;
           this.enabled = false; // latch before abort; repeated results cannot activate twice
           this.emit('stopping', 'Zara is connecting. Wake microphone is closing.');
@@ -73,18 +83,26 @@ export class WakeWordListener {
       };
       recognition.onerror = event => {
         if (this.recognition !== recognition || !this.enabled) return;
+        if (event.error === 'network' && this.recovering) return;
+        if (event.error === 'network' && this.persistIdle && this.networkErrors < 3) {
+          this.recoverNetwork(epoch);
+          return;
+        }
         if (event.error === 'no-speech') return; // native end schedules a bounded restart
         const message = ['not-allowed', 'service-not-allowed'].includes(event.error)
           ? 'Wake microphone permission is blocked. Allow it in browser settings, or order manually.'
           : 'Wake listening stopped. Your browser may need a connection or support for Urdu. Use Start Zara or order manually.';
         this.enabled = false;
-        ++this.epoch;
-        void this.stopNative().catch(() => {}).finally(() => this.emit('error', message));
+        const errorEpoch = ++this.epoch;
+        void this.stopNative().catch(() => {}).finally(() => {
+          if (this.epoch === errorEpoch && !this.enabled) this.emit('error', message);
+        });
       };
       recognition.onend = () => {
         if (this.recognition !== recognition) return;
         this.recognition = null;
         this.finishStop?.();
+        if (this.recovering) return; // stopNative/recoverNetwork own release and reacquisition
         if (!this.enabled || epoch !== this.epoch) { void this.releaseLease(); return; }
         if (++this.emptyEnds > 3 && !this.persistIdle) {
           this.enabled = false;
@@ -103,6 +121,30 @@ export class WakeWordListener {
       void this.releaseLease();
       this.emit('error', error.message || 'Wake listening could not start. Use Start Voice Assistant.');
     }
+  }
+
+  recoverNetwork(epoch) {
+    this.networkErrors++;
+    this.recovering = true;
+    this.emit('starting', 'Wake connection lost. Reconnecting Hey Zara…');
+    // A fresh recognizer cannot share capture or bypass the tab lease. Wait
+    // for native end and lease release, then acquire again with cancellation.
+    void this.stopNative().then(async () => {
+      if (!this.enabled || epoch !== this.epoch) return;
+      const release = await this.acquireLease();
+      if (!this.enabled || epoch !== this.epoch) { await release?.(); return; }
+      this.release = release;
+      this.restart = setTimeout(() => {
+        this.recovering = false;
+        this.listen(epoch);
+      }, Math.min(5000, this.restartMs * 2 ** this.networkErrors));
+    }).catch(error => {
+      if (!this.enabled || epoch !== this.epoch) return;
+      this.enabled = false;
+      this.recovering = false;
+      ++this.epoch;
+      this.emit('error', error.message || 'Wake listening could not reconnect. Use Start Zara.');
+    });
   }
 
   async releaseLease() {
@@ -134,6 +176,7 @@ export class WakeWordListener {
   async stop() {
     ++this.epoch; // also cancels a wake awaiting native microphone release
     this.enabled = false;
+    this.recovering = false;
     await this.stopNative();
     this.emit('off', 'Wake microphone off. Use Start Voice Assistant, or enable wake listening.');
   }
