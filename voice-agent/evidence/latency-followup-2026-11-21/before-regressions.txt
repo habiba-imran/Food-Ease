@@ -1,0 +1,240 @@
+FFFFF.FFF                                                                [100%]
+================================== FAILURES ===================================
+_ test_bound_current_reads_and_navigation_submit_only_the_requested_action[get_cart-args0] _
+
+operation = 'get_cart', args = {}
+
+    @pytest.mark.parametrize("operation,args", [
+        ("get_cart", {}), ("get_current_context", {}),
+        ("get_item_details", {"item_id": "drink-cola"}),
+        ("navigate", {"target": "cart"}),
+    ])
+    async def test_bound_current_reads_and_navigation_submit_only_the_requested_action(operation, args):
+        room = Room()
+        gate = IntegratedRoomGate(room, room.startup)
+        runtime = LiveConversationRuntime(
+            IntegratedFoodEaseAgent(language="ur"), Session(), IntegratedRpcAdapter(gate), gate=gate
+        )
+        await runtime.prepare()
+        await runtime.select_mode("voice")
+        room.calls.clear()
+        try:
+            result = await call(runtime, operation, **args)
+            assert result["status"] == "success"
+>           assert [r["payload"]["operation"] for _, r in room.calls] == [operation]
+E           AssertionError: assert ['get_current...', 'get_cart'] == ['get_cart']
+E
+E             At index 0 diff: 'get_current_context' != 'get_cart'
+E             Left contains one more item: 'get_cart'
+E             Use -v to get more diff
+
+voice-agent\tests\test_response_latency.py:36: AssertionError
+_ test_bound_current_reads_and_navigation_submit_only_the_requested_action[get_current_context-args1] _
+
+operation = 'get_current_context', args = {}
+
+    @pytest.mark.parametrize("operation,args", [
+        ("get_cart", {}), ("get_current_context", {}),
+        ("get_item_details", {"item_id": "drink-cola"}),
+        ("navigate", {"target": "cart"}),
+    ])
+    async def test_bound_current_reads_and_navigation_submit_only_the_requested_action(operation, args):
+        room = Room()
+        gate = IntegratedRoomGate(room, room.startup)
+        runtime = LiveConversationRuntime(
+            IntegratedFoodEaseAgent(language="ur"), Session(), IntegratedRpcAdapter(gate), gate=gate
+        )
+        await runtime.prepare()
+        await runtime.select_mode("voice")
+        room.calls.clear()
+        try:
+            result = await call(runtime, operation, **args)
+            assert result["status"] == "success"
+>           assert [r["payload"]["operation"] for _, r in room.calls] == [operation]
+E           AssertionError: assert ['get_current...rent_context'] == ['get_current_context']
+E
+E             Left contains one more item: 'get_current_context'
+E             Use -v to get more diff
+
+voice-agent\tests\test_response_latency.py:36: AssertionError
+_ test_bound_current_reads_and_navigation_submit_only_the_requested_action[get_item_details-args2] _
+
+operation = 'get_item_details', args = {'item_id': 'drink-cola'}
+
+    @pytest.mark.parametrize("operation,args", [
+        ("get_cart", {}), ("get_current_context", {}),
+        ("get_item_details", {"item_id": "drink-cola"}),
+        ("navigate", {"target": "cart"}),
+    ])
+    async def test_bound_current_reads_and_navigation_submit_only_the_requested_action(operation, args):
+        room = Room()
+        gate = IntegratedRoomGate(room, room.startup)
+        runtime = LiveConversationRuntime(
+            IntegratedFoodEaseAgent(language="ur"), Session(), IntegratedRpcAdapter(gate), gate=gate
+        )
+        await runtime.prepare()
+        await runtime.select_mode("voice")
+        room.calls.clear()
+        try:
+            result = await call(runtime, operation, **args)
+            assert result["status"] == "success"
+>           assert [r["payload"]["operation"] for _, r in room.calls] == [operation]
+E           AssertionError: assert ['get_current...item_details'] == ['get_item_details']
+E
+E             At index 0 diff: 'get_current_context' != 'get_item_details'
+E             Left contains one more item: 'get_item_details'
+E             Use -v to get more diff
+
+voice-agent\tests\test_response_latency.py:36: AssertionError
+_ test_bound_current_reads_and_navigation_submit_only_the_requested_action[navigate-args3] _
+
+operation = 'navigate', args = {'target': 'cart'}
+
+    @pytest.mark.parametrize("operation,args", [
+        ("get_cart", {}), ("get_current_context", {}),
+        ("get_item_details", {"item_id": "drink-cola"}),
+        ("navigate", {"target": "cart"}),
+    ])
+    async def test_bound_current_reads_and_navigation_submit_only_the_requested_action(operation, args):
+        room = Room()
+        gate = IntegratedRoomGate(room, room.startup)
+        runtime = LiveConversationRuntime(
+            IntegratedFoodEaseAgent(language="ur"), Session(), IntegratedRpcAdapter(gate), gate=gate
+        )
+        await runtime.prepare()
+        await runtime.select_mode("voice")
+        room.calls.clear()
+        try:
+            result = await call(runtime, operation, **args)
+            assert result["status"] == "success"
+>           assert [r["payload"]["operation"] for _, r in room.calls] == [operation]
+E           AssertionError: assert ['get_current...', 'navigate'] == ['navigate']
+E
+E             At index 0 diff: 'get_current_context' != 'navigate'
+E             Left contains one more item: 'navigate'
+E             Use -v to get more diff
+
+voice-agent\tests\test_response_latency.py:36: AssertionError
+_ test_missed_manual_change_cannot_authorize_facts_or_navigation[get_cart-args0] _
+
+operation = 'get_cart', args = {}
+
+    @pytest.mark.parametrize("operation,args", [
+        ("get_cart", {}), ("get_current_context", {}),
+        ("get_item_details", {"item_id": "drink-cola"}),
+        ("navigate", {"target": "cart"}),
+    ])
+    async def test_missed_manual_change_cannot_authorize_facts_or_navigation(operation, args):
+        room = Room()
+        gate = IntegratedRoomGate(room, room.startup)
+        runtime = LiveConversationRuntime(
+            IntegratedFoodEaseAgent(language="ur"), Session(), IntegratedRpcAdapter(gate), gate=gate
+        )
+        await runtime.prepare()
+        await runtime.select_mode("voice")
+        await room.website.manual("cart.add_item", {"item_id": "drink-cola", "quantity": 2})
+        room.calls.clear()
+        try:
+            result = await call(runtime, operation, **args)
+            assert result["status"] != "success"
+            assert result.get("facts") is None
+>           assert [r["payload"]["operation"] for _, r in room.calls] == [operation]
+E           AssertionError: assert ['get_current_context'] == ['get_cart']
+E
+E             At index 0 diff: 'get_current_context' != 'get_cart'
+E             Use -v to get more diff
+
+voice-agent\tests\test_response_latency.py:61: AssertionError
+_ test_missed_manual_change_cannot_authorize_facts_or_navigation[get_item_details-args2] _
+
+operation = 'get_item_details', args = {'item_id': 'drink-cola'}
+
+    @pytest.mark.parametrize("operation,args", [
+        ("get_cart", {}), ("get_current_context", {}),
+        ("get_item_details", {"item_id": "drink-cola"}),
+        ("navigate", {"target": "cart"}),
+    ])
+    async def test_missed_manual_change_cannot_authorize_facts_or_navigation(operation, args):
+        room = Room()
+        gate = IntegratedRoomGate(room, room.startup)
+        runtime = LiveConversationRuntime(
+            IntegratedFoodEaseAgent(language="ur"), Session(), IntegratedRpcAdapter(gate), gate=gate
+        )
+        await runtime.prepare()
+        await runtime.select_mode("voice")
+        await room.website.manual("cart.add_item", {"item_id": "drink-cola", "quantity": 2})
+        room.calls.clear()
+        try:
+            result = await call(runtime, operation, **args)
+            assert result["status"] != "success"
+            assert result.get("facts") is None
+>           assert [r["payload"]["operation"] for _, r in room.calls] == [operation]
+E           AssertionError: assert ['get_current_context'] == ['get_item_details']
+E
+E             At index 0 diff: 'get_current_context' != 'get_item_details'
+E             Use -v to get more diff
+
+voice-agent\tests\test_response_latency.py:61: AssertionError
+_ test_missed_manual_change_cannot_authorize_facts_or_navigation[navigate-args3] _
+
+operation = 'navigate', args = {'target': 'cart'}
+
+    @pytest.mark.parametrize("operation,args", [
+        ("get_cart", {}), ("get_current_context", {}),
+        ("get_item_details", {"item_id": "drink-cola"}),
+        ("navigate", {"target": "cart"}),
+    ])
+    async def test_missed_manual_change_cannot_authorize_facts_or_navigation(operation, args):
+        room = Room()
+        gate = IntegratedRoomGate(room, room.startup)
+        runtime = LiveConversationRuntime(
+            IntegratedFoodEaseAgent(language="ur"), Session(), IntegratedRpcAdapter(gate), gate=gate
+        )
+        await runtime.prepare()
+        await runtime.select_mode("voice")
+        await room.website.manual("cart.add_item", {"item_id": "drink-cola", "quantity": 2})
+        room.calls.clear()
+        try:
+            result = await call(runtime, operation, **args)
+            assert result["status"] != "success"
+            assert result.get("facts") is None
+>           assert [r["payload"]["operation"] for _, r in room.calls] == [operation]
+E           AssertionError: assert ['get_current_context'] == ['navigate']
+E
+E             At index 0 diff: 'get_current_context' != 'navigate'
+E             Use -v to get more diff
+
+voice-agent\tests\test_response_latency.py:61: AssertionError
+_ test_context_result_itself_is_the_fresh_receipt_when_no_context_was_published _
+
+    async def test_context_result_itself_is_the_fresh_receipt_when_no_context_was_published():
+        room = Room()
+        gate = IntegratedRoomGate(room, room.startup)
+        adapter = IntegratedRpcAdapter(gate)
+        snapshot = await adapter.get_snapshot()
+        request = action_request(adapter.session_id, "context-turn", snapshot.revision,
+                                 "get_current_context", {})
+        result = await adapter.submit(request)
+        gate.latest = None
+        room.calls.clear()
+        try:
+            fresh = await adapter.snapshot_after(result)
+            assert fresh.revision == result.context_revision
+            assert fresh.session_id == adapter.session_id
+>           assert room.calls == []
+E           AssertionError: assert [('foodease.a...9ba21', ...})] == []
+E
+E             Left contains one more item: ('foodease.action.v2', {'schema_version': '2.0', 'session_id': 'AoniQaeQhEb7Tszct9V8rqSA5eRsTcUB', 'event_id': '0f1f75c59e3a4d06a213944bd34e3e2b', 'turn_id': '1dd0b55c248147a58cb76afbff09ba21', ...})
+E             Use -v to get more diff
+
+voice-agent\tests\test_response_latency.py:84: AssertionError
+=========================== short test summary info ===========================
+FAILED voice-agent\tests\test_response_latency.py::test_bound_current_reads_and_navigation_submit_only_the_requested_action[get_cart-args0]
+FAILED voice-agent\tests\test_response_latency.py::test_bound_current_reads_and_navigation_submit_only_the_requested_action[get_current_context-args1]
+FAILED voice-agent\tests\test_response_latency.py::test_bound_current_reads_and_navigation_submit_only_the_requested_action[get_item_details-args2]
+FAILED voice-agent\tests\test_response_latency.py::test_bound_current_reads_and_navigation_submit_only_the_requested_action[navigate-args3]
+FAILED voice-agent\tests\test_response_latency.py::test_missed_manual_change_cannot_authorize_facts_or_navigation[get_cart-args0]
+FAILED voice-agent\tests\test_response_latency.py::test_missed_manual_change_cannot_authorize_facts_or_navigation[get_item_details-args2]
+FAILED voice-agent\tests\test_response_latency.py::test_missed_manual_change_cannot_authorize_facts_or_navigation[navigate-args3]
+FAILED voice-agent\tests\test_response_latency.py::test_context_result_itself_is_the_fresh_receipt_when_no_context_was_published
+8 failed, 1 passed, 10 deselected in 7.65s

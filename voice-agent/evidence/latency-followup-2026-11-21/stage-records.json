@@ -1,0 +1,779 @@
+[
+  {
+    "timestamp": "2026-11-21T15:10:22.437930+00:00",
+    "job_id": "AJ_RMCkUXifJf8G",
+    "room_id": "RM_T6NWevRcfjHe",
+    "source": "livekit_message_metrics",
+    "role": "assistant",
+    "tts_node_ttfb_ms": 56.24
+  },
+  {
+    "timestamp": "2026-11-21T15:10:22.440321+00:00",
+    "job_id": "AJ_RMCkUXifJf8G",
+    "room_id": "RM_T6NWevRcfjHe",
+    "kind": "speech_finished",
+    "speech_id": "speech_13c8f4d815b2",
+    "interrupted": false,
+    "failed": false
+  },
+  {
+    "timestamp": "2026-11-21T15:10:38.045811+00:00",
+    "job_id": "AJ_RMCkUXifJf8G",
+    "room_id": "RM_T6NWevRcfjHe",
+    "source": "livekit_message_metrics",
+    "role": "assistant",
+    "llm_node_ttft_ms": 1855.04,
+    "llm_node_ttfs_ms": 1860.01,
+    "tts_node_ttfb_ms": 58.57
+  },
+  {
+    "timestamp": "2026-11-21T15:10:38.047202+00:00",
+    "job_id": "AJ_RMCkUXifJf8G",
+    "room_id": "RM_T6NWevRcfjHe",
+    "kind": "speech_finished",
+    "speech_id": "speech_03acedafd694",
+    "interrupted": false,
+    "failed": false
+  },
+  {
+    "timestamp": "2026-11-21T15:10:41.136194+00:00",
+    "job_id": "AJ_RMCkUXifJf8G",
+    "room_id": "RM_T6NWevRcfjHe",
+    "source": "runtime_unattested",
+    "session_id": "5cZZTzl27G-RCdPSuhTj1Vv0tkOIdRn_",
+    "turn_id": "cebfa3f6-5019-4a4a-a8e7-c9084e093cc5",
+    "action_id": "adee8f162b324b06b2d76df858dbfe02",
+    "operation": "filter_menu",
+    "generation": "kH301kSsSeux7VERWyPuk2EZ",
+    "context_revision": 1,
+    "stage": "registered"
+  },
+  {
+    "timestamp": "2026-11-21T15:10:42.773261+00:00",
+    "job_id": "AJ_RMCkUXifJf8G",
+    "room_id": "RM_T6NWevRcfjHe",
+    "source": "runtime_unattested",
+    "session_id": "5cZZTzl27G-RCdPSuhTj1Vv0tkOIdRn_",
+    "turn_id": "cebfa3f6-5019-4a4a-a8e7-c9084e093cc5",
+    "action_id": "adee8f162b324b06b2d76df858dbfe02",
+    "operation": "filter_menu",
+    "generation": "kH301kSsSeux7VERWyPuk2EZ",
+    "context_revision": 1,
+    "stage": "success"
+  },
+  {
+    "timestamp": "2026-11-21T15:10:42.777358+00:00",
+    "job_id": "AJ_RMCkUXifJf8G",
+    "room_id": "RM_T6NWevRcfjHe",
+    "kind": "speech_finished",
+    "speech_id": "speech_a2dc28b15596",
+    "interrupted": false,
+    "failed": false
+  },
+  {
+    "timestamp": "2026-11-21T15:10:57.158846+00:00",
+    "job_id": "AJ_RMCkUXifJf8G",
+    "room_id": "RM_T6NWevRcfjHe",
+    "source": "livekit_message_metrics",
+    "role": "assistant",
+    "tts_node_ttfb_ms": 56.89
+  },
+  {
+    "timestamp": "2026-11-21T15:10:57.160645+00:00",
+    "job_id": "AJ_RMCkUXifJf8G",
+    "room_id": "RM_T6NWevRcfjHe",
+    "kind": "speech_finished",
+    "speech_id": "speech_b57bef865d43",
+    "interrupted": false,
+    "failed": false
+  },
+  {
+    "timestamp": "2026-11-21T15:15:53.969670+00:00",
+    "job_id": "AJ_qm8PbePzhyyc",
+    "room_id": "RM_NMih3dcDDQSB",
+    "source": "livekit_message_metrics",
+    "role": "assistant",
+    "tts_node_ttfb_ms": 57.84
+  },
+  {
+    "timestamp": "2026-11-21T15:15:53.971794+00:00",
+    "job_id": "AJ_qm8PbePzhyyc",
+    "room_id": "RM_NMih3dcDDQSB",
+    "kind": "speech_finished",
+    "speech_id": "speech_0ae2abc80385",
+    "interrupted": false,
+    "failed": false
+  },
+  {
+    "timestamp": "2026-11-21T15:15:55.448728+00:00",
+    "job_id": "AJ_qm8PbePzhyyc",
+    "room_id": "RM_NMih3dcDDQSB",
+    "kind": "user_speaking",
+    "assistant_speaking": false
+  },
+  {
+    "timestamp": "2026-11-21T15:15:59.323838+00:00",
+    "job_id": "AJ_qm8PbePzhyyc",
+    "room_id": "RM_NMih3dcDDQSB",
+    "source": "livekit_message_metrics",
+    "role": "user",
+    "transcription_delay_ms": 789.96,
+    "end_of_turn_delay_ms": 790.72
+  },
+  {
+    "timestamp": "2026-11-21T15:16:06.399777+00:00",
+    "job_id": "AJ_qm8PbePzhyyc",
+    "room_id": "RM_NMih3dcDDQSB",
+    "kind": "user_speaking",
+    "assistant_speaking": true
+  },
+  {
+    "timestamp": "2026-11-21T15:16:06.401457+00:00",
+    "job_id": "AJ_qm8PbePzhyyc",
+    "room_id": "RM_NMih3dcDDQSB",
+    "source": "livekit_message_metrics",
+    "role": "assistant",
+    "llm_node_ttft_ms": 1302.47,
+    "llm_node_ttfs_ms": 1305.66,
+    "tts_node_ttfb_ms": 59.31
+  },
+  {
+    "timestamp": "2026-11-21T15:16:06.405391+00:00",
+    "job_id": "AJ_qm8PbePzhyyc",
+    "room_id": "RM_NMih3dcDDQSB",
+    "kind": "speech_finished",
+    "speech_id": "speech_92311ee30b48",
+    "interrupted": true,
+    "failed": false
+  },
+  {
+    "timestamp": "2026-11-21T15:16:10.582087+00:00",
+    "job_id": "AJ_qm8PbePzhyyc",
+    "room_id": "RM_NMih3dcDDQSB",
+    "source": "livekit_message_metrics",
+    "role": "user",
+    "transcription_delay_ms": 783.96,
+    "end_of_turn_delay_ms": 784.74
+  },
+  {
+    "timestamp": "2026-11-21T15:16:12.565367+00:00",
+    "job_id": "AJ_qm8PbePzhyyc",
+    "room_id": "RM_NMih3dcDDQSB",
+    "source": "runtime_unattested",
+    "session_id": "GMTMbI5rkJMXXhSarxg7RA0SVYkx7Bft",
+    "turn_id": "item_57767951ad05",
+    "action_id": "24685fc1a5164c53a0b96180f7e11501",
+    "operation": "navigate",
+    "generation": "052dh6Jw5Z-76bPedPAJnprg",
+    "context_revision": 1,
+    "stage": "registered"
+  },
+  {
+    "timestamp": "2026-11-21T15:16:13.914587+00:00",
+    "job_id": "AJ_qm8PbePzhyyc",
+    "room_id": "RM_NMih3dcDDQSB",
+    "source": "runtime_unattested",
+    "session_id": "GMTMbI5rkJMXXhSarxg7RA0SVYkx7Bft",
+    "turn_id": "item_57767951ad05",
+    "action_id": "24685fc1a5164c53a0b96180f7e11501",
+    "operation": "navigate",
+    "generation": "052dh6Jw5Z-76bPedPAJnprg",
+    "context_revision": 1,
+    "stage": "success"
+  },
+  {
+    "timestamp": "2026-11-21T15:16:13.918670+00:00",
+    "job_id": "AJ_qm8PbePzhyyc",
+    "room_id": "RM_NMih3dcDDQSB",
+    "kind": "speech_finished",
+    "speech_id": "speech_ed7665a510a9",
+    "interrupted": false,
+    "failed": false
+  },
+  {
+    "timestamp": "2026-11-21T15:16:21.259064+00:00",
+    "job_id": "AJ_qm8PbePzhyyc",
+    "room_id": "RM_NMih3dcDDQSB",
+    "source": "livekit_message_metrics",
+    "role": "assistant",
+    "tts_node_ttfb_ms": 57.6
+  },
+  {
+    "timestamp": "2026-11-21T15:16:21.260316+00:00",
+    "job_id": "AJ_qm8PbePzhyyc",
+    "room_id": "RM_NMih3dcDDQSB",
+    "kind": "speech_finished",
+    "speech_id": "speech_81f77f5cdae4",
+    "interrupted": false,
+    "failed": false
+  },
+  {
+    "timestamp": "2026-11-21T15:16:22.250271+00:00",
+    "job_id": "AJ_qm8PbePzhyyc",
+    "room_id": "RM_NMih3dcDDQSB",
+    "kind": "user_speaking",
+    "assistant_speaking": false
+  },
+  {
+    "timestamp": "2026-11-21T15:16:25.619482+00:00",
+    "job_id": "AJ_qm8PbePzhyyc",
+    "room_id": "RM_NMih3dcDDQSB",
+    "source": "livekit_message_metrics",
+    "role": "user",
+    "transcription_delay_ms": 768.8,
+    "end_of_turn_delay_ms": 769.5
+  },
+  {
+    "timestamp": "2026-11-21T15:16:26.775110+00:00",
+    "job_id": "AJ_qm8PbePzhyyc",
+    "room_id": "RM_NMih3dcDDQSB",
+    "kind": "speech_finished",
+    "speech_id": "speech_4f113e669f22",
+    "interrupted": false,
+    "failed": false
+  },
+  {
+    "timestamp": "2026-11-21T15:16:30.518336+00:00",
+    "job_id": "AJ_qm8PbePzhyyc",
+    "room_id": "RM_NMih3dcDDQSB",
+    "source": "livekit_message_metrics",
+    "role": "assistant",
+    "tts_node_ttfb_ms": 59.48
+  },
+  {
+    "timestamp": "2026-11-21T15:16:30.519632+00:00",
+    "job_id": "AJ_qm8PbePzhyyc",
+    "room_id": "RM_NMih3dcDDQSB",
+    "kind": "speech_finished",
+    "speech_id": "speech_cb944cf07b95",
+    "interrupted": false,
+    "failed": false
+  },
+  {
+    "timestamp": "2026-11-21T15:16:33.249171+00:00",
+    "job_id": "AJ_qm8PbePzhyyc",
+    "room_id": "RM_NMih3dcDDQSB",
+    "kind": "user_speaking",
+    "assistant_speaking": false
+  },
+  {
+    "timestamp": "2026-11-21T15:16:36.327739+00:00",
+    "job_id": "AJ_qm8PbePzhyyc",
+    "room_id": "RM_NMih3dcDDQSB",
+    "source": "livekit_message_metrics",
+    "role": "user",
+    "transcription_delay_ms": 772.4,
+    "end_of_turn_delay_ms": 773.08
+  },
+  {
+    "timestamp": "2026-11-21T15:16:38.250536+00:00",
+    "job_id": "AJ_qm8PbePzhyyc",
+    "room_id": "RM_NMih3dcDDQSB",
+    "source": "runtime_unattested",
+    "session_id": "GMTMbI5rkJMXXhSarxg7RA0SVYkx7Bft",
+    "turn_id": "item_d8dc5aa44866",
+    "action_id": "1d061db4cfd8454f9893c38a28907ea2",
+    "operation": "get_cart",
+    "generation": "052dh6Jw5Z-76bPedPAJnprg",
+    "context_revision": 2,
+    "stage": "registered"
+  },
+  {
+    "timestamp": "2026-11-21T15:16:40.118807+00:00",
+    "job_id": "AJ_qm8PbePzhyyc",
+    "room_id": "RM_NMih3dcDDQSB",
+    "source": "runtime_unattested",
+    "session_id": "GMTMbI5rkJMXXhSarxg7RA0SVYkx7Bft",
+    "turn_id": "item_d8dc5aa44866",
+    "action_id": "1d061db4cfd8454f9893c38a28907ea2",
+    "operation": "get_cart",
+    "generation": "052dh6Jw5Z-76bPedPAJnprg",
+    "context_revision": 2,
+    "stage": "success"
+  },
+  {
+    "timestamp": "2026-11-21T15:16:40.121758+00:00",
+    "job_id": "AJ_qm8PbePzhyyc",
+    "room_id": "RM_NMih3dcDDQSB",
+    "kind": "speech_finished",
+    "speech_id": "speech_e9a85aa9909d",
+    "interrupted": false,
+    "failed": false
+  },
+  {
+    "timestamp": "2026-11-21T15:16:42.581456+00:00",
+    "job_id": "AJ_qm8PbePzhyyc",
+    "room_id": "RM_NMih3dcDDQSB",
+    "source": "livekit_message_metrics",
+    "role": "assistant",
+    "tts_node_ttfb_ms": 55.42
+  },
+  {
+    "timestamp": "2026-11-21T15:16:42.583498+00:00",
+    "job_id": "AJ_qm8PbePzhyyc",
+    "room_id": "RM_NMih3dcDDQSB",
+    "kind": "speech_finished",
+    "speech_id": "speech_0a5a5e39a095",
+    "interrupted": false,
+    "failed": false
+  },
+  {
+    "timestamp": "2026-11-21T15:16:44.199775+00:00",
+    "job_id": "AJ_qm8PbePzhyyc",
+    "room_id": "RM_NMih3dcDDQSB",
+    "kind": "user_speaking",
+    "assistant_speaking": false
+  },
+  {
+    "timestamp": "2026-11-21T15:16:46.467436+00:00",
+    "job_id": "AJ_qm8PbePzhyyc",
+    "room_id": "RM_NMih3dcDDQSB",
+    "source": "livekit_message_metrics",
+    "role": "user",
+    "transcription_delay_ms": 766.04,
+    "end_of_turn_delay_ms": 766.75
+  },
+  {
+    "timestamp": "2026-11-21T15:16:49.942243+00:00",
+    "job_id": "AJ_qm8PbePzhyyc",
+    "room_id": "RM_NMih3dcDDQSB",
+    "source": "runtime_unattested",
+    "session_id": "GMTMbI5rkJMXXhSarxg7RA0SVYkx7Bft",
+    "turn_id": "item_dbe4336879bd",
+    "action_id": "e7c9082118614420bb63e31db25450bb",
+    "operation": "cart.add_item",
+    "generation": "052dh6Jw5Z-76bPedPAJnprg",
+    "context_revision": 2,
+    "stage": "registered"
+  },
+  {
+    "timestamp": "2026-11-21T15:16:51.315188+00:00",
+    "job_id": "AJ_qm8PbePzhyyc",
+    "room_id": "RM_NMih3dcDDQSB",
+    "source": "runtime_unattested",
+    "session_id": "GMTMbI5rkJMXXhSarxg7RA0SVYkx7Bft",
+    "turn_id": "item_dbe4336879bd",
+    "action_id": "e7c9082118614420bb63e31db25450bb",
+    "operation": "cart.add_item",
+    "generation": "052dh6Jw5Z-76bPedPAJnprg",
+    "context_revision": 2,
+    "stage": "success"
+  },
+  {
+    "timestamp": "2026-11-21T15:16:52.179973+00:00",
+    "job_id": "AJ_qm8PbePzhyyc",
+    "room_id": "RM_NMih3dcDDQSB",
+    "kind": "speech_finished",
+    "speech_id": "speech_2522c8797443",
+    "interrupted": false,
+    "failed": false
+  },
+  {
+    "timestamp": "2026-11-21T15:17:02.481129+00:00",
+    "job_id": "AJ_qm8PbePzhyyc",
+    "room_id": "RM_NMih3dcDDQSB",
+    "source": "livekit_message_metrics",
+    "role": "assistant",
+    "tts_node_ttfb_ms": 57.21
+  },
+  {
+    "timestamp": "2026-11-21T15:17:02.482270+00:00",
+    "job_id": "AJ_qm8PbePzhyyc",
+    "room_id": "RM_NMih3dcDDQSB",
+    "kind": "speech_finished",
+    "speech_id": "speech_637e220140ca",
+    "interrupted": false,
+    "failed": false
+  },
+  {
+    "timestamp": "2026-11-21T15:17:04.549893+00:00",
+    "job_id": "AJ_qm8PbePzhyyc",
+    "room_id": "RM_NMih3dcDDQSB",
+    "kind": "user_speaking",
+    "assistant_speaking": false
+  },
+  {
+    "timestamp": "2026-11-21T15:17:08.525821+00:00",
+    "job_id": "AJ_qm8PbePzhyyc",
+    "room_id": "RM_NMih3dcDDQSB",
+    "source": "livekit_message_metrics",
+    "role": "user",
+    "transcription_delay_ms": 772.0,
+    "end_of_turn_delay_ms": 772.84
+  },
+  {
+    "timestamp": "2026-11-21T15:17:11.135048+00:00",
+    "job_id": "AJ_qm8PbePzhyyc",
+    "room_id": "RM_NMih3dcDDQSB",
+    "source": "runtime_unattested",
+    "session_id": "GMTMbI5rkJMXXhSarxg7RA0SVYkx7Bft",
+    "turn_id": "item_5855a1223f4f",
+    "action_id": "1d9147661ccf4d03bd0250cce1ef281d",
+    "operation": "navigate",
+    "generation": "052dh6Jw5Z-76bPedPAJnprg",
+    "context_revision": 3,
+    "stage": "registered"
+  },
+  {
+    "timestamp": "2026-11-21T15:17:12.366949+00:00",
+    "job_id": "AJ_qm8PbePzhyyc",
+    "room_id": "RM_NMih3dcDDQSB",
+    "source": "runtime_unattested",
+    "session_id": "GMTMbI5rkJMXXhSarxg7RA0SVYkx7Bft",
+    "turn_id": "item_5855a1223f4f",
+    "action_id": "1d9147661ccf4d03bd0250cce1ef281d",
+    "operation": "navigate",
+    "generation": "052dh6Jw5Z-76bPedPAJnprg",
+    "context_revision": 3,
+    "stage": "success"
+  },
+  {
+    "timestamp": "2026-11-21T15:17:12.370108+00:00",
+    "job_id": "AJ_qm8PbePzhyyc",
+    "room_id": "RM_NMih3dcDDQSB",
+    "kind": "speech_finished",
+    "speech_id": "speech_7208c3f44a81",
+    "interrupted": false,
+    "failed": false
+  },
+  {
+    "timestamp": "2026-11-21T15:17:19.154501+00:00",
+    "job_id": "AJ_qm8PbePzhyyc",
+    "room_id": "RM_NMih3dcDDQSB",
+    "source": "livekit_message_metrics",
+    "role": "assistant",
+    "tts_node_ttfb_ms": 60.72
+  },
+  {
+    "timestamp": "2026-11-21T15:17:19.155675+00:00",
+    "job_id": "AJ_qm8PbePzhyyc",
+    "room_id": "RM_NMih3dcDDQSB",
+    "kind": "speech_finished",
+    "speech_id": "speech_e9489b129a8e",
+    "interrupted": false,
+    "failed": false
+  },
+  {
+    "timestamp": "2026-11-21T15:17:21.199091+00:00",
+    "job_id": "AJ_qm8PbePzhyyc",
+    "room_id": "RM_NMih3dcDDQSB",
+    "kind": "user_speaking",
+    "assistant_speaking": false
+  },
+  {
+    "timestamp": "2026-11-21T15:17:24.675353+00:00",
+    "job_id": "AJ_qm8PbePzhyyc",
+    "room_id": "RM_NMih3dcDDQSB",
+    "source": "livekit_message_metrics",
+    "role": "user",
+    "transcription_delay_ms": 767.97,
+    "end_of_turn_delay_ms": 768.73
+  },
+  {
+    "timestamp": "2026-11-21T15:17:26.911300+00:00",
+    "job_id": "AJ_qm8PbePzhyyc",
+    "room_id": "RM_NMih3dcDDQSB",
+    "source": "runtime_unattested",
+    "session_id": "GMTMbI5rkJMXXhSarxg7RA0SVYkx7Bft",
+    "turn_id": "item_ef5b9d712425",
+    "action_id": "5f01d447adb548d8887c2a84a046ad9d",
+    "operation": "cart.add_item",
+    "generation": "052dh6Jw5Z-76bPedPAJnprg",
+    "context_revision": 4,
+    "stage": "registered"
+  },
+  {
+    "timestamp": "2026-11-21T15:17:28.500196+00:00",
+    "job_id": "AJ_qm8PbePzhyyc",
+    "room_id": "RM_NMih3dcDDQSB",
+    "source": "runtime_unattested",
+    "session_id": "GMTMbI5rkJMXXhSarxg7RA0SVYkx7Bft",
+    "turn_id": "item_ef5b9d712425",
+    "action_id": "5f01d447adb548d8887c2a84a046ad9d",
+    "operation": "cart.add_item",
+    "generation": "052dh6Jw5Z-76bPedPAJnprg",
+    "context_revision": 4,
+    "stage": "success"
+  },
+  {
+    "timestamp": "2026-11-21T15:17:28.504685+00:00",
+    "job_id": "AJ_qm8PbePzhyyc",
+    "room_id": "RM_NMih3dcDDQSB",
+    "kind": "speech_finished",
+    "speech_id": "speech_6e03119be74a",
+    "interrupted": false,
+    "failed": false
+  },
+  {
+    "timestamp": "2026-11-21T15:17:42.406650+00:00",
+    "job_id": "AJ_qm8PbePzhyyc",
+    "room_id": "RM_NMih3dcDDQSB",
+    "source": "livekit_message_metrics",
+    "role": "assistant",
+    "tts_node_ttfb_ms": 57.24
+  },
+  {
+    "timestamp": "2026-11-21T15:17:42.408459+00:00",
+    "job_id": "AJ_qm8PbePzhyyc",
+    "room_id": "RM_NMih3dcDDQSB",
+    "kind": "speech_finished",
+    "speech_id": "speech_e89abe5493da",
+    "interrupted": false,
+    "failed": false
+  },
+  {
+    "timestamp": "2026-11-21T15:17:43.849090+00:00",
+    "job_id": "AJ_qm8PbePzhyyc",
+    "room_id": "RM_NMih3dcDDQSB",
+    "kind": "user_speaking",
+    "assistant_speaking": false
+  },
+  {
+    "timestamp": "2026-11-21T15:17:47.38[REDACTED]2+00:00",
+    "job_id": "AJ_qm8PbePzhyyc",
+    "room_id": "RM_NMih3dcDDQSB",
+    "source": "livekit_message_metrics",
+    "role": "user",
+    "transcription_delay_ms": 773.48,
+    "end_of_turn_delay_ms": 774.42
+  },
+  {
+    "timestamp": "2026-11-21T15:17:49.657042+00:00",
+    "job_id": "AJ_qm8PbePzhyyc",
+    "room_id": "RM_NMih3dcDDQSB",
+    "source": "runtime_unattested",
+    "session_id": "GMTMbI5rkJMXXhSarxg7RA0SVYkx7Bft",
+    "turn_id": "item_17ce90c572bd",
+    "action_id": "0b1bc73fe9a04bd697503671f6455ad1",
+    "operation": "checkout.get_summary",
+    "generation": "052dh6Jw5Z-76bPedPAJnprg",
+    "context_revision": 5,
+    "stage": "registered"
+  },
+  {
+    "timestamp": "2026-11-21T15:17:51.115701+00:00",
+    "job_id": "AJ_qm8PbePzhyyc",
+    "room_id": "RM_NMih3dcDDQSB",
+    "source": "runtime_unattested",
+    "session_id": "GMTMbI5rkJMXXhSarxg7RA0SVYkx7Bft",
+    "turn_id": "item_17ce90c572bd",
+    "action_id": "0b1bc73fe9a04bd697503671f6455ad1",
+    "operation": "checkout.get_summary",
+    "generation": "052dh6Jw5Z-76bPedPAJnprg",
+    "context_revision": 5,
+    "stage": "success"
+  },
+  {
+    "timestamp": "2026-11-21T15:17:51.122307+00:00",
+    "job_id": "AJ_qm8PbePzhyyc",
+    "room_id": "RM_NMih3dcDDQSB",
+    "kind": "speech_finished",
+    "speech_id": "speech_f4e987dffd2f",
+    "interrupted": false,
+    "failed": false
+  },
+  {
+    "timestamp": "2026-11-21T15:18:06.533437+00:00",
+    "job_id": "AJ_qm8PbePzhyyc",
+    "room_id": "RM_NMih3dcDDQSB",
+    "source": "livekit_message_metrics",
+    "role": "assistant",
+    "tts_node_ttfb_ms": 49.86
+  },
+  {
+    "timestamp": "2026-11-21T15:18:06.535067+00:00",
+    "job_id": "AJ_qm8PbePzhyyc",
+    "room_id": "RM_NMih3dcDDQSB",
+    "kind": "speech_finished",
+    "speech_id": "speech_f03f1ecf5c52",
+    "interrupted": false,
+    "failed": false
+  },
+  {
+    "timestamp": "2026-11-21T15:18:07.949663+00:00",
+    "job_id": "AJ_qm8PbePzhyyc",
+    "room_id": "RM_NMih3dcDDQSB",
+    "kind": "user_speaking",
+    "assistant_speaking": false
+  },
+  {
+    "timestamp": "2026-11-21T15:18:12.889910+00:00",
+    "job_id": "AJ_qm8PbePzhyyc",
+    "room_id": "RM_NMih3dcDDQSB",
+    "source": "livekit_message_metrics",
+    "role": "user",
+    "transcription_delay_ms": 782.98,
+    "end_of_turn_delay_ms": 783.82
+  },
+  {
+    "timestamp": "2026-11-21T15:18:15.437248+00:00",
+    "job_id": "AJ_qm8PbePzhyyc",
+    "room_id": "RM_NMih3dcDDQSB",
+    "source": "runtime_unattested",
+    "session_id": "GMTMbI5rkJMXXhSarxg7RA0SVYkx7Bft",
+    "turn_id": "item_0021b6d5bea8",
+    "action_id": "f09e6c1dbdf64829a437cd844548a854",
+    "operation": "cart.remove_item",
+    "generation": "052dh6Jw5Z-76bPedPAJnprg",
+    "context_revision": 6,
+    "stage": "registered"
+  },
+  {
+    "timestamp": "2026-11-21T15:18:16.736495+00:00",
+    "job_id": "AJ_qm8PbePzhyyc",
+    "room_id": "RM_NMih3dcDDQSB",
+    "source": "runtime_unattested",
+    "session_id": "GMTMbI5rkJMXXhSarxg7RA0SVYkx7Bft",
+    "turn_id": "item_0021b6d5bea8",
+    "action_id": "f09e6c1dbdf64829a437cd844548a854",
+    "operation": "cart.remove_item",
+    "generation": "052dh6Jw5Z-76bPedPAJnprg",
+    "context_revision": 6,
+    "stage": "success"
+  },
+  {
+    "timestamp": "2026-11-21T15:18:16.740805+00:00",
+    "job_id": "AJ_qm8PbePzhyyc",
+    "room_id": "RM_NMih3dcDDQSB",
+    "kind": "speech_finished",
+    "speech_id": "speech_044fcd24fcc5",
+    "interrupted": false,
+    "failed": false
+  },
+  {
+    "timestamp": "2026-11-21T15:18:27.360686+00:00",
+    "job_id": "AJ_qm8PbePzhyyc",
+    "room_id": "RM_NMih3dcDDQSB",
+    "source": "livekit_message_metrics",
+    "role": "assistant",
+    "tts_node_ttfb_ms": 56.4
+  },
+  {
+    "timestamp": "2026-11-21T15:18:27.362203+00:00",
+    "job_id": "AJ_qm8PbePzhyyc",
+    "room_id": "RM_NMih3dcDDQSB",
+    "kind": "speech_finished",
+    "speech_id": "speech_96a8d3fb6323",
+    "interrupted": false,
+    "failed": false
+  },
+  {
+    "timestamp": "2026-11-21T15:18:29.700375+00:00",
+    "job_id": "AJ_qm8PbePzhyyc",
+    "room_id": "RM_NMih3dcDDQSB",
+    "kind": "user_speaking",
+    "assistant_speaking": false
+  },
+  {
+    "timestamp": "2026-11-21T15:18:31.924347+00:00",
+    "job_id": "AJ_qm8PbePzhyyc",
+    "room_id": "RM_NMih3dcDDQSB",
+    "source": "livekit_message_metrics",
+    "role": "user",
+    "transcription_delay_ms": 766.26,
+    "end_of_turn_delay_ms": 766.97
+  },
+  {
+    "timestamp": "2026-11-21T15:18:34.061198+00:00",
+    "job_id": "AJ_qm8PbePzhyyc",
+    "room_id": "RM_NMih3dcDDQSB",
+    "kind": "speech_finished",
+    "speech_id": "speech_60bbecfd403b",
+    "interrupted": false,
+    "failed": false
+  },
+  {
+    "timestamp": "2026-11-21T15:18:37.003596+00:00",
+    "job_id": "AJ_qm8PbePzhyyc",
+    "room_id": "RM_NMih3dcDDQSB",
+    "source": "livekit_message_metrics",
+    "role": "assistant",
+    "tts_node_ttfb_ms": 58.59
+  },
+  {
+    "timestamp": "2026-11-21T15:18:37.005144+00:00",
+    "job_id": "AJ_qm8PbePzhyyc",
+    "room_id": "RM_NMih3dcDDQSB",
+    "kind": "speech_finished",
+    "speech_id": "speech_2dfcf6616784",
+    "interrupted": false,
+    "failed": false
+  },
+  {
+    "timestamp": "2026-11-21T15:18:41.549289+00:00",
+    "job_id": "AJ_qm8PbePzhyyc",
+    "room_id": "RM_NMih3dcDDQSB",
+    "kind": "user_speaking",
+    "assistant_speaking": false
+  },
+  {
+    "timestamp": "2026-11-21T15:18:42.460747+00:00",
+    "job_id": "AJ_qm8PbePzhyyc",
+    "room_id": "RM_NMih3dcDDQSB",
+    "source": "livekit_message_metrics",
+    "role": "user",
+    "transcription_delay_ms": 752.31,
+    "end_of_turn_delay_ms": 753.09
+  },
+  {
+    "timestamp": "2026-11-21T15:18:44.500885+00:00",
+    "job_id": "AJ_qm8PbePzhyyc",
+    "room_id": "RM_NMih3dcDDQSB",
+    "source": "runtime_unattested",
+    "session_id": "GMTMbI5rkJMXXhSarxg7RA0SVYkx7Bft",
+    "turn_id": "item_0f3cc21b6f4f",
+    "action_id": "5913f77477c949828a1413a9276cb77a",
+    "operation": "get_current_context",
+    "generation": "052dh6Jw5Z-76bPedPAJnprg",
+    "context_revision": 7,
+    "stage": "registered"
+  },
+  {
+    "timestamp": "2026-11-21T15:18:45.180405+00:00",
+    "job_id": "AJ_qm8PbePzhyyc",
+    "room_id": "RM_NMih3dcDDQSB",
+    "source": "runtime_unattested",
+    "session_id": "GMTMbI5rkJMXXhSarxg7RA0SVYkx7Bft",
+    "turn_id": "item_0f3cc21b6f4f",
+    "action_id": "5913f77477c949828a1413a9276cb77a",
+    "operation": "get_current_context",
+    "generation": "052dh6Jw5Z-76bPedPAJnprg",
+    "context_revision": 7,
+    "stage": "success"
+  },
+  {
+    "timestamp": "2026-11-21T15:18:50.150238+00:00",
+    "job_id": "AJ_qm8PbePzhyyc",
+    "room_id": "RM_NMih3dcDDQSB",
+    "source": "livekit_message_metrics",
+    "role": "assistant",
+    "llm_node_ttft_ms": 1323.62,
+    "llm_node_ttfs_ms": 1782.89,
+    "tts_node_ttfb_ms": 61.37
+  },
+  {
+    "timestamp": "2026-11-21T15:18:50.151196+00:00",
+    "job_id": "AJ_qm8PbePzhyyc",
+    "room_id": "RM_NMih3dcDDQSB",
+    "kind": "speech_finished",
+    "speech_id": "speech_512bb3219631",
+    "interrupted": false,
+    "failed": false
+  },
+  {
+    "timestamp": "2026-11-21T15:18:51.200185+00:00",
+    "job_id": "AJ_qm8PbePzhyyc",
+    "room_id": "RM_NMih3dcDDQSB",
+    "kind": "user_speaking",
+    "assistant_speaking": false
+  },
+  {
+    "timestamp": "2026-11-21T15:18:53.125163+00:00",
+    "job_id": "AJ_qm8PbePzhyyc",
+    "room_id": "RM_NMih3dcDDQSB",
+    "source": "livekit_message_metrics",
+    "role": "user",
+    "transcription_delay_ms": 763.29,
+    "end_of_turn_delay_ms": 764.15
+  }
+]

@@ -123,11 +123,12 @@ class IntegratedRpcAdapter:
         self.gate.latest = snapshot
         return snapshot
 
-    def menu_context(self, revision: int) -> ContextSnapshot | None:
-        """Inputs for a menu-only action; the server still admits its exact revision.
+    def action_context(self, revision: int) -> ContextSnapshot | None:
+        """Bound inputs for a fresh read or revision-checked browsing action.
 
-        This does not authorize a business mutation or a time-based cache. A
-        missed manual update makes the server reject the filter/search request.
+        This never serves cached tool facts or authorizes a cart mutation. The
+        broker rejects reads from a different revision; the authority enforces
+        exact revisions for navigation/filter/search.
         """
         latest = self.gate.latest
         if (
@@ -164,6 +165,22 @@ class IntegratedRpcAdapter:
         to a fresh read. Never use a time-based cache or repeat a mutation.
         """
         latest = self.gate.latest
+        if (
+            not self.gate.closed and self.gate.resolve_app_identity() is not None
+            and result.session_id == self.session_id
+            and result.payload.operation == "get_current_context"
+            and result.payload.status == "success"
+        ):
+            snapshot = ContextSnapshot.model_validate(
+                (result.payload.verified_state or {})["snapshot"]
+            )
+            if (
+                snapshot.session_id == self.session_id
+                and snapshot.revision == result.context_revision
+                and (latest is None or latest.revision <= snapshot.revision)
+            ):
+                self.gate.latest = snapshot
+                return snapshot.model_copy(deep=True)
         if (
             not self.gate.closed
             and self.gate.resolve_app_identity() is not None

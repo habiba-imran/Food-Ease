@@ -8,12 +8,82 @@ import pytest
 from livekit.agents import AgentSession, StopResponse, llm
 from livekit.agents.types import DEFAULT_API_CONNECT_OPTIONS
 
-from foodease_agent.adapters.integrated import IntegratedRpcAdapter
+from foodease_agent.adapters.integrated import IntegratedRpcAdapter, action_request
 from foodease_agent.adapters.integrated_startup import IntegratedRoomGate
 from foodease_agent.integrated.agent import IntegratedFoodEaseAgent
 from foodease_agent.integrated.runtime import LiveConversationRuntime
 from test_integrated_rpc_worker import Room
 from test_integrated_runtime import Session, WebsiteAdapter, call, turn
+
+
+@pytest.mark.parametrize("operation,args", [
+    ("get_cart", {}), ("get_current_context", {}),
+    ("get_item_details", {"item_id": "drink-cola"}),
+    ("navigate", {"target": "cart"}),
+])
+async def test_bound_current_reads_and_navigation_submit_only_the_requested_action(operation, args):
+    room = Room()
+    gate = IntegratedRoomGate(room, room.startup)
+    runtime = LiveConversationRuntime(
+        IntegratedFoodEaseAgent(language="ur"), Session(), IntegratedRpcAdapter(gate), gate=gate
+    )
+    await runtime.prepare()
+    await runtime.select_mode("voice")
+    room.calls.clear()
+    try:
+        result = await call(runtime, operation, **args)
+        assert result["status"] == "success"
+        assert [r["payload"]["operation"] for _, r in room.calls] == [operation]
+    finally:
+        await runtime.close()
+        gate.close()
+
+
+@pytest.mark.parametrize("operation,args", [
+    ("get_cart", {}), ("get_current_context", {}),
+    ("get_item_details", {"item_id": "drink-cola"}),
+    ("navigate", {"target": "cart"}),
+])
+async def test_missed_manual_change_cannot_authorize_facts_or_navigation(operation, args):
+    room = Room()
+    gate = IntegratedRoomGate(room, room.startup)
+    runtime = LiveConversationRuntime(
+        IntegratedFoodEaseAgent(language="ur"), Session(), IntegratedRpcAdapter(gate), gate=gate
+    )
+    await runtime.prepare()
+    await runtime.select_mode("voice")
+    await room.website.manual("cart.add_item", {"item_id": "drink-cola", "quantity": 2})
+    room.calls.clear()
+    try:
+        result = await call(runtime, operation, **args)
+        assert result["status"] != "success"
+        assert result.get("facts") is None
+        assert [r["payload"]["operation"] for _, r in room.calls] == [operation]
+        current = await room.website.get_snapshot()
+        assert current.cart.lines[0].quantity == 2
+        assert current.route != "cart"
+    finally:
+        await runtime.close()
+        gate.close()
+
+
+async def test_context_result_itself_is_the_fresh_receipt_when_no_context_was_published():
+    room = Room()
+    gate = IntegratedRoomGate(room, room.startup)
+    adapter = IntegratedRpcAdapter(gate)
+    snapshot = await adapter.get_snapshot()
+    request = action_request(adapter.session_id, "context-turn", snapshot.revision,
+                             "get_current_context", {})
+    result = await adapter.submit(request)
+    gate.latest = None
+    room.calls.clear()
+    try:
+        fresh = await adapter.snapshot_after(result)
+        assert fresh.revision == result.context_revision
+        assert fresh.session_id == adapter.session_id
+        assert room.calls == []
+    finally:
+        gate.close()
 
 
 async def test_bound_menu_filter_needs_one_authority_rpc_not_a_separate_preread():
@@ -80,20 +150,20 @@ async def test_missing_menu_context_keeps_fresh_preread_fallback():
         gate.close()
 
 
-async def test_menu_context_requires_bound_session_exact_revision_and_no_pending_action():
+async def test_action_context_requires_bound_session_exact_revision_and_no_pending_action():
     room = Room()
     gate = IntegratedRoomGate(room, room.startup)
     adapter = IntegratedRpcAdapter(gate)
     original = await adapter.get_snapshot()
     try:
-        assert adapter.menu_context(original.revision) is not gate.latest
+        assert adapter.action_context(original.revision) is not gate.latest
         for values in ({"session_id":"foreign"}, {"revision":original.revision+1},
                        {"action_pending":True}):
             gate.latest = original.model_copy(update=values)
-            assert adapter.menu_context(original.revision) is None
+            assert adapter.action_context(original.revision) is None
         gate.latest = original
         room.remote_participants.pop("app")
-        assert adapter.menu_context(original.revision) is None
+        assert adapter.action_context(original.revision) is None
     finally:
         gate.close()
 

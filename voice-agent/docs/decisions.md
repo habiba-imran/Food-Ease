@@ -6,6 +6,27 @@ Newest entries at the top.
 
 ---
 
+## ADR-0037 — Fresh reads and navigation without a redundant pre-read
+
+- **Context:** The latest production audio session has no provider failures. Its
+  12 user-turn transcription delays are 752–790 ms, TTS first-byte 50–61 ms;
+  logged tool completion adds roughly 0.68–1.87 s after registration. The broker
+  also issues a context RPC before cart reads, details and navigation.
+- **Decision:** Extend exact bound-context admission from menu filter/search to
+  read-only requests and navigation. Always submit a new authority request;
+  never answer from cached cart/details. Read endpoints can return a newer
+  revision, so discard the requesting turn if the result differs from its input
+  revision, even when a context event arrived first. Navigation retains exact
+  server-side revision admission. Missing binding/context/pending state retains
+  the pre-read. Cart mutations and checkout retain all pre-reads and confirmation
+  guards. A validated successful get_current_context receipt can itself provide
+  its exact snapshot, without another RPC; newer published revisions force a read.
+  Preserve interruption, endpointing, STT, LLM and TTS settings.
+- **Evidence:** [Follow-up logs, regressions and hosted checks](../evidence/latency-followup-2026-11-21/report.md).
+- **Date:** 2026-11-21. Extends ADR-0036's optimization without changing mutation rules.
+
+---
+
 ## ADR-0036 — Model-compatible thinking and truthful failed captions
 
 - **Context:** Production logs show Gemini 2.5 Flash repeatedly rejecting the

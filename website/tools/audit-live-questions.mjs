@@ -4,7 +4,17 @@
 import { chromium } from '@playwright/test';
 import { mkdir, writeFile } from 'node:fs/promises';
 const target = 'https://food-ease-seven.vercel.app';
-const evidence = '../voice-agent/evidence/reply-recovery-2026-11-21';
+const evidence = process.env.FOODEASE_AUDIT_EVIDENCE || '../voice-agent/evidence/reply-recovery-2026-11-21';
+const profile = process.env.FOODEASE_AUDIT_PROFILE || 'menu';
+if (!['menu', 'latency'].includes(profile)) throw new Error('Unknown audit profile');
+const questions = profile === 'latency' ? [
+  {kind:'cart', text:'کارٹ میں کیا ہے؟'},
+  {kind:'navigation', text:'کارٹ دکھاؤ۔'},
+  {kind:'details', text:'کولا کی تفصیل بتاؤ۔'},
+] : [
+  {kind:'categories', text:'السلام علیکم، مینیو میں کون کون سی کیٹیگریز ہیں؟'},
+  {kind:'prices', text:'برگر کی تمام اقسام قیمتوں کے ساتھ بتائیں۔'},
+];
 const report = {target, mode:'hosted_real_providers_synthetic_recognized_requests', errors:[], turns:[]};
 const browser = await chromium.launch();
 const page = await browser.newPage({permissions:['microphone']});
@@ -64,7 +74,7 @@ try {
   await page.waitForFunction(() => (window.auditEvents || []).some(({event}) =>
     event.type==='transcript.assistant' && event.payload.phase==='completed' && event.payload.text));
   await page.waitForTimeout(300);
-  for (const question of ['السلام علیکم، مینیو میں کون کون سی کیٹیگریز ہیں؟', 'برگر کی تمام اقسام قیمتوں کے ساتھ بتائیں۔']) {
+  for (const {kind, text:question} of questions) {
     const sent = await page.evaluate(async question => {
       const sid=sessionStorage.getItem('foodease.shopping-session.v2');
       const response=await fetch('/api/v2/app/context',{headers:{'X-FoodEase-Session':sid}});
@@ -94,15 +104,18 @@ try {
         failures:events.filter(({event}) => event.type==='transcript.assistant' && event.payload.phase==='failed').length,
         actions:(window.auditActions || []).slice(actionBaseline)};
     }, sent);
-    report.turns.push({question,...result});
+    report.turns.push({kind,question,...result});
     if (result.phase !== 'completed') throw new Error('Real question failed');
     if (result.text.length < 15) throw new Error('Question received an empty or incomplete answer');
     // Category/navigation facts are already supplied by the verified reasoning context.
     // The explicit price/filter request below should exercise a real application action.
-    if (report.turns.length===2 && !result.actions.length) throw new Error('Price request did not exercise application tools');
-    if (report.turns.length===1 && (result.text.match(/برگر|بریانی|کڑاہی|رول|مشروبات|میٹھے|ریپ|پلیٹر/g) || []).length < 3)
+    if (kind!=='categories' && !result.actions.length) throw new Error('Request did not exercise application tools');
+    if (kind==='categories' && (result.text.match(/برگر|بریانی|کڑاہی|رول|مشروبات|میٹھے|ریپ|پلیٹر/g) || []).length < 3)
       throw new Error('Category question did not list category choices');
-    if (report.turns.length===2 && !/روپے|روپیہ|PKR/.test(result.text)) throw new Error('Price question did not include prices');
+    if (kind==='prices' && !/روپے|روپیہ|PKR/.test(result.text)) throw new Error('Price question did not include prices');
+    const expected = {cart:'get_cart',navigation:'navigate',details:'get_item_details'}[kind];
+    if (expected && !result.actions.some(a=>a.operation===expected && a.status==='success'))
+      throw new Error(`Expected successful ${expected} for ${kind} request`);
     // Completion follows playout, so the next request does not interrupt this reply.
     await page.waitForTimeout(300);
   }

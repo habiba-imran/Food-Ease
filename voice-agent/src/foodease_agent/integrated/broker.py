@@ -71,13 +71,14 @@ class IntegratedActionBroker:
             if self.pending:
                 return safe_failure("pending")
             try:
-                # Menu filters/searches have an exact-revision authority check on
-                # submission. Reuse only the bound context that produced this
-                # turn, saving a separate pre-read; cart/checkout keep theirs.
-                menu_context = getattr(runtime.adapter, "menu_context", None)
+                # Reads still go to the authority, and their returned revision
+                # must match below. Navigation/menu actions enforce exact revision
+                # server-side. Cart changes and checkout retain their pre-reads.
+                action_context = getattr(runtime.adapter, "action_context", None)
                 fresh = (
-                    menu_context(turn.revision)
-                    if operation in {"filter_menu", "search_menu"} and menu_context is not None
+                    action_context(turn.revision)
+                    if operation in READ_OPERATIONS | {"navigate", "filter_menu", "search_menu"}
+                    and action_context is not None
                     else None
                 )
                 if fresh is None:
@@ -212,6 +213,15 @@ class IntegratedActionBroker:
         except Exception:
             runtime.discard_turn(turn.id)
             return safe_failure("not_available")
+        if (
+            owned.request.payload.operation in READ_OPERATIONS
+            and result.context_revision != owned.request.context_revision
+        ):
+            # Read endpoints may legally return newer facts. They cannot rescue
+            # a turn based on an unpublished manual change or authorize its next
+            # dependent step. Synchronize above, then discard without announcing.
+            runtime.discard_turn(turn.id)
+            return safe_failure("stale_context")
         if (
             not runtime.authorized(turn, revision=False)
             or fresh.revision != result.context_revision
